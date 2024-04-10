@@ -29,17 +29,11 @@ class LocaleNegotiator:
 
         locale: str | None
 
-        # 1. Get language from user organization
-        user = request.user
-        if user:
-            locale = user.organization.locale
-            if locale in available:
-                return locale
 
-        # 2. Use browser's Accept-Language header
+        # 1. Use browser's Accept-Language header
         locale = request.accept_language.lookup(available, default=default)
         if locale and locale in available:
             return locale
 
-        # 3. Fallback to default language
+        # 2. Fallback to default language
         return default

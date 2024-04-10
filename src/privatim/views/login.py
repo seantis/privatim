@@ -43,7 +43,6 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         assert login is not None and password is not None
 
         session = request.dbsession
-        breakpoint()
         query = session.query(User)
         query = query.filter(User.email.ilike(login))
         user = query.first()
