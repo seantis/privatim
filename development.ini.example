@@ -11,8 +11,9 @@ pyramid.debug_authorization = false
 pyramid.debug_notfound = false
 pyramid.debug_routematch = false
 pyramid.default_locale_name = en
-pyramid.includes =
-    pyramid_debugtoolbar
+# TODO: Figure out why this causes an issue with zope.transaction (this raises transaction.interfaces.NoTransaction)
+# pyramid.includes =
+    # pyramid_debugtoolbar
 
 sqlalchemy.url = sqlite:///%(here)s/privatim.sqlite
 # sqlalchemy.url = postgresql://dev:postgres@localhost:5432/privatim
