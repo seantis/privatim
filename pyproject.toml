@@ -42,7 +42,7 @@ namespace_packages = true
 strict = true
 plugins = ["mypy_zope.plugin"]
 exclude = "/(alembic|static/.+)/"
-mypy_path = "$MYPY_CONFIG_FILE_DIR/privatim:$MYPY_CONFIG_FILE_DIR/stubs"
+mypy_path = "$MYPY_CONFIG_FILE_DIR/src:$MYPY_CONFIG_FILE_DIR/stubs"
 
 [[tool.mypy.overrides]]
 module = [
