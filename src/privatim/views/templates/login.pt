@@ -1,0 +1,26 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+    <tal:block metal:fill-slot="content">
+
+        <div class="row">
+            <div class="col-md-4">
+                <form class="form-signin" action="" method="POST">
+                    <h1 class="mt-5" i18n:translate>Sign in</h1>
+                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address"
+                        required autofocus>
+                        <input type="password" name="password" id="inputPassword" class="form-control"
+                               placeholder="Password" required>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="submit" i18n:translate>Sign in</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    </tal:block>
+
+</metal:block>

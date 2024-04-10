@@ -1,0 +1,20 @@
+.bg-light {
+    background-color: #EDEDED !important;
+}
+
+/*.bg-dark{*/
+/*    background-color: grey !important;*/
+/*}*/
+
+body {
+    font-family: "Open Sans", sans-serif;
+}
+
+.navbar-brand {
+    font-size: 28px;
+}
+
+/* Override Bootstrap's primary text color */
+.text-primary {
+    color: #cf2e2e !important;
+}

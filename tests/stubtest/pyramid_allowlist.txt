@@ -1,0 +1,18 @@
+# Error: is not present at runtime
+# ================================
+# Extensions from pyramid_layout we need to forward declare
+pyramid.config.Configurator.add_layout
+pyramid.config.Configurator.add_panel
+
+# Error: is not a function
+# ================================
+# Technically not_ is a class, but it's annoying for type checking
+# since each predicate argument is supposed to accept it
+pyramid.config.not_
+pyramid.config.predicates.not_
+
+# Error: is not a type
+# ================================
+# zope.interface.Interface does not create a type, but we have to use
+# it like one, so we need to ignore all related errors...
+pyramid\.interfaces\.I[A-Z]\w+

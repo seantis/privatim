@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.bandit]
+skips = ["B101"]
+
+[tool.pytest.ini_options]
+log_level = "INFO"
+testpaths = ["tests"]
+timeout = 300
+norecursedirs = [
+    "*.egg",
+    ".git",
+    ".*",
+    "_*"
+]
+
+[tool.coverage.run]
+source = ["privatim"]
+omit = [
+    "privatim/pshell.py",
+    "privatim/types.py",
+    "privatim/*/types.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "pragma: unreachable",
+    "assert_never[(]",
+    "@overload",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__."
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unreachable = true
+namespace_packages = true
+strict = true
+plugins = ["mypy_zope.plugin"]
+exclude = "/(alembic|static/.+)/"
+mypy_path = "$MYPY_CONFIG_FILE_DIR/privatim:$MYPY_CONFIG_FILE_DIR/stubs"
+
+[[tool.mypy.overrides]]
+module = [
+    "plaster.*",
+    "pyramid.*",
+    "pyramid_beaker.*",
+    "pyramid_layout.*",
+    "reportlab.*",
+]
+ignore_missing_imports = true
+disallow_untyped_defs = false

@@ -1,0 +1,59 @@
+# Byte code
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+*.egg
+*.egg-info
+*.pyc
+*$py.class
+*~
+.coverage
+coverage.xml
+build/
+
+development.ini
+
+dist/
+.tox/
+nosetests.xml
+venv*/
+tmp/
+Data*.fs*
+*.sublime-project
+*.sublime-workspace
+.*.sw?
+.sw?
+.DS_Store
+coverage
+
+*.sqlite
+
+
+# Pyenv
+.python-version
+
+# Eggs folder
+eggs/
+
+# mypy
+.mypy_cache/*
+
+# pycharm
+.idea
+
+# Sphinx
+docs/_build
+docs/autoapi
+
+# node
+node_modules/
+
+# virtualenv
+bin
+include
+lib
+share
+pyvenv.cfg

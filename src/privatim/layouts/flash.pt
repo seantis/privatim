@@ -1,0 +1,3 @@
+<div class="container" tal:condition="exists:messages" i18n:domain="privatim"><!-- avoid whitespace
+
+--></div>
