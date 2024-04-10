@@ -1,22 +1,51 @@
-<header>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-expand-md navbar-light navbar-fixed-top bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="${request.route_url('home')}">
-                <img src="${layout.static_url('privatim:static/logo.png')}" alt="Logo" style="height: 50px;">
+<style>
+
+    .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+    }
+
+    .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+    }
+</style>
+
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
+               href="${request.route_url('home')}">
+                <img src="${layout.static_url('privatim:static/logo-dark-font.png')}" alt="Logo" class="bi me-4"
+                     width="242" height="87">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse" aria-expanded="false"
-                    aria-label="Toggle navigation" tal:condition="request.user">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse" tal:condition="request.user">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li tal:repeat="entry entries" tal:replace="entry">
-                    </li>
-                </ul>
-                <a class="btn btn-outline-light" href="${request.route_url('logout')}"><i class="fad fa-sign-out"></i> Logout</a>
+
+            <ul class="d-flex nav col-12 col-lg-auto mb-2">
+                <li><a href="${request.route_url('home')}" class="nav-link px-3 link-body-emphasis custom-colored">Overview</a>
+                </li>
+                <li><a href="#" class="nav-link px-3 link-body-emphasis custom-colored">People</a></li>
+                <li><a href="#" class="nav-link px-3 link-body-emphasis custom-colored">Working Groups</a></li>
+            </ul>
+
+            <div class="d-flex">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                </form>
+                <div class="dropdown text-end">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                </div>
             </div>
+
         </div>
-    </nav>
+    </div>
 </header>

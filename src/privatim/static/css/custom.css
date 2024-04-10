@@ -2,19 +2,16 @@
     background-color: #EDEDED !important;
 }
 
-/*.bg-dark{*/
-/*    background-color: grey !important;*/
-/*}*/
+.custom-colored {
+    color: #FF545F; /* Privatim's pink color used extensively*/
+}
+
+.navbar-nav.active { /* To avoid using js, server-side code adds an `active` class to the navbar item*/
+    text-decoration: underline;
+}
+
 
 body {
     font-family: "Open Sans", sans-serif;
 }
 
-.navbar-brand {
-    font-size: 28px;
-}
-
-/* Override Bootstrap's primary text color */
-.text-primary {
-    color: #cf2e2e !important;
-}
