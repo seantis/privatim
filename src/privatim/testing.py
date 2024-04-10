@@ -11,6 +11,7 @@ from privatim.i18n import _
 
 if TYPE_CHECKING:
     from zope.interface import Interface
+    from privatim.models import User
 
 
 class DummyRequest(testing.DummyRequest):

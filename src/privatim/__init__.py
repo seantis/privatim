@@ -1,4 +1,3 @@
-from typing import Any, TYPE_CHECKING
 
 from fanstatic import Fanstatic
 from pyramid.config import Configurator
@@ -10,11 +9,12 @@ from privatim.route_factories.root_factory import root_factory
 from privatim.security import authenticated_user
 from privatim.security_policy import SessionSecurityPolicy
 
-if TYPE_CHECKING:
-    pass
-
-
 __version__ = '0.0.0'
+
+
+from typing import Any, TYPE_CHECKING
+if TYPE_CHECKING:
+    from _typeshed.wsgi import WSGIApplication
 
 
 def includeme(config: Configurator) -> None:

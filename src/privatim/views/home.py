@@ -13,4 +13,3 @@ def home_view(request: 'IRequest') -> HTTPFound:
         url = request.route_url('login')
 
     return HTTPFound(location=url)
-

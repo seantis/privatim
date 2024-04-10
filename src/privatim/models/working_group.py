@@ -47,7 +47,9 @@ class WorkGroup(Base):
     )
 
     # leader_id = mapped_column(UUIDStr, ForeignKey("user.id"), unique=True)
-    # leader = relationship("User", back_populates="leading_group", uselist=False)
+    # leader = relationship("User",
+    # back_populates="leading_group",
+    # uselist=False)
 
 
 class User(Base):
@@ -95,5 +97,3 @@ class User(Base):
             )
         except (AttributeError, ValueError):
             return False
-
-

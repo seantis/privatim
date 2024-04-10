@@ -1,9 +1,9 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
+
 from sedate import standardize_date, to_timezone
 from sqlalchemy.types import DateTime, TypeDecorator
 
-
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.engine.interfaces import Dialect
 
@@ -26,7 +26,7 @@ class UTCDateTime(TypeDecorator[datetime]):
         self,
         value: datetime | None,
         dialect: 'Dialect'
-    ) -> 'datetime | None':
+    ) -> datetime | None:
 
         if value is None:
             return None
@@ -36,7 +36,7 @@ class UTCDateTime(TypeDecorator[datetime]):
         self,
         value: datetime | None,
         dialect: 'Dialect'
-    ) -> 'datetime | None':
+    ) -> datetime | None:
 
         if value is None:
             return None

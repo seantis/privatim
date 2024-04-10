@@ -14,7 +14,14 @@ from privatim.cache import request_cache
 from privatim.security import query_user
 
 if TYPE_CHECKING:
+    from pyramid.interfaces import IRequest
+    from pyramid.security import ACLPermitsResult
     from typing_extensions import TypeAlias
+
+    from privatim.models import User
+
+    from privatim.types import ACL
+
     HTTPHeader: TypeAlias = tuple[str, str]
 
 

@@ -92,7 +92,6 @@ def pg_config(postgresql, monkeypatch):
         transaction.abort()
 
 
-
 @pytest.fixture
 def user(config, organization):
     session = config.dbsession

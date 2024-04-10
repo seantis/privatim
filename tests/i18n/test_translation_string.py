@@ -83,4 +83,3 @@ def test_interpolate():
 def test_html():
     markup = TranslationMarkup('<b>bold</b>')
     assert markup.__html__() == Markup('<b>bold</b>')
-

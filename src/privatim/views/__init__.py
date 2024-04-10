@@ -9,7 +9,7 @@ from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 
 if TYPE_CHECKING:
-    pass
+    from pyramid.config import Configurator
 
 
 def includeme(config: 'Configurator') -> None:
@@ -47,4 +47,3 @@ def includeme(config: 'Configurator') -> None:
         require_csrf=False,
         permission=NO_PERMISSION_REQUIRED,
     )
-

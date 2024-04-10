@@ -1,11 +1,14 @@
+from typing import TYPE_CHECKING
+from typing import TypeVar
 from uuid import UUID
+
 from pyramid.httpexceptions import HTTPNotFound
 
-
-from typing import TypeVar
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    pass
+    from collections.abc import Callable
+    from pyramid.interfaces import IRequest
+
+    from privatim.orm import Base
 
 _M = TypeVar('_M', bound='Base')
 

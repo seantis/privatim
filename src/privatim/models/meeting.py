@@ -22,4 +22,3 @@ class Meeting(Base):
     # docs
     # people associated (invited/)
     # agenda_item # traktandenliste
-
