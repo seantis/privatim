@@ -28,7 +28,6 @@ class LocaleNegotiator:
         default = self.default_language(request)
 
         locale: str | None
-
         # 1. Use browser's Accept-Language header
         locale = request.accept_language.lookup(available, default=default)
         if locale and locale in available:

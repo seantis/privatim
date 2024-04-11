@@ -11,17 +11,18 @@ class Consultation(Base):
 
     __tablename__ = "consultation"
 
-    id: Mapped[UUIDStrPK] = mapped_column()
+    id: Mapped[UUIDStrPK]
 
     title = Column(String, nullable=False)
 
     description = Column(Text)
 
-    # facter out into table
+    comments = Column(Text)
+
+    recommendation = Column(String)
+
+    # todo: facter out into table
     status = Column(String)
 
     # documents
 
-    # kommentare
-
-    recommendation = Column(String)

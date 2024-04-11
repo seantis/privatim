@@ -1,0 +1,48 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2024-04-11 15:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.15.0\n"
+
+#. translation strings used for testing
+#: ./src/privatim/testing.py
+msgid "Just a test"
+msgstr ""
+
+#: ./src/privatim/testing.py
+msgid "<b>bold</b>"
+msgstr ""
+
+#. Default: Close
+#: ./src/privatim/layouts/flash.pt
+msgid "Close"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.py
+#: ./src/privatim/views/templates/activities.pt
+msgid "Activities"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Add Activity"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Activity"
+msgstr ""
+
+#: ./src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr ""

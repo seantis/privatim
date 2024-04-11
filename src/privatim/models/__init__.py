@@ -2,14 +2,13 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import configure_mappers
 
-# import or define all models here to ensure they are attached to the
+# XXX import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
 # https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/sqlalchemy.html#importing-all-sqlalchemy-models
-from privatim.models.consolutation import Consultation
+from privatim.models.consultation import Consultation
 from privatim.models.meeting import Meeting
 from privatim.models.statement import Statement
-from privatim.models.working_group import (User, WorkGroup,
-                                           user_workgroup_association, )
+from privatim.models.user import Group, User, Person
 from privatim.orm import get_engine
 from privatim.orm import get_session_factory
 from privatim.orm import get_tm_session
@@ -53,10 +52,9 @@ def includeme(config: 'Configurator') -> None:
 
 __all__ = (
     'includeme',
-    'WorkGroup',
+    'Group',
     'User',
     'Statement',
     'Meeting',
     'Consultation',
-    'user_workgroup_association'
 )

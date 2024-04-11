@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-
+from privatim.i18n import _
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -42,7 +42,7 @@ def navbar(context: object, request: 'IRequest') -> 'RenderData':
     return {
         'entries': [
             NavbarEntry(
-                request, 'Activities', request.route_url('activities')
+                request, _('Activities'), request.route_url('activities')
             ),
         ]
     }

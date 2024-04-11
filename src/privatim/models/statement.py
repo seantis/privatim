@@ -10,7 +10,7 @@ class Statement(Base):
 
     __tablename__ = "statement"
 
-    id: Mapped[UUIDStrPK] = mapped_column()
+    id: Mapped[UUIDStrPK]
 
     text = Column(Text)
 

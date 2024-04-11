@@ -1,10 +1,4 @@
 <style>
-
-    .bi {
-        vertical-align: -.125em;
-        fill: currentColor;
-    }
-
     .bd-mode-toggle .dropdown-menu .active .bi {
         display: block !important;
     }
@@ -20,10 +14,21 @@
             </a>
 
             <ul class="d-flex nav col-12 col-lg-auto mb-2">
-                <li><a href="${request.route_url('home')}" class="nav-link px-3 link-body-emphasis custom-colored">Overview</a>
+                <li>
+                    <a href="${request.route_url('home')}"
+                       class="nav-link px-3 link-body-emphasis custom-colored ${'active_nav' if request.matched_route.name == 'activities' else ''}"
+                    >Overview</a>
                 </li>
-                <li><a href="#" class="nav-link px-3 link-body-emphasis custom-colored">People</a></li>
-                <li><a href="#" class="nav-link px-3 link-body-emphasis custom-colored">Working Groups</a></li>
+                <li>
+                    <a href="${request.route_url('people')}"
+                       class="nav-link px-3 link-body-emphasis custom-colored  ${'active_nav' if request.matched_route.name == 'people' else ''}"
+                       i18n:translate>People</a>
+                </li>
+                <li>
+                    <a href="${request.route_url('groups')}"
+                       class="nav-link px-3 link-body-emphasis custom-colored  ${'active_nav' if request.matched_route.name == 'groups' else ''}"
+                       i18n:translate>Working Groups</a>
+                </li>
             </ul>
 
             <div class="d-flex">
@@ -36,12 +41,12 @@
                         <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small">
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
+                        <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                        <li><a class="dropdown-item" href="#" i18n:translate>Sign out</a></li>
                     </ul>
                 </div>
             </div>

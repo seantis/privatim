@@ -1,8 +1,0 @@
-#. translation strings used for testing
-#: src/riskmatrix/testing.py
-msgid "Just a test"
-msgstr "Nur ein Test"
-
-#: src/riskmatrix/testing.py
-msgid "<b>bold</b>"
-msgstr "<b>fett</b>"

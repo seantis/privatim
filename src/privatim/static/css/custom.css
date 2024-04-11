@@ -2,14 +2,28 @@
     background-color: #EDEDED !important;
 }
 
+:root {
+   --primary-color: #FF545F; /* privatim's primary color used globally*/
+   --hover-color: #e64c56;  /* hover = 10% darker */
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--hover-color);
+    border-color: var(--hover-color);
+}
+
 .custom-colored {
-    color: #FF545F; /* Privatim's pink color used extensively*/
+    color: var(--primary-color); /* Privatim's pink color used extensively*/
 }
 
-.navbar-nav.active { /* To avoid using js, server-side code adds an `active` class to the navbar item*/
-    text-decoration: underline;
+.navbar-nav.active_nav {
+    text-decoration: underline!important;
 }
-
 
 body {
     font-family: "Open Sans", sans-serif;

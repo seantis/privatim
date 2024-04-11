@@ -2,11 +2,13 @@ from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
 
-from privatim.views.activities import activities_view
+from privatim.views.activities import activities_overview
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
+from privatim.views.people import people_view
+from privatim.views.working_groups import group_view
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -41,9 +43,25 @@ def includeme(config: 'Configurator') -> None:
 
     config.add_route('activities', '/activities')
     config.add_view(
-        activities_view,
+        activities_overview,
         route_name='activities',
-        renderer='templates/activities.pt',
+        renderer='templates/consultations.pt',
         require_csrf=False,
-        permission=NO_PERMISSION_REQUIRED,
     )
+
+    config.add_route('people', '/people')
+    config.add_view(
+        people_view,
+        route_name='people',
+        renderer='templates/people.pt',
+        require_csrf=False,
+    )
+
+    config.add_route('groups', '/groups')
+    config.add_view(
+        group_view,
+        route_name='groups',
+        renderer='templates/groups.pt',
+        require_csrf=False,
+    )
+

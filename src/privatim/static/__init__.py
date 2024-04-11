@@ -5,14 +5,39 @@ js_library = Library('privatim:js', 'js')
 css_library = Library('privatim:css', 'css')
 
 
-def js(*args, **kwargs):
-    return Resource(js_library, *args, **kwargs)
+def js(
+        relpath:    str,
+        depends:    'Iterable[Dependable] | None' = None,
+        supersedes: list[Resource] | None = None,
+        bottom:     bool = False,
+) -> Resource:
+
+    return Resource(
+        js_library,
+        relpath,
+        depends=depends,
+        supersedes=supersedes,
+        bottom=bottom,
+    )
 
 
-def css(*args, **kwargs):
-    return Resource(css_library, *args, **kwargs)
+def css(
+        relpath:    str,
+        depends:    'Iterable[Dependable] | None' = None,
+        supersedes: list[Resource] | None = None,
+        bottom:     bool = False,
+) -> Resource:
+
+    return Resource(
+        css_library,
+        relpath,
+        depends=depends,
+        supersedes=supersedes,
+        bottom=bottom,
+    )
 
 
+fontawesome_css = css('fontawesome.min.css')
 bootstrap = css('bootstrap.min.css')
 bootstrap_css = css('custom.css', depends=[bootstrap])
 

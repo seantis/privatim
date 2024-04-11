@@ -14,6 +14,14 @@ SEARCH_PATH="src/privatim"
 LOCALES_PATH="src/privatim/locale"
 # end configuration
 
+
+# Check if lingua is installed
+if ! command -v pot-create &> /dev/null
+then
+    echo "lingua is not installed. Please install it (pip install lingua) before continuing."
+    exit 1
+fi
+
 # create locales folder if not exists
 if [ ! -d "$LOCALES_PATH" ]; then
     echo "Locales directory not exists, create"
