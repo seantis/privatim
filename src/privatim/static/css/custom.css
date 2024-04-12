@@ -25,6 +25,19 @@
     text-decoration: underline!important;
 }
 
+.bd-mode-toggle .dropdown-menu .active .bi {
+    display: block !important;
+}
+
+/*
+ * Sticks footer to the bottom (without hiding any content).
+ * https://css-tricks.com/a-clever-sticky-footer-technique/
+ */
+body > footer {
+    position: sticky;
+    top: 100vh;
+}
+
 body {
     font-family: "Open Sans", sans-serif;
 }

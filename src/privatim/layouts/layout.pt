@@ -1,97 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-         i18n:domain="privatim"
-      lang="en"
-      class="h-100">
+      i18n:domain="privatim"
+      >
 
 <head>
-
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>privatim</title>
-
-
 </head>
 
 <body class="d-flex flex-column h-100">
 
-<header>
-        ${panel('navbar')}
-</header>
+    <header>
+            ${panel('navbar')}
+    </header>
 
 
-<!-- Begin page content -->
-<main class="flex-shrink-0">
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
 
-${panel('flash')}
+    ${panel('flash')}
 
-    <div class="container">
-        <tal:block metal:define-slot="content" />
-    </div>
-
-</main>
-
-
-<!-- footer -->
-<footer class="footer py-5 mt-auto bg-light">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <!-- Brand -->
-                <h2 class="brand mb-1">
-                    privatim
-                </h2>
-                <!-- Text -->
-                <p class="">
-                    Here comes the <br> slogan
-                </p>
-
-            </div>
-            <div class="col-6 col-md">
-                <!-- Heading -->
-                <h6 class="text-uppercase mb-3 mb-md-5">
-                    About us
-                </h6>
-                <!-- List -->
-                <ul class="list-unstyled">
-                    <li class="mb-3">
-                        <a href="https://seantis.ch">seantis gmbh</a>
-                    </li>
-                    <li class="mb-3">
-                        <a href="#!">© 2023 - ${layout.year}</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <!-- Heading -->
-                <h6 class="text-uppercase mb-3 mb-md-5">
-                    Connect
-                </h6>
-                <!-- List -->
-                <ul class="list-unstyled">
-                    <li class="mb-3">
-                        <a href="mailto:info@seantis.ch?subject=privatim">Contact us</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <!-- Heading -->
-                <h6 class="text-uppercase mb-3 mb-md-5">
-                    Data Protection
-                </h6>
-                <!-- List -->
-                <ul class="list-unstyled">
-                    <li class="mb-3">
-                        <a class="text-white-60" href="https://seantis.ch/news/informationssicherheit-iso-27001/">ISO
-                            27001</a>
-                    </li>
-                </ul>
-            </div>
-
+        <div class="container">
+            <tal:block metal:define-slot="content" />
         </div>
-    </div>
-</footer>
+
+    </main>
+
+
+    <!-- footer -->
+       <tal:block metal:define-slot="footer">
+        <footer class="footer py-5 mt-auto bg-light">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- Brand -->
+                        <h2 class="brand mb-1">
+                            privatim
+                        </h2>
+                        <!-- Text -->
+                        <p class="">
+                            Here comes the <br> slogan
+                        </p>
+
+                    </div>
+                    <div class="col-6 col-md">
+                        <!-- Heading -->
+                        <h6 class="text-uppercase mb-3 mb-md-5">
+                            About us
+                        </h6>
+                        <!-- List -->
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <a href="https://seantis.ch">seantis gmbh</a>
+                            </li>
+                            <li class="mb-3">
+                                <a href="#!">© 2023 - ${layout.year}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-md">
+                        <!-- Heading -->
+                        <h6 class="text-uppercase mb-3 mb-md-5">
+                            Connect
+                        </h6>
+                        <!-- List -->
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <a href="mailto:info@seantis.ch?subject=privatim">Contact us</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-6 col-md">
+                        <!-- Heading -->
+                        <h6 class="text-uppercase mb-3 mb-md-5">
+                            Data Protection
+                        </h6>
+                        <!-- List -->
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <a class="text-white-60" href="https://seantis.ch/news/informationssicherheit-iso-27001/">ISO
+                                    27001</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+     </tal:block>
 
 </body>
 </html>

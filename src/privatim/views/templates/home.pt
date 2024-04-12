@@ -1,4 +1,8 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
 
     <div metal:fill-slot="content">
 

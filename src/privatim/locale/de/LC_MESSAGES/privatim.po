@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-11 15:51+0200\n"
+"POT-Creation-Date: 2024-04-12 02:09+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -30,17 +30,37 @@ msgstr "<b>fett</b>"
 msgid "Close"
 msgstr "Schliessen"
 
-#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
+#: src/privatim/layouts/navbar.pt
+msgid "Overview"
+msgstr "Übersicht"
+
+#: src/privatim/layouts/navbar.pt
+msgid "People"
+msgstr "Personen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Working Groups"
+msgstr "Arbeitsgruppen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Profile"
+msgstr "Profil"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Sign out"
+msgstr "Logout"
+
+#: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: src/privatim/views/templates/activities.pt
-msgid "Add Activity"
-msgstr "Aktivität erfassen"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Activity"
-msgstr "Aktivität"
+#: src/privatim/views/templates/consultations.pt
+msgid "Add Consultation"
+msgstr "Vernehmlassung erfassen"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"

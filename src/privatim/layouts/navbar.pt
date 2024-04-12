@@ -1,10 +1,4 @@
-<style>
-    .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
-    }
-</style>
-
-<header class="p-3 mb-3 border-bottom">
+<header i18n:domain="privatim" class="p-3 mb-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between">
             <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
@@ -17,7 +11,7 @@
                 <li>
                     <a href="${request.route_url('home')}"
                        class="nav-link px-3 link-body-emphasis custom-colored ${'active_nav' if request.matched_route.name == 'activities' else ''}"
-                    >Overview</a>
+                   i18n:translate>Overview</a>
                 </li>
                 <li>
                     <a href="${request.route_url('people')}"

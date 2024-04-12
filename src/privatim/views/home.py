@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 def home_view(request: 'IRequest') -> HTTPFound:
     if request.authenticated_userid:
-        url = request.route_url('activities')
+        url = request.route_url('groups')
     else:
         url = request.route_url('login')
 

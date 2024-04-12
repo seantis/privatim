@@ -1,0 +1,49 @@
+#. translation strings used for testing
+#: src/privatim/testing.py
+msgid "Just a test"
+msgstr ""
+
+#: src/privatim/testing.py
+msgid "<b>bold</b>"
+msgstr ""
+
+#. Default: Close
+#: src/privatim/layouts/flash.pt
+msgid "Close"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Overview"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "People"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Working Groups"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Settings"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Profile"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Sign out"
+msgstr ""
+
+#: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
+msgid "Activities"
+msgstr ""
+
+#: src/privatim/views/templates/consultations.pt
+msgid "Add Consultation"
+msgstr ""
+
+#: src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr ""

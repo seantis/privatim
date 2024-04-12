@@ -21,17 +21,19 @@ class LocaleNegotiator:
             return default
 
         available = self.available_languages(request)
-        return available[0] if available else 'en'
+        return available[0] if available else 'de'
 
     def __call__(self, request: 'IRequest') -> str:
         available = self.available_languages(request)
         default = self.default_language(request)
-
         locale: str | None
         # 1. Use browser's Accept-Language header
         locale = request.accept_language.lookup(available, default=default)
         if locale and locale in available:
-            return locale
+            # return locale
+            return 'de'
 
         # 2. Fallback to default language
-        return default
+        # return default
+        return 'de'
+

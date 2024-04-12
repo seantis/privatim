@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-11 15:51+0200\n"
+"POT-Creation-Date: 2024-04-12 02:09+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -30,18 +30,38 @@ msgstr "<b>gras</b>"
 msgid "Close"
 msgstr "fermer"
 
-#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
+#: src/privatim/layouts/navbar.pt
+msgid "Overview"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "People"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Working Groups"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Settings"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Profile"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
+msgid "Sign out"
+msgstr ""
+
+#: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
 msgid "Activities"
 msgstr "activités"
 
-#: src/privatim/views/templates/activities.pt
-msgid "Add Activity"
-msgstr "Ajouter une activité"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Activity"
-msgstr ""
+#: src/privatim/views/templates/consultations.pt
+msgid "Add Consultation"
+msgstr "Ajouter une consultation"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
-msgstr ""
+msgstr "Se connecter"
