@@ -1,8 +1,14 @@
-from sqlalchemy import Column, String, Text
-from sqlalchemy.orm import Mapped
+from sqlalchemy import Column, String, Text, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK
+from privatim.orm.meta import UUIDStrPK, UUIDStr
+
+
+class Status(Base):
+    __tablename__ = "status"
+    id: Mapped[UUIDStrPK]
+    name = Column(String, nullable=False)
 
 
 class Consultation(Base):
@@ -21,7 +27,13 @@ class Consultation(Base):
 
     recommendation = Column(String)
 
-    # todo: facter out into table
-    status = Column(String)
+    status_id: Mapped[UUIDStr] = mapped_column(
+        ForeignKey('status.id'),
+    )
+    status: Mapped[Status] = relationship(
+        "Status",
+        backref="consultations",
+    )
 
+    # todo
     # documents

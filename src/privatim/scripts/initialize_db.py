@@ -33,7 +33,6 @@ def main(argv: list[str] = sys.argv) -> None:
         with env['request'].tm:
             db = env['request'].dbsession
 
-            # Adding users
             users = [
                 User(email='admin@example.org', password='test',
                      first_name='Max', last_name='Müller'),
@@ -46,9 +45,10 @@ def main(argv: list[str] = sys.argv) -> None:
                 user.set_password('test')
                 db.add(user)
 
-            # group = WorkingGroup(
-            #     name='Arbeitsgruppe'
-            # )
-            # db.add(group)
-            # db.flush()
-            # db.commit()
+            group = WorkingGroup(
+                name='Arbeitsgruppe 1'
+            )
+            for user in users:
+                user.group = group
+            db.add(group)
+            db.flush()

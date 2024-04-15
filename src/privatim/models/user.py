@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import bcrypt
 from sedate import utcnow
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.orm import Mapped, backref
+from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
@@ -36,9 +36,7 @@ class User(Base):
         ForeignKey(Group.id),
         nullable=True
     )
-    group: 'Mapped[list[Group | None]]' = relationship(
-        Group, backref=backref('users', lazy='dynamic')
-    )
+    group = relationship(Group, back_populates="users")
 
     def set_password(self, password: str) -> None:
         password = password or ''

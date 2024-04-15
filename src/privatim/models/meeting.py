@@ -32,7 +32,8 @@ meetings_groups_association = Table(
 
 
 class AgendaItem(Base):
-    """Represents an agenda item within a meeting."""
+    """ Traktanden """
+
     __tablename__ = "agenda_item"
 
     id: Mapped[UUIDStrPK]

@@ -7,9 +7,10 @@ from sqlalchemy.orm import configure_mappers
 # https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/sqlalchemy.html#importing-all-sqlalchemy-models
 
 from privatim.models.group import Group
+from privatim.models.group import WorkingGroup
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
-from privatim.models.meeting import Meeting
+from privatim.models.meeting import Meeting, AgendaItem
 from privatim.models.statement import Statement
 
 from privatim.orm import get_engine
@@ -55,7 +56,9 @@ def includeme(config: 'Configurator') -> None:
 
 __all__ = (
     'includeme',
+    'AgendaItem',
     'Group',
+    'WorkingGroup',
     'User',
     'Statement',
     'Meeting',
