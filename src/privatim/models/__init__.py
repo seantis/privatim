@@ -5,10 +5,13 @@ from sqlalchemy.orm import configure_mappers
 # XXX import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
 # https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/sqlalchemy.html#importing-all-sqlalchemy-models
+
+from privatim.models.group import Group
+from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.meeting import Meeting
 from privatim.models.statement import Statement
-from privatim.models.user import Group, User, Person
+
 from privatim.orm import get_engine
 from privatim.orm import get_session_factory
 from privatim.orm import get_tm_session

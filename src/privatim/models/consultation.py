@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped
 
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
@@ -25,4 +25,3 @@ class Consultation(Base):
     status = Column(String)
 
     # documents
-

@@ -29,16 +29,18 @@
     display: block !important;
 }
 
-/*
- * Sticks footer to the bottom (without hiding any content).
- * https://css-tricks.com/a-clever-sticky-footer-technique/
- */
-body > footer {
-    position: sticky;
-    top: 100vh;
+footer {
+    position: fixed;
+    height: 200px;
+    bottom: 0;
+    width: 100%;
 }
 
 body {
     font-family: "Open Sans", sans-serif;
 }
 
+table.table-bordered{
+    border:1px solid blue;
+    margin-top:20px;
+  }

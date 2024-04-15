@@ -1,6 +1,12 @@
 from fanstatic import Library
 from fanstatic import Resource
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+    from fanstatic.core import Dependable
+
+
 js_library = Library('privatim:js', 'js')
 css_library = Library('privatim:css', 'css')
 

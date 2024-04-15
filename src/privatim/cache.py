@@ -1,76 +1,66 @@
-from enum import Enum
 from functools import wraps
+from typing import Any
+from typing import TypeVar
+from typing import cast
+
 from pyramid.threadlocal import get_current_request
 
-
-from typing import Any, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable
-    from typing_extensions import ParamSpec
+    from collections.abc import Hashable
 
-    _P = ParamSpec('_P')
-
-_T = TypeVar('_T')
-
-
-class _Marker(Enum):
-    EMPTY = 0
+F = TypeVar('F', bound='Callable[..., Any]')
+_marker = object()
 
 
-_EMPTY = _Marker.EMPTY
-
-
-def instance_cache() -> 'Callable[[Callable[_P, _T]], Callable[_P, _T]]':
+def instance_cache() -> 'Callable[[F], F]':
     """
     Decorator for caching method results on the instance.
     """
 
-    def decorating_function(
-        user_function: 'Callable[_P, _T]'
-    ) -> 'Callable[_P, _T]':
+    def decorating_function(user_function: F) -> F:
 
         @wraps(user_function)
-        def wrapper(*args: '_P.args', **kwds: '_P.kwargs') -> _T:
+        def wrapper(*args: 'Hashable', **kwds: 'Hashable') -> Any:
             instance = args[0]
             cache = getattr(instance, '_cache', None)
             if cache is None:
                 instance._cache = cache = {}  # type:ignore[attr-defined]
 
             key = (user_function.__name__, args, frozenset(kwds.items()))
-            result = cache.get(key, _EMPTY)
-            if result is _EMPTY:
+            result = cache.get(key, _marker)
+            if result is _marker:
                 result = user_function(*args, **kwds)
                 cache[key] = result
             return result
 
-        def cache(instance: object) -> dict[Any, Any]:
+        def cache(instance: Any) -> dict[Any, Any]:
             cache = getattr(instance, '_cache', None)
             if cache is None:
                 cache = {}
             return cache
 
         wrapper.cache = cache  # type:ignore[attr-defined]
-        return wrapper
+        return cast(F, wrapper)
 
     return decorating_function
 
 
-def clear_instance_cache(instance: object) -> None:
+def clear_instance_cache(instance: Any) -> None:
     if getattr(instance, '_cache', None):
-        instance._cache = {}  # type:ignore[attr-defined]
+        instance._cache = {}
 
 
-def request_cache() -> 'Callable[[Callable[_P, _T]], Callable[_P, _T]]':
+def request_cache() -> 'Callable[[F], F]':
     """
     Caches objects on the request.
     """
 
-    def decorating_function(
-        user_function: 'Callable[_P, _T]'
-    ) -> 'Callable[_P, _T]':
+    def decorating_function(user_function: F) -> F:
 
         @wraps(user_function)
-        def wrapper(*args: '_P.args', **kwds: '_P.kwargs') -> _T:
+        def wrapper(*args: 'Hashable', **kwds: 'Hashable') -> Any:
             request = get_current_request()
             if request is None:
                 return user_function(*args, **kwds)
@@ -78,8 +68,8 @@ def request_cache() -> 'Callable[[Callable[_P, _T]], Callable[_P, _T]]':
             if cache is None:
                 request.cache = cache = {}
             key = (user_function.__name__, args, frozenset(kwds.items()))
-            result = cache.get(key, _EMPTY)
-            if result is _EMPTY:
+            result = cache.get(key, _marker)
+            if result is _marker:
                 result = user_function(*args, **kwds)
                 cache[key] = result
             return result
@@ -90,6 +80,6 @@ def request_cache() -> 'Callable[[Callable[_P, _T]], Callable[_P, _T]]':
                 request.cache = {}
 
         wrapper.cache_clear = cache_clear  # type:ignore[attr-defined]
-        return wrapper
+        return cast(F, wrapper)
 
     return decorating_function

@@ -9,7 +9,7 @@
 
             <ul class="d-flex nav col-12 col-lg-auto mb-2">
                 <li>
-                    <a href="${request.route_url('home')}"
+                    <a href="${request.route_url('activities')}"
                        class="nav-link px-3 link-body-emphasis custom-colored ${'active_nav' if request.matched_route.name == 'activities' else ''}"
                    i18n:translate>Overview</a>
                 </li>

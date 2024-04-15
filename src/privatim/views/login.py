@@ -14,7 +14,7 @@ from privatim.models import User
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim import RenderDataOrRedirect
+    from privatim.types import RenderDataOrRedirect
 
 
 class LoginForm(Form):
@@ -45,7 +45,9 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
         session = request.dbsession
         query = session.query(User)
-        query = session.query(User).filter(func.lower(User.email) == login)  # Improved case-insensitive filtering
+        query = session.query(User).filter(
+            func.lower(User.email) == login
+        )
         user = query.first()
         if user and user.check_password(password):
             next_url = request.route_url('home')

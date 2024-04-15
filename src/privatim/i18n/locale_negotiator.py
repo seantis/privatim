@@ -36,4 +36,3 @@ class LocaleNegotiator:
         # 2. Fallback to default language
         # return default
         return 'de'
-

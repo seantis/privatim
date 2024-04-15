@@ -5,8 +5,8 @@ from collections.abc import Mapping
 from collections.abc import MutableMapping
 from collections.abc import Sequence
 from contextlib import contextmanager
-from privatim import MessageQueue
-from privatim import User
+from privatim.flash import MessageQueue
+from privatim.models import User
 from sqlalchemy.orm import Session as DBSession
 from types import ModuleType
 from types import TracebackType

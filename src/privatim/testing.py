@@ -5,8 +5,8 @@ from webob.acceptparse import accept_language_property
 from webob.multidict import MultiDict
 from zope.interface.verify import verifyClass
 
-from privatim import MessageQueue
-from privatim import authenticated_user
+from privatim.flash import MessageQueue
+from privatim.security import authenticated_user
 from privatim.i18n import _
 
 if TYPE_CHECKING:

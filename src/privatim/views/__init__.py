@@ -64,4 +64,3 @@ def includeme(config: 'Configurator') -> None:
         renderer='templates/groups.pt',
         require_csrf=False,
     )
-
