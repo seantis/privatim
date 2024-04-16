@@ -31,7 +31,7 @@ class Consultation(Base):
     recommendation = Column(String)
 
     status_id: Mapped[UUIDStr] = mapped_column(
-        ForeignKey('status.id'),
+        ForeignKey('status.id'), index=True
     )
     status = relationship(
         "Status", back_populates="consultations"

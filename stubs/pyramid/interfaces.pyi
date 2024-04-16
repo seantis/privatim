@@ -126,12 +126,12 @@ class IRoutesMapper(Interface):
     def has_routes() -> bool: ...
     def get_route(name: str) -> IRoute | None: ...
     def connect(
-        name,
-        pattern: str,
-        factory: IRootFactory | None = ...,
-        predicates: Sequence[IPredicate] = ...,
-        pregenerator: IRoutePregenerator | None = ...,
-        static: bool = ...,
+            name: str,
+            pattern: str,
+            factory: IRootFactory | None = ...,
+            predicates: Sequence[IPredicate] = ...,
+            pregenerator: IRoutePregenerator | None = ...,
+            static: bool = ...,
     ) -> None: ...
     def generate(name: str, kw: dict[str, Any]) -> str: ...
     def __call__(request: IRequest) -> _RouteMapResult: ...
@@ -310,8 +310,12 @@ class IPredicateInfo(Interface):
 class IPredicateFactory(Interface):
     def __call__(value: Any, info: IPredicateInfo) -> IPredicate: ...
 
+class _RouteInfo(TypedDict):
+    match: dict[str, str]
+    route: IRoute
+
 class IRoutePredicate(IPredicate):
-    def __call__(info, request: IRequest) -> bool: ...
+    def __call__(info: _RouteInfo, request: IRequest) -> bool: ...
 
 class ISubscriberPredicate(IPredicate):
     def __call__(event: Any) -> bool: ...

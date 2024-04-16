@@ -4,8 +4,7 @@ from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, DateTimeWithoutTz
-
+from privatim.orm.meta import UUIDStrPK, DateTimeWithoutTz, UUIDStr
 
 meetings_groups_association = Table(
     'meetings_groups_association',
@@ -36,8 +35,7 @@ class AgendaItem(Base):
 
     description: Mapped[str] = mapped_column(Text)
 
-    meeting_id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True),
+    meeting_id: Mapped[UUIDStr] = mapped_column(
         ForeignKey('meetings.id'),
         index=True,
     )

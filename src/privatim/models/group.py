@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Text, ForeignKey
+from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -51,7 +51,9 @@ class WorkingGroup(Group):
         'polymorphic_identity': 'working_group',
     }
 
-    id = Column(UUID(as_uuid=True), ForeignKey('groups.id'), primary_key=True)
+    id: Mapped[UUIDStrPK] = mapped_column(
+        UUID(as_uuid=True), ForeignKey('groups.id'), primary_key=True
+    )
 
     meetings: 'Mapped[Meeting]' = relationship(
         Meeting,
@@ -59,10 +61,10 @@ class WorkingGroup(Group):
         back_populates='attendees',
     )
 
-    leader_id: 'Mapped[UUIDStr]' = Column(
-        UUID(as_uuid=True), ForeignKey('user.id'), nullable=True
+    leader_id: Mapped[UUIDStr] = mapped_column(
+         ForeignKey('user.id'), nullable=True, index=True
     )
-    leader = relationship(
+    leader: 'Mapped[User]' = relationship(
         'User',
         foreign_keys=[leader_id],
         back_populates='leading_group',

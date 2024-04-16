@@ -30,7 +30,7 @@ class UUIDStr(Uuid[str]):
     #       UUIDs to string values first.
 
     def bind_processor(self, dialect: 'Dialect') -> Processor | None:
-        proc = super().bind_processor(dialect)  # type:ignore
+        proc = super().bind_processor(dialect)
         if proc is None:
             return None
         return coerce_uuid_arg_to_str(proc)
@@ -42,7 +42,7 @@ class UUIDStr(Uuid[str]):
         self,
         dialect: 'Dialect'
     ) -> Processor | None:
-        proc = super().literal_processor(dialect)  # type:ignore
+        proc = super().literal_processor(dialect)
         if proc is None:
             return None
         return coerce_uuid_arg_to_str(proc)
