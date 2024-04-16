@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-12 02:09+0200\n"
+"POT-Creation-Date: 2024-04-16 15:40+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -55,12 +55,17 @@ msgid "Sign out"
 msgstr "Logout"
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/groups.pt
 msgid "Activities"
 msgstr "Aktivitäten"
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung erfassen"
+
+#: src/privatim/views/templates/groups.pt
+msgid "Add Working Group"
+msgstr "Arbeitsgruppe hinzufügen"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"

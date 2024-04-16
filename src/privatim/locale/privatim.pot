@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-12 02:09+0200\n"
+"POT-Creation-Date: 2024-04-16 15:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,11 +56,16 @@ msgstr ""
 
 #: ./src/privatim/layouts/navbar.py
 #: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/groups.pt
 msgid "Activities"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
+msgstr ""
+
+#: ./src/privatim/views/templates/groups.pt
+msgid "Add Working Group"
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt

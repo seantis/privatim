@@ -10,7 +10,7 @@ msgstr ""
 #. Default: Close
 #: src/privatim/layouts/flash.pt
 msgid "Close"
-msgstr ""
+msgstr "chiudere"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Overview"
@@ -37,6 +37,7 @@ msgid "Sign out"
 msgstr ""
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/groups.pt
 msgid "Activities"
 msgstr ""
 
@@ -44,6 +45,10 @@ msgstr ""
 msgid "Add Consultation"
 msgstr ""
 
+#: src/privatim/views/templates/groups.pt
+msgid "Add Working Group"
+msgstr "Aggiungi gruppo di lavoro"
+
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
-msgstr ""
+msgstr "Accedi"
