@@ -7,8 +7,11 @@ from privatim.orm.meta import UUIDStrPK, UUIDStr
 
 class Status(Base):
     __tablename__ = "status"
-    id: Mapped[UUIDStrPK]
-    name = Column(String, nullable=False)
+    id: 'Mapped[UUIDStrPK]'
+    name: Mapped[Text] = mapped_column(Text, nullable=False)
+    consultations = relationship(
+        "Consultation", back_populates="status"
+    )
 
 
 class Consultation(Base):
@@ -30,10 +33,8 @@ class Consultation(Base):
     status_id: Mapped[UUIDStr] = mapped_column(
         ForeignKey('status.id'),
     )
-    status: Mapped[Status] = relationship(
-        "Status",
-        backref="consultations",
+    status = relationship(
+        "Status", back_populates="consultations"
     )
 
-    # todo
-    # documents
+    # todo: documents

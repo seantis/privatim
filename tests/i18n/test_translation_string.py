@@ -9,12 +9,12 @@ def test_init():
     assert str(markup) == '<b>bold</b>'
     assert isinstance(markup.interpolate(), Markup)
     assert markup.interpolate() == Markup('<b>bold</b>')
-    assert Markup(markup) == Markup('<b>bold</b>')
+    assert Markup(markup) == Markup('<b>bold</b>')  # noqa: MS001
     assert markup.domain is None
     assert markup.mapping is None
     assert markup.context is None
     assert isinstance(markup.default, Markup)
-    assert markup.default == Markup(markup)
+    assert markup.default == Markup(markup)  # noqa: MS001
 
 
 def test_init_mapping_plain():

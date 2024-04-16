@@ -5,7 +5,8 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from privatim.models.meeting import meetings_groups_association, Meeting
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK
+from privatim.orm.meta import UUIDStrPK, UUIDStr
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -34,8 +35,8 @@ class Group(Base):
     name: 'Mapped[str | None]' = mapped_column(nullable=True)
 
     users: 'Mapped[User | None]' = relationship(
-        "User",
-        back_populates="group",
+        'User',
+        back_populates='group',
     )
 
 
@@ -44,7 +45,7 @@ class WorkingGroup(Group):
     generic group. It is used to represent a group of people working and
     having meetings together."""
 
-    __tablename__ = "working_groups"
+    __tablename__ = 'working_groups'
 
     __mapper_args__ = {
         'polymorphic_identity': 'working_group',
@@ -55,14 +56,15 @@ class WorkingGroup(Group):
     meetings: 'Mapped[Meeting]' = relationship(
         Meeting,
         secondary=meetings_groups_association,
-        back_populates="attendees",
+        back_populates='attendees',
     )
 
-    # todo: add leader of group
-    # leader_id = mapped_column(UUID, ForeignKey("user.id"), unique=True)
-    #
-    # leader = relationship(
-    #     "User",
-    #     back_populates="leading_group",
-    #     uselist=False,
-    # )
+    leader_id: 'Mapped[UUIDStr]' = Column(
+        UUID(as_uuid=True), ForeignKey('user.id'), nullable=True
+    )
+    leader = relationship(
+        'User',
+        foreign_keys=[leader_id],
+        back_populates='leading_group',
+        remote_side='User.id',
+    )

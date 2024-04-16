@@ -34,11 +34,11 @@ def main(argv: list[str] = sys.argv) -> None:
             db = env['request'].dbsession
 
             users = [
-                User(email='admin@example.org', password='test',
+                User(email='admin@example.org', password='test',  # nosec:B110
                      first_name='Max', last_name='Müller'),
-                User(email='user1@example.org', password='test',
+                User(email='user1@example.org', password='test',  # nosec:B110
                      first_name='Alexa', last_name='Troller'),
-                User(email='user2@example.org', password='test',
+                User(email='user2@example.org', password='test',  # nosec:B110
                      first_name='Kurt', last_name='Huber')
             ]
             for user in users:

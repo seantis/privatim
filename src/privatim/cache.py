@@ -42,7 +42,7 @@ def instance_cache() -> 'Callable[[F], F]':
             return cache
 
         wrapper.cache = cache  # type:ignore[attr-defined]
-        return cast(F, wrapper)
+        return cast('F', wrapper)
 
     return decorating_function
 
@@ -80,6 +80,6 @@ def request_cache() -> 'Callable[[F], F]':
                 request.cache = {}
 
         wrapper.cache_clear = cache_clear  # type:ignore[attr-defined]
-        return cast(F, wrapper)
+        return cast('F', wrapper)
 
     return decorating_function

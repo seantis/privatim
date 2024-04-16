@@ -22,12 +22,6 @@ meetings_groups_association = Table(
         ForeignKey('working_groups.id'),
         primary_key=True,
     ),
-    Column(
-        'groups_id',
-        UUID(as_uuid=True),
-        ForeignKey('groups.id'),
-        primary_key=True,
-    ),
 )
 
 
@@ -79,5 +73,4 @@ class Meeting(Base):
         AgendaItem,
         back_populates="meeting",
     )
-
     # todo: documents?

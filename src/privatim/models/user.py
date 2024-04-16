@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
-from privatim.models import Group
+from privatim.models import Group, WorkingGroup
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128, UUIDStr
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = 'user'
 
     id: Mapped[UUIDStrPK]
 
@@ -36,7 +36,20 @@ class User(Base):
         ForeignKey(Group.id),
         nullable=True
     )
-    group = relationship(Group, back_populates="users")
+    group = relationship(Group, back_populates='users')
+
+    # the group this user is a leader of
+    leading_group_id = Column(
+        UUID(as_uuid=True), ForeignKey('working_groups.id'), nullable=True
+    )
+    leading_group = relationship(
+        'WorkingGroup',
+        foreign_keys=[leading_group_id],
+        back_populates='leader',
+        remote_side=[WorkingGroup.leader_id],
+        uselist=False,
+        primaryjoin='User.id==foreign(WorkingGroup.leader_id)',
+    )
 
     def set_password(self, password: str) -> None:
         password = password or ''
@@ -49,7 +62,7 @@ class User(Base):
             return False
         try:
             return bcrypt.checkpw(
-                password.encode("utf8"), self.password.encode("utf8")
+                password.encode('utf8'), self.password.encode('utf8')
             )
         except (AttributeError, ValueError):
             return False
