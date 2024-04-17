@@ -11,36 +11,37 @@
                 <li>
                     <a href="${request.route_url('activities')}"
                        class="nav-link px-3 link-body-emphasis custom-colored ${'active_nav' if request.matched_route.name == 'activities' else ''}"
-                   i18n:translate>Overview</a>
+                             i18n:translate>Overview</a>
                 </li>
                 <li>
                     <a href="${request.route_url('people')}"
                        class="nav-link px-3 link-body-emphasis custom-colored  ${'active_nav' if request.matched_route.name == 'people' else ''}"
-                       i18n:translate>People</a>
+                             i18n:translate>People</a>
                 </li>
                 <li>
                     <a href="${request.route_url('groups')}"
                        class="nav-link px-3 link-body-emphasis custom-colored  ${'active_nav' if request.matched_route.name == 'groups' else ''}"
-                       i18n:translate>Working Groups</a>
+                             i18n:translate>Working Groups</a>
                 </li>
             </ul>
 
             <div class="d-flex">
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-                </form>
-                <div class="dropdown text-end">
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu text-small">
-                        <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
+                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                        </form>
+                        <div class="dropdown text-end">
+                            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32"
+                                     class="rounded-circle">
+                            </a>
+                            <ul class="dropdown-menu text-small">
+                                <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
                         <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#" i18n:translate>Sign out</a></li>
+                                </li>
+                                <li><a class="dropdown-item" href="#" i18n:translate>Sign out</a></li>
                     </ul>
                 </div>
             </div>
