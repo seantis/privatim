@@ -1,25 +1,28 @@
+from uuid import uuid4
 from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, DateTimeWithoutTz, UUIDStr
+from privatim.orm.meta import UUIDStrPK, DateTimeWithTz, UUIDStr
+from privatim.orm.uuid_type import UUIDStr as UUID
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from privatim.models.user import User
+    from datetime import datetime
+
 
 meetings_groups_association = Table(
-    'meetings_groups_association',
-    Base.metadata,
+    'meetings_groups_association', Base.metadata,
     Column(
         'meetings_id',
-        UUID(as_uuid=True),
-        ForeignKey('meetings.id'),
-        primary_key=True,
+        UUID, ForeignKey('meetings.id'),
     ),
     Column(
         'working_groups_id',
-        UUID(as_uuid=True),
+        UUID,
         ForeignKey('working_groups.id'),
-        primary_key=True,
     ),
 )
 
@@ -27,7 +30,7 @@ meetings_groups_association = Table(
 class AgendaItem(Base):
     """ Traktanden """
 
-    __tablename__ = "agenda_item"
+    __tablename__ = 'agenda_item'
 
     id: Mapped[UUIDStrPK]
 
@@ -36,39 +39,52 @@ class AgendaItem(Base):
     description: Mapped[str] = mapped_column(Text)
 
     meeting_id: Mapped[UUIDStr] = mapped_column(
+
         ForeignKey('meetings.id'),
         index=True,
     )
 
     meeting: Mapped[list['Meeting']] = relationship(
-        "Meeting",
-        back_populates="agenda_items",
+        'Meeting',
+        back_populates='agenda_items',
     )
 
 
 class Meeting(Base):
     """Sitzung"""
 
-    __tablename__ = "meetings"
+    __tablename__ = 'meetings'
 
     id: Mapped[UUIDStrPK]
 
-    title: Mapped[str] = mapped_column(Text, nullable=False)
+    name: Mapped[str] = mapped_column(nullable=False)
 
-    time: Mapped[DateTimeWithoutTz] = mapped_column('time', nullable=False)
+    time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
-    attendees = relationship(
-        "WorkingGroup",
+    attendees: Mapped[list['User']] = relationship(
+        'WorkingGroup',
         secondary=meetings_groups_association,
-        back_populates="meetings"
+        back_populates='meetings'
     )
 
     # allfällige Beschlüsse
-    decisions: Mapped[str] = mapped_column(Text)
+    decisions: Mapped[str | None] = mapped_column()
 
     # Trantanden (=Themen)
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
-        back_populates="meeting",
+        back_populates='meeting',
     )
+
     # todo: documents?
+
+    def __init__(
+        self,
+        name: str,
+        time: 'datetime',
+        attendees: list['User'],
+    ):
+        self.id = str(uuid4())
+        self.name = name
+        self.time = time
+        self.attendees = attendees

@@ -6,11 +6,11 @@ from privatim.orm.meta import UUIDStrPK, UUIDStr
 
 
 class Status(Base):
-    __tablename__ = "status"
-    id: 'Mapped[UUIDStrPK]'
+    __tablename__ = 'status'
+    id: Mapped[UUIDStrPK]
     name: Mapped[Text] = mapped_column(Text, nullable=False)
     consultations = relationship(
-        "Consultation", back_populates="status"
+        'Consultation', back_populates='status'
     )
 
 
@@ -18,7 +18,7 @@ class Consultation(Base):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
-    __tablename__ = "consultation"
+    __tablename__ = 'consultation'
 
     id: Mapped[UUIDStrPK]
 
@@ -34,7 +34,7 @@ class Consultation(Base):
         ForeignKey('status.id'), index=True
     )
     status = relationship(
-        "Status", back_populates="consultations"
+        'Status', back_populates='consultations'
     )
 
     # todo: documents

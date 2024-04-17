@@ -48,6 +48,7 @@ BigIntPK = Annotated[
 ]
 BigInt = Annotated[int, 'BigInt']
 DateTimeWithoutTz = Annotated[datetime, 'DateTimeWithoutTz']
+DateTimeWithTz = Annotated[datetime, 'DateTimeWithTz']
 UUIDStr = Annotated[str, 'UUIDStr']
 str_32 = Annotated[str, 32]
 str_64 = Annotated[str, 64]

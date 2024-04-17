@@ -1,11 +1,8 @@
 import warnings
-
 import pytest
 import sqlalchemy
 import transaction
 from pyramid import testing
-
-from privatim.models import User
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest
 
@@ -90,14 +87,3 @@ def pg_config(postgresql, monkeypatch):
         Base.metadata.drop_all(engine)
         testing.tearDown()
         transaction.abort()
-
-
-@pytest.fixture
-def user(config, organization):
-    session = config.dbsession
-    user = User(organization=organization, email='admin@example.com')
-    session.add(user)
-    session.flush()
-    session.refresh(user)
-    config.testing_securitypolicy(userid=user.id)
-    return user

@@ -8,10 +8,10 @@ from privatim.orm.meta import UUIDStrPK, UUIDStr
 class Statement(Base):
     """Stellungsnahme"""
 
-    __tablename__ = "statement"
+    __tablename__ = 'statement'
 
     id: Mapped[UUIDStrPK]
 
     text = Column(Text)
 
-    drafted_by: Mapped[UUIDStr] = mapped_column(ForeignKey("user.id"))
+    drafted_by: Mapped[UUIDStr] = mapped_column(ForeignKey('user.id'))

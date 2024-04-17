@@ -21,6 +21,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] = sys.argv) -> None:
+    """ Add some example placeholder content to the database."""
+
     args = parse_args(argv)
     setup_logging(args.config_uri)
 
@@ -49,6 +51,6 @@ def main(argv: list[str] = sys.argv) -> None:
                 name='Arbeitsgruppe 1'
             )
             for user in users:
-                user.group = group
+                user.groups.append(group)
             db.add(group)
             db.flush()

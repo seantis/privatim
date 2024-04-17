@@ -1,16 +1,24 @@
-from sqlalchemy import Text, ForeignKey
+from uuid import uuid4
+from sqlalchemy import Text, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from privatim.orm.uuid_type import UUIDStr
 
 from privatim.models.meeting import meetings_groups_association, Meeting
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, UUIDStr
+from privatim.orm.meta import UUIDStrPK
 
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.models import User
+
+# Many-to-many association table for users and groups
+user_group_association = Table(
+    'user_groups', Base.metadata,
+    Column('user_id', UUIDStr, ForeignKey('user.id')),
+    Column('group_id', UUIDStr, ForeignKey('groups.id'))
+)
 
 
 class Group(Base):
@@ -20,7 +28,7 @@ class Group(Base):
 
     # the type of the item, this can be used to create custom polymorphic
     # subclasses of this class.
-    type: 'Mapped[Text]' = mapped_column(
+    type: Mapped[Text] = mapped_column(
         Text, nullable=False, default=lambda: 'generic')
 
     __mapper_args__ = {
@@ -32,11 +40,17 @@ class Group(Base):
     id: Mapped[UUIDStrPK]
 
     # the name of this group
-    name: 'Mapped[str | None]' = mapped_column(nullable=True)
+    name: Mapped[str] = mapped_column()
 
-    users: 'Mapped[User | None]' = relationship(
+    # user_id: Mapped[UUIDStr | None] = mapped_column(
+    #     ForeignKey('user.id'), nullable=True
+    # )
+
+    users: Mapped[list['User']] = relationship(
         'User',
-        back_populates='group',
+        secondary=user_group_association,
+        back_populates='groups',
+        lazy='joined'
     )
 
 
@@ -52,21 +66,23 @@ class WorkingGroup(Group):
     }
 
     id: Mapped[UUIDStrPK] = mapped_column(
-        UUID(as_uuid=True), ForeignKey('groups.id'), primary_key=True
+         ForeignKey('groups.id'), primary_key=True
     )
 
-    meetings: 'Mapped[Meeting]' = relationship(
-        Meeting,
+    meetings: Mapped[list[Meeting]] = relationship(
+        'Meeting',
         secondary=meetings_groups_association,
         back_populates='attendees',
     )
 
-    leader_id: Mapped[UUIDStr] = mapped_column(
-         ForeignKey('user.id'), nullable=True, index=True
-    )
-    leader: 'Mapped[User]' = relationship(
-        'User',
-        foreign_keys=[leader_id],
+    leader: Mapped['User'] = relationship(
         back_populates='leading_group',
-        remote_side='User.id',
+        # remote_side='User.id',
     )
+
+    def __init__(
+        self,
+        name: str,
+    ):
+        self.id = str(uuid4())
+        self.name = name

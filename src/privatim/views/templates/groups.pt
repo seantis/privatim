@@ -4,7 +4,6 @@
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
 
-
     <div metal:fill-slot="content">
 
 
@@ -13,7 +12,7 @@
                     <h1 i18n:translate>Activities</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="" class="btn btn-primary" role="button" i18n:translate>Add Working Group</a>
+                    <a i18n:translate href="" class="btn btn-primary" role="button">Add Working Group</a>
                 </div>
             </div>
 
@@ -27,15 +26,15 @@
   </thead>
   <tbody>
     <tr>
-        <td>
+       <td>
         <p class="mb-1">Resolution: Fehlende Ressourcen bei den Datenschutzbehörden</p>
       </td>
       <td>
-        <div class="d-flex align-items-center">
-          <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt="Profile Icon" style="width: 45px; height: 45px" class="rounded-circle me-2"/>
-          <img src="https://mdbootstrap.com/img/new/avatars/6.jpg" alt="Profile Icon" style="width: 45px; height: 45px" class="rounded-circle me-2"/>
-          <img src="https://mdbootstrap.com/img/new/avatars/7.jpg" alt="Profile Icon" style="width: 45px; height: 45px" class="rounded-circle me-2"/>
+
+        <div class="d-flex align-items-center" <tal:repeat="user groups.users">
+            <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt="Profile Icon" style="width: 45px; height: 45px" class="rounded-circle me-2" title="${user.name}"/>
         </div>
+
       </td>
     </tr>
   </tbody>
