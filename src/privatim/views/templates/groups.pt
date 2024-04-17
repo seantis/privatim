@@ -25,17 +25,19 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>
-                        <p class="mb-1">Resolution: Fehlende Ressourcen bei den Datenschutzbehörden</p>
-                    </td>
-                    <td>
-
-                        <div class="d-flex align-items-center" tal:repeat="user groups.users">
-                            <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt="Profile Icon"
-                                 style="width: 45px; height: 45px" class="rounded-circle me-2" title="${user.name}"/>
-                        </div>
-
-                    </td>
+                    <tal:block tal:repeat="group groups">
+                        <td>
+                            <p class="mb-1">${group.name}</p>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" tal:repeat="user group.users"
+                                     alt="Profile Icon"
+                                     style="width: 45px; height: 45px" class="rounded-circle me-2"
+                                     title="${user.first_name}"/>
+                            </div>
+                        </td>
+                    </tal:block>
                 </tr>
                 </tbody>
             </table>
