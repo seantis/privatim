@@ -32,25 +32,28 @@ def main(argv: list[str] = sys.argv) -> None:
         engine = get_engine(settings)
         Base.metadata.create_all(engine)
 
-        with env['request'].tm:
-            db = env['request'].dbsession
+    with env['request'].tm:
+        db = env['request'].dbsession
 
-            users = [
-                User(email='admin@example.org', password='test',  # nosec:B110
-                     first_name='Max', last_name='Müller'),
-                User(email='user1@example.org', password='test',  # nosec:B110
-                     first_name='Alexa', last_name='Troller'),
-                User(email='user2@example.org', password='test',  # nosec:B110
-                     first_name='Kurt', last_name='Huber')
-            ]
-            for user in users:
-                user.set_password('test')
-                db.add(user)
+        add_placeholder_content(db)
 
-            group = WorkingGroup(
-                name='Arbeitsgruppe 1'
-            )
-            for user in users:
-                user.groups.append(group)
-            db.add(group)
-            db.flush()
+
+def add_placeholder_content(db):
+    users = [User(email='admin@example.org', password='test',  # nosec:B110
+                  first_name='Max', last_name='Müller'),
+        User(email='user1@example.org', password='test',  # nosec:B110
+             first_name='Alexa', last_name='Troller'),
+        User(email='user2@example.org', password='test',  # nosec:B110
+             first_name='Kurt', last_name='Huber')]
+    for user in users:
+        user.set_password('test')
+        db.add(user)
+    group1 = WorkingGroup(name='Arbeitsgruppe 1')
+    group2 = WorkingGroup(name='Arbeitsgruppe 2')
+    for user in users:
+        user.groups.append(group1)
+    for user in users[:2]:
+        user.groups.append(group2)
+    db.add(group1)
+    db.add(group2)
+    db.flush()
