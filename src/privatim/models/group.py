@@ -42,10 +42,6 @@ class Group(Base):
     # the name of this group
     name: Mapped[str] = mapped_column()
 
-    # user_id: Mapped[UUIDStr | None] = mapped_column(
-    #     ForeignKey('user.id'), nullable=True
-    # )
-
     users: Mapped[list['User']] = relationship(
         'User',
         secondary=user_group_association,
