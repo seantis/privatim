@@ -39,8 +39,3 @@ footer {
 body {
     font-family: "Open Sans", sans-serif;
 }
-
-table.table-bordered{
-    border:1px solid blue;
-    margin-top:20px;
-  }

@@ -3,6 +3,9 @@ import pytest
 import sqlalchemy
 import transaction
 from pyramid import testing
+from sedate import utcnow
+
+from privatim.models import User, WorkingGroup
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest
 
@@ -87,3 +90,40 @@ def pg_config(postgresql, monkeypatch):
         Base.metadata.drop_all(engine)
         testing.tearDown()
         transaction.abort()
+
+
+@pytest.fixture
+def session(config):
+    # convenience fixture
+    return config.dbsession
+
+
+@pytest.fixture
+def user(session):
+    user = User(
+        email='admin@example.org',
+        first_name='John',
+        last_name='Doe',
+        password='test',
+        created=utcnow(),
+    )
+    session.add(user)
+    session.flush()
+    session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def user_with_working_group(session):
+    user = User(
+        email='admin@example.org',
+        first_name='John',
+        last_name='Doe',
+        password='test',
+        created=utcnow(),
+        groups=[WorkingGroup(name='Group')],
+    )
+    session.add(user)
+    session.flush()
+    session.refresh(user)
+    return user

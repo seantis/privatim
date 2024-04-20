@@ -2,8 +2,8 @@ from uuid import uuid4
 from sqlalchemy import Text, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
-from privatim.orm.uuid_type import UUIDStr
 
+from privatim.orm.uuid_type import UUIDStr
 from privatim.models.meeting import meetings_groups_association, Meeting
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
@@ -52,8 +52,7 @@ class Group(Base):
 
 class WorkingGroup(Group):
     """The working group is a more specific group compared to the
-    generic group. It is used to represent a group of people working and
-    having meetings together."""
+    generic group. It additionally has a leader and meetings."""
 
     __tablename__ = 'working_groups'
 
@@ -70,10 +69,12 @@ class WorkingGroup(Group):
         secondary=meetings_groups_association,
         back_populates='attendees',
     )
-
+    leader_id: Mapped[UUIDStr | None] = mapped_column(
+        ForeignKey('user.id'), nullable=True
+    )
     leader: Mapped['User'] = relationship(
-        back_populates='leading_group',
-        # remote_side='User.id',
+        'User',
+        back_populates='leading_groups',
     )
 
     def __init__(

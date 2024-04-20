@@ -1,7 +1,6 @@
 from datetime import datetime
 import bcrypt
 from sedate import utcnow
-from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -9,7 +8,7 @@ from sqlalchemy.orm import relationship
 from privatim.models import Group, WorkingGroup
 from privatim.models.group import user_group_association
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, str_256, str_128, UUIDStr
+from privatim.orm.meta import UUIDStrPK, str_256, str_128
 
 from typing import TypeAlias, Literal, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -27,22 +26,20 @@ class User(Base):
     password: Mapped[str_128 | None]
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
+
     created: Mapped[datetime] = mapped_column(default=utcnow)
     modified: Mapped[datetime | None] = mapped_column(onupdate=utcnow)
 
+    # the groups this user is part of
     groups: Mapped[list[Group]] = relationship(
         'Group',
         secondary=user_group_association,
         back_populates='users',
     )
 
-    # the group this user is a leader of
-    leading_group_id: Mapped[UUIDStr | None] = mapped_column(
-         ForeignKey('working_groups.id'), nullable=True
-    )
-
-    leading_group: Mapped[WorkingGroup | None] = relationship(
-        foreign_keys=[leading_group_id],
+    # the groups this user is a leader of
+    leading_groups: Mapped[list[WorkingGroup]] = relationship(
+        'WorkingGroup',
         back_populates='leader',
     )
 

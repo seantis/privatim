@@ -8,7 +8,7 @@ from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.people import people_view
-from privatim.views.working_groups import group_view
+from privatim.views.working_groups import groups_view, group_view
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -46,7 +46,6 @@ def includeme(config: 'Configurator') -> None:
         activities_overview,
         route_name='activities',
         renderer='templates/consultations.pt',
-        require_csrf=False,
     )
 
     config.add_route('people', '/people')
@@ -54,13 +53,18 @@ def includeme(config: 'Configurator') -> None:
         people_view,
         route_name='people',
         renderer='templates/people.pt',
-        require_csrf=False,
     )
 
     config.add_route('groups', '/groups')
     config.add_view(
-        group_view,
+        groups_view,
         route_name='groups',
         renderer='templates/groups.pt',
-        require_csrf=False,
+    )
+
+    config.add_route('group', '/group')
+    config.add_view(
+        group_view,
+        route_name='group',
+        renderer='templates/form.pt',
     )

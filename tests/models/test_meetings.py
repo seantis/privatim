@@ -2,8 +2,7 @@ from datetime import datetime, timezone
 from privatim.models import WorkingGroup, Meeting
 
 
-def test_working_group_meetings_relationship(config):
-    session = config.dbsession
+def test_working_group_meetings_relationship(session):
     group = WorkingGroup(name="Working Team")
     session.add(group)
     session.flush()

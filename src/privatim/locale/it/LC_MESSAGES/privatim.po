@@ -16,11 +16,11 @@ msgstr "chiudere"
 msgid "Overview"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
 msgid "People"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
 msgid "Working Groups"
 msgstr ""
 
@@ -37,17 +37,20 @@ msgid "Sign out"
 msgstr ""
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/groups.pt
 msgid "Activities"
 msgstr ""
+
+#: src/privatim/views/working_groups.py src/privatim/views/templates/groups.pt
+msgid "Add Working Group"
+msgstr "Aggiungi gruppo di lavoro"
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr ""
 
 #: src/privatim/views/templates/groups.pt
-msgid "Add Working Group"
-msgstr "Aggiungi gruppo di lavoro"
+msgid "Group"
+msgstr ""
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"

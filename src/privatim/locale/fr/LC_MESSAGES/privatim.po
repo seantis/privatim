@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-16 15:40+0200\n"
+"POT-Creation-Date: 2024-04-19 22:18+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -34,11 +34,11 @@ msgstr "fermer"
 msgid "Overview"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
 msgid "People"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
 msgid "Working Groups"
 msgstr ""
 
@@ -55,17 +55,20 @@ msgid "Sign out"
 msgstr "Déconnecter"
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/groups.pt
 msgid "Activities"
 msgstr "activités"
+
+#: src/privatim/views/working_groups.py src/privatim/views/templates/groups.pt
+msgid "Add Working Group"
+msgstr "Ajouter un groupe de travail"
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
 
 #: src/privatim/views/templates/groups.pt
-msgid "Add Working Group"
-msgstr "Ajouter un groupe de travail"
+msgid "Group"
+msgstr ""
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"

@@ -8,24 +8,24 @@
 
         <div class="row">
             <div class="col-md-6">
-                <h1 i18n:translate>Activities</h1>
+                <h1 i18n:translate>Working Groups</h1>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a i18n:translate href="" class="btn btn-primary" role="button">Add Working Group</a>
+                    <a i18n:translate href="${request.route_url('group')}" class="btn btn-primary" role="button">Add Working Group</a>
             </div>
         </div>
 
         <div class="table-responsive">
             <table class="table align-middle mb-0 ">
                 <thead class="bg-light">
-                <tr>
-                    <th class="col-7">Topic</th>
-                    <th class="col-2">People</th>
-                </tr>
+                    <tr>
+                        <th class="col-7" i18n:translate>Group</th>
+                        <th class="col-2" i18n:translate>People</th>
+                    </tr>
                 </thead>
+
                 <tbody>
-                <tr>
-                    <tal:block tal:repeat="group groups">
+                    <tr tal:repeat="group groups">
                         <td>
                             <p class="mb-1">${group.name}</p>
                         </td>
@@ -37,8 +37,7 @@
                                      title="${user.first_name}"/>
                             </div>
                         </td>
-                    </tal:block>
-                </tr>
+                    </tr>
                 </tbody>
             </table>
         </div>

@@ -57,7 +57,7 @@ def test_user_leading_group_relationship(config):
     group = session.query(Group).filter_by(name='Leadership Group').one()
     user = session.query(User).filter_by(email='admin@example.org').one()
 
-    assert user.leading_group.name == 'Leadership Group'
+    assert user.leading_groups[0].name == 'Leadership Group'
     assert group.leader.email == 'admin@example.org'
 
 

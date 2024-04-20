@@ -1,4 +1,4 @@
-from pyramid.i18n import make_localizer
+from pyramid.i18n import make_localizer  # type: ignore
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
