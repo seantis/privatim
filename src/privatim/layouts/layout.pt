@@ -9,6 +9,10 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" href="${layout.static_url('privatim:static/tom-select/tom-select.min.css')}">
+    <script src="${layout.static_url('privatim:static/tom-select/tom-select.complete.min.js')}"></script>
+
     <title>privatim</title>
 </head>
 

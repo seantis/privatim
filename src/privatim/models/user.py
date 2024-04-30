@@ -1,4 +1,6 @@
 from datetime import datetime
+from functools import cached_property
+
 import bcrypt
 from sedate import utcnow
 from sqlalchemy.orm import Mapped
@@ -59,7 +61,7 @@ class User(Base):
         except (AttributeError, ValueError):
             return False
 
-    @property
+    @cached_property
     def fullname(self) -> str:
         parts = []
         if self.first_name:

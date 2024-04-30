@@ -50,3 +50,13 @@ make run
 ```
 
 - Login at http://localhost:9090 with info@seantis.ch / test
+
+## Miscellaneous
+### Javascript dependencies
+The project uses [Tom Select](https://github.com/orchidjs/tom-select) for some forms.
+These files are included in the project. They have been downloaded from these CDN links: 
+
+```
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+```

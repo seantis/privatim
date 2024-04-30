@@ -39,3 +39,9 @@ footer {
 body {
     font-family: "Open Sans", sans-serif;
 }
+
+
+/* Fix double border in form*/
+.ts-control {
+    border: none;
+}
