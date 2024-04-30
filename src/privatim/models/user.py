@@ -58,3 +58,14 @@ class User(Base):
             )
         except (AttributeError, ValueError):
             return False
+
+    @property
+    def fullname(self) -> str:
+        parts = []
+        if self.first_name:
+            parts.append(self.first_name)
+        if self.last_name:
+            parts.append(self.last_name)
+        if not parts:
+            return self.email
+        return ' '.join(parts)

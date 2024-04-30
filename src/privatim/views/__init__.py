@@ -2,13 +2,15 @@ from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
 
+from privatim.route_factories import working_group_factory
 from privatim.views.activities import activities_overview
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.people import people_view
-from privatim.views.working_groups import groups_view, group_view
+from privatim.views.working_groups import (groups_view,
+                                           add_or_edit_group_view)
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -55,16 +57,29 @@ def includeme(config: 'Configurator') -> None:
         renderer='templates/people.pt',
     )
 
+    # working groups overview
     config.add_route('groups', '/groups')
     config.add_view(
         groups_view,
         route_name='groups',
-        renderer='templates/groups.pt',
-    )
+        renderer='templates/working_groups.pt',)
 
-    config.add_route('group', '/group')
+    # single working group
+    config.add_route(
+        'add_working_group',
+        '/groups/add',
+        factory=working_group_factory
+    )
     config.add_view(
-        group_view,
-        route_name='group',
+        add_or_edit_group_view,
+        route_name='add_working_group',
         renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        add_or_edit_group_view,
+        route_name='add_working_group',
+        renderer='json',
+        request_method='POST',
+        xhr=True
     )

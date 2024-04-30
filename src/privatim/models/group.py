@@ -1,4 +1,3 @@
-from uuid import uuid4
 from sqlalchemy import Text, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
@@ -46,7 +45,7 @@ class Group(Base):
         'User',
         secondary=user_group_association,
         back_populates='groups',
-        lazy='joined'
+        lazy='joined'  # we almost always want to load the associated users
     )
 
 
@@ -76,10 +75,3 @@ class WorkingGroup(Group):
         'User',
         back_populates='leading_groups',
     )
-
-    def __init__(
-        self,
-        name: str,
-    ):
-        self.id = str(uuid4())
-        self.name = name

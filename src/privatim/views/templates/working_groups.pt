@@ -1,0 +1,47 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+    <div metal:fill-slot="content">
+
+
+        <div class="row mt-4 mb-4">
+            <div class="col-md-6">
+                <h1 i18n:translate>Working Groups</h1>
+            </div>
+            <div class="col-md-6 text-end">
+                    <a i18n:translate href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
+                                                                               tabindex="1">Add Working Group</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 ">
+                <thead class="bg-light">
+                <tr>
+                    <th class="col-7" i18n:translate>Group</th>
+                        <th class="col-2" i18n:translate>People</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr tal:repeat="group groups">
+                    <td>
+                        <p class="mb-1">${group.name}</p>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" tal:repeat="user group.users"
+                                 alt="Profile Icon"
+                                 style="width: 45px; height: 45px" class="rounded-circle me-2"
+                                 title="${user.first_name}"/>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</metal:block>
