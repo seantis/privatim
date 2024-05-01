@@ -3,7 +3,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
 
 from privatim.orm.uuid_type import UUIDStr
-from privatim.models.meeting import meetings_groups_association, Meeting
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
 
@@ -63,11 +62,6 @@ class WorkingGroup(Group):
          ForeignKey('groups.id'), primary_key=True
     )
 
-    meetings: Mapped[list[Meeting]] = relationship(
-        'Meeting',
-        secondary=meetings_groups_association,
-        back_populates='attendees',
-    )
     leader_id: Mapped[UUIDStr | None] = mapped_column(
         ForeignKey('user.id'), nullable=True
     )

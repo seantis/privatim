@@ -3,27 +3,32 @@ from sqlalchemy import Text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
+
+from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, DateTimeWithTz, UUIDStr
-from privatim.orm.uuid_type import UUIDStr as UUID
+from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from privatim.models.user import User
+    from privatim.models import User
     from datetime import datetime
 
 
-meetings_groups_association = Table(
-    'meetings_groups_association', Base.metadata,
+meetings_users_association = Table(
+    'meetings_users_association', Base.metadata,
     Column(
-        'meetings_id',
-        UUID, ForeignKey('meetings.id'),
+        'meeting_id',
+        UUIDStr,
+        ForeignKey('meetings.id'),
+        primary_key=True
     ),
     Column(
-        'working_groups_id',
-        UUID,
-        ForeignKey('working_groups.id'),
-    ),
+        'user_id',
+        UUIDStr,
+        ForeignKey('user.id'),
+        primary_key=True
+    )
 )
 
 
@@ -55,6 +60,17 @@ class Meeting(Base):
 
     __tablename__ = 'meetings'
 
+    def __init__(
+            self,
+            name: str,
+            time: 'datetime',
+            attendees: list['User'],
+    ):
+        self.id = str(uuid4())
+        self.name = name
+        self.time = time
+        self.attendees = attendees
+
     id: Mapped[UUIDStrPK]
 
     name: Mapped[str] = mapped_column(nullable=False)
@@ -62,8 +78,8 @@ class Meeting(Base):
     time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
     attendees: Mapped[list['User']] = relationship(
-        'WorkingGroup',
-        secondary=meetings_groups_association,
+        'User',
+        secondary=meetings_users_association,
         back_populates='meetings'
     )
 
@@ -76,15 +92,4 @@ class Meeting(Base):
         back_populates='meeting',
     )
 
-    # todo: documents?
-
-    def __init__(
-        self,
-        name: str,
-        time: 'datetime',
-        attendees: list['User'],
-    ):
-        self.id = str(uuid4())
-        self.name = name
-        self.time = time
-        self.attendees = attendees
+    # todo: documents

@@ -1,5 +1,5 @@
-from datetime import datetime
 from functools import cached_property
+from datetime import datetime
 
 import bcrypt
 from sedate import utcnow
@@ -9,12 +9,14 @@ from sqlalchemy.orm import relationship
 
 from privatim.models import Group, WorkingGroup
 from privatim.models.group import user_group_association
+from privatim.models.meeting import meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
 
 from typing import TypeAlias, Literal, TYPE_CHECKING
 if TYPE_CHECKING:
     PersonType: TypeAlias = Literal['internal', 'external']
+    from privatim.models import Meeting
 
 
 class User(Base):
@@ -39,10 +41,22 @@ class User(Base):
         back_populates='users',
     )
 
+    meetings: Mapped[list['Meeting']] = relationship(
+        'Meeting',
+        secondary=meetings_users_association,
+        back_populates='attendees',
+    )
+
     # the groups this user is a leader of
     leading_groups: Mapped[list[WorkingGroup]] = relationship(
         'WorkingGroup',
         back_populates='leader',
+    )
+
+    statements = relationship(
+        'Statement',
+        back_populates='drafter',
+        foreign_keys='[Statement.drafted_by]',
     )
 
     def set_password(self, password: str) -> None:

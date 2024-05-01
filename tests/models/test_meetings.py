@@ -1,14 +1,9 @@
 from datetime import datetime, timezone
-from privatim.models import WorkingGroup, Meeting
+from sqlalchemy import select
+from privatim.models import Meeting, User, AgendaItem
 
 
 def test_working_group_meetings_relationship(session):
-    group = WorkingGroup(name="Working Team")
-    session.add(group)
-    session.flush()
-
-    group = session.query(WorkingGroup).one()
-    assert group.meetings == []
 
     date = datetime(
         2018,
@@ -19,10 +14,73 @@ def test_working_group_meetings_relationship(session):
         10,
         tzinfo=timezone.utc,
     )
-    meeting = Meeting(name="Test Meeting", time=date, attendees=[group])
-    session.add_all([group, meeting])
+
+    users = [
+        User(email='foo@bar.ch'),
+        User(email='schabala@babala.ch'),
+    ]
+    session.add_all(users)
     session.flush()
 
-    group = session.query(WorkingGroup).one()
-    session.query(WorkingGroup).one()
-    assert group.meetings == [meeting]
+    meeting = Meeting(name='Waffle Workshop', time=date, attendees=users)
+    session.add_all([meeting])
+    session.flush()
+
+    stored_meeting = session.execute(select(Meeting).filter_by(
+        name='Waffle Workshop')
+    ).scalar_one()
+    assert stored_meeting is not None
+    assert stored_meeting.time == date
+
+    # Check that all users are associated with the meeting
+    assert len(stored_meeting.attendees) == 2
+    expected = {'foo@bar.ch', 'schabala@babala.ch'}
+    assert set(user.email for user in stored_meeting.attendees) == expected
+
+
+def test_agenda_item_relationship_with_meeting(session):
+    # Creating a meeting with a predefined date and attendees
+    meeting_date = datetime(
+        2023,
+        5,
+        1,
+        12,
+        0,
+        0,
+        tzinfo=timezone.utc,
+    )
+    attendees = [
+        User(email='example@example.com'),
+        User(email='another@example.com'),
+    ]
+    session.add_all(attendees)
+    session.flush()
+
+    meeting = Meeting(
+        name='Annual Review', time=meeting_date, attendees=attendees
+    )
+    session.add(meeting)
+    session.flush()
+
+    # Creating an agenda item linked to the meeting
+    agenda_item = AgendaItem(
+        title='Budget Overview',
+        description='Detailed review of the year\'s budget and spending.',
+        meeting_id=meeting.id,
+    )
+    session.add(agenda_item)
+    session.flush()
+
+    # Retrieve and assert correct relationship mappings
+    stored_agenda_item = (
+        session.query(AgendaItem).filter_by(title='Budget Overview').one()
+    )
+    assert stored_agenda_item is not None
+    assert stored_agenda_item.meeting_id == meeting.id
+
+    # Assert meeting linkage and check if agenda items are correctly populated
+    assert stored_agenda_item.meeting is not None
+    assert stored_agenda_item.meeting.name == 'Annual Review'
+    assert 'Budget Overview' in [
+        item.title for item in stored_agenda_item.meeting.agenda_items
+    ]

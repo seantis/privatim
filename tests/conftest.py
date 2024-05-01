@@ -4,10 +4,12 @@ import sqlalchemy
 import transaction
 from pyramid import testing
 from sedate import utcnow
-
+from sqlalchemy import engine_from_config
+from privatim import main
 from privatim.models import User, WorkingGroup
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest
+from tests.shared.client import Client
 
 
 @pytest.fixture
@@ -127,3 +129,59 @@ def user_with_working_group(session):
     session.flush()
     session.refresh(user)
     return user
+
+
+@pytest.fixture()
+def engine(app_settings):
+    engine = engine_from_config(app_settings)
+    Base.metadata.create_all(engine)
+    return engine
+
+
+@pytest.fixture
+def connection(engine):
+    connection = engine.connect()
+    yield connection
+    connection.close()
+
+
+@pytest.fixture(scope="session")
+def app_settings():
+    yield {"sqlalchemy.url": "sqlite://"}
+
+
+@pytest.fixture(scope="session")
+def app_inner(app_settings):
+    app = main({}, **app_settings)
+    yield app
+
+
+@pytest.fixture
+def app(app_inner, connection):
+    # TODO: Fanstatic wraps `app` in a myriad of Delegators - is there a better
+    #       way to get through app than this?
+    app_inner.app.app.registry["dbsession_factory"].kw["bind"] = \
+        connection
+
+    yield app_inner
+
+
+@pytest.fixture(scope='function')
+def client(app, engine):
+
+    client = Client(app)
+    client.db = get_session_factory(engine=engine)()
+
+    user = User(email='admin@example.org')
+    user.set_password('test')
+    client.db.add(user)
+    client.db.commit()
+
+    yield client
+
+    # Remove user, if not already done within a test.
+    if user := client.db.get(User, user.id):
+        client.db.delete(user)
+        client.db.commit()
+    client.reset()
+    Base.metadata.drop_all(bind=engine)
