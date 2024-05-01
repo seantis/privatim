@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-04-19 22:18+0200\n"
+"POT-Creation-Date: 2024-05-01 13:15+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -34,11 +34,13 @@ msgstr "Schliessen"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
 msgid "People"
 msgstr "Personen"
 
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Arbeitsgruppen"
 
@@ -58,21 +60,59 @@ msgstr "Logout"
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: src/privatim/views/working_groups.py src/privatim/views/templates/groups.pt
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr "Arbeitsgruppe \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/working_groups.py
+#: src/privatim/views/templates/working_groups.pt
 msgid "Add Working Group"
 msgstr "Arbeitsgruppe hinzufügen"
+
+#: src/privatim/views/templates/form.pt
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/privatim/views/templates/form.pt
+msgid "Save"
+msgstr "Speichern"
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung erfassen"
 
-#: src/privatim/views/templates/groups.pt
-msgid "Group"
-msgstr "Gruppe"
-
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Einloggen"
+
+#: src/privatim/views/templates/working_groups.pt
+msgid "Group"
+msgstr "Gruppe"
+
+#: src/privatim/forms/fields.py
+msgid "Select Members..."
+msgstr "Mitglieder auswählen..."
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Arbeitsgruppe bearbeiten"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "No Leader"
+msgstr "Kein Leiter"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Name"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr "Leiter"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
 
 #~ msgid "Topic"
 #~ msgstr "Thema"

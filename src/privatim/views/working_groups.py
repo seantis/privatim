@@ -37,7 +37,10 @@ def add_or_edit_group_view(
             leader_id = form.leader.data
             leader_id = None if leader_id == '0' else leader_id
 
-            stmt = select(User).where(User.id.in_([form.members.data]))
+            # Use .raw_data to capture all selected values because
+            # .data returns only the first value (?)
+            stmt = select(User).where(User.id.in_(form.members.raw_data))
+
             users = session.execute(stmt).scalars().all()
             group = WorkingGroup(
                 name=form.name.data or '',

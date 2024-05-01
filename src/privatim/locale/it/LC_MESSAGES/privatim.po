@@ -16,11 +16,13 @@ msgstr "chiudere"
 msgid "Overview"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
 msgid "People"
 msgstr ""
 
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/groups.pt
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr ""
 
@@ -40,18 +42,56 @@ msgstr ""
 msgid "Activities"
 msgstr ""
 
-#: src/privatim/views/working_groups.py src/privatim/views/templates/groups.pt
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr ""
+
+#: src/privatim/views/working_groups.py
+#: src/privatim/views/templates/working_groups.pt
 msgid "Add Working Group"
 msgstr "Aggiungi gruppo di lavoro"
+
+#: src/privatim/views/templates/form.pt
+msgid "Cancel"
+msgstr ""
+
+#: src/privatim/views/templates/form.pt
+msgid "Save"
+msgstr ""
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr ""
 
-#: src/privatim/views/templates/groups.pt
-msgid "Group"
-msgstr ""
-
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Accedi"
+
+#: src/privatim/views/templates/working_groups.pt
+msgid "Group"
+msgstr ""
+
+#: src/privatim/forms/fields.py
+msgid "Select Members..."
+msgstr ""
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr ""
+
+#: src/privatim/forms/working_group_forms.py
+msgid "No Leader"
+msgstr ""
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr ""
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr ""
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr ""
