@@ -45,3 +45,42 @@ body {
 .ts-control {
     border: none;
 }
+
+
+/* Card section in overview*/
+.card {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: 1rem 0;
+}
+
+.rounded-circle {
+    object-fit: cover;
+}
+
+.card-body {
+    flex: 1;
+}
+
+.profile-section {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-name, .details-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+.tag-button {
+
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 800;
+}
+
+
+

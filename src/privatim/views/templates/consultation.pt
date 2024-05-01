@@ -1,0 +1,29 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+    <div metal:fill-slot="content">
+        <div class="container mt-4">
+            <h1 id="page-title" i18n:translate="">Consultation</h1>
+            <div class="consultation-card mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="consultation-title" i18n:translate="">${consultation.title}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="consultation-description" i18n:translate="">${consultation.description}</p>
+                        <p class="consultation-comments" i18n:translate="">${consultation.comments}</p>
+                        <p class="consultation-recommendation" i18n:translate="">${consultation.recommendation}</p>
+                        <div class="status">
+                            <strong i18n:translate="">Status:</strong>
+                            <span class="consultation-status" i18n:translate="">${consultation.status.name}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</metal:block>

@@ -2,8 +2,10 @@ from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
 
-from privatim.route_factories import working_group_factory
+from privatim.route_factories import (working_group_factory,
+                                      _consultation_factory)
 from privatim.views.activities import activities_overview
+from privatim.views.consultation import consultation_view
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
@@ -48,6 +50,38 @@ def includeme(config: 'Configurator') -> None:
         activities_overview,
         route_name='activities',
         renderer='templates/consultations.pt',
+    )
+
+    # Neue Vernehmlassung Erfassen
+    config.add_route(
+        'add_consultation',
+        '/consultations/add',
+        factory=_consultation_factory
+    )
+    config.add_view(
+        add_or_edit_group_view,
+        route_name='add_consultation',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        add_or_edit_group_view,
+        route_name='add_consultation',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    # view for single consultation
+    config.add_route(
+        'consultation',
+        '/consultations/{id}',
+        factory=_consultation_factory
+    )
+    config.add_view(
+        consultation_view,
+        route_name='consultation',
+        renderer='templates/consultation.pt',
     )
 
     config.add_route('people', '/people')

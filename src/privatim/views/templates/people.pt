@@ -6,7 +6,9 @@
 
     <div metal:fill-slot="content">
 
-        <h1>people_view</h1>
+        <h1>Personenübersicht</h1>
+
+        <h4>(In Entwicklung) </he>
 
     </div>
 

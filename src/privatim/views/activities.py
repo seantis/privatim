@@ -9,8 +9,7 @@ if TYPE_CHECKING:
 
 
 def activities_overview(request: 'IRequest') -> 'RenderData':
-    """ Display all activities in the system.
-        It's the landing page ."""
+    """ Display all activities in the system. (It's the landing page.)"""
 
     session = request.dbsession
     consultations = session.query(Consultation)
