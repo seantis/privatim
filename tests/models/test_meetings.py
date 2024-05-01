@@ -35,7 +35,7 @@ def test_working_group_meetings_relationship(session):
     # Check that all users are associated with the meeting
     assert len(stored_meeting.attendees) == 2
     expected = {'foo@bar.ch', 'schabala@babala.ch'}
-    assert set(user.email for user in stored_meeting.attendees) == expected
+    assert {user.email for user in stored_meeting.attendees} == expected
 
 
 def test_agenda_item_relationship_with_meeting(session):

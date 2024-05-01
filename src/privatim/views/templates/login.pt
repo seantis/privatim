@@ -10,9 +10,9 @@
             <div class="col-md-4">
                 <form class="form-signin" action="" method="POST">
                     <h1 class="mt-5" i18n:translate>Sign in</h1>
-                <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address"
+                <input type="email" name="email" id="username" class="form-control" placeholder="Email address"
                         required autofocus>
-                        <input type="password" name="password" id="inputPassword" class="form-control"
+                        <input type="password" name="password" id="password" class="form-control"
                                placeholder="Password" required>
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" type="submit" i18n:translate>Sign in</button>

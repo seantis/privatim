@@ -158,11 +158,8 @@ def app_inner(app_settings):
 
 @pytest.fixture
 def app(app_inner, connection):
-    # TODO: Fanstatic wraps `app` in a myriad of Delegators - is there a better
-    #       way to get through app than this?
     app_inner.app.app.registry["dbsession_factory"].kw["bind"] = \
         connection
-
     yield app_inner
 
 

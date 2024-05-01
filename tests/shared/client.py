@@ -13,6 +13,8 @@ class Client(TestApp):
     """ A condensed (minimalist) version of the `client`, derived from onegov.
     """
 
+    skip_n_forms = 1  # skip the 'search' form
+
     def spawn(self):
         """ Spawns a new client that points to the same app.
 
@@ -26,12 +28,13 @@ class Client(TestApp):
         url = '/login'
         login_page = self.get(url)
         form = find_login_form(login_page.forms)
-        form.set('username', username)
-        form.set('password', password)
-        return login_page.form.submit()
+        form['email'] = username
+        form['password'] = password
 
-    def login_admin(self, to=None):
-        return self.login('admin@example.org', 'test', to)
+        return form.submit()
+
+    def login_admin(self):
+        return self.login('admin@example.org', 'test')
 
     def logout(self):
         raise NotImplementedError("This method is not implemented yet.")
@@ -48,6 +51,14 @@ class Client(TestApp):
 
         """
         bases = [GenericResponseExtension]
+
+        if self.skip_n_forms:
+            bases.append(type(
+                "SkipNForms",
+                (SkipNFormsExtension, ),
+                dict(n=self.skip_n_forms)
+            ))
+
         bases.append(response.__class__)
         response.__class__ = type('ExtendedResponse', tuple(bases), {})
 
@@ -112,9 +123,16 @@ class GenericResponseExtension:
         """
         return pq(self.body)
 
-    def __or__(self, text):
-        """ Grep style searching the response, e.g.
-        `print(client.get('/') | 'Text')`
+
+class SkipNFormsExtension:
+    n = 0
+
+    @property
+    def form(self):
+        """ Ignore the first n forms.
 
         """
-        return '\n'.join([l for l in str(self).split('\n') if text in l])
+        if len(self.forms) > self.n:
+            return self.forms[self.n]
+        else:
+            return super().form
