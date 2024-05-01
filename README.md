@@ -33,7 +33,7 @@ make install
 - Load default data into the database using a script.
 
 ```
-./initialize_db development.ini
+initialize_db development.ini
 ```
 
 
@@ -43,18 +43,18 @@ make install
 pytest
 ```
 
-## Run
+## Run dev server
 
 ```
-make run
+make run  # uses pserve
 ```
 
-- Login at http://localhost:9090 with info@seantis.ch / test
+- Login at http://localhost:9090 with admin@example.org / test
 
 ## Miscellaneous
 ### Javascript dependencies
 The project uses [Tom Select](https://github.com/orchidjs/tom-select) for some forms.
-These files are included in the project. They have been downloaded from these CDN links: 
+These files are included in the project. They have been downloaded from these CDN links:
 
 ```
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
