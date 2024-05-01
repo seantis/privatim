@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
 from sedate import utcnow
-from sqlalchemy import func
+from sqlalchemy import func, select
 from wtforms import Form
 from wtforms import PasswordField
 from wtforms import StringField
@@ -44,11 +44,10 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         assert login is not None and password is not None
 
         session = request.dbsession
-        query = session.query(User)
-        query = session.query(User).filter(
-            func.lower(User.email) == login
+        stmt = select(User).filter(
+            User.email.ilike(login)
         )
-        user = query.first()
+        user = session.execute(stmt).scalar_one()
         if user and user.check_password(password):
             next_url = request.route_url('home')
             user.last_login = utcnow()
