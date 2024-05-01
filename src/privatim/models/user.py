@@ -56,7 +56,7 @@ class User(Base):
     statements = relationship(
         'Statement',
         back_populates='drafter',
-        foreign_keys='[Statement.drafted_by]',
+        foreign_keys='[Statement.drafted_by]',  # todo: check this is needed
     )
 
     def set_password(self, password: str) -> None:

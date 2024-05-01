@@ -23,9 +23,6 @@ def add_or_edit_group_view(
     context: WorkingGroup | None, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
 
-    # not implemented yet
-    assert not isinstance(context, WorkingGroup)
-
     if isinstance(context, WorkingGroup):   # edit situation
         group = context
     else:  # add situation
@@ -37,10 +34,10 @@ def add_or_edit_group_view(
 
     if request.method == 'POST' and form.validate():
         if group is None:
-            leader_id = form.leader_id.data
+            leader_id = form.leader.data
             leader_id = None if leader_id == '0' else leader_id
 
-            stmt = select(User).filter(User.id.in_((form.users.data,)))
+            stmt = select(User).filter(User.id.in_((form.members.data,)))
             users = session.execute(stmt).scalars()
             group = WorkingGroup(
                 name=form.name.data or '',

@@ -33,14 +33,14 @@ class WorkingGroupForm(Form):
 
         user_choices = tuple(
             (str(u.id), u.fullname) for u in sorted(
-                users, key=lambda u: u.first_name
+                users, key=lambda u: u.first_name or ''
             )
         )
-        self.leader_id.choices = (('0', _('No Leader')),) + user_choices
-        self.users.choices = user_choices
+        self.leader.choices = (('0', _('No Leader')),) + user_choices
+        self.members.choices = user_choices
 
     name: StringField = StringField(_('Name'), validators=[DataRequired()])
 
-    leader_id: SelectField = SelectField(_('Leader'))
+    leader: SelectField = SelectField(_('Leader'))
 
-    users: SearchableSelectField = SearchableSelectField(_('Members'))
+    members: SearchableSelectField = SearchableSelectField(_('Members'))
