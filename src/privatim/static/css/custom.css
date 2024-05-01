@@ -29,12 +29,6 @@
     display: block !important;
 }
 
-footer {
-    position: fixed;
-    height: 200px;
-    bottom: 0;
-    width: 100%;
-}
 
 body {
     font-family: "Open Sans", sans-serif;
@@ -79,7 +73,7 @@ body {
 
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    font-weight: 800;
+    font-weight: 700;
 }
 
 
