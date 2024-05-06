@@ -11,7 +11,7 @@ def test_consultation_status_relationship(session):
 
     # Creating a consultation linked to the status
     consultation = Consultation(
-        title='Environmental Impact Assessment',
+        title='Datenschutzgesetz',
         description='Review the impacts of the proposed construction.',
         comments='Needs further details on wildlife impacts.',
         recommendation='Proceed with caution',
@@ -23,7 +23,7 @@ def test_consultation_status_relationship(session):
     # Retrieve and assert correct relationship mappings
     stored_consultation = (
         session.execute(
-            select(Consultation).filter_by(title='Environmental Impact Assessment')
+            select(Consultation).filter_by(title='Datenschutzgesetz')
         ).scalar_one()
     )
     assert stored_consultation is not None
@@ -37,7 +37,7 @@ def test_consultation_status_relationship(session):
 
     updated_consultation = (
         session.execute(
-            select(Consultation).filter_by(title='Environmental Impact Assessment')
+            select(Consultation).filter_by(title='Datenschutzgesetz')
         ).scalar_one()
     )
     assert updated_consultation.comments == 'Updated comments after review.'

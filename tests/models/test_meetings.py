@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import select
 from privatim.models import Meeting, User, AgendaItem
-from privatim.models.consultation import Status
 
 
 def test_working_group_meetings_relationship(session):

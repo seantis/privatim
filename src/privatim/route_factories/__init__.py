@@ -13,7 +13,7 @@ _group_factory = create_uuid_factory(WorkingGroup)
 _consultation_factory = create_uuid_factory(Consultation)
 
 
-def consultation_factory(request: 'IRequest') -> 'WorkingGroup | Root':
+def consultation_factory(request: 'IRequest') -> 'Consultation | Root':
     if request.matchdict.get('id', None) is None:
         return root_factory(request)
 

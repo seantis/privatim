@@ -56,7 +56,7 @@ class Client(TestApp):
             bases.append(type(
                 "SkipNForms",
                 (SkipNFormsExtension, ),
-                dict(n=self.skip_n_forms)
+                {'n': self.skip_n_forms}
             ))
 
         bases.append(response.__class__)

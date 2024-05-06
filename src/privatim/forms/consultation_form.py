@@ -1,4 +1,4 @@
-from wtforms import Form, StringField, SelectField
+from wtforms import Form, StringField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from privatim.i18n import _
@@ -23,8 +23,10 @@ class ConsultationForm(Form):
             meta={'context': context, 'request': request},
         )
 
+    title = StringField(_('Title'),
+                        validators=[DataRequired()],
+                        default='test')
 
-    title = StringField(_('Title'), validators=[DataRequired()], default='test')
     description = TextAreaField(_('Description'), default='test')
     comments = TextAreaField(_('Comments'), default='test')
     recommendation = StringField(_('Recommendation'), default='test')

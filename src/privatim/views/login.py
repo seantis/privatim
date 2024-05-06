@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
 from sedate import utcnow
-from sqlalchemy import func, select
+from sqlalchemy import select
 from wtforms import Form
 from wtforms import PasswordField
 from wtforms import StringField
@@ -52,7 +52,7 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             next_url = request.route_url('home')
             user.last_login = utcnow()
             headers = remember(request, user.id)
-            from sqlalchemy.orm import object_session  # nocheckin
+            from sqlalchemy.orm import object_session
             assert object_session(user)
             return HTTPFound(location=next_url, headers=headers)
 
