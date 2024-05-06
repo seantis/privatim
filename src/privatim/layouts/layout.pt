@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
          i18n:domain="privatim"
       class="h-100">
 
@@ -10,6 +8,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+    <!-- tom-select for searchable (multi-)select fields -->
     <link rel="stylesheet" href="${layout.static_url('privatim:static/tom-select/tom-select.min.css')}">
     <script src="${layout.static_url('privatim:static/tom-select/tom-select.complete.min.js')}"></script>
 
@@ -46,8 +45,9 @@ ${panel('flash')}
                         privatim
                     </h2>
                     <!-- Text -->
-                    <p class="">
-                        Here comes the <br> slogan
+                    <!--? Austauschen. Erfassen. Finden.-->
+                    <p i18n:translate="" class="">
+                        Exchange. Record. Find.
                     </p>
 
                 </div>
