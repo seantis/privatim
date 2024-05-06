@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-01 13:15+0200\n"
+"POT-Creation-Date: 2024-05-06 18:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,10 @@ msgstr ""
 
 #: ./src/privatim/testing.py
 msgid "<b>bold</b>"
+msgstr ""
+
+#: ./src/privatim/layouts/layout.pt
+msgid "Exchange. Record. Find."
 msgstr ""
 
 #. Default: Close
@@ -83,12 +87,53 @@ msgstr ""
 msgid "Add Consultation"
 msgstr ""
 
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Max Müller"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "-> Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Status:"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Consultation"
+msgstr ""
+
 #: ./src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "Group"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Title"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Description"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Comments"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Recommendation"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Status"
 msgstr ""
 
 #: ./src/privatim/forms/fields.py

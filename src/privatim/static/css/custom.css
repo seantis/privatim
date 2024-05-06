@@ -17,12 +17,17 @@
     border-color: var(--hover-color);
 }
 
-.custom-colored {
-    color: var(--primary-color); /* Privatim's pink color used extensively*/
+
+/* Navbar */
+#active_tab {
+    text-decoration: underline!important;
+    text-decoration-thickness: 0.3rem!important;
+    text-underline-offset: 1.25rem;
 }
 
-.navbar-nav.active_nav {
-    text-decoration: underline!important;
+.nav-link {
+    color: var(--primary-color);
+    font-size: 1.2rem;
 }
 
 .bd-mode-toggle .dropdown-menu .active .bi {
@@ -69,12 +74,11 @@ body {
     color: var(--primary-color);
     text-decoration: underline;
 }
-.tag-button {
 
+.tag-button {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     font-weight: 700;
 }
-
 
 

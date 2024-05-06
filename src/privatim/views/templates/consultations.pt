@@ -34,7 +34,7 @@
                                     <p class="card-text" i18n:translate="">${consultation.comments}</p>
                                     <p class="card-text" i18n:translate="">${consultation.recommendation}</p>
                                     <a href="${request.route_url('consultation', id=consultation.id)}" i18n:translate=""
-                                       class="details-link">-> Details Anzeigen</a>
+                                       class="details-link">-> Show Details</a>
                                 </div>
                                 <div class="col-md-4 mt-4 tag-buttons">
                                     <div class="d-flex flex-row align-items-start">

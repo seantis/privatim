@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-01 13:15+0200\n"
+"POT-Creation-Date: 2024-05-06 18:06+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -24,6 +24,10 @@ msgstr "Nur ein Test"
 #: src/privatim/testing.py
 msgid "<b>bold</b>"
 msgstr "<b>fett</b>"
+
+#: src/privatim/layouts/layout.pt
+msgid "Exchange. Record. Find."
+msgstr "Austauschen. Erfassen. Finden."
 
 #. Default: Close
 #: src/privatim/layouts/flash.pt
@@ -82,13 +86,54 @@ msgstr "Speichern"
 msgid "Add Consultation"
 msgstr "Vernehmlassung erfassen"
 
+#: src/privatim/views/templates/consultations.pt
+msgid "Max Müller"
+msgstr ""
+
+#: src/privatim/views/templates/consultations.pt
+msgid "-> Show Details"
+msgstr "-> Details anzeigen"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/consultation.pt
+msgid "Status:"
+msgstr "Status:"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Consultation"
+msgstr "Vernehmlassung"
+
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
-msgstr "Einloggen"
+msgstr "Anmelden"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
 msgstr "Gruppe"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr "Vernehmlassung bearbeiten"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Title"
+msgstr "Titel"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Comments"
+msgstr "Kommmentare"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Recommendation"
+msgstr "Empfehlung"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Status"
+msgstr "Status"
 
 #: src/privatim/forms/fields.py
 msgid "Select Members..."
@@ -113,6 +158,3 @@ msgstr "Leiter"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Mitglieder"
-
-#~ msgid "Topic"
-#~ msgstr "Thema"
