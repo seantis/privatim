@@ -51,6 +51,36 @@ make run  # uses pserve
 
 - Login at http://localhost:9090 with admin@example.org / test
 
+
+# Manage dependencies
+
+We use `uv` to manage dependencies
+
+## Regenerate requirements files based on new dependencies
+
+    ./requirements/compile.sh
+
+## Upgrade dependencies to latest version
+
+Specific dependency:
+
+    ./requirements/compile.sh -P Pillow
+
+All dependencies:
+
+    ./requirements/compile.sh -U
+
+## Upgrade local environment
+
+    uv pip install -r requirements.txt -r test_requirements.txt
+
+## Sync local environment with CI/Production
+
+This will remove packages that have been manually installed locally
+
+    uv pip sync requirements.txt test_requirements.txt
+
+
 ## Miscellaneous
 ### Javascript dependencies
 The project uses [Tom Select](https://github.com/orchidjs/tom-select) for some forms.

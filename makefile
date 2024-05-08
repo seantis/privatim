@@ -28,6 +28,9 @@ ensure_uv: in_virtual_env
 	# use latest uv
 	uv pip install --upgrade uv
 
+compile:
+	@./requirements/compile.sh
+
 run: in_virtual_env
 	pserve --reload development.ini
 
