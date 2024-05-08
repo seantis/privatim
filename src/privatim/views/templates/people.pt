@@ -1,15 +1,29 @@
 <metal:block use-macro="main_template"
              xmlns="http://www.w3.org/1999/xhtml"
-             xmlns:tal="http://xml.zope.org/namespaces/tal"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
 
     <div metal:fill-slot="content">
 
-        <h1>Personenübersicht</h1>
+        <h1 i18n:translate>List of Persons</h1>
 
-        <h4>(In Entwicklung) </h4>
+        <p tal:condition="not:people" i18n:translate="">No people added yet.</p>
 
+            <div tal:condition="people" class="people-list">
+
+                <div tal:define="atozpeople people">
+                    <div class="atoz-block" tal:repeat="item atozpeople">
+                        <h2>${item[0]}</h2>
+                        <ul>
+                            <li tal:repeat="user item[1]">
+                                <div metal:define-slot="user-detail">
+                                    <a href="${request.route_url('person', id=user.id)}">${user.fullname}</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
     </div>
 
 </metal:block>

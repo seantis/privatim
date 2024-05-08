@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-06 18:06+0200\n"
+"POT-Creation-Date: 2024-05-07 15:07+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -103,9 +103,21 @@ msgstr "Status:"
 msgid "Consultation"
 msgstr "Vernehmlassung"
 
+#: src/privatim/views/templates/person.pt
+msgid "Person"
+msgstr "Person"
+
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Anmelden"
+
+#: src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr "Personenverzeichnis"
+
+#: src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr "Noch keine Personen hinzugefügt."
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"

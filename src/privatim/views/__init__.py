@@ -3,14 +3,14 @@ from typing import TYPE_CHECKING
 from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (working_group_factory,
-                                      _consultation_factory)
+                                      consultation_factory, person_factory)
 from privatim.views.activities import activities_overview
 from privatim.views.consultation import consultation_view
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
-from privatim.views.people import people_view
+from privatim.views.people import people_view, person_view
 from privatim.views.working_groups import (groups_view,
                                            add_or_edit_group_view)
 
@@ -31,8 +31,6 @@ def includeme(config: 'Configurator') -> None:
 
     config.add_forbidden_view(forbidden_view)
 
-    # config.add_notfound_view(notfound_view)
-
     config.add_route('login', '/login')
     config.add_view(
         login_view,
@@ -52,11 +50,11 @@ def includeme(config: 'Configurator') -> None:
         renderer='templates/consultations.pt',
     )
 
-    # Neue Vernehmlassung Erfassen
+    # Adding a new consultation
     config.add_route(
         'add_consultation',
         '/consultations/add',
-        factory=_consultation_factory
+        factory=consultation_factory
     )
     config.add_view(
         add_or_edit_group_view,
@@ -76,7 +74,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_route(
         'consultation',
         '/consultations/{id}',
-        factory=_consultation_factory
+        factory=consultation_factory
     )
     config.add_view(
         consultation_view,
@@ -116,4 +114,16 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='POST',
         xhr=True
+    )
+
+    # view for single person
+    config.add_route(
+        'person',
+        '/person/{id}',
+        factory=person_factory,
+    )
+    config.add_view(
+        person_view,
+        route_name='person',
+        renderer='templates/person.pt',
     )

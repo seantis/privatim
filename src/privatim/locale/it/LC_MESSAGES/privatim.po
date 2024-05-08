@@ -85,9 +85,41 @@ msgstr ""
 msgid "Consultation"
 msgstr ""
 
+#: src/privatim/views/templates/person.pt
+msgid "Person"
+msgstr ""
+
+#. Default: Name
+#: src/privatim/views/templates/person.pt
+msgid "label_name"
+msgstr ""
+
+#. Default: Email
+#: src/privatim/views/templates/person.pt
+msgid "label_email"
+msgstr ""
+
+#. Default: Phone
+#: src/privatim/views/templates/person.pt
+msgid "label_phone"
+msgstr ""
+
+#. Default: Address
+#: src/privatim/views/templates/person.pt
+msgid "label_address"
+msgstr ""
+
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Accedi"
+
+#: src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr ""
+
+#: src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr ""
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"

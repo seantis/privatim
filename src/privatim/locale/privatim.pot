@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-06 18:06+0200\n"
+"POT-Creation-Date: 2024-05-07 15:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,8 +104,40 @@ msgstr ""
 msgid "Consultation"
 msgstr ""
 
+#: ./src/privatim/views/templates/person.pt
+msgid "Person"
+msgstr ""
+
+#. Default: Name
+#: ./src/privatim/views/templates/person.pt
+msgid "label_name"
+msgstr ""
+
+#. Default: Email
+#: ./src/privatim/views/templates/person.pt
+msgid "label_email"
+msgstr ""
+
+#. Default: Phone
+#: ./src/privatim/views/templates/person.pt
+msgid "label_phone"
+msgstr ""
+
+#. Default: Address
+#: ./src/privatim/views/templates/person.pt
+msgid "label_address"
+msgstr ""
+
 #: ./src/privatim/views/templates/login.pt
 msgid "Sign in"
+msgstr ""
+
+#: ./src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr ""
+
+#: ./src/privatim/views/templates/people.pt
+msgid "No people added yet."
 msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt

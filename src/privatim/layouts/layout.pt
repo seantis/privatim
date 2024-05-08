@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="${layout.static_url('privatim:static/tom-select/tom-select.min.css')}">
     <script src="${layout.static_url('privatim:static/tom-select/tom-select.complete.min.js')}"></script>
 
-    <title>privatim</title>
+    <title>Austauschplattform privatim</title>
 </head>
 
 <body class="d-flex flex-column h-100">

@@ -1,6 +1,7 @@
 from functools import cached_property
 from datetime import datetime
-
+from pyramid.authorization import Allow
+from pyramid.authorization import Authenticated
 import bcrypt
 from sedate import utcnow
 from sqlalchemy.orm import Mapped
@@ -13,9 +14,9 @@ from privatim.models.meeting import meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
 
-from typing import TypeAlias, Literal, TYPE_CHECKING
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    PersonType: TypeAlias = Literal['internal', 'external']
+    from privatim.types import ACL
     from privatim.models import Meeting
 
 
@@ -85,3 +86,8 @@ class User(Base):
         if not parts:
             return self.email
         return ' '.join(parts)
+
+    def __acl__(self) -> list['ACL']:
+        return [
+            (Allow, Authenticated, ['view']),
+        ]
