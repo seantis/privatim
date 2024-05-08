@@ -5,11 +5,7 @@
 
     <div metal:fill-slot="content">
 
-        <h1 i18n:translate>Person</h1>
-
-        <p>${person.fullname}</p>
-
-
+        <h1 i18n:translate>${person.fullname}</h1>
 
 
     </div>

@@ -14,7 +14,6 @@ pyramid.default_locale_name = en
 pyramid.available_languages =
     de
     fr
-    it
 
 # TODO: Figure out why this causes an issue with zope.transaction (this raises transaction.interfaces.NoTransaction)
 # pyramid.includes =
