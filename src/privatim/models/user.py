@@ -88,6 +88,7 @@ class User(Base):
         return ' '.join(parts)
 
     def __acl__(self) -> list['ACL']:
+        """ Allow the profile to be viewed by logged-in users."""
         return [
             (Allow, Authenticated, ['view']),
         ]
