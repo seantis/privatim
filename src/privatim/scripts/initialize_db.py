@@ -39,10 +39,10 @@ def main(argv: list[str] = sys.argv) -> None:
 
     with env['request'].tm:
         db = env['request'].dbsession
-        add_placeholder_content(db)
+        add_example_content(db)
 
 
-def add_placeholder_content(db: 'Session') -> None:
+def add_example_content(db: 'Session') -> None:
     users = [
         User(
             email='admin@example.org',
