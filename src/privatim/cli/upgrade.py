@@ -125,7 +125,7 @@ class UpgradeContext:
 @click.command()
 @click.argument('config_uri')
 @click.option('--dry', is_flag=True, default=False)
-def upgrade(config_uri: str, dry: bool, update_catalogues: bool) -> None:
+def upgrade(config_uri: str, dry: bool) -> None:
 
     if dry:
         click.echo('Dry run')
