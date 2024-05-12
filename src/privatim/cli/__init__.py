@@ -1,6 +1,6 @@
 import click
 
-from .add_user import add_user
+from privatim.cli.add_user import add_user
 
 
 @click.group()
@@ -9,3 +9,7 @@ def cli() -> None:
 
 
 cli.add_command(add_user)
+
+
+if __name__ == '__main__':
+    cli()
