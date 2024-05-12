@@ -42,11 +42,16 @@ ${panel('flash')}
                 <div class="col-md-4">
                     <!-- Brand -->
                     <h2 class="brand mb-1">
-                        privatim
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
+                           href="${request.route_url('home')}">
+                            <img src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo"
+                                 class="bi me-4"
+                                 width="242" height="87">
+                        </a>
                     </h2>
                     <!-- Text -->
                     <!--? Austauschen. Erfassen. Finden.-->
-                    <p i18n:translate="" class="">
+                    <p i18n:translate="" class="mt-4">
                         Exchange. Record. Find.
                     </p>
 
