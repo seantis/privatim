@@ -1,4 +1,6 @@
+import argparse
 import logging
+import os
 from enum import Enum
 from typing import TYPE_CHECKING
 from typing import Any
@@ -122,22 +124,20 @@ class UpgradeContext:
         transaction.commit()
 
 
-@click.command()
-@click.argument('config_uri')
-@click.option('--dry', is_flag=True, default=False)
-def upgrade(config_uri: str, dry: bool) -> None:
 
-    print('upgrade')
-    if dry:
-        click.echo('Dry run')
+def upgrade(args: argparse.Namespace) -> None:
 
     # Extract settings from INI config file.
     # We cannot use pyramid.paster.bootstrap() because loading the application
     # requires the proper DB structure.
-    settings = plaster.get_settings(config_uri, 'app:main')
+    defaults = {'here': os.getcwd()}
+    settings = plaster.get_settings(
+        args.config_uri,
+        'app:main',
+        defaults=defaults
+    )
 
     # Setup DB.
-
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
     session_factory = get_session_factory(engine)
@@ -147,8 +147,26 @@ def upgrade(config_uri: str, dry: bool) -> None:
     module = __import__('privatim', fromlist='*')
     func = getattr(module, 'upgrade', None)
     if func is not None:
-        click.echo('Upgrading privatim')
+        print('Upgrading privatim')
         func(context)
+    else:
+        print('No pending upgrades')
 
-    if not dry:
+    if not args.dry:
         context.commit()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Runs all upgrade steps')
+    parser.add_argument('config_uri', help='Config file')
+    parser.add_argument('-d', '--dry', help='Dry run', action='store_true')
+    args = parser.parse_args()
+
+    if args.dry:
+        print('Dry run')
+
+    upgrade(args)
+
+
+if __name__ == '__main__':
+    main()
