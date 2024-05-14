@@ -43,6 +43,7 @@ def main(argv: list[str] = sys.argv) -> None:
 
 
 def add_example_content(db: 'Session') -> None:
+
     users = [
         User(
             email='admin@example.org',
@@ -63,6 +64,7 @@ def add_example_content(db: 'Session') -> None:
             last_name='Huber',
         ),
     ]
+    print(f'Adding users: {users}')
     for user in users:
         user.set_password('test')
         db.add(user)
@@ -97,3 +99,7 @@ def add_example_content(db: 'Session') -> None:
     db.add(consultation)
     db.add(status)
     db.flush()
+
+
+if __name__ == '__main__':
+    main()

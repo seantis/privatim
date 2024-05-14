@@ -84,7 +84,7 @@ class UpgradeContext:
              WHERE pg_type.typname = :enum_name
              GROUP BY pg_enum.enumlabel
             """),
-            dict(enum_name=enum_name)
+            {'enum_name': enum_name}
         )
         return {value for (value,) in result}
 
@@ -127,6 +127,7 @@ class UpgradeContext:
 @click.option('--dry', is_flag=True, default=False)
 def upgrade(config_uri: str, dry: bool) -> None:
 
+    print('upgrade')
     if dry:
         click.echo('Dry run')
 

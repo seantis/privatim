@@ -1,4 +1,4 @@
-from privatim.cli.upgrade import UpgradeContext, upgrade
+from privatim.cli.upgrade import UpgradeContext
 
 
 def test_has_table(config):
