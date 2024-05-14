@@ -47,7 +47,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         activities_overview,
         route_name='activities',
-        renderer='templates/consultations.pt',
+        renderer='templates/activities.pt',
     )
 
     # Adding a new consultation

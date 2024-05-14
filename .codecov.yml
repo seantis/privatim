@@ -1,0 +1,5 @@
+# use a more expressive value range while coverage is still relatively low
+coverage:
+  precision: 2
+  round: down
+  range: "40...100"

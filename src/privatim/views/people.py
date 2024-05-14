@@ -1,5 +1,5 @@
 from sqlalchemy import nullslast
-from atoz import AtoZ
+from privatim.atoz import AtoZ
 from privatim.models import User
 from sqlalchemy.future import select
 

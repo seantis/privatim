@@ -80,6 +80,12 @@ This will remove packages that have been manually installed locally
 
     uv pip sync requirements.txt test_requirements.txt
 
+## Testing the Dockerfile works
+
+    docker run --rm -p 8080:6543 -v $PWD/config:/app/config privatim-1 config/development.ini
+
+then open http://127.0.0.1:8080/
+
 
 ## Miscellaneous
 ### Javascript dependencies
@@ -90,3 +96,5 @@ These files are included in the project. They have been downloaded from these CD
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 ```
+
+
