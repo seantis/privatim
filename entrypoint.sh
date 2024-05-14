@@ -13,6 +13,7 @@ CONFIG_FILE=$1
 # Run the upgrade script with the provided config file
 python src/privatim/cli/upgrade.py "$CONFIG_FILE"
 
-python src/privatim/cli/initialize_db.py
+# Add example content and user
+python src/privatim/cli/initialize_db.py "$CONFIG_FILE"
 
 pserve "$CONFIG_FILE"

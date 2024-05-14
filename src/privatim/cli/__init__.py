@@ -38,3 +38,7 @@ def find_ini_file_or_abort() -> str:
     else:
         click.echo('Stopping.')
         click.get_current_context().abort()
+
+
+if __name__ == '__main__':
+    cli()
