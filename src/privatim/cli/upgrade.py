@@ -124,7 +124,9 @@ class UpgradeContext:
         transaction.commit()
 
 
-
+@click.command()
+@click.argument('config_uri')
+@click.option('--dry', is_flag=True, default=False)
 def upgrade(args: argparse.Namespace) -> None:
 
     # Extract settings from INI config file.
@@ -154,19 +156,3 @@ def upgrade(args: argparse.Namespace) -> None:
 
     if not args.dry:
         context.commit()
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description='Runs all upgrade steps')
-    parser.add_argument('config_uri', help='Config file')
-    parser.add_argument('-d', '--dry', help='Dry run', action='store_true')
-    args = parser.parse_args()
-
-    if args.dry:
-        print('Dry run')
-
-    upgrade(args)
-
-
-if __name__ == '__main__':
-    main()
