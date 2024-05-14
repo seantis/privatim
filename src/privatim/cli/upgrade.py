@@ -127,17 +127,14 @@ class UpgradeContext:
 @click.command()
 @click.argument('config_uri')
 @click.option('--dry', is_flag=True, default=False)
-def upgrade(args: argparse.Namespace) -> None:
+def upgrade(config_uri: str, dry: bool) -> None:
 
     # Extract settings from INI config file.
     # We cannot use pyramid.paster.bootstrap() because loading the application
     # requires the proper DB structure.
     defaults = {'here': os.getcwd()}
-    settings = plaster.get_settings(
-        args.config_uri,
-        'app:main',
-        defaults=defaults
-    )
+    settings = plaster.get_settings(config_uri, 'app:main',
+                                    defaults=defaults)
 
     # Setup DB.
     engine = get_engine(settings)
@@ -154,5 +151,5 @@ def upgrade(args: argparse.Namespace) -> None:
     else:
         print('No pending upgrades')
 
-    if not args.dry:
+    if not dry:
         context.commit()
