@@ -13,9 +13,11 @@ if TYPE_CHECKING:
 
 # Many-to-many association table for users and groups
 user_group_association = Table(
-    'user_groups', Base.metadata,
-    Column('user_id', UUIDStr, ForeignKey('user.id')),
-    Column('group_id', UUIDStr, ForeignKey('groups.id'))
+    'user_groups',
+    Base.metadata,
+    Column('user_id', UUIDStr,
+           ForeignKey('user.id', ondelete='CASCADE')),
+    Column('group_id', UUIDStr, ForeignKey('groups.id')),
 )
 
 
