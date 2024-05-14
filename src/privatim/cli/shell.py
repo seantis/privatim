@@ -32,6 +32,7 @@ class EnhancedInteractiveConsole(InteractiveConsole):
         readline.set_history_length(100)
         readline.parse_and_bind("tab: complete")
 
+
 @click.command()
 def shell() -> None:
     """Enters an interactive shell."""

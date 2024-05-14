@@ -17,7 +17,7 @@ def cli() -> None:
 cli.add_command(add_user)
 
 
-def find_ini_files() -> Iterator[str]:
+def find_ini_files() -> 'Iterator[str]':
     current_path = os.path.dirname(os.path.abspath(__file__))
     while current_path != os.path.abspath(os.path.join(current_path, '..')):
         for filename in os.listdir(current_path):
