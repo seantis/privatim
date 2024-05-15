@@ -8,7 +8,7 @@ from transaction import commit
 
 from typing import Any
 
-from privatim.cli import find_ini_file_or_abort
+from privatim.cli.find_files import find_ini_file_or_abort
 
 
 class EnhancedInteractiveConsole(InteractiveConsole):
@@ -61,5 +61,13 @@ def shell() -> None:
 
         Available variables: session
         Available functions: commit
+
+        Example:
+           from privatim.models.user import User
+           query = session.query(User).filter_by(username='admin@example.org')
+           user = query.one()
+           user.username = 'info@example.org'
+           commit()
+           exit()
         """
         )
