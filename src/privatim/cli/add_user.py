@@ -20,6 +20,11 @@ def add_user(config_uri: str, email: str, password: str) -> None:
     with env['request'].tm:
         dbsession = env['request'].dbsession
 
+        existing_user = dbsession.query(User).filter(User.email == email).first()
+        if existing_user:
+            click.echo(f"User with email {email} already exists.")
+            return
+
         user = User(email=email)
         user.set_password(password)
         dbsession.add(user)
