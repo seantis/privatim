@@ -1,6 +1,7 @@
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
+from sqlalchemy import select
 
 from privatim.models import User
 from privatim.orm import get_engine, Base
@@ -20,7 +21,8 @@ def add_user(config_uri: str, email: str, password: str) -> None:
     with env['request'].tm:
         dbsession = env['request'].dbsession
 
-        existing_user = dbsession.query(User).filter(User.email == email).first()
+        query = select(User).filter(User.email == email)
+        existing_user = dbsession.execute(query).scalar_one_or_none()
         if existing_user:
             click.echo(f"User with email {email} already exists.")
             return

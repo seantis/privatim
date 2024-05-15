@@ -1,4 +1,3 @@
-import os
 from privatim.cli.find_files import find_ini_files
 from tests.shared.fixtures import temporary_directory
 from pathlib import Path
@@ -21,4 +20,3 @@ def test_find_ini_files(temporary_directory):
     assert file__.exists()
     file = next(find_ini_files(str(file__)))
     assert 'development.ini' in file
-

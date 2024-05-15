@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 import os
 import click
-from privatim.utils import first
 
 if TYPE_CHECKING:
     from typing import Iterator
@@ -67,4 +66,3 @@ def find_ini_file_or_abort() -> str:
 
     click.echo('No suitable .ini file found. Aborting.')
     click.get_current_context().abort()
-
