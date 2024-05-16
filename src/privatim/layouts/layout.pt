@@ -17,9 +17,8 @@
 
 <body class="d-flex flex-column h-100">
 
-<header>
-        ${panel('navbar')}
-</header>
+<!-- Header -->
+${panel('navbar')}
 
 
 <!-- Begin page content -->

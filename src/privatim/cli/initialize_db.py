@@ -3,6 +3,7 @@ import sys
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
 from pyramid.paster import setup_logging
+from sqlalchemy.exc import IntegrityError
 
 from privatim.models.consultation import Status
 from privatim.orm import get_engine
@@ -67,7 +68,11 @@ def add_example_content(db: 'Session') -> None:
     print(f'Adding users: {users}')
     for user in users:
         user.set_password('test')
-        db.add(user)
+        try:
+            db.add(user)
+        except IntegrityError as e:
+            print(f'Error adding user: {e}')
+
     group1 = WorkingGroup(name='Arbeitsgruppe 1')
     group2 = WorkingGroup(name='Arbeitsgruppe 2')
     for user in users:
