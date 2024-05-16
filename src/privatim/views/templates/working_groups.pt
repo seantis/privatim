@@ -19,18 +19,15 @@
             <table class="table align-middle mb-0 ">
                 <thead class="bg-light">
                 <tr>
-                    <th class="col-7" i18n:translate>Group</th>
-                        <th class="col-2" i18n:translate>People</th>
-                    </tr>
+                    <th class="col-7" i18n:translate="">Group</th>
+                    <th class="col-2" i18n:translate="">People</th>
+                </tr>
                 </thead>
 
                 <tbody>
-                    <tr tal:repeat="group groups">
+                <tr tal:repeat="group working_groups">
                     <td>
-
-<!--?                  Here we link to a single working group -->
-
-                        <a href="${request.route_url('working_groups', id=working_group.id)}" class="mb-1">${group.name}</p>
+                        <a href="${request.route_url('working_group', id=group.id)}" class="mb-1">${group.name}</a>
                     </td>
                     <td>
                         <div class="d-flex align-items-center">

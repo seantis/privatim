@@ -29,9 +29,9 @@
                                  i18n:translate>Consultations</a>
                     </li>
                     <li>
-                        <a href="${request.route_url('groups')}"
+                        <a href="${request.route_url('working_groups')}"
                            class="nav-link px-3 link-body-emphasis"
-                           id="${'active_tab' if request.matched_route.name == 'groups' else ''}"
+                           id="${'active_tab' if request.matched_route.name == 'working_groups' else ''}"
                                  i18n:translate>Working Groups</a>
                     </li>
                 </ul>

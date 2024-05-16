@@ -12,11 +12,18 @@ if TYPE_CHECKING:
     from privatim.types import RenderData, RenderDataOrRedirect
 
 
-def groups_view(request: 'IRequest') -> 'RenderData':
+def working_group_view(
+        context: WorkingGroup, request: 'IRequest'
+) -> dict[str, WorkingGroup,]:
+    """ View single working group"""
+    return {'group': context}
+
+
+def working_groups_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
-    stmt = select(Group).order_by(Group.name)
-    groups = session.scalars(stmt).unique()
-    return {'groups': groups}
+    stmt = select(WorkingGroup).order_by(WorkingGroup.name)
+    working_groups = session.scalars(stmt).unique()
+    return {'working_groups': working_groups}
 
 
 def add_or_edit_group_view(
@@ -29,7 +36,7 @@ def add_or_edit_group_view(
         group = None
 
     form = WorkingGroupForm(context, request)
-    target_url = request.route_url('groups')
+    target_url = request.route_url('working_groups')
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():

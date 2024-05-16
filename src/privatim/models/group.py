@@ -2,6 +2,9 @@ from sqlalchemy import Text, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
 
+from pyramid.authorization import Allow
+from pyramid.authorization import Authenticated
+
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
@@ -71,3 +74,8 @@ class WorkingGroup(Group):
         'User',
         back_populates='leading_groups',
     )
+
+    def __acl__(self) -> list['ACL']:
+        return [
+            (Allow, Authenticated, ['view']),
+        ]

@@ -5,7 +5,7 @@
 
     <div metal:fill-slot="content">
 
-        <h1>working_group.pt</h1>
+        <h1>Arbeitsgruppe ${group.name}</h1>
 
 
     </div>

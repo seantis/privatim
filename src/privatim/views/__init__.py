@@ -13,8 +13,9 @@ from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.people import people_view, person_view
-from privatim.views.working_groups import (groups_view,
-                                           add_or_edit_group_view)
+from privatim.views.working_groups import (working_groups_view,
+                                           add_or_edit_group_view,
+                                           working_group_view)
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -100,13 +101,25 @@ def includeme(config: 'Configurator') -> None:
     )
 
     # working groups overview
-    config.add_route('groups', '/groups')
+    config.add_route('working_groups', '/working_groups')
     config.add_view(
-        groups_view,
-        route_name='groups',
+        working_groups_view,
+        route_name='working_groups',
         renderer='templates/working_groups.pt',)
 
-    # single working group
+    # view for single working_group
+    config.add_route(
+        'working_group',
+        '/working_groups/{id}',
+        factory=working_group_factory
+    )
+    config.add_view(
+        working_group_view,
+        route_name='working_group',
+        renderer='templates/working_group.pt',
+    )
+
+    # adding a single working group
     config.add_route(
         'add_working_group',
         '/groups/add',
@@ -125,6 +138,7 @@ def includeme(config: 'Configurator') -> None:
         request_method='POST',
         xhr=True
     )
+
 
     # view for single person
     config.add_route(
