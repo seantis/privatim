@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-16 10:52+0200\n"
+"POT-Creation-Date: 2024-05-16 14:42+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -25,9 +25,21 @@ msgstr "Juste un test"
 msgid "<b>bold</b>"
 msgstr "<b>gras</b>"
 
-#: src/privatim/layouts/layout.pt
+#: src/privatim/layouts/footer.pt
 msgid "Exchange. Record. Find."
 msgstr "Échanger. Enregistrer. Trouver"
+
+#: src/privatim/layouts/footer.pt
+msgid "About us"
+msgstr "A propos de nous"
+
+#: src/privatim/layouts/footer.pt
+msgid "Impressum"
+msgstr "Impressum"
+
+#: src/privatim/layouts/footer.pt
+msgid "Contact"
+msgstr "Contact"
 
 #. Default: Close
 #: src/privatim/layouts/flash.pt
@@ -43,7 +55,7 @@ msgstr "Vue d'ensemble"
 msgid "People"
 msgstr "Les personnes"
 
-#: src/privatim/layouts/navbar.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/consultations.pt
 msgid "Consultations"
 msgstr "Consultations"
 
@@ -64,8 +76,7 @@ msgstr "Profil"
 msgid "Sign out"
 msgstr "Déconnecter"
 
-#: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
 msgid "Activities"
 msgstr "Activités"
 
@@ -117,6 +128,14 @@ msgstr "-> Afficher les détails"
 msgid "Status:"
 msgstr "Statut:"
 
+#: src/privatim/views/templates/working_group.pt
+msgid "Working Group ${group.name}"
+msgstr "Groupe de travail${groupe.nom}"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Add Meeting"
+msgstr "Ajouter une session"
+
 #: src/privatim/views/templates/consultation.pt
 msgid "Consultation"
 msgstr "Consultation"
@@ -147,15 +166,15 @@ msgstr "Description"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Comments"
-msgstr ""
+msgstr "Commentaires"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
-msgstr ""
+msgstr "Recommandation"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Open"

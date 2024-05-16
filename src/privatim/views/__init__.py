@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (working_group_factory,
-                                      consultation_factory, person_factory)
+                                      consultation_factory, person_factory,
+                                      meeting_factory)
 from privatim.views.activities import activities_overview
 from privatim.views.consultations import (add_or_edit_consultation_view,
                                           consultation_view,
@@ -134,6 +135,26 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         add_or_edit_group_view,
         route_name='add_working_group',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    # Add meeting per working_group
+    config.add_route(
+        'add_meeting',
+        '/meetings/add',
+        factory=meeting_factory
+    )
+    config.add_view(
+        add_or_edit_group_view,
+        route_name='add_meeting',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        add_or_edit_group_view,
+        route_name='add_meeting',
         renderer='json',
         request_method='POST',
         xhr=True

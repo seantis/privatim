@@ -12,7 +12,10 @@
     border-color: var(--primary-color)!important;
 }
 
-
+a {
+    /* set color for all link */
+    color: var(--primary-color);
+}
 a:hover{
     color: var(--hover-color)!important;
     text-decoration: none;

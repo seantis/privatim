@@ -11,8 +11,11 @@ from privatim.orm.meta import UUIDStrPK
 
 
 from typing import TYPE_CHECKING
+
+
 if TYPE_CHECKING:
     from privatim.models import User
+    from privatim.types import ACL
 
 # Many-to-many association table for users and groups
 user_group_association = Table(
