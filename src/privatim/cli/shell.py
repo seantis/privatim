@@ -38,8 +38,6 @@ def shell() -> None:
     """Enters an interactive shell."""
 
     config_uri = find_ini_file_or_abort()
-    assert 'development.ini' in config_uri
-
     env = bootstrap(config_uri)
     with env['request'].tm:
         session = env['request'].dbsession
