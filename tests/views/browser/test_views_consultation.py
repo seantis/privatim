@@ -1,10 +1,10 @@
 from privatim.models.consultation import Status, Consultation
 
 
-def test_view_add_working_group(client):
+def test_view_consultation(client):
 
     client.login_admin()
-    page = client.get('/activities')
+    client.get('/activities')
     db = client.db
 
     # add a consultations:
@@ -32,3 +32,13 @@ def test_view_add_working_group(client):
 
     page = client.get('/activities')
     assert 'Vernehmlassung zur Interkantonalen Vereinbarung über den' in page
+    # page = client.get(f'/consultations/{str(consultation.id)}')
+
+
+def test_view_add_consultation(client, consultation):
+
+    client.login_admin()
+    page = client.get('/consultations')
+
+    # todo: test the view where we add new here.
+    # todo: change to consultations

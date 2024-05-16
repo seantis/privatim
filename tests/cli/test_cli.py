@@ -1,5 +1,4 @@
 from privatim.cli.find_files import find_ini_files
-from tests.shared.fixtures import temporary_directory
 from pathlib import Path
 
 
@@ -11,7 +10,7 @@ def find_src_directory(start_path: Path) -> Path:
     raise FileNotFoundError('No src directory found')
 
 
-def test_find_ini_files(temporary_directory):
+def test_find_ini_files():
     """
     Attempts to find the production.ini file upwards from the current
     """

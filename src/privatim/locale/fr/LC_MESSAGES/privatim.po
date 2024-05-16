@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-07 15:07+0200\n"
+"POT-Creation-Date: 2024-05-16 10:05+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -44,6 +44,10 @@ msgid "People"
 msgstr "Les personnes"
 
 #: src/privatim/layouts/navbar.pt
+msgid "Consultations"
+msgstr ""
+
+#: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Groupe de travail"
@@ -61,8 +65,24 @@ msgid "Sign out"
 msgstr "Déconnecter"
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Activities"
 msgstr "Activités"
+
+#: src/privatim/views/consultations.py
+#, python-format
+msgid "Successfully added consultation \"${name}\""
+msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
+
+#: src/privatim/views/consultations.py
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr "Ajouter une consultation"
+
+#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr "Modifier la consultation"
 
 #: src/privatim/views/working_groups.py
 #, python-format
@@ -83,30 +103,24 @@ msgid "Save"
 msgstr "Sauver"
 
 #: src/privatim/views/templates/consultations.pt
-msgid "Add Consultation"
-msgstr "Ajouter une consultation"
-
-#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Max Müller"
 msgstr ""
 
 #: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "-> Show Details"
 msgstr "-> Afficher les détails"
 
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/consultation.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Status:"
 msgstr "Statut:"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Consultation"
 msgstr "Consultation"
-
-#: src/privatim/views/templates/person.pt
-msgid "Person"
-msgstr "Personne"
-
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -123,10 +137,6 @@ msgstr "Aucune personne n'a encore été ajoutée."
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
 msgstr "Groupe"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Edit Consultation"
-msgstr "Modifier la consultation"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Title"
@@ -148,26 +158,38 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr "Créé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr "Terminé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr "En cours de traitement"
+
 #: src/privatim/forms/fields.py
 msgid "Select Members..."
-msgstr ""
+msgstr "Sélectionner des membres..."
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
-msgstr ""
+msgstr "Groupe de travail sur l'édition"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "No Leader"
-msgstr ""
+msgstr "Pas de chef"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Leader"
-msgstr ""
+msgstr "Chef de file"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
-msgstr ""
+msgstr "Membres"

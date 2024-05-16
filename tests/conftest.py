@@ -7,6 +7,7 @@ from sedate import utcnow
 from sqlalchemy import engine_from_config
 from privatim import main
 from privatim.models import User, WorkingGroup
+from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest
 from tests.shared.client import Client
@@ -158,8 +159,7 @@ def app_inner(app_settings):
 
 @pytest.fixture
 def app(app_inner, connection):
-    app_inner.app.app.registry["dbsession_factory"].kw["bind"] = \
-        connection
+    app_inner.app.app.registry["dbsession_factory"].kw["bind"] = connection
     yield app_inner
 
 
@@ -182,3 +182,29 @@ def client(app, engine):
         client.db.commit()
     client.reset()
     Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture()
+def consultation(session) -> Consultation:
+    status = Status(name='Erstellt')
+    consultation = Consultation(
+        title='Vernehmlassung zur Interkantonalen Vereinbarung über den '
+              'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen  ',
+        description='Stellungnahme von privatim, Konferenz der '
+                    'schweizerischen Datenschutzbeauftragten, zum Entwurf '
+                    'einer Interkantonalen Vereinbarung über den '
+                    'Datenaustausch zum Betrieb gemeinsamer '
+                    'Abfrageplattformen, zu welcher die Konferenz der '
+                    'Kantonalen Justiz- und Polizeidirektorinnen und '
+                    '–direktoren (KKJPD) zur Zeit eine Vernehmlassung '
+                    'durchführt.',
+        recommendation=' Aus verfassungs- und datenschutzrechtlicher Sicht '
+                       'ergeben sich einerseits grundsätzliche; Vorbehalte '
+                       'und andererseits Hinweise zu einzelnen Bestimmungen '
+                       'des Vereinbarungsentwurfs..',
+        status=status,
+    )
+    session.add(consultation)
+    session.add(status)
+    session.flush()
+    return consultation

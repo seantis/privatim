@@ -14,13 +14,13 @@ if TYPE_CHECKING:
 class Statement(Base):
     """Stellungsnahme"""
 
-    __tablename__ = 'statement'
+    __tablename__ = 'statements'
 
     id: Mapped[UUIDStrPK]
 
     text = Column(Text)
 
-    drafted_by: Mapped[UUIDStr] = mapped_column(ForeignKey('user.id'))
+    drafted_by: Mapped[UUIDStr] = mapped_column(ForeignKey('users.id'))
     drafter: Mapped['User'] = relationship(
         'User',
         back_populates='statements',

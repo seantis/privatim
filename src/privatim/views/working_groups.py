@@ -47,7 +47,7 @@ def add_or_edit_group_view(
                 leader_id=leader_id,
                 users=users
             )
-            request.dbsession.add(group)
+            session.add(group)
             message = _(
                 'Successfully added working group "${name}"',
                 mapping={'name': form.name.data}

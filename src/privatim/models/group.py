@@ -16,7 +16,7 @@ user_group_association = Table(
     'user_groups',
     Base.metadata,
     Column('user_id', UUIDStr,
-           ForeignKey('user.id', ondelete='CASCADE')),
+           ForeignKey('users.id', ondelete='CASCADE')),
     Column('group_id', UUIDStr, ForeignKey('groups.id')),
 )
 
@@ -65,7 +65,7 @@ class WorkingGroup(Group):
     )
 
     leader_id: Mapped[UUIDStr | None] = mapped_column(
-        ForeignKey('user.id'), nullable=True
+        ForeignKey('users.id'), nullable=True
     )
     leader: Mapped['User'] = relationship(
         'User',

@@ -5,7 +5,9 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from privatim.route_factories import (working_group_factory,
                                       consultation_factory, person_factory)
 from privatim.views.activities import activities_overview
-from privatim.views.consultation import consultation_view
+from privatim.views.consultations import (add_or_edit_consultation_view,
+                                          consultation_view,
+                                          consultations_view)
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
@@ -57,13 +59,13 @@ def includeme(config: 'Configurator') -> None:
         factory=consultation_factory
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_or_edit_consultation_view,
         route_name='add_consultation',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_or_edit_consultation_view,
         route_name='add_consultation',
         renderer='json',
         request_method='POST',
@@ -87,6 +89,14 @@ def includeme(config: 'Configurator') -> None:
         people_view,
         route_name='people',
         renderer='templates/people.pt',
+    )
+
+    # consultations overview
+    config.add_route('consultations', '/consultations')
+    config.add_view(
+        consultations_view,
+        route_name='consultations',
+        renderer='templates/consultations.pt'
     )
 
     # working groups overview

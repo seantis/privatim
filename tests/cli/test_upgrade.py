@@ -3,7 +3,7 @@ from privatim.cli.upgrade import UpgradeContext
 
 def test_has_table(config):
     upgrade = UpgradeContext(config.dbsession)
-    assert upgrade.has_table('consultation')
+    assert upgrade.has_table('consultations')
     assert not upgrade.has_table('bogus')
 
 

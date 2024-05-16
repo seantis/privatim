@@ -5,8 +5,11 @@
 
     <div metal:fill-slot="content">
 
-        <h1 i18n:translate>${person.fullname}</h1>
+        <h1>${person.fullname}</h1>
 
 
+        <ul>
+            <li>${person.email}</li>
+        </ul>
     </div>
 </metal:block>

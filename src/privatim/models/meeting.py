@@ -26,7 +26,7 @@ meetings_users_association = Table(
     Column(
         'user_id',
         UUIDStr,
-        ForeignKey('user.id'),
+        ForeignKey('users.id'),
         primary_key=True
     )
 )
@@ -35,7 +35,7 @@ meetings_users_association = Table(
 class AgendaItem(Base):
     """ Traktanden """
 
-    __tablename__ = 'agenda_item'
+    __tablename__ = 'agenda_items'
 
     id: Mapped[UUIDStrPK]
 

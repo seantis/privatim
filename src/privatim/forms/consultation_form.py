@@ -1,4 +1,5 @@
 from wtforms import Form, StringField
+from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from privatim.i18n import _
@@ -30,4 +31,12 @@ class ConsultationForm(Form):
     description = TextAreaField(_('Description'), default='test')
     comments = TextAreaField(_('Comments'), default='test')
     recommendation = StringField(_('Recommendation'), default='test')
-    status = StringField(_('Status'), default='test')
+    status = SelectField(
+        _('Status'),
+        default='test',
+        choices=[
+            ('1', _('Open')),
+            ('2', _('Closed')),
+            ('3', _('In Progress')),
+        ],
+    )

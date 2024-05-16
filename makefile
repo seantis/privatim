@@ -28,7 +28,7 @@ ensure_uv: in_virtual_env
 	# use latest uv
 	uv pip install --upgrade uv
 
-compile:
+compile: in_virtual_env
 	@./requirements/compile.sh
 
 run: in_virtual_env

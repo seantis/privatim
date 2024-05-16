@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-07 15:07+0200\n"
+"POT-Creation-Date: 2024-05-16 10:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,10 @@ msgid "People"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
+msgid "Consultations"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr ""
@@ -62,7 +66,24 @@ msgstr ""
 
 #: ./src/privatim/layouts/navbar.py
 #: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
 msgid "Activities"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
+#, python-format
+msgid "Successfully added consultation \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
+#: ./src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
 msgstr ""
 
 #: ./src/privatim/views/working_groups.py
@@ -84,48 +105,23 @@ msgid "Save"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
-msgid "Add Consultation"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
 msgid "Max Müller"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
 msgid "-> Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
 #: ./src/privatim/views/templates/consultation.pt
+#: ./src/privatim/views/templates/activities.pt
 msgid "Status:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
 msgid "Consultation"
-msgstr ""
-
-#: ./src/privatim/views/templates/person.pt
-msgid "Person"
-msgstr ""
-
-#. Default: Name
-#: ./src/privatim/views/templates/person.pt
-msgid "label_name"
-msgstr ""
-
-#. Default: Email
-#: ./src/privatim/views/templates/person.pt
-msgid "label_email"
-msgstr ""
-
-#. Default: Phone
-#: ./src/privatim/views/templates/person.pt
-msgid "label_phone"
-msgstr ""
-
-#. Default: Address
-#: ./src/privatim/views/templates/person.pt
-msgid "label_address"
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
@@ -142,10 +138,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "Group"
-msgstr ""
-
-#: ./src/privatim/forms/consultation_form.py
-msgid "Edit Consultation"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
@@ -166,6 +158,18 @@ msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
 msgid "Status"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "In Progress"
 msgstr ""
 
 #: ./src/privatim/forms/fields.py

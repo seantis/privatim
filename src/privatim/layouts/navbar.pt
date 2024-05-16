@@ -21,6 +21,12 @@
                              i18n:translate>People</a>
                 </li>
                 <li>
+                    <a href="${request.route_url('consultations')}"
+                       class="nav-link px-3 link-body-emphasis"
+                       id="${'active_tab' if request.matched_route.name == 'consultations' else ''}"
+                             i18n:translate>Consultations</a>
+                </li>
+                <li>
                     <a href="${request.route_url('groups')}"
                        class="nav-link px-3 link-body-emphasis"
                        id="${'active_tab' if request.matched_route.name == 'groups' else ''}"

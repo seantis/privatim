@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-07 15:07+0200\n"
+"POT-Creation-Date: 2024-05-16 10:05+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -44,6 +44,10 @@ msgid "People"
 msgstr "Personen"
 
 #: src/privatim/layouts/navbar.pt
+msgid "Consultations"
+msgstr "Vernehmlassungen"
+
+#: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Arbeitsgruppen"
@@ -61,8 +65,24 @@ msgid "Sign out"
 msgstr "Logout"
 
 #: src/privatim/layouts/navbar.py src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Activities"
 msgstr "Aktivitäten"
+
+#: src/privatim/views/consultations.py
+#, python-format
+msgid "Successfully added consultation \"${name}\""
+msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/consultations.py
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr "Vernehmlassung Erfassen"
+
+#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr "Vernehmlassung bearbeiten"
 
 #: src/privatim/views/working_groups.py
 #, python-format
@@ -83,29 +103,24 @@ msgid "Save"
 msgstr "Speichern"
 
 #: src/privatim/views/templates/consultations.pt
-msgid "Add Consultation"
-msgstr "Vernehmlassung erfassen"
-
-#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Max Müller"
 msgstr ""
 
 #: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
 msgid "-> Show Details"
 msgstr "-> Details anzeigen"
 
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/consultation.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Status:"
 msgstr "Status:"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Consultation"
 msgstr "Vernehmlassung"
-
-#: src/privatim/views/templates/person.pt
-msgid "Person"
-msgstr "Person"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -122,10 +137,6 @@ msgstr "Noch keine Personen hinzugefügt."
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
 msgstr "Gruppe"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Edit Consultation"
-msgstr "Vernehmlassung bearbeiten"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Title"
@@ -146,6 +157,18 @@ msgstr "Empfehlung"
 #: src/privatim/forms/consultation_form.py
 msgid "Status"
 msgstr "Status"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr "Erstellt"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr "Abgeschlossen"
+
+#: src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr "in Bearbeitung"
 
 #: src/privatim/forms/fields.py
 msgid "Select Members..."
@@ -170,3 +193,6 @@ msgstr "Leiter"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Mitglieder"
+
+#~ msgid "Person"
+#~ msgstr "Person"
