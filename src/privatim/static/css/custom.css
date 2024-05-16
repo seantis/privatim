@@ -12,9 +12,10 @@
     border-color: var(--primary-color);
 }
 
-.btn-primary:hover {
-    background-color: var(--hover-color);
-    border-color: var(--hover-color);
+
+a:hover{
+    color: var(--hover-color)!important;
+    text-decoration: none;
 }
 
 
@@ -80,5 +81,3 @@ body {
     border-color: var(--primary-color);
     font-weight: 700;
 }
-
-
