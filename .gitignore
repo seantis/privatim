@@ -1,3 +1,8 @@
+# files created with sqlalchemy-file (documents_dir in development.ini )
+files/
+
+tests/uploads/
+
 # Byte code
 __pycache__/
 *.py[cod]

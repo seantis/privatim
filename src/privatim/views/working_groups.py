@@ -2,7 +2,7 @@ from pyramid.httpexceptions import HTTPFound
 
 from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select
-from privatim.models import Group, WorkingGroup, User
+from privatim.models import WorkingGroup, User
 from privatim.i18n import _
 
 

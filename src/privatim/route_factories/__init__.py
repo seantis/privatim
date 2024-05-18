@@ -1,3 +1,5 @@
+from privatim.models.attached_document import ConsultationDocument
+
 from .root_factory import root_factory
 from .uuid_factory import create_uuid_factory
 from privatim.models import WorkingGroup, Consultation, User, Meeting
@@ -34,12 +36,19 @@ def meeting_factory(request: 'IRequest') -> 'Meeting | Root':
 
     return _meeting_factory(request)
 
+
 def person_factory(request: 'IRequest') -> 'User | Root':
 
     if request.matchdict.get('id', None) is None:
         return root_factory(request)
 
     return _person_factory(request)
+
+
+consultation_document_factory = create_uuid_factory(
+    ConsultationDocument,
+    key='consultation_doc_id'
+)
 
 
 __all__ = (

@@ -2,14 +2,17 @@ import warnings
 import pytest
 import sqlalchemy
 import transaction
+from libcloud.storage.drivers.local import LocalStorageDriver
 from pyramid import testing
 from sedate import utcnow
 from sqlalchemy import engine_from_config
-from privatim import main
+from privatim import main, setup_filestorage
 from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest
+from sqlalchemy_file.storage import StorageManager
+
 from tests.shared.client import Client
 
 
@@ -27,7 +30,7 @@ def base_config():
 
 
 @pytest.fixture
-def config(base_config, monkeypatch):
+def config(base_config, monkeypatch, tmpdir):
     base_config.include('privatim.models')
     base_config.include('pyramid_chameleon')
     base_config.include('pyramid_layout')
@@ -54,6 +57,16 @@ def config(base_config, monkeypatch):
         orig_init(self, *args, dbsession=dbsession, **kwargs)
 
     monkeypatch.setattr(DummyRequest, '__init__', init_with_dbsession)
+
+    # Store static files in a temporary directory
+    if not StorageManager._storages:
+        # NOTE: StorageManager does not expose any method to check if some
+        # storage has already been added. However, if you attempt to add a
+        # storage that already exists, StorageManager raises a RuntimeError.
+        tmpdir.mkdir('assets')
+        container = LocalStorageDriver(tmpdir).get_container('assets')
+        StorageManager.add_storage("default", container)
+
     return base_config
 
 
@@ -136,6 +149,10 @@ def user_with_working_group(session):
 def engine(app_settings):
     engine = engine_from_config(app_settings)
     Base.metadata.create_all(engine)
+
+    # initialize file storage
+    setup_filestorage(app_settings)
+
     return engine
 
 
@@ -180,6 +197,7 @@ def client(app, engine):
     if user := client.db.get(User, user.id):
         client.db.delete(user)
         client.db.commit()
+
     client.reset()
     Base.metadata.drop_all(bind=engine)
 

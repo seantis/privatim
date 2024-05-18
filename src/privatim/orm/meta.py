@@ -12,7 +12,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import registry
 from sqlalchemy.schema import MetaData
-
+from sqlalchemy_file import FileField, File
 from .utcdatetime_type import UTCDateTime
 from .uuid_type import UUIDStr as UUIDStrType
 
@@ -55,7 +55,11 @@ str_64 = Annotated[str, 64]
 str_128 = Annotated[str, 128]
 str_256 = Annotated[str, 256]
 Text = Annotated[str, 'Text']
-File = Annotated[bytes, 'File']
+FileContents = Annotated[bytes, 'File']
+
+# File attachments that are stored on the filesystem and managed through
+# sqlalchemy_file.
+AttachedFile = Annotated[File, 'AttachedFile']
 
 
 class Base(DeclarativeBase):
@@ -71,6 +75,7 @@ class Base(DeclarativeBase):
             str_128: String(length=128),
             str_256: String(length=256),
             Text: TextType,
-            File: LargeBinary,
+            FileContents: LargeBinary,
+            AttachedFile: FileField,
         }
     )

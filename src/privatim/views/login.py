@@ -47,7 +47,7 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         stmt = select(User).filter(
             User.email.ilike(login)
         )
-        user = session.execute(stmt).scalar_one_or_none()
+        user = session.execute(stmt).scalar_one()
         if user and user.check_password(password):
             next_url = request.route_url('home')
             user.last_login = utcnow()

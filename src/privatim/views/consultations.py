@@ -4,8 +4,8 @@ from privatim.models import Consultation
 from privatim.models.consultation import Status
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
-
-
+from privatim.models.attached_document import ConsultationDocument
+from privatim.utils import dictionary_to_binary
 from typing import TYPE_CHECKING
 
 
@@ -17,8 +17,22 @@ if TYPE_CHECKING:
 
 def consultation_view(
         context: Consultation, request: 'IRequest'
-) -> dict[str, Consultation]:
-    return {'consultation': context}
+) -> 'RenderData':
+
+    documents = []
+    for doc in context.documents:
+        documents.append({
+            'document': doc,
+            'download_url': request.route_url(
+                'download_document',
+                consultation_doc_id=doc.id
+            )
+        })
+
+    return {
+        'consultation': context,
+        'documents': documents,
+    }
 
 
 def consultations_view(request: 'IRequest') -> 'RenderData':
@@ -30,7 +44,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
 def create_consultation_from_form(
     form: ConsultationForm, session: 'Session'
-) -> Consultation:
+) -> Consultation | None:
     status = Status(name=form.status.name)
     session.add(status)
     session.flush()
@@ -43,6 +57,16 @@ def create_consultation_from_form(
         recommendation=form.recommendation.data,
         status_id=status.id,
     )
+    if form.documents.data is None:
+        return None
+
+    for file in form.documents.data:
+        consultation.documents.append(
+            ConsultationDocument(
+                file['filename'],
+                dictionary_to_binary(file))
+        )
+
     return consultation
 
 
@@ -61,10 +85,7 @@ def add_or_edit_consultation_view(
 
     if request.method == 'POST' and form.validate():
         if consultation is None:
-            # title description comments recommendation status
-            # users = session.execute(stmt).scalars().all()
             consultation = create_consultation_from_form(form, session)
-
             request.dbsession.add(consultation)
             message = _(
                 'Successfully added consultation "${name}"',

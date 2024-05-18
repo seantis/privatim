@@ -18,6 +18,11 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
+```
+cp development.ini.example development.ini
+# adjust `assets_dir` in development.ini to some directory (e.g. /tmp/privatim_assets)
+```
+
 - Upgrade packaging tools, if necessary.
 
 ```

@@ -1,8 +1,13 @@
-
 from fanstatic import Fanstatic
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
+from sqlalchemy import Table, MetaData, Column, ForeignKey
+from sqlalchemy_file import FileField
 
+# from privatim.orm.meta import UUIDStrPK, UUIDStr
+from privatim.orm.uuid_type import UUIDStr as UUIDStrType
+
+from privatim.file import setup_filestorage
 from privatim.flash import MessageQueue
 from privatim.i18n import LocaleNegotiator
 from privatim.route_factories.root_factory import root_factory
@@ -15,6 +20,7 @@ __version__ = '0.0.0'
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication
+    from privatim.cli.upgrade import UpgradeContext
 
 
 def includeme(config: Configurator) -> None:
@@ -65,8 +71,26 @@ def main(
             profiles_sample_rate=0.25,
         )
 
+    setup_filestorage(settings)
+
     with Configurator(settings=settings, root_factory=root_factory) as config:
         includeme(config)
 
     app = config.make_wsgi_app()
     return Fanstatic(app, versioning=True)
+
+
+def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
+    if not context.has_table('consultation_assets'):
+        consultation_assets = Table(
+            'consultation_assets',
+            MetaData(),
+            Column('id', UUIDStrType, primary_key=True),
+            Column(
+                'consultation_id', UUIDStrType, ForeignKey('consultations.id')
+            ),
+            Column('document', FileField),
+        )
+        consultation_assets.create(context.engine)
+
+    context.commit()

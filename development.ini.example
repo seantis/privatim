@@ -38,6 +38,11 @@ retry.attempts = 3
 # '127.0.0.1' and '::1'.
 # debugtoolbar.hosts = 127.0.0.1 ::1
 
+
+# Set your own path here where the files are stored
+assets_dir = files
+
+
 [pshell]
 setup = privatim.pshell.setup
 

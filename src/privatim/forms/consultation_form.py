@@ -1,11 +1,14 @@
-from wtforms import Form, StringField
+from privatim.forms.core import Form
+from wtforms import StringField
 from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
+from wtforms import validators
+
+from privatim.forms.fields import UploadMultipleField  # type:ignore
 from privatim.i18n import _
 
 from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models import Consultation
@@ -24,9 +27,11 @@ class ConsultationForm(Form):
             meta={'context': context, 'request': request},
         )
 
-    title = StringField(_('Title'),
-                        validators=[DataRequired()],
-                        default='test')
+    title = StringField(
+        _('Title'),
+        validators=[DataRequired()],
+        default='test',
+    )
 
     description = TextAreaField(_('Description'), default='test')
     comments = TextAreaField(_('Comments'), default='test')
@@ -39,4 +44,11 @@ class ConsultationForm(Form):
             ('2', _('Closed')),
             ('3', _('In Progress')),
         ],
+    )
+
+    documents = UploadMultipleField(
+        label=_('Documents'),
+        validators=[
+            validators.Optional(),
+        ]
     )

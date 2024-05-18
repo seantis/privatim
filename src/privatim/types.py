@@ -1,17 +1,12 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-    from collections.abc import Sequence
+    from collections.abc import Mapping, Sequence
 
     from pyramid.httpexceptions import HTTPFound
-    from pyramid.interfaces import IRequest
     from pyramid.interfaces import IResponse
 
-    from typing import Any
-    from typing import Literal
-    from typing import Protocol
-    from typing import TypeVar
-    from typing_extensions import TypeAlias
+    from typing import Any, Literal, TypeVar
+    from typing_extensions import NotRequired, TypedDict, TypeAlias
 
     _Tco = TypeVar('_Tco', covariant=True)
 
@@ -47,7 +42,14 @@ if TYPE_CHECKING:
     MixedDataOrRedirect: TypeAlias = MixedData | HTTPFound
     MixedDataOrResponse: TypeAlias = MixedData | IResponse
 
-    class Callback(Protocol[_Tco]):
-        def __call__(self, context: Any, request: IRequest) -> _Tco: ...
+    class FileDict(TypedDict):
+        data: str
+        filename: str | None
+        mimetype: str
+        size: int
 
-    CallbackOrValue: TypeAlias = Callback[_Tco] | _Tco
+    class LaxFileDict(TypedDict):
+        data: str
+        filename: NotRequired[str | None]
+        mimetype: NotRequired[str]
+        size: NotRequired[int]

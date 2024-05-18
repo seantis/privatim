@@ -2,6 +2,7 @@ from privatim.cli.find_files import find_ini_files
 from pathlib import Path
 import pytest
 
+
 def find_src_directory(start_path: Path) -> Path:
     current_path = start_path.resolve()
     for parent in current_path.parents:

@@ -13,12 +13,15 @@ if TYPE_CHECKING:
 _M = TypeVar('_M', bound='Base')
 
 
-def create_uuid_factory(cls: type[_M]) -> 'Callable[[IRequest], _M]':
+def create_uuid_factory(
+        cls: type[_M],
+        key: str = 'id'
+) -> 'Callable[[IRequest], _M]':
     def route_factory(request: 'IRequest') -> _M:
 
         session = request.dbsession
         matchdict = request.matchdict
-        uuid = matchdict.get('id', None)
+        uuid = matchdict.get(key, None)
 
         if not uuid:
             raise HTTPNotFound()

@@ -2,9 +2,11 @@ from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
 
+from fliestorage_download import download_consultation_document
 from privatim.route_factories import (working_group_factory,
                                       consultation_factory, person_factory,
-                                      meeting_factory)
+                                      meeting_factory,
+                                      consultation_document_factory)
 from privatim.views.activities import activities_overview
 from privatim.views.consultations import (add_or_edit_consultation_view,
                                           consultation_view,
@@ -160,7 +162,6 @@ def includeme(config: 'Configurator') -> None:
         xhr=True
     )
 
-
     # view for single person
     config.add_route(
         'person',
@@ -171,4 +172,15 @@ def includeme(config: 'Configurator') -> None:
         person_view,
         route_name='person',
         renderer='templates/person.pt',
+    )
+
+    config.add_route(
+        'download_document',
+        '/media/assets/{consultation_doc_id}',
+        factory=consultation_document_factory
+    )
+    config.add_view(
+        download_consultation_document,
+        request_method='GET',
+        route_name='download_document'
     )

@@ -13,11 +13,8 @@ def test_leading_group(session, user_with_working_group):
 
     # add a leader
     working_group.leader = user
-    session.add(working_group)
-    session.add(user)
+    session.add_all([user, working_group])
     session.flush()
-    session.refresh(user)
-    session.refresh(working_group)
 
     assert user.leading_groups == [working_group]
     assert working_group.leader == user

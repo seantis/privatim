@@ -1,6 +1,5 @@
 <metal:block use-macro="main_template"
              xmlns="http://www.w3.org/1999/xhtml"
-             xmlns:tal="http://xml.zope.org/namespaces/tal"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
 
@@ -20,6 +19,25 @@
                             <strong i18n:translate="">Status:</strong>
                             <span class="consultation-status" i18n:translate="">${consultation.status.name}</span>
                         </div>
+
+                        <table>
+                            <thead>
+                            <th class="" i18n:translate>Filename</th>
+                                <th class="subtitle is-5" i18n:translate>Filetype</th>
+                                </thead>
+                                <tbody>
+                                    <tr tal:repeat="item documents">
+                                    <td>
+                                        <a href="${item.download_url}" class="document-link" target="_blank">
+                                                ${item.document.filename}
+                                        </a>
+                                    </td>
+
+                                    <td>${item.document.content_type}</td>
+                                    </tr>
+                                    </tbody>
+                        </table>
+
                     </div>
                 </div>
             </div>

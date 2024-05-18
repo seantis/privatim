@@ -5,10 +5,9 @@ import rlcompleter
 import click
 from pyramid.paster import bootstrap
 from transaction import commit
+from privatim.cli.find_files import find_ini_file_or_abort
 
 from typing import Any
-
-from privatim.cli.find_files import find_ini_file_or_abort
 
 
 class EnhancedInteractiveConsole(InteractiveConsole):
@@ -36,9 +35,9 @@ class EnhancedInteractiveConsole(InteractiveConsole):
 @click.command()
 def shell() -> None:
     """Enters an interactive shell."""
-
     config_uri = find_ini_file_or_abort()
     env = bootstrap(config_uri)
+
     with env['request'].tm:
         session = env['request'].dbsession
         app = env['app']
@@ -55,17 +54,21 @@ def shell() -> None:
         privatim Shell
         ==================
 
-        Exit the console using exit() or quit().
+    Exit the console using exit() or quit().
 
-        Available variables: session
-        Available functions: commit
+    Available variables: session
+    Available functions: commit, delete
 
-        Example:
-           from privatim.models.user import User
-           query = session.query(User).filter_by(username='admin@example.org')
-           user = query.one()
-           user.username = 'info@example.org'
-           commit()
-           exit()
-        """
+    Example:
+       from privatim.models.user import User
+       query = session.query(User).filter_by(username='admin@example.org')
+       user = query.one()
+       user.username = 'info@example.org'
+       commit()
+       exit()
+
+from privatim.models import Consultation
+query = session.query(Consultation).all()
+[session.delete(c) for c in query];
+"""
         )
