@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-16 14:42+0200\n"
+"POT-Creation-Date: 2024-05-18 16:52+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -25,136 +25,33 @@ msgstr "Nur ein Test"
 msgid "<b>bold</b>"
 msgstr "<b>fett</b>"
 
-#: src/privatim/layouts/footer.pt
-msgid "Exchange. Record. Find."
-msgstr "Austauschen. Erfassen. Finden."
+#: src/privatim/forms/fields.py
+msgid "Select Members..."
+msgstr "Mitglieder auswählen..."
 
-#: src/privatim/layouts/footer.pt
-msgid "About us"
-msgstr "Über uns "
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Arbeitsgruppe bearbeiten"
 
-#: src/privatim/layouts/footer.pt
-msgid "Impressum"
-msgstr "Impressum"
+#: src/privatim/forms/working_group_forms.py
+msgid "No Leader"
+msgstr "Kein Leiter"
 
-#: src/privatim/layouts/footer.pt
-msgid "Contact"
-msgstr "Kontakt"
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Name"
 
-#. Default: Close
-#: src/privatim/layouts/flash.pt
-msgid "Close"
-msgstr "Schliessen"
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr "Leiter"
 
-#: src/privatim/layouts/navbar.pt
-msgid "Overview"
-msgstr "Übersicht"
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
 
-#: src/privatim/layouts/navbar.pt
-#: src/privatim/views/templates/working_groups.pt
-msgid "People"
-msgstr "Personen"
-
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/consultations.pt
-msgid "Consultations"
-msgstr "Vernehmlassungen"
-
-#: src/privatim/layouts/navbar.pt
-#: src/privatim/views/templates/working_groups.pt
-msgid "Working Groups"
-msgstr "Arbeitsgruppen"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Profile"
-msgstr "Profil"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Sign out"
-msgstr "Logout"
-
-#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
-msgid "Activities"
-msgstr "Aktivitäten"
-
-#: src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully added consultation \"${name}\""
-msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
-
-#: src/privatim/views/consultations.py
-#: src/privatim/views/templates/consultations.pt
-msgid "Add Consultation"
-msgstr "Vernehmlassung Erfassen"
-
-#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
+#: src/privatim/forms/consultation_form.py src/privatim/views/consultations.py
 msgid "Edit Consultation"
 msgstr "Vernehmlassung bearbeiten"
-
-#: src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully added working group \"${name}\""
-msgstr "Arbeitsgruppe \"${name}\" erfolgreich hinzugefügt"
-
-#: src/privatim/views/working_groups.py
-#: src/privatim/views/templates/working_groups.pt
-msgid "Add Working Group"
-msgstr "Arbeitsgruppe hinzufügen"
-
-#: src/privatim/views/templates/form.pt
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: src/privatim/views/templates/form.pt
-msgid "Save"
-msgstr "Speichern"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Max Müller"
-msgstr ""
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
-msgid "-> Show Details"
-msgstr "-> Details anzeigen"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/consultation.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Status:"
-msgstr "Status:"
-
-#: src/privatim/views/templates/working_group.pt
-msgid "Working Group ${group.name}"
-msgstr ""
-
-#: src/privatim/views/templates/working_group.pt
-msgid "Add Meeting"
-msgstr "Meeting hinzufügen"
-
-#: src/privatim/views/templates/consultation.pt
-msgid "Consultation"
-msgstr "Vernehmlassung"
-
-#: src/privatim/views/templates/login.pt
-msgid "Sign in"
-msgstr "Anmelden"
-
-#: src/privatim/views/templates/people.pt
-msgid "List of Persons"
-msgstr "Personenverzeichnis"
-
-#: src/privatim/views/templates/people.pt
-msgid "No people added yet."
-msgstr "Noch keine Personen hinzugefügt."
-
-#: src/privatim/views/templates/working_groups.pt
-msgid "Group"
-msgstr "Gruppe"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Title"
@@ -188,32 +85,129 @@ msgstr "Abgeschlossen"
 msgid "In Progress"
 msgstr "in Bearbeitung"
 
-#: src/privatim/forms/fields.py
-msgid "Select Members..."
-msgstr "Mitglieder auswählen..."
+#: src/privatim/layouts/footer.pt
+msgid "Exchange. Record. Find."
+msgstr "Austauschen. Erfassen. Finden."
 
-#: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Arbeitsgruppe bearbeiten"
+#: src/privatim/layouts/footer.pt
+msgid "About us"
+msgstr "Über uns "
 
-#: src/privatim/forms/working_group_forms.py
-msgid "No Leader"
-msgstr "Kein Leiter"
+#: src/privatim/layouts/footer.pt
+msgid "Impressum"
+msgstr "Impressum"
 
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Name"
+#: src/privatim/layouts/footer.pt
+msgid "Contact"
+msgstr "Kontakt"
 
-#: src/privatim/forms/working_group_forms.py
-msgid "Leader"
-msgstr "Leiter"
+#. Default: Close
+#: src/privatim/layouts/flash.pt
+msgid "Close"
+msgstr "Schliessen"
 
-#: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Mitglieder"
+#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
+msgid "Activities"
+msgstr "Aktivitäten"
 
-#~ msgid "Working Group${group.name}"
-#~ msgstr "Arbeitsgruppe ${group.name}"
+#: src/privatim/layouts/navbar.pt
+msgid "Overview"
+msgstr "Übersicht"
 
-#~ msgid "Person"
-#~ msgstr "Person"
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
+msgid "People"
+msgstr "Personen"
+
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/consultations.pt
+msgid "Consultations"
+msgstr "Vernehmlassungen"
+
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
+msgid "Working Groups"
+msgstr "Arbeitsgruppen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Profile"
+msgstr "Profil"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Sign out"
+msgstr "Logout"
+
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr "Arbeitsgruppe \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/working_groups.py
+#: src/privatim/views/templates/working_groups.pt
+msgid "Add Working Group"
+msgstr "Arbeitsgruppe hinzufügen"
+
+#: src/privatim/views/consultations.py
+#, python-format
+msgid "Successfully added consultation \"${name}\""
+msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/consultations.py
+#: src/privatim/views/templates/consultations.pt
+msgid "Add Consultation"
+msgstr "Vernehmlassung Erfassen"
+
+#: src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr "Personenverzeichnis"
+
+#: src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr "Noch keine Personen hinzugefügt."
+
+#: src/privatim/views/templates/form.pt
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/privatim/views/templates/form.pt
+msgid "Save"
+msgstr "Speichern"
+
+#: src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/consultations.pt
+msgid "Max Müller"
+msgstr ""
+
+#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/consultations.pt
+msgid "-> Show Details"
+msgstr "-> Details anzeigen"
+
+#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/consultation.pt
+#: src/privatim/views/templates/consultations.pt
+msgid "Status:"
+msgstr "Status:"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Consultation"
+msgstr "Vernehmlassung"
+
+#: src/privatim/views/templates/working_groups.pt
+msgid "Group"
+msgstr "Gruppe"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Working Group"
+msgstr "Arbeitsgruppe"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Add Meeting"
+msgstr "Sitzung hinzufügen"
