@@ -16,6 +16,7 @@ build/
 
 development.ini
 
+data/
 dist/
 .tox/
 nosetests.xml
