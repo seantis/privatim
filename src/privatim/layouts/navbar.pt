@@ -29,22 +29,20 @@
             </ul>
 
             <div class="d-flex">
-                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-                        </form>
-                        <div class="dropdown text-end">
-                            <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="${layout.static_url('privatim:static/default_profile_icon.png')}" alt="mdo" width="40" height="40"
-                                     class="rounded-circle">
-                            </a>
-                            <ul class="dropdown-menu text-small">
-                                <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                </form>
+                <div class="dropdown text-end">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="${layout.static_url('privatim:static/default_profile_icon.png')}" alt="mdo" width="40" height="40"
+                             class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
                         <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#" i18n:translate>Sign out</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" i18n:translate>Sign out</a></li>
                     </ul>
                 </div>
             </div>
