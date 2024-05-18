@@ -53,6 +53,68 @@ msgstr "Mitglieder"
 msgid "Edit Consultation"
 msgstr "Vernehmlassung bearbeiten"
 
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr "Arbeitsgruppe \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/working_groups.py
+#: src/privatim/views/templates/working_groups.pt
+msgid "Add Working Group"
+msgstr "Arbeitsgruppe hinzufügen"
+
+#: src/privatim/views/templates/form.pt
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/privatim/views/templates/form.pt
+msgid "Save"
+msgstr "Speichern"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Max Müller"
+msgstr ""
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
+msgid "-> Show Details"
+msgstr "-> Details anzeigen"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/consultation.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Status:"
+msgstr "Status:"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Working Group ${group.name}"
+msgstr "Arbeitsgruppe ${group.name}"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Add Meeting"
+msgstr "Meeting hinzufügen"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Consultation"
+msgstr "Vernehmlassung"
+
+#: src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr "Personenverzeichnis"
+
+#: src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr "Noch keine Personen hinzugefügt."
+
+#: src/privatim/views/templates/working_groups.pt
+msgid "Group"
+msgstr "Gruppe"
+
 #: src/privatim/forms/consultation_form.py
 msgid "Title"
 msgstr "Titel"
