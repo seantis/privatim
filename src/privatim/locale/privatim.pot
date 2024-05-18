@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-07 15:07+0200\n"
+"POT-Creation-Date: 2024-05-18 16:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,123 +25,28 @@ msgstr ""
 msgid "<b>bold</b>"
 msgstr ""
 
-#: ./src/privatim/layouts/layout.pt
-msgid "Exchange. Record. Find."
+#: ./src/privatim/forms/fields.py
+msgid "Select Members..."
 msgstr ""
 
-#. Default: Close
-#: ./src/privatim/layouts/flash.pt
-msgid "Close"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-msgid "Overview"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "No Leader"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "People"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Name"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "Working Groups"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Leader"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-msgid "Settings"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.pt
-msgid "Profile"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.pt
-msgid "Sign out"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.py
-#: ./src/privatim/views/templates/consultations.pt
-msgid "Activities"
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully added working group \"${name}\""
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "Add Working Group"
-msgstr ""
-
-#: ./src/privatim/views/templates/form.pt
-msgid "Cancel"
-msgstr ""
-
-#: ./src/privatim/views/templates/form.pt
-msgid "Save"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
-msgid "Add Consultation"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
-msgid "Max Müller"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
-msgid "-> Show Details"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
-#: ./src/privatim/views/templates/consultation.pt
-msgid "Status:"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultation.pt
-msgid "Consultation"
-msgstr ""
-
-#: ./src/privatim/views/templates/person.pt
-msgid "Person"
-msgstr ""
-
-#. Default: Name
-#: ./src/privatim/views/templates/person.pt
-msgid "label_name"
-msgstr ""
-
-#. Default: Email
-#: ./src/privatim/views/templates/person.pt
-msgid "label_email"
-msgstr ""
-
-#. Default: Phone
-#: ./src/privatim/views/templates/person.pt
-msgid "label_phone"
-msgstr ""
-
-#. Default: Address
-#: ./src/privatim/views/templates/person.pt
-msgid "label_address"
-msgstr ""
-
-#: ./src/privatim/views/templates/login.pt
-msgid "Sign in"
-msgstr ""
-
-#: ./src/privatim/views/templates/people.pt
-msgid "List of Persons"
-msgstr ""
-
-#: ./src/privatim/views/templates/people.pt
-msgid "No people added yet."
-msgstr ""
-
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "Group"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Members"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
@@ -168,26 +73,101 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: ./src/privatim/forms/fields.py
-msgid "Select Members..."
+#. Default: Close
+#: ./src/privatim/layouts/flash.pt
+msgid "Close"
 msgstr ""
 
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
+#: ./src/privatim/layouts/navbar.py
+#: ./src/privatim/views/templates/activities.pt
+msgid "Activities"
 msgstr ""
 
-#: ./src/privatim/forms/working_group_forms.py
-msgid "No Leader"
+#: ./src/privatim/layouts/layout.pt
+msgid "Exchange. Record. Find."
 msgstr ""
 
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Name"
+#: ./src/privatim/layouts/navbar.pt
+msgid "Overview"
 msgstr ""
 
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Leader"
+#: ./src/privatim/layouts/navbar.pt
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "People"
 msgstr ""
 
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Members"
+#: ./src/privatim/layouts/navbar.pt
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "Working Groups"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "Search..."
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "Settings"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "Profile"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "Sign out"
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "Add Working Group"
+msgstr ""
+
+#: ./src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr ""
+
+#: ./src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr ""
+
+#: ./src/privatim/views/templates/form.pt
+msgid "Cancel"
+msgstr ""
+
+#: ./src/privatim/views/templates/form.pt
+msgid "Save"
+msgstr ""
+
+#: ./src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Max Müller"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "-> Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Status:"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Consultation"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "Group"
 msgstr ""
