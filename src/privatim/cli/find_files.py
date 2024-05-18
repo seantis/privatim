@@ -43,9 +43,15 @@ def find_ini_files(start_dir: str = '') -> 'Iterator[str]':
 
 
 def find_ini_file_or_abort() -> str:
-    """Greedily search the file system from the current location upwards
-    for the development.ini or production.ini file, asking the user to confirm
-    or quit.
+    """  Automatically finds the development.ini or production.ini file.
+
+    This function makes scripting easier by reducing the need to repeatedly
+    specify the .ini file in the args for every command, encouraging its
+    frequent use.
+
+    It works by greedily searching file system from *here* upwards for .ini
+    files. It then asks the user to confirm or quit.
+
     """
     for ini_file in find_ini_files():
         response = click.prompt(
