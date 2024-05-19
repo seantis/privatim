@@ -40,7 +40,8 @@ retry.attempts = 3
 
 
 # Set your own path here where the files are stored
-assets_dir = files
+
+documents_dir = files
 
 
 [pshell]
