@@ -45,8 +45,7 @@ def shell() -> None:
     engine = get_engine(settings)
     session_factory = get_session_factory(engine)
 
-    # Needed because if the query in the shell has files attached, it will
-    # raise ObjectDoesNotExistError
+    # prevent ObjectDoesNotExistError if querying a model with documents
     setup_filestorage(settings)
 
     with transaction.manager:
@@ -67,18 +66,22 @@ def shell() -> None:
     Exit the console using exit() or quit().
 
     Available variables: session
-    Available functions: commit, delete
+    Available functions: commit
 
-    Example:
-       from privatim.models.user import User
-       query = session.query(User).filter_by(username='admin@example.org')
-       user = query.one()
-       user.username = 'info@example.org'
-       commit()
-       exit()
+Example: Query User:
+from privatim.models.user import User
+query = session.query(User).filter_by(username='admin@example.org')
+user = query.one()
+user.username = 'info@example.org'
+commit()
+exit()
+
+Example: Delete all Consultations:
 
 from privatim.models import Consultation
 query = session.query(Consultation).all()
 [session.delete(c) for c in query];
+commit()
+
 """
         )
