@@ -70,8 +70,11 @@ def add_example_content(db: 'Session') -> None:
         user.set_password('test')
         try:
             db.add(user)
+            db.flush()
         except IntegrityError as e:
+
             print(f'Error adding user: {e}')
+            return
 
     group1 = WorkingGroup(name='Arbeitsgruppe 1')
     group2 = WorkingGroup(name='Arbeitsgruppe 2')
@@ -80,7 +83,6 @@ def add_example_content(db: 'Session') -> None:
     for user in users[:2]:
         user.groups.append(group2)
     db.add_all([group1, group2])
-    db.flush()
 
     # add a consultations:
     status = Status(name='Erstellt')

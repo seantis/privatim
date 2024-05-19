@@ -106,7 +106,7 @@ def add_or_edit_consultation_view(
     else:
         return {
             'form': form,
-            'redirect_after': target_url,
+            'target_url': target_url,
             'title': (
                 _('Add Consultation')
                 if consultation is None

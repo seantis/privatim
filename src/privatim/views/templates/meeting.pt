@@ -1,0 +1,40 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+             xmlns:i18n="http://www.w3.org/namespaces/i18n"
+         i18n:domain="privatim">
+
+    <div metal:fill-slot="content">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="mb-3">Sitzung ${meeting.name}</h1>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9 mb-4">
+                    <div class="">
+                        <div class="text-start">
+                            <p>
+                                <span class="fw-bold" i18n:translate="">Time:</span> ${time}
+                            </p>
+                            <p>
+                                <span class="fw-bold" i18n:translate="">Attendees:</span>
+                            <ul>
+                                <li tal:repeat="user meeting.attendees">
+                                ${user.first_name} ${user.last_name}
+                                </li>
+                            </ul>
+                            </p>
+                            <p>
+                                <span class="fw-bold">Working Group:</span> ${meeting.working_group.name}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</metal:block>

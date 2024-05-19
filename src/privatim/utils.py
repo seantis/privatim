@@ -4,12 +4,14 @@ from functools import lru_cache
 from PIL import Image
 import magic
 from io import BytesIO
+from sedate import to_timezone
 
 
 from typing import Any, TYPE_CHECKING, overload
 if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
+    from datetime import datetime
 
 
 def first(iterable: 'Iterable[Any] | None', default: Any | None = None) -> Any:
@@ -112,3 +114,8 @@ def path_to_filename(path: str | None) -> str | None:
     if '\\' in path:
         return path.rsplit('\\', 1)[-1]
     return path
+
+
+def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
+    return db_time and to_timezone(
+        db_time, 'Europe/Zurich') or db_time

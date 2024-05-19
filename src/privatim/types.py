@@ -3,9 +3,9 @@ if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from pyramid.httpexceptions import HTTPFound
-    from pyramid.interfaces import IResponse
+    from pyramid.interfaces import IResponse, IRequest
 
-    from typing import Any, Literal, TypeVar
+    from typing import Any, Literal, TypeVar, Protocol
     from typing_extensions import NotRequired, TypedDict, TypeAlias
 
     _Tco = TypeVar('_Tco', covariant=True)
@@ -53,3 +53,6 @@ if TYPE_CHECKING:
         filename: NotRequired[str | None]
         mimetype: NotRequired[str]
         size: NotRequired[int]
+
+    class Callback(Protocol[_Tco]):
+        def __call__(self, context: Any, request: IRequest) -> _Tco: ...

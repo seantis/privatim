@@ -2,7 +2,7 @@ import re
 from datetime import date
 from typing import Any, TYPE_CHECKING
 
-from privatim.static import bootstrap_css, bootstrap_js
+from privatim.static import bootstrap_css, bootstrap_js, tom_select_css
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -20,6 +20,7 @@ class Layout:
 
         bootstrap_css.need()
         bootstrap_js.need()
+        tom_select_css.need()
 
     def show_steps(self) -> bool:
         return self.request.show_steps

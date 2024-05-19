@@ -1,3 +1,84 @@
+/* dm-sans-regular - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-regular.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-regular.woff') format('woff');
+}
+
+/* dm-sans-italic - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-italic.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-italic.woff') format('woff');
+}
+
+/* dm-sans-500 - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-500.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-500.woff') format('woff');
+}
+
+/* dm-sans-500italic - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 500;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-500italic.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-500italic.woff') format('woff');
+}
+
+/* dm-sans-700 - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-700.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-700.woff') format('woff');
+}
+
+/* dm-sans-700italic - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 700;
+    src: local(''),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-700italic.woff2') format('woff2'),
+    url('/static/fonts/dm-sans-v6-latin-ext_latin-700italic.woff') format('woff');
+}
+
+/* dm-serif-display-regular - latin-ext_latin */
+@font-face {
+    font-family: 'DM Serif Display';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''),
+    url('/static/fonts/dm-serif-display-v5-latin-ext_latin-regular.woff2') format('woff2'),
+    url('/static/fonts/dm-serif-display-v5-latin-ext_latin-regular.woff') format('woff');
+}
+
+/* dm-serif-display-italic - latin-ext_latin */
+@font-face {
+    font-family: 'DM Serif Display';
+    font-style: italic;
+    font-weight: 400;
+    src: local(''),
+    url('/static/fonts/dm-serif-display-v5-latin-ext_latin-italic.woff2') format('woff2'),
+    url('/static/fonts/dm-serif-display-v5-latin-ext_latin-italic.woff') format('woff');
+}
+
+
 .bg-light {
     background-color: #EDEDED !important;
 }

@@ -5,18 +5,11 @@ from sqlalchemy import select
 from privatim.models import WorkingGroup, User
 from privatim.i18n import _
 
-
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData, RenderDataOrRedirect
-
-
-def working_group_view(
-        context: WorkingGroup, request: 'IRequest'
-) -> dict[str, WorkingGroup,]:
-    """ View single working group"""
-    return {'group': context}
 
 
 def working_groups_view(request: 'IRequest') -> 'RenderData':
@@ -27,6 +20,7 @@ def working_groups_view(request: 'IRequest') -> 'RenderData':
 
 
 def add_or_edit_group_view(
+
     context: WorkingGroup | None, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
 
@@ -74,6 +68,6 @@ def add_or_edit_group_view(
     else:
         return {
             'form': form,
-            'redirect_after': target_url,
+            'target_url': target_url,
             'title': _('Add Working Group')
         }

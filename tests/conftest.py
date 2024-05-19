@@ -130,6 +130,16 @@ def user(session):
 
 
 @pytest.fixture
+def dummy_org(user):
+    class DummyOrg:
+        users = [user]
+
+        def __iter__(self):
+            yield user
+    return DummyOrg
+
+
+@pytest.fixture
 def user_with_working_group(session):
     user = User(
         email='admin@example.org',

@@ -5,8 +5,8 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from fliestorage_download import download_consultation_document
 from privatim.route_factories import (working_group_factory,
                                       consultation_factory, person_factory,
-                                      meeting_factory,
-                                      consultation_document_factory)
+                                      consultation_document_factory,
+                                      meeting_factory, default_meeting_factory)
 from privatim.views.activities import activities_overview
 from privatim.views.consultations import (add_or_edit_consultation_view,
                                           consultation_view,
@@ -15,10 +15,11 @@ from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
+from privatim.views.meetings import edit_meeting_view, meetings_view, \
+    add_meeting_view, delete_meeting_view, meeting_view
 from privatim.views.people import people_view, person_view
 from privatim.views.working_groups import (working_groups_view,
-                                           add_or_edit_group_view,
-                                           working_group_view)
+                                           add_or_edit_group_view)
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -110,23 +111,10 @@ def includeme(config: 'Configurator') -> None:
         route_name='working_groups',
         renderer='templates/working_groups.pt',)
 
-    # view for single working_group
-    config.add_route(
-        'working_group',
-        '/working_groups/{id}',
-        factory=working_group_factory
-    )
-    config.add_view(
-        working_group_view,
-        route_name='working_group',
-        renderer='templates/working_group.pt',
-    )
-
     # adding a single working group
     config.add_route(
         'add_working_group',
-        '/groups/add',
-        factory=working_group_factory
+        '/working_groups/add',
     )
     config.add_view(
         add_or_edit_group_view,
@@ -142,23 +130,74 @@ def includeme(config: 'Configurator') -> None:
         xhr=True
     )
 
+    # Note that view working_group is like viewing all meetings (same
+    # thing)
+    config.add_route(
+        'meetings',
+        '/working_groups/{id}/meetings/view',
+        factory=working_group_factory
+    )
+    config.add_view(
+        meetings_view,
+        route_name='meetings',
+        renderer='templates/table.pt',
+    )
+
     # Add meeting per working_group
     config.add_route(
         'add_meeting',
-        '/meetings/add',
-        factory=meeting_factory
+        '/working_groups/{id}/add',
+        factory=working_group_factory
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_meeting_view,
         route_name='add_meeting',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_meeting_view,
         route_name='add_meeting',
         renderer='json',
         request_method='POST',
+        xhr=True
+    )
+
+    # Add meeting per working_group
+    config.add_route(
+        'edit_meeting',
+        '/meetings/{meeting_id}/edit',
+        factory=meeting_factory
+    )
+    config.add_view(
+        edit_meeting_view,
+        route_name='edit_meeting',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        edit_meeting_view,
+        route_name='edit_meeting',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'delete_meeting',
+        '/meetings/{meeting_id}/delete',
+        factory=meeting_factory
+    )
+    config.add_view(
+        delete_meeting_view,
+        route_name='delete_meeting',
+        xhr=False
+    )
+    config.add_view(
+        delete_meeting_view,
+        route_name='delete_meeting',
+        renderer='json',
+        request_method='DELETE',
         xhr=True
     )
 
@@ -183,4 +222,13 @@ def includeme(config: 'Configurator') -> None:
         download_consultation_document,
         request_method='GET',
         route_name='download_document'
+    )
+
+    # single meeting view
+    config.add_route(
+        'meeting', '/meeting/{id}', factory=default_meeting_factory)
+    config.add_view(
+        meeting_view,
+        route_name='meeting',
+        renderer='templates/meeting.pt'
     )

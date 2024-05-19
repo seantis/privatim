@@ -31,7 +31,7 @@
                     <li>
                         <a href="${request.route_url('working_groups')}"
                            class="nav-link px-3 link-body-emphasis"
-                           id="${'active_tab' if request.matched_route.name == 'working_groups' else ''}"
+                           id="${'active_tab' if 'working_group' in request.matched_route.name else ''}"
                                  i18n:translate>Working Groups</a>
                     </li>
                 </ul>
@@ -47,9 +47,11 @@
                                  class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>
-                            <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
+
+<!--?                            Uncomment once we have Settings or other -->
+<!--?                            <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>-->
+<!--?                            <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>-->
+<!--?                            <li><hr class="dropdown-divider"></li>-->
                             <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate>Sign out</a></li>
                         </ul>
                     </div>

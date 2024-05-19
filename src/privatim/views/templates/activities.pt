@@ -26,7 +26,7 @@
                             <div class="row m-3">
                                 <div class="card-body col-md-">
                                     <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
-                                    <p class="card-text" i18n:translate="">${consultation.description[:100] + '...' if len(consultation.description) > 100 else consultation.description}</p>
+<!--?                                    <p class="card-text" i18n:translate="">${consultation.description[:75] + '...' if len(consultation.description) > 75 else consultation.description}</p>-->
                                     <p class="card-text" i18n:translate="">${consultation.comments}</p>
                                     <p class="card-text" i18n:translate="">${consultation.recommendation}</p>
                                     <a href="${request.route_url('consultation', id=consultation.id)}" i18n:translate=""
@@ -59,8 +59,8 @@
                         <select class="form-select" id="kantonDropdown">
                             <option selected>Choose...</option>
                             <option value="1">Zürich</option>
-                            <option value="2">Geneva</option>
-                            <option value="3">Vaud</option>
+                            <option value="2">Genf</option>
+                            <option value="3">Bern</option>
                             <!-- Add other options here -->
                         </select>
                     </div>

@@ -2,13 +2,14 @@
              xmlns="http://www.w3.org/1999/xhtml"
              xmlns:tal="http://xml.zope.org/namespaces/tal"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
+             xmlns:i18n="http://xml.zope.org/namespaces/i18n"
          i18n:domain="privatim">
 
     <tal:block metal:fill-slot="content">
 
         <h1 class="row mt-4 mb-4">${title}</h1>
 
-        <form enctype="multipart/form-data" method="POST" novalidate>
+        <form id="edit-participant-form" enctype="multipart/form-data" method="POST" novalidate>
             <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
 
             <div class="mb-3" tal:repeat="field form">
@@ -18,11 +19,10 @@
             </div>
 
             <div class="mb-3">
-                <a href="${redirect_after}" class="btn btn-secondary" i18n:translate>Cancel</a>
-                <button type="submit" class="btn btn-primary btn-submit" i18n:translate>Save</button>
+                <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
+                <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
             </div>
         </form>
 
-        <script src="${layout.static_url('privatim:static/tom-select/init-tom-select.js')}"></script>
     </tal:block>
 </metal:block>

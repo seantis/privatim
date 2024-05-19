@@ -7,11 +7,6 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-    <!-- tom-select for searchable (multi-)select fields -->
-    <link rel="stylesheet" href="${layout.static_url('privatim:static/tom-select/tom-select.min.css')}">
-    <script src="${layout.static_url('privatim:static/tom-select/tom-select.complete.min.js')}"></script>
-
     <title>Austauschplattform privatim</title>
 </head>
 
@@ -29,6 +24,8 @@ ${panel('flash')}
     <div class="container">
         <tal:block metal:define-slot="content" />
     </div>
+
+    <tal:block metal:define-slot="modals" />
 
 </main>
 

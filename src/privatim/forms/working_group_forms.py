@@ -7,17 +7,18 @@ from privatim.forms.fields import SearchableSelectField  # type:ignore
 from privatim.i18n import _
 from privatim.models import User
 
+
+from privatim.models import WorkingGroup
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.models import WorkingGroup
 
 
 class WorkingGroupForm(Form):
 
     def __init__(
         self,
-        context: 'WorkingGroup | None',
+        context: WorkingGroup | None,
         request: 'IRequest',
     ) -> None:
 
@@ -39,6 +40,16 @@ class WorkingGroupForm(Form):
         )
         self.leader.choices = (('0', _('No Leader')),) + user_choices
         self.members.choices = user_choices
+
+        #  todo: somehow not working, but it's not really needed
+        # number = session.execute(
+        #     select(func.count()).select_from(WorkingGroup)
+        # ).scalar()
+        # default_name = _(
+        #     'Working Group "${name}"',
+        #     mapping={'name': number + 1},
+        # )
+        # self.name.default = default_name
 
     name: StringField = StringField(_('Name'), validators=[DataRequired()])
 

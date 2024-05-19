@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from privatim.models import User
+    from privatim.models import User, Meeting
     from privatim.types import ACL
 
 # Many-to-many association table for users and groups
@@ -76,6 +76,10 @@ class WorkingGroup(Group):
     leader: Mapped['User'] = relationship(
         'User',
         back_populates='leading_groups',
+    )
+
+    meetings: Mapped[list['Meeting']] = relationship(
+        'Meeting', back_populates='working_group'
     )
 
     def __acl__(self) -> list['ACL']:

@@ -30,12 +30,11 @@ class ConsultationForm(Form):
     title = StringField(
         _('Title'),
         validators=[DataRequired()],
-        default='test',
     )
 
-    description = TextAreaField(_('Description'), default='test')
-    comments = TextAreaField(_('Comments'), default='test')
-    recommendation = StringField(_('Recommendation'), default='test')
+    description = TextAreaField(_('Description'))
+    comments = TextAreaField(_('Comments'))
+    recommendation = StringField(_('Recommendation'))
     status = SelectField(
         _('Status'),
         default='test',

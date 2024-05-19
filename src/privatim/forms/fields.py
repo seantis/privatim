@@ -1,5 +1,7 @@
 # type: ignore
 import inspect
+import sedate
+from privatim.static import init_tom_select
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
@@ -16,6 +18,7 @@ from privatim.utils import (
     path_to_filename,
     get_supported_image_mime_types,
 )
+from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
 
 
 from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
@@ -23,6 +26,7 @@ if TYPE_CHECKING:
     from wtforms.fields.choices import SelectFieldBase
     from markupsafe import Markup
     from collections.abc import Sequence
+    from datetime import datetime
     from privatim.types import FileDict as StrictFileDict
     from privatim.forms.types import (
         _FormT,
@@ -59,6 +63,16 @@ IMAGE_MIME_TYPES = get_supported_image_mime_types() - EXCLUDED_IMAGE_TYPES
 IMAGE_MIME = IMAGE_MIME_TYPES | {'image/svg+xml'}
 
 
+__all__ = [
+    "ChosenSelectWidget",
+    "DateTimeLocalField",
+    "TimezoneDateTimeField",
+    "SearchableSelectField",
+    "UploadField",
+    "UploadMultipleField",
+]
+
+
 class ChosenSelectWidget(Select):
 
     def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> 'Markup':
@@ -71,8 +85,65 @@ class ChosenSelectWidget(Select):
         return super(ChosenSelectWidget, self).__call__(field, **kwargs)
 
 
+class DateTimeLocalField(DateTimeLocalFieldBase):
+    """ A custom implementation of the DateTimeLocalField to fix issues with
+    the format and the datetimepicker plugin.
+
+    """
+
+    def __init__(
+            self,
+            label: str | None = None,
+            validators: 'Validators[_FormT, Self] | None' = None,
+            format: str = '%Y-%m-%dT%H:%M',
+            **kwargs: Any
+    ):
+        super(DateTimeLocalField, self).__init__(
+            label=label,
+            validators=validators,
+            format=format,
+            **kwargs
+        )
+
+    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+        if valuelist:
+            date_str = 'T'.join(valuelist).replace(' ', 'T')  # type:ignore
+            valuelist = [date_str[:16]]
+        super(DateTimeLocalField, self).process_formdata(valuelist)
+
+
+class TimezoneDateTimeField(DateTimeLocalField):
+    """ A datetime field data returns the date with the given timezone
+    and expects datetime values with a timezone.
+
+    """
+
+    data: 'datetime | None'
+
+    def __init__(self, *args: Any, timezone: str, **kwargs: Any):
+        self.timezone = timezone
+        super().__init__(*args, **kwargs)
+
+    def process_data(self, value: 'datetime | None') -> None:
+        if value:
+            value = sedate.to_timezone(value, self.timezone)
+            value.replace(tzinfo=None)
+
+        super().process_data(value)
+
+    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+        super().process_formdata(valuelist)
+
+        if self.data:
+            self.data = sedate.replace_timezone(self.data, self.timezone)
+
+
 class SearchableSelectField(SelectField):
     """A multiple select field with tom-select.js support."""
+    # overwrite __call__:
+    def __call__(self, *args, **kwargs):
+        init_tom_select.need()
+        return super().__call__(*args, **kwargs)
 
     widget = ChosenSelectWidget(multiple=True)
 

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import select
-from privatim.models import Meeting, User, AgendaItem
+from privatim.models import Meeting, User, AgendaItem, WorkingGroup
 
 
 def test_working_group_meetings_relationship(session):
@@ -21,8 +21,10 @@ def test_working_group_meetings_relationship(session):
     ]
     session.add_all(users)
     session.flush()
-
-    meeting = Meeting(name='Waffle Workshop', time=date, attendees=users)
+    group = WorkingGroup(name='Waffle Workshop Group', leader=users[0],
+                         users=users)
+    meeting = Meeting(name='Waffle Workshop', time=date, attendees=users,
+                      working_group=group)
     session.add_all([meeting])
     session.flush()
 
@@ -56,8 +58,11 @@ def test_agenda_item_relationship_with_meeting(session):
     session.add_all(attendees)
     session.flush()
 
+    group = WorkingGroup(name='Waffle Workshop Group', users=[])
     meeting = Meeting(
-        name='Annual Review', time=meeting_date, attendees=attendees
+        name='Annual Review', time=meeting_date, attendees=attendees,
+        working_group=group
+
     )
     session.add(meeting)
     session.flush()

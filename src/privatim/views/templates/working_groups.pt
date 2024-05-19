@@ -27,7 +27,7 @@
                 <tbody>
                 <tr tal:repeat="group working_groups">
                     <td>
-                        <a href="${request.route_url('working_group', id=group.id)}" class="mb-1">${group.name}</a>
+                        <a href="${request.route_url('meetings', id=group.id)}" class="mb-1">${group.name}</a>
                     </td>
                     <td>
                         <div class="d-flex align-items-center">

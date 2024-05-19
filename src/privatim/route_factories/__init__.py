@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from privatim.models.root import Root
 
 
-_group_factory = create_uuid_factory(WorkingGroup)
+_working_group_factory = create_uuid_factory(WorkingGroup)
 _consultation_factory = create_uuid_factory(Consultation)
 _person_factory = create_uuid_factory(User)
 _meeting_factory = create_uuid_factory(Meeting)
@@ -24,17 +24,21 @@ def consultation_factory(request: 'IRequest') -> 'Consultation | Root':
 
 
 def working_group_factory(request: 'IRequest') -> 'WorkingGroup | Root':
-    if request.matchdict.get('id', None) is None:
-        return root_factory(request)
 
-    return _group_factory(request)
+    # if request.matchdict.get('id', None) is None:
+    #     return root_factory(request)
+
+    return _working_group_factory(request)
 
 
 def meeting_factory(request: 'IRequest') -> 'Meeting | Root':
-    if request.matchdict.get('id', None) is None:
-        return root_factory(request)
+    factory = create_uuid_factory(Meeting, key='meeting_id')
+    return factory(request)
 
-    return _meeting_factory(request)
+
+def default_meeting_factory(request: 'IRequest') -> Meeting:
+    factory = create_uuid_factory(Meeting)
+    return factory(request)
 
 
 def person_factory(request: 'IRequest') -> 'User | Root':
