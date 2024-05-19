@@ -1,13 +1,16 @@
 from code import InteractiveConsole
 import readline
 import rlcompleter
-
+import transaction
 import click
-from pyramid.paster import bootstrap
-from transaction import commit
+from pyramid.paster import bootstrap, get_appsettings
+
+from privatim import setup_filestorage
 from privatim.cli.find_files import find_ini_file_or_abort
 
 from typing import Any
+
+from privatim.orm import get_engine, get_session_factory, get_tm_session
 
 
 class EnhancedInteractiveConsole(InteractiveConsole):
@@ -35,18 +38,25 @@ class EnhancedInteractiveConsole(InteractiveConsole):
 @click.command()
 def shell() -> None:
     """Enters an interactive shell."""
+
     config_uri = find_ini_file_or_abort()
     env = bootstrap(config_uri)
+    settings = get_appsettings(config_uri)
+    engine = get_engine(settings)
+    session_factory = get_session_factory(engine)
 
-    with env['request'].tm:
-        session = env['request'].dbsession
+    # Needed because if the query in the shell has files attached, it will
+    # raise ObjectDoesNotExistError
+    setup_filestorage(settings)
+
+    with transaction.manager:
+        dbsession = get_tm_session(session_factory, transaction.manager)
         app = env['app']
         shell = EnhancedInteractiveConsole(
             {
-
                 'app': app,
-                'session': session,
-                'commit': commit,
+                'session': dbsession,
+                'commit': transaction.commit
             }
         )
         shell.interact(
