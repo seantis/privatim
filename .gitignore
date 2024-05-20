@@ -25,6 +25,7 @@ data/
 dist/
 .tox/
 nosetests.xml
+uploads/
 venv*/
 tmp/
 Data*.fs*
