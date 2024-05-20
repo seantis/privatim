@@ -226,7 +226,7 @@ def edit_meeting_view(
                 meeting_buttons(meeting, request)
             )
 
-            message = _('Successfully meeting "${name}"',
+            message = _('Successfully edited meeting "${name}"',
                         mapping={'name': form.name.data})
             data['message'] = translate(message, request.locale_name)
             return data
@@ -254,7 +254,7 @@ def delete_meeting_view(
     session.flush()
 
     message = _(
-        'Succesfully deleted meeting "${name}"',
+        'Successfully deleted meeting "${name}"',
         mapping={'name': name}
     )
 

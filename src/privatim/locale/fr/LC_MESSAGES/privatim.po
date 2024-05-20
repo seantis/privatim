@@ -27,12 +27,12 @@ msgstr "<b>gras</b>"
 
 #: src/privatim/wtform/validators.py
 msgid "This field is required."
-msgstr ""
+msgstr "Ce champ est obligatoire."
 
 #: src/privatim/wtform/validators.py
 #, python-format
 msgid "File does not have an approved extension: {extensions}"
-msgstr ""
+msgstr "Ce champ est obligatoire."
 
 #: src/privatim/layouts/footer.pt
 msgid "Exchange. Record. Find."
@@ -75,7 +75,7 @@ msgstr "Groupe de travail"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Search..."
-msgstr ""
+msgstr "Recherche"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Sign out"
@@ -98,15 +98,15 @@ msgstr ""
 
 #: src/privatim/views/meetings.py
 msgid "Edit Meeting"
-msgstr ""
+msgstr "Modifier la réunion"
 
 #: src/privatim/views/meetings.py src/privatim/views/templates/table.pt
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
-msgstr ""
+msgstr "Supprimer la réunion"
 
 #: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/meeting_form.py
@@ -116,17 +116,17 @@ msgstr "Ajouter une session"
 #: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
-msgstr ""
+msgstr "Ajout réussi de la réunion \"${nom}\""
 
 #: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully meeting \"${name}\""
-msgstr ""
+msgstr "Réunion réussie \"${nom}\""
 
 #: src/privatim/views/meetings.py
 #, python-format
-msgid "Succesfully deleted meeting \"${name}\""
-msgstr ""
+msgid "Successfully deleted meeting \"${name}\""
+msgstr "Réunion supprimée avec succès \"${nom}\""
 
 #: src/privatim/views/consultations.py
 #, python-format
@@ -144,35 +144,33 @@ msgstr "Modifier la consultation"
 
 #: src/privatim/views/password_change.py
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 #: src/privatim/views/password_change.py
 msgid "New Password"
-msgstr ""
+msgstr "Nouveau mot de passe"
 
 #: src/privatim/views/password_change.py
 msgid "Confirm New Password"
-msgstr ""
+msgstr "Confirmer le nouveau mot de passe"
 
 #: src/privatim/views/password_change.py
 msgid "Password changed"
-msgstr ""
-
-#: src/privatim/views/password_change.py
-msgid "success"
-msgstr ""
+msgstr "Mot de passe modifié"
 
 #: src/privatim/views/password_change.py
 msgid ""
 "There was a problem with your submission. Errors have been highlighted below."
-msgstr ""
+msgstr "Il y a eu un problème avec votre soumission. Les erreurs ont été mises en évidence ci-dessous."
 
 #: src/privatim/views/password_change.py
 msgid ""
 "Password must have minimal length of 8 characters, contain one upper case "
 "letter, one lower case letter, one digit and one special character."
 msgstr ""
-
+"Le mot de passe doit avoir une longueur minimale de 8 caractères, "
+"contenir une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
+"spécial. une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
 #: src/privatim/views/working_groups.py
 #, python-format
 msgid "Successfully added working group \"${name}\""
@@ -189,6 +187,10 @@ msgid ""
 "you do not receive an email then please confirm you have entered the correct "
 "email address."
 msgstr ""
+"Un courriel a été envoyé au compte demandé avec de plus amples informations. Si "
+"vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi l'adresse e-mail "
+"l'adresse électronique correcte."
+
 
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
@@ -215,28 +217,28 @@ msgstr "Statut:"
 
 #: src/privatim/views/templates/consultations.pt
 msgid "Choose..."
-msgstr ""
+msgstr "Choisir..."
 
 #: src/privatim/views/templates/table.pt
 msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr ""
+msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
-msgstr ""
+msgstr "Groupe de travail"
 
 #: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
 msgid "Documents"
-msgstr ""
+msgstr "Documents"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Tags"
-msgstr ""
+msgstr "Étiquettes"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
-msgstr ""
+msgstr "Modifier le mot de passe"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -244,7 +246,7 @@ msgstr "Se connecter"
 
 #: src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
-msgstr ""
+msgstr "→ Mot de passe oublié / Activer le compte"
 
 #: src/privatim/views/templates/people.pt
 msgid "List of Persons"
@@ -256,11 +258,11 @@ msgstr "Aucune personne n'a encore été ajoutée."
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Password Retrieval"
-msgstr ""
+msgstr "Récupération de mot de passe"
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Submit"
-msgstr ""
+msgstr "Soumettre"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
@@ -300,19 +302,19 @@ msgstr "En cours de traitement"
 
 #: src/privatim/forms/fields.py
 msgid "Select..."
-msgstr ""
+msgstr "Sélectionner..."
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
-msgstr ""
+msgstr "Modifier la réunion"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
-msgstr ""
+msgstr "Temps"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Attendees"
-msgstr ""
+msgstr "Participants"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
@@ -332,19 +334,4 @@ msgstr "Membres"
 
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
-msgstr ""
-
-#~ msgid "Select Members..."
-#~ msgstr "Sélectionner des membres..."
-
-#~ msgid "Settings"
-#~ msgstr "Paramètres"
-
-#~ msgid "Profile"
-#~ msgstr "Profil"
-
-#~ msgid "Consultation"
-#~ msgstr "Consultation"
-
-#~ msgid "Working Group ${group.name}"
-#~ msgstr "Groupe de travail${groupe.nom}"
+msgstr "Télécharger des fichiers supplémentaires"

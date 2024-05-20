@@ -120,15 +120,7 @@ msgstr "Sitzung hinzufügen"
 msgid "Successfully added meeting \"${name}\""
 msgstr "Sitzung \"${name}\" hinzugefügt"
 
-#: src/privatim/views/meetings.py
-#, python-format
-msgid "Successfully meeting \"${name}\""
-msgstr ""
 
-#: src/privatim/views/meetings.py
-#, python-format
-msgid "Succesfully deleted meeting \"${name}\""
-msgstr ""
 
 #: src/privatim/views/consultations.py
 #, python-format
@@ -286,7 +278,7 @@ msgstr "Kommmentare"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
-msgstr "Empfehlung"
+msgstr "Stellungnahme"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Status"
