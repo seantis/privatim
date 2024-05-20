@@ -11,11 +11,6 @@
                              width="242" height="87">
                     </a>
                 </h2>
-                <!-- Text -->
-                <!--? Austauschen. Erfassen. Finden.-->
-                <p i18n:translate="" class="mt-4">
-                    Exchange. Record. Find.
-                </p>
 
             </div>
             <div class="col-6 col-md">
