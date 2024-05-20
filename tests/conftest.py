@@ -4,13 +4,12 @@ import sqlalchemy
 import transaction
 from libcloud.storage.drivers.local import LocalStorageDriver
 from pyramid import testing
-from sedate import utcnow
 from sqlalchemy import engine_from_config
 from privatim import main, setup_filestorage
 from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
-from privatim.testing import DummyRequest
+from privatim.testing import DummyRequest, DummyMailer, MockRequests
 from sqlalchemy_file.storage import StorageManager
 
 from tests.shared.client import Client
@@ -118,11 +117,8 @@ def session(config):
 def user(session):
     user = User(
         email='admin@example.org',
-        first_name='John',
-        last_name='Doe',
-        password='test',
-        created=utcnow(),
     )
+    user.set_password('test')
     session.add(user)
     session.flush()
     session.refresh(user)
@@ -145,14 +141,20 @@ def user_with_working_group(session):
         email='admin@example.org',
         first_name='John',
         last_name='Doe',
-        password='test',
-        created=utcnow(),
         groups=[WorkingGroup(name='Group')],
     )
+    user.set_password('test')
     session.add(user)
     session.flush()
     session.refresh(user)
     return user
+
+
+@pytest.fixture
+def mailer(config):
+    mailer = DummyMailer()
+    config.registry.registerUtility(mailer)
+    return mailer
 
 
 @pytest.fixture()
@@ -210,6 +212,17 @@ def client(app, engine):
 
     client.reset()
     Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture
+def mock_requests(monkeypatch):
+    monkeypatch.undo()
+    mock_requests = MockRequests()
+    monkeypatch.setattr(
+        'requests.sessions.Session.request',
+        mock_requests.mock_method
+    )
+    return mock_requests
 
 
 @pytest.fixture()

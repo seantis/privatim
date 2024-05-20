@@ -17,6 +17,8 @@ from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.meetings import edit_meeting_view, meetings_view, \
     add_meeting_view, delete_meeting_view, meeting_view
+from privatim.views.password_change import password_change_view
+from privatim.views.password_retrieval import password_retrieval_view
 from privatim.views.people import people_view, person_view
 from privatim.views.working_groups import (working_groups_view,
                                            add_or_edit_group_view)
@@ -231,4 +233,30 @@ def includeme(config: 'Configurator') -> None:
         meeting_view,
         route_name='meeting',
         renderer='templates/meeting.pt'
+    )
+
+    config.add_route(
+        'password_retrieval',
+        '/password_retrieval'
+    )
+    config.add_view(
+        password_retrieval_view,
+        route_name='password_retrieval',
+        renderer='templates/password_retrieval.pt',
+        require_csrf=False,
+        request_method=('GET', 'POST'),
+        permission=NO_PERMISSION_REQUIRED
+    )
+
+    config.add_route(
+        'password_change',
+        '/password_change'
+    )
+    config.add_view(
+        password_change_view,
+        route_name='password_change',
+        renderer='templates/password_change.pt',
+        request_method=('GET', 'POST'),
+        require_csrf=False,
+        permission=NO_PERMISSION_REQUIRED
     )

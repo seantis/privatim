@@ -46,7 +46,6 @@ def add_example_content(db: 'Session') -> None:
     users = [
         User(
             email='foobar@example.org',
-            password='test',  # nosec: B106
             first_name='thefirstname',
             last_name='thelastname',
         ),

@@ -1,9 +1,10 @@
+import uuid
 from functools import cached_property
-from datetime import datetime
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 import bcrypt
-from sedate import utcnow
+from datetime import datetime
+from datetime import timezone
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
@@ -32,8 +33,7 @@ class User(Base):
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
 
-    created: Mapped[datetime] = mapped_column(default=utcnow)
-    modified: Mapped[datetime | None] = mapped_column(onupdate=utcnow)
+    modified: Mapped[datetime | None] = mapped_column()
 
     # the groups this user is part of
     groups: Mapped[list[Group]] = relationship(
@@ -60,11 +60,25 @@ class User(Base):
         foreign_keys='[Statement.drafted_by]',  # todo: check this is needed
     )
 
+    def __init__(
+            self,
+            email: str | None = None,
+            first_name: str | None = None,
+            last_name: str | None = None,
+            groups: list[Group] | None = None,
+    ):
+        self.id = str(uuid.uuid4())
+        self.email = email
+        self.modified = datetime.now(timezone.utc)
+        self.first_name = first_name
+        self.last_name = last_name
+        self.groups = groups or []
+
     def set_password(self, password: str) -> None:
         password = password or ''
         pwhash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
         self.password = pwhash.decode('utf8')
-        self.last_password_change = utcnow()
+        self.last_password_change = datetime.now(timezone.utc)
 
     def check_password(self, password: str) -> bool:
         if not self.password:

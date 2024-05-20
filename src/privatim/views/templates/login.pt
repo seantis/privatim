@@ -17,7 +17,13 @@
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" type="submit" i18n:translate>Sign in</button>
                 </div>
-            </form>
+                <p>
+                    <a href="${request.route_url('password_retrieval')}" i18n:translate="">
+                                    → Forgot your password / Activate account
+                    </a>
+                </p>
+                </form>
+
             </div>
         </div>
 
