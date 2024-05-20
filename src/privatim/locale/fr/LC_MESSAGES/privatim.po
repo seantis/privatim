@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-18 16:52+0200\n"
+"POT-Creation-Date: 2024-05-20 08:01+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -29,6 +29,10 @@ msgstr "<b>gras</b>"
 msgid "Select Members..."
 msgstr "Sélectionner des membres..."
 
+#: src/privatim/forms/widgets.py
+msgid "Upload additional files"
+msgstr ""
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Groupe de travail sur l'édition"
@@ -37,7 +41,10 @@ msgstr "Groupe de travail sur l'édition"
 msgid "No Leader"
 msgstr "Pas de chef"
 
-#: src/privatim/forms/working_group_forms.py
+#.
+#. format data
+#: src/privatim/forms/working_group_forms.py src/privatim/forms/meeting_form.py
+#: src/privatim/views/meetings.py
 msgid "Name"
 msgstr "Nom"
 
@@ -48,6 +55,19 @@ msgstr "Chef de file"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Membres"
+
+#: src/privatim/forms/meeting_form.py src/privatim/views/meetings.py
+#: src/privatim/views/templates/working_group.pt
+msgid "Add Meeting"
+msgstr "Ajouter une session"
+
+#: src/privatim/forms/meeting_form.py
+msgid "Edit meeting"
+msgstr ""
+
+#: src/privatim/forms/meeting_form.py
+msgid "Time"
+msgstr ""
 
 #: src/privatim/forms/consultation_form.py src/privatim/views/consultations.py
 msgid "Edit Consultation"
@@ -84,6 +104,20 @@ msgstr "Terminé"
 #: src/privatim/forms/consultation_form.py
 msgid "In Progress"
 msgstr "En cours de traitement"
+
+#: src/privatim/forms/consultation_form.py
+#: src/privatim/views/templates/consultation.pt
+msgid "Documents"
+msgstr ""
+
+#: src/privatim/wtform/validators.py
+msgid "This field is required."
+msgstr ""
+
+#: src/privatim/wtform/validators.py
+#, python-format
+msgid "File does not have an approved extension: {extensions}"
+msgstr ""
 
 #: src/privatim/layouts/footer.pt
 msgid "Exchange. Record. Find."
@@ -129,16 +163,39 @@ msgid "Working Groups"
 msgstr "Groupe de travail"
 
 #: src/privatim/layouts/navbar.pt
-msgid "Settings"
-msgstr "Paramètres"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Profile"
-msgstr "Profil"
-
-#: src/privatim/layouts/navbar.pt
 msgid "Sign out"
 msgstr "Déconnecter"
+
+#: src/privatim/views/meetings.py
+msgid "Details"
+msgstr ""
+
+#: src/privatim/views/meetings.py
+msgid "Edit Meeting"
+msgstr ""
+
+#: src/privatim/views/meetings.py src/privatim/views/templates/table.pt
+msgid "Delete"
+msgstr ""
+
+#: src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr ""
+
+#: src/privatim/views/meetings.py
+#, python-format
+msgid "Successfully added meeting \"${name}\""
+msgstr ""
+
+#: src/privatim/views/meetings.py
+#, python-format
+msgid "Successfully meeting \"${name}\""
+msgstr ""
+
+#: src/privatim/views/meetings.py
+#, python-format
+msgid "Succesfully deleted asset \"${name}\""
+msgstr ""
 
 #: src/privatim/views/working_groups.py
 #, python-format
@@ -168,17 +225,21 @@ msgstr "Liste des personnes"
 msgid "No people added yet."
 msgstr "Aucune personne n'a encore été ajoutée."
 
-#: src/privatim/views/templates/form.pt
+#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/privatim/views/templates/form.pt
+#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Save"
 msgstr "Sauver"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Se connecter"
+
+#: src/privatim/views/templates/table.pt
+msgid "Do you really wish to delete \"${item_title}\"?"
+msgstr ""
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/views/templates/consultations.pt
@@ -191,14 +252,13 @@ msgid "-> Show Details"
 msgstr "-> Afficher les détails"
 
 #: src/privatim/views/templates/activities.pt
-#: src/privatim/views/templates/consultation.pt
 #: src/privatim/views/templates/consultations.pt
 msgid "Status:"
 msgstr "Statut:"
 
 #: src/privatim/views/templates/consultation.pt
-msgid "Consultation"
-msgstr "Consultation"
+msgid "Tags"
+msgstr ""
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
@@ -208,9 +268,14 @@ msgstr "Groupe"
 msgid "Working Group"
 msgstr ""
 
-#: src/privatim/views/templates/working_group.pt
-msgid "Add Meeting"
-msgstr "Ajouter une session"
+#~ msgid "Settings"
+#~ msgstr "Paramètres"
+
+#~ msgid "Profile"
+#~ msgstr "Profil"
+
+#~ msgid "Consultation"
+#~ msgstr "Consultation"
 
 #~ msgid "Working Group ${group.name}"
 #~ msgstr "Groupe de travail${groupe.nom}"

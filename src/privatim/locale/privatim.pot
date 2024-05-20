@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-18 16:52+0200\n"
+"POT-Creation-Date: 2024-05-20 08:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,6 +29,10 @@ msgstr ""
 msgid "Select Members..."
 msgstr ""
 
+#: ./src/privatim/forms/widgets.py
+msgid "Upload additional files"
+msgstr ""
+
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr ""
@@ -37,7 +41,10 @@ msgstr ""
 msgid "No Leader"
 msgstr ""
 
+#.
+#. format data
 #: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
 msgid "Name"
 msgstr ""
 
@@ -47,6 +54,19 @@ msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Members"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
+#: ./src/privatim/views/templates/working_group.pt
+msgid "Add Meeting"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py
+msgid "Edit meeting"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py
+msgid "Time"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
@@ -84,6 +104,20 @@ msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
 msgid "In Progress"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Documents"
+msgstr ""
+
+#: ./src/privatim/wtform/validators.py
+msgid "This field is required."
+msgstr ""
+
+#: ./src/privatim/wtform/validators.py
+#, python-format
+msgid "File does not have an approved extension: {extensions}"
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -132,15 +166,38 @@ msgid "Working Groups"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
-msgid "Settings"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.pt
-msgid "Profile"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.pt
 msgid "Sign out"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Details"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Edit Meeting"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/views/templates/table.pt
+msgid "Delete"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+#, python-format
+msgid "Successfully added meeting \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+#, python-format
+msgid "Successfully meeting \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+#, python-format
+msgid "Succesfully deleted asset \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/working_groups.py
@@ -172,15 +229,21 @@ msgid "No people added yet."
 msgstr ""
 
 #: ./src/privatim/views/templates/form.pt
+#: ./src/privatim/views/templates/table.pt
 msgid "Cancel"
 msgstr ""
 
 #: ./src/privatim/views/templates/form.pt
+#: ./src/privatim/views/templates/table.pt
 msgid "Save"
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
 msgid "Sign in"
+msgstr ""
+
+#: ./src/privatim/views/templates/table.pt
+msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -194,13 +257,12 @@ msgid "-> Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-#: ./src/privatim/views/templates/consultation.pt
 #: ./src/privatim/views/templates/consultations.pt
 msgid "Status:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
-msgid "Consultation"
+msgid "Tags"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt
@@ -209,8 +271,4 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Working Group"
-msgstr ""
-
-#: ./src/privatim/views/templates/working_group.pt
-msgid "Add Meeting"
 msgstr ""
