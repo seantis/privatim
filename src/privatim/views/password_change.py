@@ -69,7 +69,7 @@ def password_change_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                     raise PasswordException(f'Token "{token}" not found')
                 token_obj.consume(email)
                 token_obj.user.set_password(password)
-                request.messages.add(_('Password changed'), _('success'))
+                request.messages.add(_('Password changed'), 'success')
                 return HTTPFound(request.route_url('login'))
             except PasswordException as e:
                 msg = f'Password change: {str(e)}'
