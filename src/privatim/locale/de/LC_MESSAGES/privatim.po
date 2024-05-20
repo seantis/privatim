@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 08:36+0200\n"
+"POT-Creation-Date: 2024-05-20 08:38+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -59,7 +59,7 @@ msgstr "Mitglieder"
 #: src/privatim/forms/meeting_form.py src/privatim/views/meetings.py
 #: src/privatim/views/templates/working_group.pt
 msgid "Add Meeting"
-msgstr "Meeting hinzufügen"
+msgstr "Sitzung hinzufügen"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
