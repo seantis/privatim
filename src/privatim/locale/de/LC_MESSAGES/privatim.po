@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 23:33+0200\n"
+"POT-Creation-Date: 2024-05-20 23:44+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -186,7 +186,7 @@ msgid ""
 "An email has been sent to the requested account with further information. If "
 "you do not receive an email then please confirm you have entered the correct "
 "email address."
-msgstr ""
+msgstr "Eine E-Mail wurde an das angegebene Konto gesendet. Wenn Sie keine E-Mail erhalten, überprüfen Sie bitte, ob Sie die korrekte E-Mail-Adresse eingegeben haben."
 
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
@@ -203,7 +203,7 @@ msgstr "Noch keine Vernehmlassungen hinzugefügt."
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/activities.pt
 msgid "Max Müller"
-msgstr ""
+msgstr "Max Müller"
 
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/activities.pt
@@ -240,7 +240,8 @@ msgstr "Tags"
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
 "by adding a Meeting of a Working Group."
-msgstr "Noch keine Aktivitäten erfasst. Sie können Aktivitäten im Tab "
+msgstr ""
+"Noch keine Aktivitäten erfasst. Sie können Aktivitäten im Tab "
 "Vernehmlassungen hinzufügen oder indem Sie eine Sitzung einer Arbeitsgruppe "
 "erfassen."
 

@@ -11,6 +11,11 @@ repos:
     hooks:
       - id: nocheckin
         exclude: .pre-commit-config.yaml
+  - repo: https://github.com/mondeja/pre-commit-po-hooks
+    rev: 'v1.7.3'
+    hooks:
+      - id: untranslated-messages
+        files: '\.po$'
   - repo: https://github.com/PyCQA/flake8
     rev: 7.0.0
     hooks:
