@@ -38,7 +38,7 @@ def consultation_view(
 def consultations_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
     stmt = select(Consultation).order_by(Consultation.created)
-    consultations = session.scalars(stmt).unique()
+    consultations = session.scalars(stmt).unique().all()
     return {'consultations': consultations}
 
 

@@ -12,6 +12,6 @@ def activities_overview(request: 'IRequest') -> 'RenderData':
     """ Display all activities in the system. (It's the landing page.)"""
 
     session = request.dbsession
-    consultations = session.query(Consultation)
+    consultations = session.query(Consultation).all()
 
     return {'consultations': consultations}

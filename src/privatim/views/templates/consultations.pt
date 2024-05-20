@@ -19,6 +19,10 @@
 
                 <!-- Main content area (2/3 width) -->
                 <div class="col-md-8">
+                    <tal:b tal:condition="not:consultations">
+                        <p class="lead" i18n:translate="">No consultations added yet.</p>
+
+                    </tal:b>
                     <div tal:repeat="consultation consultations" class="mt-5">
 
                         <div class="card d-flex flex-row">

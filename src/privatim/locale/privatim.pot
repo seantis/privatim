@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 13:56+0200\n"
+"POT-Creation-Date: 2024-05-20 23:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,10 +32,6 @@ msgstr ""
 #: ./src/privatim/wtform/validators.py
 #, python-format
 msgid "File does not have an approved extension: {extensions}"
-msgstr ""
-
-#: ./src/privatim/layouts/footer.pt
-msgid "Exchange. Record. Find."
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -123,12 +119,12 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py
 #, python-format
-msgid "Successfully meeting \"${name}\""
+msgid "Successfully edited meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
 #, python-format
-msgid "Succesfully deleted meeting \"${name}\""
+msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -160,10 +156,6 @@ msgstr ""
 
 #: ./src/privatim/views/password_change.py
 msgid "Password changed"
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid "success"
 msgstr ""
 
 #: ./src/privatim/views/password_change.py
@@ -205,6 +197,10 @@ msgid "Save"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
+msgid "No consultations added yet."
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
 #: ./src/privatim/views/templates/activities.pt
 msgid "Max Müller"
 msgstr ""
@@ -240,8 +236,10 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: ./src/privatim/views/templates/password_change.pt
-msgid "Change Password"
+#: ./src/privatim/views/templates/activities.pt
+msgid ""
+"No activities added yet. You can add activities in the Consultations tab or "
+"by adding a Meeting of a Working Group."
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
@@ -260,12 +258,10 @@ msgstr ""
 msgid "No people added yet."
 msgstr ""
 
-#: ./src/privatim/views/templates/password_retrieval.pt
-msgid "Password Retrieval"
-msgstr ""
-
-#: ./src/privatim/views/templates/password_retrieval.pt
-msgid "Submit"
+#: ./src/privatim/views/templates/working_groups.pt
+msgid ""
+"Here you can add meetings in the context of a working group. Click \"Add "
+"working group\" to get started."
 msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt

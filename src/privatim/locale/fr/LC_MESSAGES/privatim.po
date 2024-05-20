@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 08:38+0200\n"
+"POT-Creation-Date: 2024-05-20 23:33+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -33,10 +33,6 @@ msgstr "Ce champ est obligatoire."
 #, python-format
 msgid "File does not have an approved extension: {extensions}"
 msgstr "Ce champ est obligatoire."
-
-#: src/privatim/layouts/footer.pt
-msgid "Exchange. Record. Find."
-msgstr "Échanger. Enregistrer. Trouver"
 
 #: src/privatim/layouts/footer.pt
 msgid "About us"
@@ -120,8 +116,8 @@ msgstr "Ajout réussi de la réunion \"${nom}\""
 
 #: src/privatim/views/meetings.py
 #, python-format
-msgid "Successfully meeting \"${name}\""
-msgstr "Réunion réussie \"${nom}\""
+msgid "Successfully edited meeting \"${name}\""
+msgstr "Réunion modifiée avec succès \"${nom}\"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -161,16 +157,20 @@ msgstr "Mot de passe modifié"
 #: src/privatim/views/password_change.py
 msgid ""
 "There was a problem with your submission. Errors have been highlighted below."
-msgstr "Il y a eu un problème avec votre soumission. Les erreurs ont été mises en évidence ci-dessous."
+msgstr ""
+"Il y a eu un problème avec votre soumission. Les erreurs ont été mises en "
+"évidence ci-dessous."
 
 #: src/privatim/views/password_change.py
 msgid ""
 "Password must have minimal length of 8 characters, contain one upper case "
 "letter, one lower case letter, one digit and one special character."
 msgstr ""
-"Le mot de passe doit avoir une longueur minimale de 8 caractères, "
-"contenir une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
-"spécial. une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
+"Le mot de passe doit avoir une longueur minimale de 8 caractères, contenir "
+"une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
+"spécial. une lettre majuscule, une lettre minuscule, un chiffre et un "
+"caractère spécial."
+
 #: src/privatim/views/working_groups.py
 #, python-format
 msgid "Successfully added working group \"${name}\""
@@ -187,10 +187,9 @@ msgid ""
 "you do not receive an email then please confirm you have entered the correct "
 "email address."
 msgstr ""
-"Un courriel a été envoyé au compte demandé avec de plus amples informations. Si "
-"vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi l'adresse e-mail "
-"l'adresse électronique correcte."
-
+"Un courriel a été envoyé au compte demandé avec de plus amples informations. "
+"Si vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi "
+"l'adresse e-mail l'adresse électronique correcte."
 
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
@@ -201,9 +200,13 @@ msgid "Save"
 msgstr "Sauver"
 
 #: src/privatim/views/templates/consultations.pt
+msgid "No consultations added yet."
+msgstr "Aucune consultation n'a encore été ajoutée."
+
+#: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/activities.pt
 msgid "Max Müller"
-msgstr ""
+msgstr "Max Müller"
 
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/activities.pt
@@ -236,9 +239,13 @@ msgstr "Documents"
 msgid "Tags"
 msgstr "Étiquettes"
 
-#: src/privatim/views/templates/password_change.pt
-msgid "Change Password"
-msgstr "Modifier le mot de passe"
+#: src/privatim/views/templates/activities.pt
+msgid ""
+"No activities added yet. You can add activities in the Consultations tab or "
+"by adding a Meeting of a Working Group."
+msgstr ""
+"Aucune activité n'a encore été ajoutée. Vous pouvez ajouter des activités "
+"dans l'onglet Consultations ou en ajoutant une réunion d'un groupe de travail."
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -256,13 +263,13 @@ msgstr "Liste des personnes"
 msgid "No people added yet."
 msgstr "Aucune personne n'a encore été ajoutée."
 
-#: src/privatim/views/templates/password_retrieval.pt
-msgid "Password Retrieval"
-msgstr "Récupération de mot de passe"
-
-#: src/privatim/views/templates/password_retrieval.pt
-msgid "Submit"
-msgstr "Soumettre"
+#: src/privatim/views/templates/working_groups.pt
+msgid ""
+"Here you can add meetings in the context of a working group. Click \"Add "
+"working group\" to get started."
+msgstr ""
+"Ici, vous pouvez ajouter des réunions dans le contexte d'un groupe de "
+"travail. Cliquez sur \"Ajouter un groupe de travail\" pour commencer."
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"

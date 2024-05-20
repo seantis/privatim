@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def working_groups_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
     stmt = select(WorkingGroup).order_by(WorkingGroup.name)
-    working_groups = session.scalars(stmt).unique()
+    working_groups = session.scalars(stmt).unique().all()
     return {'working_groups': working_groups}
 
 

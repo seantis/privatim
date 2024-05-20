@@ -7,15 +7,20 @@
 
         <div class="row mb-4">
             <div class="col-md-6">
-                <h1 i18n:translate>Working Groups</h1>
+                <h1 i18n:translate="">Working Groups</h1>
             </div>
             <div class="col-md-6 text-end">
-                    <a i18n:translate href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
+                    <a i18n:translate="" href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
                                                                                tabindex="1">Add Working Group</a>
             </div>
         </div>
 
         <div class="table-responsive">
+
+            <tal:b tal:condition="not:working_groups">
+                <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click "Add working group" to get started.</p>
+            </tal:b>
+
             <table class="table align-middle mb-0 ">
                 <thead class="bg-light">
                 <tr>
