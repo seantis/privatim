@@ -5,7 +5,7 @@
 
     <div metal:fill-slot="content">
 
-        <div class="row mt-4 mb-4">
+        <div class="row mb-4">
             <div class="col-md-6">
                 <h1 i18n:translate>Working Groups</h1>
             </div>
