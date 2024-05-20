@@ -10,7 +10,7 @@
                 <h1><tal:block i18n:translate>Working Group</tal:block> ${group.name}</h1>
             </div>
             <div class="col-md-6 text-end">
-                    <a i18n:translate href="${request.route_url('add_meeting')}" class="btn btn-primary" role="button" tabindex="1" i18n:translate>Add Meeting</a>
+                <a href="${request.route_url('add_meeting')}" class="btn btn-primary" role="button" tabindex="1" i18n:translate="">Add Meeting</a>
             </div>
         </div>
 
