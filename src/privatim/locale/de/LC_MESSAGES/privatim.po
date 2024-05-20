@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 08:01+0200\n"
+"POT-Creation-Date: 2024-05-20 08:08+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -31,7 +31,7 @@ msgstr "Mitglieder auswählen..."
 
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
-msgstr ""
+msgstr "Weitere Dokumente hochladen"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
@@ -63,11 +63,11 @@ msgstr "Meeting hinzufügen"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
-msgstr ""
+msgstr "Sitzung bearbeiten"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 #: src/privatim/forms/consultation_form.py src/privatim/views/consultations.py
 msgid "Edit Consultation"
@@ -108,11 +108,11 @@ msgstr "in Bearbeitung"
 #: src/privatim/forms/consultation_form.py
 #: src/privatim/views/templates/consultation.pt
 msgid "Documents"
-msgstr ""
+msgstr "Dokumente"
 
 #: src/privatim/wtform/validators.py
 msgid "This field is required."
-msgstr ""
+msgstr "Dieses Feld ist erforderlich."
 
 #: src/privatim/wtform/validators.py
 #, python-format
@@ -155,7 +155,7 @@ msgstr "Personen"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/templates/consultations.pt
 msgid "Consultations"
-msgstr ""
+msgstr "Vernehmlassungen"
 
 #: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
@@ -168,24 +168,24 @@ msgstr "Logout"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
-msgstr ""
+msgstr "Details"
 
 #: src/privatim/views/meetings.py
 msgid "Edit Meeting"
-msgstr ""
+msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py src/privatim/views/templates/table.pt
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
-msgstr ""
+msgstr "Sitzung löschen"
 
 #: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
-msgstr ""
+msgstr "Sitzung \"${name}\" hinzugefügt"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -239,7 +239,7 @@ msgstr "Anmelden"
 
 #: src/privatim/views/templates/table.pt
 msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr ""
+msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/views/templates/consultations.pt
@@ -258,7 +258,7 @@ msgstr "Status:"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid "Group"
@@ -267,15 +267,3 @@ msgstr "Gruppe"
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr "Arbeitsgruppe"
-
-#~ msgid "Working Group ${group.name}"
-#~ msgstr "Arbeitsgruppe ${group.name}"
-
-#~ msgid "Consultation"
-#~ msgstr "Vernehmlassung"
-
-#~ msgid "Settings"
-#~ msgstr "Einstellungen"
-
-#~ msgid "Profile"
-#~ msgstr "Profil"
