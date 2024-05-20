@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 08:08+0200\n"
+"POT-Creation-Date: 2024-05-20 08:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,6 +67,10 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "Time"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py
+msgid "Attendees"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py

@@ -55,7 +55,7 @@ class MeetingForm(Form):
         timezone='Europe/Zurich',
     )
     attendees = SearchableSelectField(
-        'Attendees',
+        _('Attendees'),
         validators=[validators.InputRequired()],
     )
 
