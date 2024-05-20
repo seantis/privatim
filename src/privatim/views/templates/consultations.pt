@@ -61,7 +61,7 @@
                     <div class="mb-5 p-3">
                         <label for="kantonDropdown" class="form-label">Kanton</label>
                         <select class="form-select" id="kantonDropdown">
-                            <option selected>Choose...</option>
+                            <option selected="selected" i18n:translate="">Choose...</option>
                             <option value="1">Zürich</option>
                             <option value="2">Geneva</option>
                             <option value="3">Vaud</option>
