@@ -1,10 +1,7 @@
 from enum import Enum
 from markupsafe import escape
 from markupsafe import Markup
-
 from privatim.i18n import translate
-
-
 from typing import ClassVar
 from typing import Literal
 from typing import TYPE_CHECKING

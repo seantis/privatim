@@ -254,7 +254,7 @@ def delete_meeting_view(
     session.flush()
 
     message = _(
-        'Succesfully deleted asset "${name}"',
+        'Succesfully deleted meeting "${name}"',
         mapping={'name': name}
     )
 

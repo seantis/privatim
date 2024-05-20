@@ -10,12 +10,26 @@ from privatim.models.group import Group
 from privatim.models.group import WorkingGroup
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
+from privatim.models.attached_document import ConsultationDocument
 from privatim.models.meeting import Meeting, AgendaItem
 from privatim.models.statement import Statement
-
+from privatim.models.password_change_token import PasswordChangeToken
 from privatim.orm import get_engine
 from privatim.orm import get_session_factory
 from privatim.orm import get_tm_session
+
+
+# Prevent linters from complaining about unused imports
+Group
+WorkingGroup
+User
+Consultation
+ConsultationDocument
+Meeting
+AgendaItem
+Statement
+PasswordChangeToken
+
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator

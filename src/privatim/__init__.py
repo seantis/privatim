@@ -3,10 +3,12 @@ from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Table, MetaData, Column, ForeignKey
 from sqlalchemy_file import FileField
-
+from email.headerregistry import Address
+from privatim.mail import PostmarkMailer
 # from privatim.orm.meta import UUIDStrPK, UUIDStr
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
+from pyramid.settings import asbool
 from privatim.file import setup_filestorage
 from privatim.flash import MessageQueue
 from privatim.i18n import LocaleNegotiator
@@ -26,7 +28,19 @@ if TYPE_CHECKING:
 def includeme(config: Configurator) -> None:
 
     settings = config.registry.settings
-
+    default_sender = settings.get(
+        'mail.default_sender',
+        'no-reply@privatim-test.seantis.ch'
+    )
+    token = settings.get('mail.postmark_token', 'POSTMARK_API_TEST')
+    stream = settings.get('mail.postmark_stream', 'outbound')
+    blackhole = asbool(settings.get('mail.postmark_blackhole', False))
+    config.registry.registerUtility(PostmarkMailer(
+        Address(addr_spec=default_sender),
+        token,
+        stream,
+        blackhole=blackhole
+    ))
     config.include('pyramid_beaker')
     config.include('pyramid_chameleon')
     config.include('pyramid_layout')

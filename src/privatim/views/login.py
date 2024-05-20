@@ -1,9 +1,8 @@
-
+from datetime import timezone
 from typing import TYPE_CHECKING
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
-from sedate import utcnow
 from sqlalchemy import select
 from wtforms import Form
 from wtforms import PasswordField
@@ -50,7 +49,8 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         user = session.execute(stmt).scalar_one_or_none()
         if user and user.check_password(password):
             next_url = request.route_url('home')
-            user.last_login = utcnow()
+            from datetime import datetime
+            user.last_login = datetime.now(timezone.utc)
             headers = remember(request, user.id)
             from sqlalchemy.orm import object_session
             assert object_session(user)
