@@ -80,7 +80,7 @@ class ChosenSelectWidget(Select):
             kwargs['class'] = 'searchable-select'
         else:
             kwargs['class'] += ' searchable-select'
-        kwargs['placeholder_'] = _('Select Members...')
+        kwargs['placeholder_'] = _('Select...')
         kwargs['autocomplete_'] = 'off'
         return super(ChosenSelectWidget, self).__call__(field, **kwargs)
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-20 08:25+0200\n"
+"POT-Creation-Date: 2024-05-20 08:26+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -26,8 +26,8 @@ msgid "<b>bold</b>"
 msgstr "<b>gras</b>"
 
 #: src/privatim/forms/fields.py
-msgid "Select Members..."
-msgstr "Sélectionner des membres..."
+msgid "Select..."
+msgstr ""
 
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
@@ -271,6 +271,9 @@ msgstr "Groupe"
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr ""
+
+#~ msgid "Select Members..."
+#~ msgstr "Sélectionner des membres..."
 
 #~ msgid "Settings"
 #~ msgstr "Paramètres"
