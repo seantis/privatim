@@ -6,7 +6,8 @@ from fliestorage_download import download_consultation_document
 from privatim.route_factories import (working_group_factory,
                                       consultation_factory, person_factory,
                                       consultation_document_factory,
-                                      meeting_factory, default_meeting_factory)
+                                      meeting_factory, default_meeting_factory,
+                                      agenda_item_factory)
 from privatim.views.activities import activities_overview
 from privatim.views.consultations import (add_or_edit_consultation_view,
                                           consultation_view,
@@ -22,6 +23,9 @@ from privatim.views.password_retrieval import password_retrieval_view
 from privatim.views.people import people_view, person_view
 from privatim.views.working_groups import (working_groups_view,
                                            add_or_edit_group_view)
+from privatim.views.agenda_items import add_agenda_item_view
+from privatim.views.agenda_items import delete_agenda_item_view
+from privatim.views.agenda_items import edit_agenda_item_view
 
 if TYPE_CHECKING:
     from pyramid.config import Configurator
@@ -198,6 +202,64 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         delete_meeting_view,
         route_name='delete_meeting',
+        renderer='json',
+        request_method='DELETE',
+        xhr=True
+    )
+
+    # Agenda items
+
+    config.add_route(
+        'add_agenda_item',
+        '/meetings/{id}/add',
+        factory=meeting_factory
+    )
+    config.add_view(
+        add_agenda_item_view,
+        route_name='add_agenda_item',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        add_agenda_item_view,
+        route_name='add_agenda_item',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'edit_agenda_item',
+        '/agenda_items/{id}/edit',
+        factory=agenda_item_factory
+    )
+    config.add_view(
+        edit_agenda_item_view,
+        route_name='edit_agenda_item',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        edit_agenda_item_view,
+        route_name='edit_agenda_item',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'delete_agenda_item',
+        '/agenda_items/{id}/delete',
+        factory=agenda_item_factory
+    )
+    config.add_view(
+        delete_agenda_item_view,
+        route_name='delete_agenda_item',
+        xhr=False
+    )
+    config.add_view(
+        delete_agenda_item_view,
+        route_name='delete_agenda_item',
         renderer='json',
         request_method='DELETE',
         xhr=True

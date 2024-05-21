@@ -32,13 +32,19 @@ def meeting_view(
     # Assuming meeting.time is a datetime object
     formatted_time = context.time.strftime("%d %B %Y, %I:%M %p")
     assert isinstance(context, Meeting)
+
+    items = []
+    for item in context.agenda_items:
+        items.append({
+            'title': item.title,
+            'description': item.description,
+            'id': item.id,
+        })
+
     return {
         'time': formatted_time,
         'meeting': context,
-        'agenda_items': [{
-            'title': 'Erstes Traktandum',
-            'description': 'Sehr wichtig',
-        }],
+        'agenda_items': items,
     }
 
 

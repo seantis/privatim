@@ -32,7 +32,7 @@
                 <div class="modal-content">
                     <form id="edit-xhr-form" method="POST" novalidate data-fields="${'[' + ','.join(f'&quot;{field}&quot;' for field in edit_form._fields) + ']'}">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="edit-xhr-label">${edit_form.title}</h5>
+                            <h5 class="modal-title" id="edit-xhr-label">${edit_form._title}</h5>
                         </div>
                         <div class="modal-body">
                             <input type="hidden" name="csrf_token" value="${layout.csrf_token()}" />

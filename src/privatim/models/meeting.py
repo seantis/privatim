@@ -49,15 +49,19 @@ class AgendaItem(Base):
     description: Mapped[str] = mapped_column(Text)
 
     meeting_id: Mapped[UUIDStr] = mapped_column(
-
         ForeignKey('meetings.id'),
         index=True,
     )
 
-    meeting: Mapped[list['Meeting']] = relationship(
+    meeting: Mapped['Meeting'] = relationship(
         'Meeting',
         back_populates='agenda_items',
     )
+
+    def __acl__(self) -> list['ACL']:
+        return [
+            (Allow, Authenticated, ['view']),
+        ]
 
 
 class Meeting(Base):

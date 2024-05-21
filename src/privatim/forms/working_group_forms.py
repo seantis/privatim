@@ -22,7 +22,7 @@ class WorkingGroupForm(Form):
         request: 'IRequest',
     ) -> None:
 
-        self.title = _('Edit Working Group')
+        self._title = _('Edit Working Group')
 
         super().__init__(
             request.POST,

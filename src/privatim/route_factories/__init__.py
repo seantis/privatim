@@ -2,6 +2,7 @@ from privatim.models.attached_document import ConsultationDocument
 
 from .root_factory import root_factory
 from .uuid_factory import create_uuid_factory
+from privatim.models import AgendaItem
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 
 from typing import TYPE_CHECKING
@@ -14,6 +15,7 @@ _working_group_factory = create_uuid_factory(WorkingGroup)
 _consultation_factory = create_uuid_factory(Consultation)
 _person_factory = create_uuid_factory(User)
 _meeting_factory = create_uuid_factory(Meeting)
+_agenda_item_factory = create_uuid_factory(AgendaItem)
 
 
 def consultation_factory(request: 'IRequest') -> 'Consultation | Root':
@@ -32,8 +34,11 @@ def working_group_factory(request: 'IRequest') -> 'WorkingGroup | Root':
 
 
 def meeting_factory(request: 'IRequest') -> 'Meeting | Root':
-    factory = create_uuid_factory(Meeting, key='meeting_id')
-    return factory(request)
+    return _meeting_factory(request)
+
+
+def agenda_item_factory(request: 'IRequest') -> AgendaItem:
+    return _agenda_item_factory
 
 
 def default_meeting_factory(request: 'IRequest') -> Meeting:

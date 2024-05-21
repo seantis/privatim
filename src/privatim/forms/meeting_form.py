@@ -9,25 +9,25 @@ from privatim.forms.core import Form
 from privatim.forms.fields import TimezoneDateTimeField  # type: ignore
 from privatim.forms.fields import SearchableSelectField  # type: ignore
 from privatim.models import User, Meeting
+from privatim.models import WorkingGroup
 from privatim.i18n import _
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.models import WorkingGroup
 
 
 class MeetingForm(Form):
 
     def __init__(
             self,
-            context: 'WorkingGroup | Meeting',
+            context: WorkingGroup | Meeting,
             request: 'IRequest',
             prefix:  str = 'edit-xhr'
     ) -> None:
 
-        self.title = (
-            _('Add Meeting') if context is None else
+        self._title = (
+            _('Add Meeting') if isinstance(context, WorkingGroup) else
             _('Edit meeting')
         )
 

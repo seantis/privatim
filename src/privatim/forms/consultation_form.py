@@ -19,7 +19,7 @@ class ConsultationForm(Form):
     def __init__(
         self, context: 'Consultation | None', request: 'IRequest'
     ) -> None:
-        self.title = _('Edit Consultation')
+        self._title = _('Edit Consultation')
 
         super().__init__(
             request.POST,
