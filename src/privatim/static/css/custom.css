@@ -93,6 +93,11 @@
     border-color: var(--primary-color)!important;
 }
 
+/* FIXME */
+a.btn-primary:hover {
+    color: white !important;
+}
+
 a {
     /* set color for all link */
     color: var(--primary-color);
