@@ -35,6 +35,10 @@ def meeting_view(
     return {
         'time': formatted_time,
         'meeting': context,
+        'agenda_items': [{
+            'title': 'Erstes Traktandum',
+            'description': 'Sehr wichtig',
+        }],
     }
 
 
