@@ -14,7 +14,7 @@
                         <a href="${request.route_url('activities')}"
                            class="nav-link px-3 link-body-emphasis"
                            id="${'active_tab' if request.matched_route.name == 'activities' else ''}"
-                                 i18n:translate>Overview</a>
+                                 i18n:translate>Activities</a>
                     </li>
                     <li>
                         <a href="${request.route_url('people')}"

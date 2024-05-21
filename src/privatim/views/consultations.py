@@ -39,7 +39,12 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
     stmt = select(Consultation).order_by(Consultation.created)
     consultations = session.scalars(stmt).unique().all()
-    return {'consultations': consultations}
+
+    return {
+        'title': _('Consultations'),
+        'activities': consultations,
+        'show_add_button': True,
+    }
 
 
 def create_consultation_from_form(
