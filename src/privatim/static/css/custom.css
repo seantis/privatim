@@ -175,3 +175,7 @@ body {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.accordion-button:not(.collapsed) {
+    color: var(--primary-color);
+}
