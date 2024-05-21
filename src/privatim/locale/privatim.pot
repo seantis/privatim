@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 15:45+0200\n"
+"POT-Creation-Date: 2024-05-21 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,10 +36,6 @@ msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
 msgid "About us"
-msgstr ""
-
-#: ./src/privatim/layouts/footer.pt
-msgid "Impressum"
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -79,7 +75,7 @@ msgid "Sign out"
 msgstr ""
 
 #. format data
-#.
+#. 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Name"
@@ -174,6 +170,21 @@ msgstr ""
 msgid "Add Working Group"
 msgstr ""
 
+#: ./src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully added agend item \"${title}\""
+msgstr ""
+
+#: ./src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully edited agenda_item \"${title}\""
+msgstr ""
+
+#: ./src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully deleted agena_item \"${title}\""
+msgstr ""
+
 #: ./src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
@@ -212,6 +223,11 @@ msgstr ""
 msgid "Agenda Items"
 msgstr ""
 
+#: ./src/privatim/views/templates/meeting.pt
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Add Agenda Item"
+msgstr ""
+
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr ""
@@ -245,6 +261,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
 msgid "Consultation"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Choose..."
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
@@ -362,7 +382,7 @@ msgid "Uri"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
-msgid "Vaud"
+msgid "Waadt"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
@@ -378,10 +398,12 @@ msgid "Zurich"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
+#: ./src/privatim/forms/agenda_item_form.py
 msgid "Title"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
+#: ./src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr ""
 
@@ -427,6 +449,10 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "Attendees"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py

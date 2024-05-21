@@ -41,10 +41,6 @@ msgid "About us"
 msgstr "Über uns "
 
 #: src/privatim/layouts/footer.pt
-msgid "Impressum"
-msgstr "Impressum"
-
-#: src/privatim/layouts/footer.pt
 msgid "Contact"
 msgstr "Kontakt"
 
@@ -178,6 +174,21 @@ msgstr "Arbeitsgruppe \"${name}\" erfolgreich hinzugefügt"
 msgid "Add Working Group"
 msgstr "Arbeitsgruppe hinzufügen"
 
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully added agend item \"${title}\""
+msgstr ""
+
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully edited agenda_item \"${title}\""
+msgstr ""
+
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully deleted agena_item \"${title}\""
+msgstr ""
+
 #: src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
@@ -217,6 +228,11 @@ msgstr "Arbeitsgruppe:"
 msgid "Agenda Items"
 msgstr "Traktanden"
 
+#: src/privatim/views/templates/meeting.pt
+#: src/privatim/forms/agenda_item_form.py
+msgid "Add Agenda Item"
+msgstr ""
+
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr "Arbeitsgruppe"
@@ -254,6 +270,10 @@ msgstr "Sitzung"
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation"
 msgstr "Vernehmlassung"
+
+#: src/privatim/views/templates/activities.pt
+msgid "Choose..."
+msgstr "Auswählen..."
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -386,10 +406,12 @@ msgid "Zurich"
 msgstr "Zurich"
 
 #: src/privatim/forms/consultation_form.py
+#: src/privatim/forms/agenda_item_form.py
 msgid "Title"
 msgstr "Titel"
 
 #: src/privatim/forms/consultation_form.py
+#: src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -437,6 +459,10 @@ msgstr "Zeit"
 msgid "Attendees"
 msgstr "Teilnehmer"
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
+msgstr "Traktandum bearbeiten"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Arbeitsgruppe bearbeiten"
@@ -456,15 +482,3 @@ msgstr "Mitglieder"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
-
-#~ msgid "Overview"
-#~ msgstr "Übersicht"
-
-#~ msgid "Status:"
-#~ msgstr "Status:"
-
-#~ msgid "No consultations added yet."
-#~ msgstr "Noch keine Vernehmlassungen hinzugefügt."
-
-#~ msgid "Choose..."
-#~ msgstr "Auswählen..."

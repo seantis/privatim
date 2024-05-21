@@ -11,7 +11,11 @@ from privatim.orm import get_engine, Base
 @click.argument('config_uri')
 @click.option('--email', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
-def add_user(config_uri: str, email: str, password: str) -> None:
+@click.option('--first_name', prompt=True)
+@click.option('--last_name', prompt=True, hide_input=True)
+def add_user(
+    config_uri: str, email: str, password: str, first_name: str, last_name: str
+) -> None:
 
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
@@ -27,6 +31,6 @@ def add_user(config_uri: str, email: str, password: str) -> None:
             click.echo(f"User with email {email} already exists.")
             return
 
-        user = User(email=email)
+        user = User(email=email, first_name=first_name, last_name=last_name)
         user.set_password(password)
         dbsession.add(user)
