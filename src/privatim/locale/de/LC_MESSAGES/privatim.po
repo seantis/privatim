@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 15:45+0200\n"
+"POT-Creation-Date: 2024-05-21 17:26+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -212,8 +212,8 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/meeting.pt
-msgid "Time:"
-msgstr "Zeit:"
+msgid "Date / Time:"
+msgstr "Datum / Zeit:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Attendees:"
@@ -253,6 +253,10 @@ msgstr "Dokumente"
 #: src/privatim/views/templates/consultation.pt
 msgid "Tags"
 msgstr "Tags"
+
+#: src/privatim/views/templates/password_change.pt
+msgid "Change Password"
+msgstr "Passwort ändern"
 
 #: src/privatim/views/templates/activities.pt
 msgid ""
@@ -298,6 +302,10 @@ msgstr "Personenverzeichnis"
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
+
+#: src/privatim/views/templates/password_retrieval.pt
+msgid "Password Retrieval"
+msgstr "Passwort zurücksetzen"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid ""
@@ -490,3 +498,6 @@ msgstr "Mitglieder"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
+
+#~ msgid "Time:"
+#~ msgstr "Zeit:"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 15:45+0200\n"
+"POT-Creation-Date: 2024-05-21 17:26+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -212,8 +212,8 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
 
 #: src/privatim/views/templates/meeting.pt
-msgid "Time:"
-msgstr "Temps:"
+msgid "Date / Time:"
+msgstr "Date / Heure:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Attendees:"
@@ -253,6 +253,10 @@ msgstr "Documents"
 #: src/privatim/views/templates/consultation.pt
 msgid "Tags"
 msgstr "Étiquettes"
+
+#: src/privatim/views/templates/password_change.pt
+msgid "Change Password"
+msgstr "Changer le mot de passe"
 
 #: src/privatim/views/templates/activities.pt
 msgid ""
@@ -298,6 +302,10 @@ msgstr "Liste des personnes"
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
 msgstr "Aucune personne n'a encore été ajoutée."
+
+#: src/privatim/views/templates/password_retrieval.pt
+msgid "Password Retrieval"
+msgstr "Récupération de mot de passe"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid ""
