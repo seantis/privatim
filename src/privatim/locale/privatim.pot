@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 17:49+0200\n"
+"POT-Creation-Date: 2024-05-21 22:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,7 +164,7 @@ msgstr ""
 msgid "No Leader"
 msgstr ""
 
-#.
+#. 
 #. format data
 #: ./src/privatim/forms/working_group_forms.py
 #: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
@@ -443,7 +443,7 @@ msgid "Max Müller"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "-> Show Details"
+msgid "Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -464,6 +464,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
 msgid "Description:"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Comments:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt

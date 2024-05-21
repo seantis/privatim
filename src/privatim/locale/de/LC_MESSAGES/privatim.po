@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 17:49+0200\n"
+"POT-Creation-Date: 2024-05-21 22:21+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -454,8 +454,8 @@ msgid "Max Müller"
 msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
-msgid "-> Show Details"
-msgstr ""
+msgid "Show Details"
+msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting"
@@ -476,6 +476,10 @@ msgstr "Passwort zurücksetzen"
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr "Beschreibung:"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Comments:"
+msgstr "Kommentare:"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Recommendation:"
@@ -504,6 +508,3 @@ msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
 msgstr "Hier können Sie Sitzungen im Kontext einer Arbeitsgruppe hinzufügen."
-
-#~ msgid "Show Details"
-#~ msgstr "Details anzeigen"
