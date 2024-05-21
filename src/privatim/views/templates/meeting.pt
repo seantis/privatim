@@ -16,11 +16,12 @@
                         <p>
                             <span class="fw-bold" i18n:translate="">Time:</span> ${time}
                         </p>
-                        <p>
+                        <p tal:condition="meeting.attendees">
                             <span class="fw-bold" i18n:translate="">Attendees:</span>
                             <ul>
                                 <li tal:repeat="user meeting.attendees">
-                                    ${user.first_name} ${user.last_name}
+                                    <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
+                                    <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
                                 </li>
                             </ul>
                         </p>
