@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 11:26+0200\n"
+"POT-Creation-Date: 2024-05-21 11:12+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -24,95 +24,6 @@ msgstr "Juste un test"
 #: src/privatim/testing.py
 msgid "<b>bold</b>"
 msgstr "<b>gras</b>"
-
-#: src/privatim/forms/fields.py
-msgid "Select..."
-msgstr "Sélectionner..."
-
-#: src/privatim/forms/widgets.py
-msgid "Upload additional files"
-msgstr "Télécharger des fichiers supplémentaires"
-
-#: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Groupe de travail sur l'édition"
-
-#: src/privatim/forms/working_group_forms.py
-msgid "No Leader"
-msgstr "Pas de chef"
-
-#.
-#. format data
-#: src/privatim/forms/working_group_forms.py src/privatim/forms/meeting_form.py
-#: src/privatim/views/meetings.py
-msgid "Name"
-msgstr "Nom"
-
-#: src/privatim/forms/working_group_forms.py
-msgid "Leader"
-msgstr "Chef de file"
-
-#: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Membres"
-
-#: src/privatim/forms/meeting_form.py src/privatim/views/meetings.py
-#: src/privatim/views/templates/working_group.pt
-msgid "Add Meeting"
-msgstr "Ajouter une session"
-
-#: src/privatim/forms/meeting_form.py
-msgid "Edit meeting"
-msgstr "Modifier la réunion"
-
-#: src/privatim/forms/meeting_form.py
-msgid "Time"
-msgstr "Temps"
-
-#: src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Participants"
-
-#: src/privatim/forms/consultation_form.py src/privatim/views/consultations.py
-msgid "Edit Consultation"
-msgstr "Modifier la consultation"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Title"
-msgstr "Titre"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Description"
-msgstr "Description"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Comments"
-msgstr "Commentaires"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Recommendation"
-msgstr "Recommandation"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Status"
-msgstr "Statut"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Open"
-msgstr "Créé"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Closed"
-msgstr "Terminé"
-
-#: src/privatim/forms/consultation_form.py
-msgid "In Progress"
-msgstr "En cours de traitement"
-
-#: src/privatim/forms/consultation_form.py
-#: src/privatim/views/templates/consultation.pt
-msgid "Documents"
-msgstr "Documents"
 
 #: src/privatim/wtform/validators.py
 msgid "This field is required."
@@ -140,20 +51,17 @@ msgstr "Contact"
 msgid "Close"
 msgstr "fermer"
 
-#: src/privatim/layouts/navbar.py src/privatim/views/templates/activities.pt
+#: src/privatim/layouts/navbar.pt src/privatim/layouts/navbar.py
+#: src/privatim/views/activities.py
 msgid "Activities"
 msgstr "Activités"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Overview"
-msgstr "Vue d'ensemble"
 
 #: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
 msgid "People"
 msgstr "Les personnes"
 
-#: src/privatim/layouts/navbar.pt src/privatim/views/templates/consultations.pt
+#: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
 msgid "Consultations"
 msgstr "Consultations"
 
@@ -170,15 +78,12 @@ msgstr "Recherche"
 msgid "Sign out"
 msgstr "Déconnecter"
 
-#: src/privatim/views/password_retrieval.py
-msgid ""
-"An email has been sent to the requested account with further information. If "
-"you do not receive an email then please confirm you have entered the correct "
-"email address."
-msgstr ""
-"Un courriel a été envoyé au compte demandé avec de plus amples informations. "
-"Si vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi "
-"l'adresse e-mail l'adresse électronique correcte."
+#. format data
+#.
+#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Nom"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
@@ -196,6 +101,11 @@ msgstr "Supprimer"
 msgid "Delete Meeting"
 msgstr "Supprimer la réunion"
 
+#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
+#: src/privatim/forms/meeting_form.py
+msgid "Add Meeting"
+msgstr "Ajouter une session"
+
 #: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
@@ -211,25 +121,18 @@ msgstr "Réunion modifiée avec succès \"${nom}\""
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
 
-#: src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully added working group \"${name}\""
-msgstr "Ajout réussi du groupe de travail \"${nom}\""
-
-#: src/privatim/views/working_groups.py
-#: src/privatim/views/templates/working_groups.pt
-msgid "Add Working Group"
-msgstr "Ajouter un groupe de travail"
-
 #: src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
-#: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
+
+#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr "Modifier la consultation"
 
 #: src/privatim/views/password_change.py
 msgid "Email"
@@ -264,13 +167,25 @@ msgstr ""
 "spécial. une lettre majuscule, une lettre minuscule, un chiffre et un "
 "caractère spécial."
 
-#: src/privatim/views/templates/people.pt
-msgid "List of Persons"
-msgstr "Liste des personnes"
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr "Ajout réussi du groupe de travail \"${nom}\""
 
-#: src/privatim/views/templates/people.pt
-msgid "No people added yet."
-msgstr "Aucune personne n'a encore été ajoutée."
+#: src/privatim/views/working_groups.py
+#: src/privatim/views/templates/working_groups.pt
+msgid "Add Working Group"
+msgstr "Ajouter un groupe de travail"
+
+#: src/privatim/views/password_retrieval.py
+msgid ""
+"An email has been sent to the requested account with further information. If "
+"you do not receive an email then please confirm you have entered the correct "
+"email address."
+msgstr ""
+"Un courriel a été envoyé au compte demandé avec de plus amples informations. "
+"Si vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi "
+"l'adresse e-mail l'adresse électronique correcte."
 
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
@@ -279,6 +194,10 @@ msgstr "Annuler"
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Save"
 msgstr "Sauver"
+
+#: src/privatim/views/templates/table.pt
+msgid "Do you really wish to delete \"${item_title}\"?"
+msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Time:"
@@ -289,6 +208,7 @@ msgid "Attendees:"
 msgstr "Participants:"
 
 #: src/privatim/views/templates/meeting.pt
+#: src/privatim/views/templates/activities.pt
 msgid "Working Group:"
 msgstr "Groupe de travail:"
 
@@ -296,21 +216,18 @@ msgstr "Groupe de travail:"
 msgid "Agenda Items"
 msgstr "ordres du jour"
 
-#: src/privatim/views/templates/consultations.pt
-msgid "Status:"
-msgstr "Statut:"
+#: src/privatim/views/templates/working_group.pt
+msgid "Working Group"
+msgstr "Groupe de travail"
 
-#: src/privatim/views/templates/login.pt
-msgid "Sign in"
-msgstr "Se connecter"
+#: src/privatim/views/templates/consultation.pt
+#: src/privatim/forms/consultation_form.py
+msgid "Documents"
+msgstr "Documents"
 
-#: src/privatim/views/templates/login.pt
-msgid "→ Forgot your password / Activate account"
-msgstr "→ Mot de passe oublié / Activer le compte"
-
-#: src/privatim/views/templates/table.pt
-msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
+#: src/privatim/views/templates/consultation.pt
+msgid "Tags"
+msgstr "Étiquettes"
 
 #: src/privatim/views/templates/activities.pt
 msgid ""
@@ -322,27 +239,36 @@ msgstr ""
 "travail."
 
 #: src/privatim/views/templates/activities.pt
-msgid "Working Group:"
-msgstr "Groupe de travail:"
-
-#: src/privatim/views/templates/activities.pt
-#: src/privatim/views/templates/consultations.pt
 msgid "Max Müller"
 msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
-#: src/privatim/views/templates/consultations.pt
 msgid "-> Show Details"
 msgstr "-> Afficher les détails"
 
 #: src/privatim/views/templates/activities.pt
-#: src/privatim/views/templates/consultations.pt
-msgid "Status:"
-msgstr "Statut:"
+msgid "Meeting"
+msgstr "Réunion"
 
-#: src/privatim/views/templates/consultation.pt
-msgid "Tags"
-msgstr "Étiquettes"
+#: src/privatim/views/templates/activities.pt
+msgid "Consultation"
+msgstr "Consultation"
+
+#: src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: src/privatim/views/templates/login.pt
+msgid "→ Forgot your password / Activate account"
+msgstr "→ Mot de passe oublié / Activer le compte"
+
+#: src/privatim/views/templates/people.pt
+msgid "List of Persons"
+msgstr "Liste des personnes"
+
+#: src/privatim/views/templates/people.pt
+msgid "No people added yet."
+msgstr "Aucune personne n'a encore été ajoutée."
 
 #: src/privatim/views/templates/working_groups.pt
 msgid ""
@@ -356,14 +282,70 @@ msgstr ""
 msgid "Group"
 msgstr "Groupe"
 
-#: src/privatim/views/templates/working_group.pt
-msgid "Working Group"
-msgstr "Groupe de travail"
+#: src/privatim/forms/consultation_form.py
+msgid "Title"
+msgstr "Titre"
 
-#: src/privatim/views/templates/consultations.pt
-msgid "No consultations added yet."
-msgstr "Aucune consultation n'a encore été ajoutée."
+#: src/privatim/forms/consultation_form.py
+msgid "Description"
+msgstr "Description"
 
-#: src/privatim/views/templates/consultations.pt
-msgid "Choose..."
-msgstr "Choisir..."
+#: src/privatim/forms/consultation_form.py
+msgid "Comments"
+msgstr "Commentaires"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Recommendation"
+msgstr "Recommandation"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Status"
+msgstr "Statut"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr "Créé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr "Terminé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr "En cours de traitement"
+
+#: src/privatim/forms/fields.py
+msgid "Select..."
+msgstr "Sélectionner..."
+
+#: src/privatim/forms/meeting_form.py
+msgid "Edit meeting"
+msgstr "Modifier la réunion"
+
+#: src/privatim/forms/meeting_form.py
+msgid "Time"
+msgstr "Temps"
+
+#: src/privatim/forms/meeting_form.py
+msgid "Attendees"
+msgstr "Participants"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Groupe de travail sur l'édition"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "No Leader"
+msgstr "Pas de chef"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr "Chef de file"
+
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Membres"
+
+#: src/privatim/forms/widgets.py
+msgid "Upload additional files"
+msgstr "Télécharger des fichiers supplémentaires"
