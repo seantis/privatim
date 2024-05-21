@@ -17,11 +17,11 @@
                         <div class="d-grid gap-2">
                             <button class="btn btn-primary" type="submit" i18n:translate>Sign in</button>
                 </div>
-                <p>
+                <div class="mt-4">
                     <a href="${request.route_url('password_retrieval')}" i18n:translate="">
                                     → Forgot your password / Activate account
                     </a>
-                </p>
+                </div>
                 </form>
 
             </div>
