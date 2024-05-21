@@ -107,6 +107,25 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             Column('document', FileField),
         )
         consultation_assets.create(context.engine)
-
+  #
+    # if not context.has_column('consultations', 'secondary_tags_id'):
+    #     context.add_column(
+    #         'consultations',
+    #         Column(
+    #             'secondary_tags_id', UUIDStrType,
+    #             ForeignKey('secondary_tags.id'),
+    #             index=True,
+    #             nullable=True
+    #         ),
+    #     )
+    # if not context.has_column('status', 'consultation_id'):
+    #     context.add_column(
+    #         'status',
+    #         Column(
+    #             'consultation_id', UUIDStrType,
+    #             ForeignKey('consultations.id'),
+    #             nullable=True
+    #         ),
+    #     )
 
     context.commit()

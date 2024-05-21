@@ -65,11 +65,13 @@
                                     <p>
                                         <span class="fw-bold" i18n:translate="">Working Group:</span> ${activity.working_group.name}
                                     </p>
-                                    <ul>
-                                        <li tal:repeat="user activity.attendees">
-                                        ${user.first_name} ${user.last_name}
-                                        </li>
-                                    </ul>
+                                    <tal:b tal:condition="activity.attendees">
+                                        <ul>
+                                            <li tal:repeat="user activity.attendees">
+                                                ${user.first_name} ${user.last_name}
+                                            </li>
+                                        </ul>
+                                    </tal:b>
                                     <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate=""
                                        class="details-link justify-content-end">-> Show Details</a>
                                 </div>

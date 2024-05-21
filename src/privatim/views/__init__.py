@@ -197,7 +197,7 @@ def includeme(config: 'Configurator') -> None:
 
     config.add_route(
         'delete_meeting',
-        '/meetings/{meeting_id}/delete',
+        '/meetings/{id}/delete',
         factory=meeting_factory
     )
     config.add_view(

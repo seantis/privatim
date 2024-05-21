@@ -122,7 +122,7 @@ def meeting_buttons(
         Button(
             url=(
                 request.route_url(
-                    'delete_meeting', meeting_id=meeting.id
+                    'delete_meeting', id=meeting.id
                 )
             ),
             icon='trash',
