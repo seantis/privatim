@@ -1,7 +1,7 @@
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
 from wtforms import StringField
-from wtforms.fields.choices import SelectField, SelectMultipleField
+from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
