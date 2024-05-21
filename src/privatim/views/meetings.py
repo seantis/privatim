@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 
@@ -5,6 +7,7 @@ from privatim.controls import Button
 from privatim.data_table import AJAXDataTable, DataColumn, maybe_escape
 from sqlalchemy import func, select
 
+from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.utils import fix_utc_to_local_time
 from privatim.static import xhr_edit_js
 from privatim.forms.meeting_form import MeetingForm
@@ -23,6 +26,19 @@ if TYPE_CHECKING:
     from privatim.types import MixedDataOrRedirect
 
 
+def datetime_format(
+        dt: datetime,
+        format: str = '%H:%M %d.%m.%y',
+        tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
+) -> str:
+
+    if not dt.tzinfo:
+        # If passed datetime does not carry any timezone information, we
+        # assume (and force) it to be UTC, as all timestamps should be.
+        dt = timezone('UTC').localize(dt)
+    return dt.astimezone(tz).strftime(format)
+
+
 def meeting_view(
         context: Meeting,
         request: 'IRequest'
@@ -30,7 +46,7 @@ def meeting_view(
     """ Displays a single meeting. """
 
     # Assuming meeting.time is a datetime object
-    formatted_time = context.time.strftime("%d %B %Y, %I:%M %p")
+    formatted_time = datetime_format(context.time)
     assert isinstance(context, Meeting)
 
     items = []

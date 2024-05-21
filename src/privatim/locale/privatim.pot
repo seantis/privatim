@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 17:05+0200\n"
+"POT-Creation-Date: 2024-05-21 17:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,7 +207,7 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
-msgid "Time:"
+msgid "Date / Time:"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt

@@ -212,8 +212,8 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/meeting.pt
-msgid "Time:"
-msgstr "Zeit:"
+msgid "Date / Time:"
+msgstr "Datum / Zeit:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Attendees:"
@@ -490,3 +490,6 @@ msgstr "Mitglieder"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
+
+#~ msgid "Time:"
+#~ msgstr "Zeit:"
