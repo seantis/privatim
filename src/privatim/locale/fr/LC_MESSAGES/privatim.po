@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 11:12+0200\n"
+"POT-Creation-Date: 2024-05-21 11:26+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -182,7 +182,7 @@ msgstr ""
 
 #: src/privatim/views/meetings.py
 msgid "Details"
-msgstr ""
+msgstr "Des détails"
 
 #: src/privatim/views/meetings.py
 msgid "Edit Meeting"
@@ -282,19 +282,23 @@ msgstr "Sauver"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Time:"
-msgstr ""
+msgstr "Temps:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Attendees:"
-msgstr ""
+msgstr "Participants:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Working Group:"
-msgstr ""
+msgstr "Groupe de travail:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Agenda Items"
-msgstr ""
+msgstr "ordres du jour"
+
+#: src/privatim/views/templates/consultations.pt
+msgid "Status:"
+msgstr "Statut:"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -316,6 +320,10 @@ msgstr ""
 "Aucune activité n'a encore été ajoutée. Vous pouvez ajouter des activités "
 "dans l'onglet Consultations ou en ajoutant une réunion d'un groupe de "
 "travail."
+
+#: src/privatim/views/templates/activities.pt
+msgid "Working Group:"
+msgstr "Groupe de travail:"
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/views/templates/consultations.pt

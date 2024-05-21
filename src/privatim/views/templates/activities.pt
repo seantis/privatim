@@ -9,53 +9,83 @@
             <div class="row">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h1 i18n:translate="">Activities</h1>
+                        <h1 i18n:translate="">${title}</h1>
                     </div>
                 </div>
 
                 <!-- Main content area (2/3 width) -->
                 <div class="col-md-8">
-                    <tal:b tal:condition="not:consultations">
+                    <tal:b tal:condition="not:activities">
                         <p class="lead" i18n:translate="">No activities added yet. You can add activities in the
                             Consultations tab or by adding a Meeting of a Working Group.</p>
                     </tal:b>
-                    <div tal:repeat="consultation consultations" class="mt-5">
+
+                    <div tal:repeat="activity activities" class="mt-5">
+                    <?python
+                            from privatim.models import Consultation, Meeting
+                            is_consultation = isinstance(activity, Consultation)
+                            is_meeting = isinstance(activity, Meeting)
+
+                            if is_consultation and activity.comments:
+                                    activity.comments = activity.comments if len(activity.comments) < 100 else activity.comments[:100] + '...'
+
+                            if is_consultation and activity.description:
+                                    activity.description = activity.description if len(activity.description) < 100 else activity.description[:100] + '...'
+
+                            if is_consultation and activity.recommendation:
+                                    activity.recommendation = activity.recommendation if len(activity.recommendation) < 100 else activity.recommendation[:100] + '...'
+
+                            ?>
 
                         <div class="card d-flex flex-row">
+
                             <div class="profile-section">
                                 <img src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                      class="rounded-circle m-3 profile-icon" alt="Profile Icon">
                                 <p class="profile-name" i18n:translate="">Max Müller</p>
                             </div>
-                            <div class="row m-3">
-                                <div class="card-body col-md-">
-                                    <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
-<!--?                                    <p class="card-text" i18n:translate="">${consultation.description[:75] + '...' if len(consultation.description) > 75 else consultation.description}</p>-->
-                                    <p class="card-text" i18n:translate="">${consultation.comments}</p>
-                                    <p class="card-text" i18n:translate="">${consultation.recommendation}</p>
-                                    <a href="${request.route_url('consultation', id=consultation.id)}" i18n:translate=""
+
+                            <tal:b tal:switch="activity.__class__.__name__">
+                                <div tal:case="'Consultation'" class="card-body col-md-8 d-flex flex-column">
+                                    <h5 class="card-title fw-bold" i18n:translate="">${activity.title}</h5>
+                                    <p class="card-text" i18n:translate="">${activity.comments}</p>
+                                    <p class="card-text" i18n:translate="">${activity.recommendation}</p>
+                                    <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate=""
                                        class="details-link">-> Show Details</a>
                                 </div>
-                                <div class="col-md-4 mt-4 tag-buttons">
-                                    <div class="d-flex flex-row align-items-start">
-                                        <button class="btn btn-secondary rounded-pill mb-2 me-2 tag-button">Tag1
-                                        </button>
-                                        <button class="btn btn-secondary rounded-pill mb-2 me-2 tag-button">Tag2
-                                        </button>
-                                    </div>
-                                    <div class="d-flex flex-column align-items-start">
-                                        <div class="d-flex flex-row">
-                                            <p>
-                                                <strong i18n:translate="">Status:</strong>
-                                                <span i18n:translate="">${consultation.status.name}</span>
-                                            </p>
-                                        </div>
-                                    </div>
+                                <div tal:case="'Meeting'" class="card-body col-md-8 d-flex-inline flex-column ">
+                                    <h5 class="card-title fw-bold" i18n:translate="">${activity.name}</h5>
+                                    <p>
+                                        <span class="fw-bold" i18n:translate="">Working Group:</span> ${activity.working_group.name}
+                                    </p>
+                                    <ul>
+                                        <li tal:repeat="user activity.attendees">
+                                        ${user.first_name} ${user.last_name}
+                                        </li>
+                                    </ul>
+                                    <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate=""
+                                       class="details-link justify-content-end">-> Show Details</a>
+                                </div>
+                            </tal:b>
+
+                            <div class="col-md-3 d-flex flex-column">
+                                <!-- these are the tags -->
+
+                                <div class="primary-tags d-flex flex-row justify-content-start">
+                                    <span class="badge rounded-pill mb-4 tag-button text-light fs-6 px-3 py-2" i18n:translate="">Meeting</span>
+                                </div>
+                                <div tal:condition="is_consultation"
+                                        class="secondary-tags d-flex flex-row justify-content-start">
+                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">SZ</span>
+                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">LU</span>
+                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">ZG</span>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
+
                 <!-- Sidebar (1/3 width) -->
                 <div class="col-md-4 mt-5">
                     <div class="mb-5 p-3">

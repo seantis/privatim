@@ -6,7 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
+<<<<<<< Updated upstream
 "POT-Creation-Date: 2024-05-21 11:12+0200\n"
+=======
+"POT-Creation-Date: 2024-05-21 11:26+0200\n"
+>>>>>>> Stashed changes
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +45,7 @@ msgstr ""
 msgid "No Leader"
 msgstr ""
 
-#. 
+#.
 #. format data
 #: ./src/privatim/forms/working_group_forms.py
 #: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
@@ -173,11 +177,24 @@ msgstr ""
 msgid "Sign out"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: ./src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
 "you do not receive an email then please confirm you have entered the correct "
 "email address."
+=======
+#: ./src/privatim/layouts/navbar.py
+#: ./src/privatim/views/templates/activities.pt
+msgid "Activities"
+msgstr ""
+
+#. format data
+#.
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Name"
+>>>>>>> Stashed changes
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -284,8 +301,18 @@ msgstr ""
 msgid "Attendees:"
 msgstr ""
 
+<<<<<<< Updated upstream
 #: ./src/privatim/views/templates/meeting.pt
 msgid "Working Group:"
+=======
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
+msgid "-> Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Status:"
+>>>>>>> Stashed changes
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
@@ -311,8 +338,16 @@ msgid ""
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
+<<<<<<< Updated upstream
 #: ./src/privatim/views/templates/consultations.pt
 msgid "Max Müller"
+=======
+msgid "Working Group:"
+msgstr ""
+
+#: ./src/privatim/views/templates/login.pt
+msgid "Sign in"
+>>>>>>> Stashed changes
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt

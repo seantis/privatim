@@ -1,4 +1,3 @@
-import sys
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy.exc import IntegrityError
 from privatim.models.consultation import Status

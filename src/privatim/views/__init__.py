@@ -103,7 +103,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         consultations_view,
         route_name='consultations',
-        renderer='templates/consultations.pt'
+        renderer='templates/activities.pt'
     )
 
     # working groups overview

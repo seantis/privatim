@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 11:12+0200\n"
+"POT-Creation-Date: 2024-05-21 11:26+0200\n"
 "PO-Revision-Date: 2024-04-11 15:52+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -272,6 +272,16 @@ msgstr "Personenverzeichnis"
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
 
+#: src/privatim/views/password_retrieval.py
+msgid ""
+"An email has been sent to the requested account with further information. If "
+"you do not receive an email then please confirm you have entered the correct "
+"email address."
+msgstr ""
+"Eine E-Mail wurde an das angegebene Konto gesendet. Wenn Sie keine E-Mail "
+"erhalten, überprüfen Sie bitte, ob Sie die korrekte E-Mail-Adresse "
+"eingegeben haben."
+
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -296,6 +306,11 @@ msgstr "Arbeitsgruppe:"
 msgid "Agenda Items"
 msgstr "Traktanden"
 
+#: src/privatim/views/templates/consultations.pt
+msgid "Status:"
+msgstr "Status:"
+
+
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
 msgstr "Anmelden"
@@ -318,9 +333,17 @@ msgstr ""
 "erfassen."
 
 #: src/privatim/views/templates/activities.pt
+
 #: src/privatim/views/templates/consultations.pt
 msgid "Max Müller"
 msgstr "Max Müller"
+
+msgid "Working Group:"
+msgstr "Arbeitsgruppe:"
+
+#: src/privatim/views/templates/login.pt
+msgid "Sign in"
+msgstr "Anmelden"
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/views/templates/consultations.pt
