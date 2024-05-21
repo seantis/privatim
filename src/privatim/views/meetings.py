@@ -175,7 +175,6 @@ def add_meeting_view(
     target_url = request.route_url('meetings', id=context.id)
 
     form = MeetingForm(context, request)
-    form.name.data = ''
     session = request.dbsession
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
@@ -211,6 +210,8 @@ def add_meeting_view(
             return data
         else:
             return HTTPFound(location=target_url)
+
+    form.name.data = ''
     return {
         'form': form,
         'title': form._title,
