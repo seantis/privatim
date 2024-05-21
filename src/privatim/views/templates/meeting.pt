@@ -4,7 +4,7 @@
              i18n:domain="privatim">
 
     <div metal:fill-slot="content">
-        <div class="container py-4">
+        <div class="container py-3">
             <div class="row">
                 <div class="col-12">
                     <h1 class="mb-3">Sitzung ${meeting.name}</h1>

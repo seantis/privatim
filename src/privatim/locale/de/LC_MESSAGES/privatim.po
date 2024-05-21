@@ -167,6 +167,7 @@ msgstr "Arbeitsgruppe bearbeiten"
 msgid "No Leader"
 msgstr "Kein Leiter"
 
+#.
 #. format data
 #: src/privatim/forms/working_group_forms.py src/privatim/forms/meeting_form.py
 #: src/privatim/views/meetings.py src/privatim/views/templates/people.pt
@@ -453,8 +454,8 @@ msgid "Max Müller"
 msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Show Details"
-msgstr "Details anzeigen"
+msgid "-> Show Details"
+msgstr ""
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting"
@@ -503,3 +504,6 @@ msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
 msgstr "Hier können Sie Sitzungen im Kontext einer Arbeitsgruppe hinzufügen."
+
+#~ msgid "Show Details"
+#~ msgstr "Details anzeigen"

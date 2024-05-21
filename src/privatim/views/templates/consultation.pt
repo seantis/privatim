@@ -4,33 +4,27 @@
          i18n:domain="privatim">
 
     <div metal:fill-slot="content">
-        <div class="container py-5">
+        <div class="container py-3">
             <div class="row">
                 <!-- Main Content -->
                 <div class="col-lg-9 mb-4">
-
                     <div class="col-12">
                         <h1 class="mb-4">${consultation.title}</h1>
                     </div>
-
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <p tal:condition="consultation.description">
-                                <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
-                            </p>
-                            <p tal:condition="consultation.comments">
-                                <span class="fw-bold">Comments:</span> ${consultation.comments}
-                            </p>
-                            <p tal:condition="consultation.recommendation">
-                                <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
-                            </p>
-                        </div>
-                    </div>
+                    <p tal:condition="consultation.description">
+                        <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
+                    </p>
+                    <p tal:condition="consultation.comments">
+                        <span class="fw-bold" i18n:translate="">Comments:</span> ${consultation.comments}
+                    </p>
+                    <p tal:condition="consultation.recommendation">
+                        <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
+                    </p>
                 </div>
 
                 <!-- Sidebar for documents and status, starts below the title -->
                 <div class="col-lg-3">
-                    <div class="card mb-4 shadow-sm">
+                    <div class="card mb-4">
                         <div class="card-body">
                             <h5 i18n:translate="" class="card-title">Documents</h5>
                             <ul class="list-group list-group-flush" tal:condition="documents">
@@ -44,11 +38,11 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="card shadow-sm">
+                    <div class="card">
                         <div class="card-body">
                             <h5 i18n:translate="" class="card-title">Tags</h5>
                             <p class="card-text" tal:condition="consultation.status">
-                                <span class="badge rounded-pill bg-info text-dark">${consultation.status.name}</span>
+                                <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
                             </p>
                         </div>
                     </div>
