@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 17:12+0200\n"
+"POT-Creation-Date: 2024-05-21 17:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgid "Sign out"
 msgstr ""
 
 #. format data
-#.
+#. 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Name"
@@ -249,6 +249,10 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+#: ./src/privatim/views/templates/password_change.pt
+msgid "Change Password"
+msgstr ""
+
 #: ./src/privatim/views/templates/activities.pt
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
@@ -289,6 +293,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/people.pt
 msgid "No people added yet."
+msgstr ""
+
+#: ./src/privatim/views/templates/password_retrieval.pt
+msgid "Password Retrieval"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_groups.pt

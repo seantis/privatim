@@ -254,6 +254,10 @@ msgstr "Dokumente"
 msgid "Tags"
 msgstr "Tags"
 
+#: src/privatim/views/templates/password_change.pt
+msgid "Change Password"
+msgstr "Passwort ändern"
+
 #: src/privatim/views/templates/activities.pt
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
@@ -298,6 +302,10 @@ msgstr "Personenverzeichnis"
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
+
+#: src/privatim/views/templates/password_retrieval.pt
+msgid "Password Retrieval"
+msgstr "Passwort zurücksetzen"
 
 #: src/privatim/views/templates/working_groups.pt
 msgid ""
