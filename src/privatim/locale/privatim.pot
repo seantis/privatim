@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 16:43+0200\n"
+"POT-Creation-Date: 2024-05-21 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgid "Sign out"
 msgstr ""
 
 #. format data
-#. 
+#.
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Name"
@@ -230,6 +230,14 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Working Group"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Description:"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Recommendation:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt

@@ -177,17 +177,17 @@ msgstr "Arbeitsgruppe hinzufügen"
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully added agend item \"${title}\""
-msgstr ""
+msgstr "Traktandum \"${title}\" erfolgreich hinzugefügt"
 
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully edited agenda_item \"${title}\""
-msgstr ""
+msgstr "Traktandum \"${title}\" erfolgreich bearbeitet"
 
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
-msgstr ""
+msgstr "Traktandum \"${title}\" erfolgreich gelöscht"
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -231,11 +231,19 @@ msgstr "Traktanden"
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
-msgstr ""
+msgstr "Traktandum hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr "Arbeitsgruppe"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Description:"
+msgstr "Beschreibung:"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Recommendation:"
+msgstr "Empfehlung:"
 
 #: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
@@ -421,7 +429,7 @@ msgstr "Kommmentare"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
-msgstr "Stellungnahme"
+msgstr "Empfehlung"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Status"

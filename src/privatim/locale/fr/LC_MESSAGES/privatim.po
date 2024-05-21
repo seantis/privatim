@@ -177,17 +177,17 @@ msgstr "Ajouter un groupe de travail"
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully added agend item \"${title}\""
-msgstr ""
+msgstr "Ajout réussi de l'élément de l'ordre du jour \"${titre}\""
 
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully edited agenda_item \"${title}\""
-msgstr ""
+msgstr "Élément de l'ordre du jour modifié avec succès \"${titre}\""
 
 #: src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
-msgstr ""
+msgstr "Élément de l'ordre du jour supprimé avec succès \"${titre}\""
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -231,11 +231,19 @@ msgstr "ordres du jour"
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
-msgstr ""
+msgstr "Ajouter un élément de l'ordre du jour"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr "Groupe de travail"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Description:"
+msgstr "Description"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Recommendation:"
+msgstr "Recommandation"
 
 #: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
@@ -393,7 +401,7 @@ msgstr "Uri"
 
 #: src/privatim/forms/constants.py
 msgid "Waadt"
-msgstr ""
+msgstr "Vaud"
 
 #: src/privatim/forms/constants.py
 msgid "Valais"
@@ -484,4 +492,3 @@ msgstr "Membres"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Télécharger des fichiers supplémentaires"
-

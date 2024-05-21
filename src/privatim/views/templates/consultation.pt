@@ -16,13 +16,13 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <p tal:condition="consultation.description">
-                                <span class="fw-bold">Description:</span> ${consultation.description}
+                                <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
                             </p>
                             <p tal:condition="consultation.comments">
                                 <span class="fw-bold">Comments:</span> ${consultation.comments}
                             </p>
                             <p tal:condition="consultation.recommendation">
-                                <span class="fw-bold">Recommendation:</span> ${consultation.recommendation}
+                                <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
                             </p>
                         </div>
                     </div>
