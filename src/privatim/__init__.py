@@ -1,11 +1,12 @@
 from fanstatic import Fanstatic
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Table, MetaData, Column, ForeignKey
+from sqlalchemy import Table, MetaData, Column, ForeignKey, Text
 from sqlalchemy_file import FileField
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
-# from privatim.orm.meta import UUIDStrPK, UUIDStr
+from privatim.models.consultation import Tag
+from privatim.orm.meta import Base
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
 from pyramid.settings import asbool
@@ -106,5 +107,6 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             Column('document', FileField),
         )
         consultation_assets.create(context.engine)
+
 
     context.commit()

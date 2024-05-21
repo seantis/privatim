@@ -55,6 +55,7 @@ def test_view_add_consultation(client):
     page.form['comments'] = 'the comments'
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
+    page.form['cantons'] = ['AG', 'ZH']
     page.form['documents'] = Upload('Test.txt', b'File content.')
     page.form.submit()
 

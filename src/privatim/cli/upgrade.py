@@ -70,6 +70,25 @@ class UpgradeContext:
                 return True
         return False
 
+    def has_foreign_key(self, table: str, constraint_name: str) -> bool:
+        inspector = inspect(self.operations_connection)
+        foreign_keys = inspector.get_foreign_keys(table)
+        return any(fk['name'] == constraint_name for fk in foreign_keys)
+
+    def create_foreign_key(self, source_table: str, referent_table: str,
+                           source_column: str, referent_column: str,
+                           constraint_name: str) -> bool:
+        if self.has_table(source_table) and self.has_table(referent_table):
+            self.operations.create_foreign_key(
+                constraint_name,
+                source_table,
+                referent_table,
+                [source_column],
+                [referent_column]
+            )
+            return True
+        return False
+
     def get_enum_values(self, enum_name: str) -> set[str]:
         if self.engine.name != 'postgresql':
             return set()

@@ -1,11 +1,13 @@
+from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
 from wtforms import StringField
-from wtforms.fields.choices import SelectField
+from wtforms.fields.choices import SelectField, SelectMultipleField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields import UploadMultipleField  # type:ignore
+from privatim.forms.fields import UploadMultipleField, \
+    SearchableSelectField  # type:ignore
 from privatim.i18n import _
 
 from typing import TYPE_CHECKING
@@ -37,11 +39,18 @@ class ConsultationForm(Form):
     recommendation = StringField(_('Recommendation'))
     status = SelectField(
         _('Status'),
-        default='test',
         choices=[
             ('1', _('Open')),
             ('2', _('Closed')),
             ('3', _('In Progress')),
+        ],
+    )
+
+    cantons = SearchableSelectField(
+        _('Cantons'),
+        choices=[('', '')] + CANTONS_SHORT,
+        validators=[
+            validators.Optional(),
         ],
     )
 

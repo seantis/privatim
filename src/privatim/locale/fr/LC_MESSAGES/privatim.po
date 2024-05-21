@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-05-21 11:12+0200\n"
+"POT-Creation-Date: 2024-05-21 15:45+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -127,6 +127,7 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
+#: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
 
@@ -282,6 +283,110 @@ msgstr ""
 msgid "Group"
 msgstr "Groupe"
 
+#: src/privatim/forms/constants.py
+msgid "Aargau"
+msgstr "Argovie"
+
+#: src/privatim/forms/constants.py
+msgid "Appenzell Innerrhoden"
+msgstr "Appenzell Rhodes-Intérieures"
+
+#: src/privatim/forms/constants.py
+msgid "Appenzell Ausserrhoden"
+msgstr "Appenzell Rhodes-Extérieures"
+
+#: src/privatim/forms/constants.py
+msgid "Bern"
+msgstr "Berne"
+
+#: src/privatim/forms/constants.py
+msgid "Basel-Landschaft"
+msgstr "Bâle-Campagne"
+
+#: src/privatim/forms/constants.py
+msgid "Basel-Stadt"
+msgstr "Bâle-Ville"
+
+#: src/privatim/forms/constants.py
+msgid "Fribourg"
+msgstr "Fribourg"
+
+#: src/privatim/forms/constants.py
+msgid "Geneva"
+msgstr "Genève"
+
+#: src/privatim/forms/constants.py
+msgid "Glarus"
+msgstr "Glaris"
+
+#: src/privatim/forms/constants.py
+msgid "Graubünden"
+msgstr "Grisons"
+
+#: src/privatim/forms/constants.py
+msgid "Jura"
+msgstr "Jura"
+
+#: src/privatim/forms/constants.py
+msgid "Lucerne"
+msgstr "Lucerne"
+
+#: src/privatim/forms/constants.py
+msgid "Neuchâtel"
+msgstr "Neuchâtel"
+
+#: src/privatim/forms/constants.py
+msgid "Nidwalden"
+msgstr "Nidwald"
+
+#: src/privatim/forms/constants.py
+msgid "Obwalden"
+msgstr "Obwald"
+
+#: src/privatim/forms/constants.py
+msgid "St. Gallen"
+msgstr "Saint-Gall"
+
+#: src/privatim/forms/constants.py
+msgid "Schaffhausen"
+msgstr "Schaffhouse"
+
+#: src/privatim/forms/constants.py
+msgid "Solothurn"
+msgstr "Soleure"
+
+#: src/privatim/forms/constants.py
+msgid "Schwyz"
+msgstr "Schwytz"
+
+#: src/privatim/forms/constants.py
+msgid "Thurgau"
+msgstr "Thurgovie"
+
+#: src/privatim/forms/constants.py
+msgid "Ticino"
+msgstr "Tessin"
+
+#: src/privatim/forms/constants.py
+msgid "Uri"
+msgstr "Uri"
+
+#: src/privatim/forms/constants.py
+msgid "Vaud"
+msgstr "Vaud"
+
+#: src/privatim/forms/constants.py
+msgid "Valais"
+msgstr "Valais"
+
+#: src/privatim/forms/constants.py
+msgid "Zug"
+msgstr "Zoug"
+
+#: src/privatim/forms/constants.py
+msgid "Zurich"
+msgstr "Zurich"
+
 #: src/privatim/forms/consultation_form.py
 msgid "Title"
 msgstr "Titre"
@@ -313,6 +418,10 @@ msgstr "Terminé"
 #: src/privatim/forms/consultation_form.py
 msgid "In Progress"
 msgstr "En cours de traitement"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Cantons"
+msgstr "Les cantons"
 
 #: src/privatim/forms/fields.py
 msgid "Select..."

@@ -88,9 +88,9 @@
 
                                 <div tal:condition="is_consultation"
                                         class="secondary-tags d-flex flex-row justify-content-start">
-                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">SZ</span>
-                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">LU</span>
-                                    <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">ZG</span>
+                                    <tal:b tal:repeat="tag activity.secondary_tags">
+                                        <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">${tag.name}</span>
+                                    </tal:b>
                                 </div>
                             </div>
                         </div>

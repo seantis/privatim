@@ -139,7 +139,12 @@ class TimezoneDateTimeField(DateTimeLocalField):
 
 
 class SearchableSelectField(SelectField):
-    """A multiple select field with tom-select.js support."""
+    """A multiple select field with tom-select.js support.
+
+    Note: you need to call form.raw_data() to actually get the choices as list
+    """
+
+
     # overwrite __call__:
     def __call__(self, *args, **kwargs):
         init_tom_select.need()

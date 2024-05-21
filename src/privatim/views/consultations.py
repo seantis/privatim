@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
-from privatim.models.consultation import Status
+from privatim.models.consultation import Status, Tag
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 from privatim.models.attached_document import ConsultationDocument
@@ -55,12 +55,17 @@ def create_consultation_from_form(
     session.flush()
     session.refresh(status)
 
+    tags = [Tag(name=n) for n in form.cantons.raw_data]
+    session.add_all(tags)
+    session.flush()
+
     consultation = Consultation(
         title=form.title.data,
         description=form.description.data,
         comments=form.comments.data,
         recommendation=form.recommendation.data,
-        status_id=status.id,
+        status=status,
+        secondary_tags=tags
     )
     if form.documents.data is None:
         return None
