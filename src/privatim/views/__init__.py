@@ -7,7 +7,7 @@ from privatim.route_factories import (working_group_factory,
                                       consultation_factory, person_factory,
                                       consultation_document_factory,
                                       meeting_factory, default_meeting_factory)
-from privatim.views.activities import activities_overview
+from privatim.views.activities import activities_view
 from privatim.views.consultations import (add_or_edit_consultation_view,
                                           consultation_view,
                                           consultations_view)
@@ -54,7 +54,7 @@ def includeme(config: 'Configurator') -> None:
 
     config.add_route('activities', '/activities')
     config.add_view(
-        activities_overview,
+        activities_view,
         route_name='activities',
         renderer='templates/activities.pt',
     )

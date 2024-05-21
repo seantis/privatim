@@ -10,6 +10,14 @@
                 <div class="col-md-6">
                     <h1 i18n:translate="">${title}</h1>
                 </div>
+
+                <tal:b  tal:condition="show_add_button">
+                    <div class="col-md-6 text-end">
+                        <a i18n:translate="" href="${request.route_url('add_consultation')}"
+                                             class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
+                    </div>
+               </tal:b>
+
             </div>
 
             <div class="row">

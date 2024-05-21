@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ..types import RenderData
 
 
-def activities_overview(request: 'IRequest') -> 'RenderData':
+def activities_view(request: 'IRequest') -> 'RenderData':
     """ Display all activities in the system. (It's the landing page.)"""
 
     session = request.dbsession
@@ -55,6 +55,8 @@ def activities_overview(request: 'IRequest') -> 'RenderData':
         elif row.type == 'meeting':
             activities.append(meeting_dict[row.id])
 
-    return {'activities': activities,
-            'title': _('Activities')
-            }
+    return {
+        'activities': activities,
+        'title': _('Activities'),
+        'show_add_button': False,
+    }
