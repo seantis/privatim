@@ -28,7 +28,7 @@
                             Consultations tab or by adding a Meeting of a Working Group.</p>
                     </tal:b>
 
-                    <div tal:repeat="activity activities" class="mt-5">
+                    <div tal:repeat="activity activities" class="mt-4">
                     <?python
                             from privatim.models import Consultation, Meeting
                             is_consultation = isinstance(activity, Consultation)
@@ -50,6 +50,7 @@
                                 <img src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                      class="rounded-circle m-3 profile-icon" alt="Profile Icon">
                                 <p class="profile-name" i18n:translate="">Max Müller</p>
+                                <p class="text-secondary">21.05.2024<br/> 13:30</p>
                             </div>
 
                             <tal:b tal:switch="activity.__class__.__name__">
@@ -58,7 +59,7 @@
                                     <p class="card-text" i18n:translate="">${activity.comments}</p>
                                     <p class="card-text" i18n:translate="">${activity.recommendation}</p>
                                     <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate=""
-                                       class="details-link">-> Show Details</a>
+                                       class="details-link">Show Details</a>
                                 </div>
                                 <div tal:case="'Meeting'" class="card-body col-md-8 d-flex flex-column">
                                     <h5 class="card-title fw-bold" i18n:translate="">${activity.name}</h5>
@@ -74,7 +75,7 @@
                                         </ul>
                                     </tal:b>
                                     <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate=""
-                                       class="details-link justify-content-end">-> Show Details</a>
+                                       class="details-link justify-content-end">Show Details</a>
                                 </div>
                             </tal:b>
 

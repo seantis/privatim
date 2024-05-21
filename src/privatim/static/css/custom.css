@@ -132,8 +132,6 @@ body {
 .card {
     display: flex;
     align-items: center;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     margin: 1rem 0;
 }
 
@@ -154,13 +152,25 @@ body {
 
 .profile-name, .details-link {
     color: var(--primary-color);
-    text-decoration: underline;
+    font-weight: 700;
+    text-decoration: none;
 }
 
+.profile-section img {
+    width: 100px;
+    height: 100px;
+}
+
+/* FIXME */
 .tag-button {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    font-weight: 700;
+    background-color: #ededed;
+    border-color: #ededed;
+    color: #333 !important;
+    font-weight: normal;
+}
+
+main {
+    margin-bottom: 2rem;
 }
 
 .form-signin input[type="email"] {

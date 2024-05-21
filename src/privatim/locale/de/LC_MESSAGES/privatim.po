@@ -6,15 +6,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "POT-Creation-Date: 2024-05-21 17:49+0200\n"
-"PO-Revision-Date: 2024-04-11 15:52+0200\n"
+"PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Lingua 4.15.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Lingua 4.15.0\n"
+"X-Language: C\n"
+"X-Source-Language: C\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #. translation strings used for testing
 #: src/privatim/testing.py
@@ -164,7 +167,6 @@ msgstr "Arbeitsgruppe bearbeiten"
 msgid "No Leader"
 msgstr "Kein Leiter"
 
-#.
 #. format data
 #: src/privatim/forms/working_group_forms.py src/privatim/forms/meeting_form.py
 #: src/privatim/views/meetings.py src/privatim/views/templates/people.pt
@@ -451,8 +453,8 @@ msgid "Max Müller"
 msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
-msgid "-> Show Details"
-msgstr "-> Details anzeigen"
+msgid "Show Details"
+msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting"
