@@ -36,9 +36,9 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" tal:repeat="user group.users"
-                                 alt="Profile Icon"
-                                 style="width: 45px; height: 45px" class="rounded-circle me-2"
+                            <img src="${layout.static_url('privatim:static/default_profile_icon.png')}" tal:repeat="user group.users"
+                                 style="width: 45px; height: 45px"
+                                 class="rounded-circle me-2"
                                  title="${user.first_name}"/>
                         </div>
                     </td>
