@@ -152,7 +152,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         meetings_view,
         route_name='meetings',
-        renderer='templates/table.pt',
+        renderer='templates/working_group.pt',
     )
 
     # Add meeting per working_group

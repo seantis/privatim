@@ -143,20 +143,10 @@ def meetings_view(
 
     assert isinstance(context, WorkingGroup)
 
-    table = MeetingTable(context, request)
     return {
+        'group': context,
         'title': f'{context.name}: Sitzungen',
-        'delete_title': _('Delete Meeting'),
-        'table': table,
-        'top_buttons': [Button(
-            url=request.route_url('add_meeting', id=context.id),
-            icon='plus',
-            title=_('Add Meeting'),
-            css_class='btn-primary',
-            modal='#edit-xhr',
-            data_table_id=table.id,
-        )],
-        'edit_form': MeetingForm(context, request),
+        'meetings': context.meetings,
     }
 
 
@@ -166,9 +156,10 @@ def add_meeting_view(
 ) -> 'MixedDataOrRedirect':
 
     assert isinstance(context, WorkingGroup)
-    target_url = request.route_url('working_groups', id=context.id)
+    target_url = request.route_url('meetings', id=context.id)
 
     form = MeetingForm(context, request)
+    form.name.data = ''
     session = request.dbsession
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
@@ -206,6 +197,7 @@ def add_meeting_view(
             return HTTPFound(location=target_url)
     return {
         'form': form,
+        'title': form._title,
         'target_url': target_url,
         'csrf_token': request.session.get_csrf_token()
     }

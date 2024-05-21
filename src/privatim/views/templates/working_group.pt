@@ -10,8 +10,30 @@
                 <h1><tal:block i18n:translate>Working Group</tal:block> ${group.name}</h1>
             </div>
             <div class="col-md-6 text-end">
-                <a href="${request.route_url('add_meeting')}" class="btn btn-primary" role="button" tabindex="1" i18n:translate="">Add Meeting</a>
+                <a href="${request.route_url('add_meeting', id=group.id)}" class="btn btn-primary" role="button" tabindex="1" i18n:translate="">Add Meeting</a>
             </div>
+        </div>
+
+        <div class="table-responsive">
+
+            <tal:b tal:condition="not:meetings">
+                <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click "Add meeting" to get started.</p>
+            </tal:b>
+
+            <table class="table align-middle mb-0 ">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="col-7" i18n:translate="">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr tal:repeat="meeting meetings">
+                        <td>
+                            <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1">${meeting.name}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
     </div>

@@ -10,8 +10,8 @@
                 <h1 i18n:translate="">Working Groups</h1>
             </div>
             <div class="col-md-6 text-end">
-                    <a i18n:translate="" href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
-                                                                               tabindex="1">Add Working Group</a>
+                <a i18n:translate="" href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
+                   tabindex="1">Add Working Group</a>
             </div>
         </div>
 
