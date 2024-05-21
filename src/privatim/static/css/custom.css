@@ -119,7 +119,6 @@ a:hover{
     display: block !important;
 }
 
-
 body {
     font-family: "DM Sans", sans-serif;
 }
@@ -128,7 +127,6 @@ body {
 .ts-control {
     border: none;
 }
-
 
 /* Card section in overview*/
 .card {
@@ -163,4 +161,17 @@ body {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     font-weight: 700;
+}
+
+.form-signin input[type="email"] {
+    margin-top: 20px;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 20px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
