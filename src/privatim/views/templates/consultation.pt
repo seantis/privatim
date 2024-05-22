@@ -40,7 +40,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <h5 i18n:translate="" class="card-title">Tags</h5>
+                            <h5 i18n:translate="" class="card-title">Status</h5>
                             <p class="card-text" tal:condition="consultation.status">
                                 <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
                             </p>
