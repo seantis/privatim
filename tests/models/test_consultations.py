@@ -15,7 +15,7 @@ def test_consultation_status_relationship(session):
         description='Review the impacts of the proposed construction.',
         comments='Needs further details on wildlife impacts.',
         recommendation='Proceed with caution',
-        status_id=status.id
+        status=status
     )
     session.add(consultation)
     session.flush()
