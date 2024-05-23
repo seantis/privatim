@@ -41,7 +41,6 @@
                             <tal:b tal:switch="activity.__class__.__name__">
                                 <div tal:case="'Consultation'" class="card-body col-md-8 d-flex flex-column">
                                     <h5 class="card-title fw-bold" i18n:translate="">${activity.title}</h5>
-                                    <p class="card-text" tal:condition="activity.comments" tal:content="activity.comments if len(activity.comments) < 100 else activity.comments[:100] + '...'"></p>
                                     <p class="card-text" tal:condition="activity.recommendation" tal:content="activity.description if len(activity.description) < 100 else activity.description[:100] + '...'"></p>
                                     <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate=""
                                        class="details-link">Show Details</a>
@@ -65,7 +64,7 @@
                             </tal:b>
 
                             <div class="col-md-3 d-flex flex-column">
-                                <div class="primary-tags d-flex flex-row justify-content-start">
+                                <div class="primary-tags d-flex flex-row justify-content-start flex-wrap mt-3">
                                     <tal:b tal:condition="activity.__class__.__name__ == 'Meeting'">
                                         <span class="badge rounded-pill mb-4 tag-button text-light fs-6 px-3 py-2" i18n:translate="">Meeting</span>
                                     </tal:b>
@@ -76,7 +75,7 @@
                                 </div>
 
                                 <div tal:condition="activity.__class__.__name__ == 'Consultation'"
-                                        class="secondary-tags d-flex flex-row justify-content-start">
+                                        class="secondary-tags d-flex flex-row justify-content-start flex-xl-wrap">
                                     <tal:b tal:repeat="tag activity.secondary_tags">
                                         <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">${tag.name}</span>
                                     </tal:b>
