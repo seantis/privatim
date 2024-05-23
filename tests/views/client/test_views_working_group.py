@@ -3,7 +3,7 @@ from sqlalchemy import select
 from privatim.models import User, WorkingGroup
 
 
-def test_view_add_working_group(client):
+def test_view_add_working_group_with_meeting(client):
 
     users = [
         User(
@@ -30,7 +30,6 @@ def test_view_add_working_group(client):
 
     page = client.get('/working_groups/add')
     assert page.status_code == 200
-    return
 
     page.form['name'] = 'Test Group'
     page.form['leader'].select(text='Alexa Troller')
@@ -46,3 +45,12 @@ def test_view_add_working_group(client):
 
     member_names = {member.fullname for member in group.users}
     assert member_names == {'Kurt Huber', 'Max Müller'}
+
+    # get the page
+    page = client.get(f'/working_groups/{group.id}/add')
+    page.form['name'] = 'Weekly Meeting'
+    page.form['time'] = '2030-05-31 12:00'
+    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page = page.form.submit().follow()
+
+    assert 'Weekly Meeting' in page
