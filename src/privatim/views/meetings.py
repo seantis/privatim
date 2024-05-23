@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 def datetime_format(
         dt: datetime,
-        format: str = '%H:%M %d.%m.%y',
+        format: str = '%d.%m.%y %H:%M',
         tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
 ) -> str:
 
