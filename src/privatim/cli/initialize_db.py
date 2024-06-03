@@ -1,9 +1,8 @@
+from pathlib import Path
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
-from sqlalchemy.exc import IntegrityError
 from privatim.models.consultation import Status, Tag
 from privatim.orm import get_engine
-from privatim.models import User, Consultation
-from privatim.models.group import WorkingGroup
+from privatim.models import Consultation, ConsultationDocument
 from privatim.orm import Base
 import click
 
@@ -16,11 +15,11 @@ if TYPE_CHECKING:
 @click.command()
 @click.argument('config_uri')
 @click.option(
-    '--only-consultation',
+    '--add-vemz',
     is_flag=True,
-    help='Add only a consultation without users',
+    help='Add Verordnung über den Einsatz elektronischer Mittel',
 )
-def main(config_uri: str, only_consultation: bool) -> None:
+def main(config_uri: str, add_vemz: bool) -> None:
     """Add some example placeholder content to the database."""
     setup_logging(config_uri)
 
@@ -32,71 +31,82 @@ def main(config_uri: str, only_consultation: bool) -> None:
 
     with env['request'].tm:
         db = env['request'].dbsession
-        add_example_content(db, only_consultation)
+        add_example_content(db, add_vemz)
 
 
-def add_example_content(db: 'Session', only_consultation: bool) -> None:
-    if not only_consultation:
-        users = [
-            User(
-                email='admin2@example.org',
-                first_name='Max',
-                last_name='Müller',
-            ),
-            User(
-                email='user1@example.org',
-                first_name='Alexa',
-                last_name='Troller',
-            ),
-            User(
-                email='user2@example.org',
-                first_name='Kurt',
-                last_name='Huber',
-            ),
-        ]
-        print(f'Adding users: {users}')
-        for user in users:
-            user.set_password('test')
-            try:
-                db.add(user)
-                db.flush()
-            except IntegrityError as e:
-                print(f'Error adding user: {e}')
-                return
+def add_example_content(db: 'Session', add_vemz: bool) -> None:
 
-        group1 = WorkingGroup(name='Arbeitsgruppe 1')
-        group2 = WorkingGroup(name='Arbeitsgruppe 2')
-        for user in users:
-            user.groups.append(group1)
-        for user in users[:2]:
-            user.groups.append(group2)
-        db.add_all([group1, group2])
-
-    # add a consultations:
-    status = Status(name='In Bearbeitung')
-    tags = [Tag(name=n) for n in ['AG', 'ZH']]
-    consultation = Consultation(
-        title='Vernehmlassung zur Interkantonalen Vereinbarung über den '
-        'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen  ',
-        description='Stellungnahme von privatim, Konferenz der '
-        'schweizerischen Datenschutzbeauftragten, zum Entwurf '
-        'einer Interkantonalen Vereinbarung über den '
-        'Datenaustausch zum Betrieb gemeinsamer '
-        'Abfrageplattformen, zu welcher die Konferenz der '
-        'Kantonalen Justiz- und Polizeidirektorinnen und '
-        '–direktoren (KKJPD) zur Zeit eine Vernehmlassung '
-        'durchführt.',
-        recommendation=' Aus verfassungs- und datenschutzrechtlicher Sicht '
-        'ergeben sich einerseits grundsätzliche; Vorbehalte '
-        'und andererseits Hinweise zu einzelnen Bestimmungen '
-        'des Vereinbarungsentwurfs..',
-        status=status,
-        secondary_tags=tags,
+    con_name = ('Vernehmlassung zur Interkantonalen Vereinbarung über den '
+                'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen')
+    consultation = (
+        db.query(Consultation).filter(Consultation.title == con_name).first()
     )
-    db.add_all(tags)
-    db.add(consultation)
-    db.add(status)
-    db.flush()
+    if not consultation:
+        status = Status(name='In Bearbeitung')
+        tags = [Tag(name=n) for n in ['BS', 'BE', 'AI']]
+        consultation = Consultation(
+            title=con_name,
+            description='Stellungnahme von privatim, Konferenz der '
+            'schweizerischen Datenschutzbeauftragten, zum Entwurf '
+            'einer Interkantonalen Vereinbarung über den '
+            'Datenaustausch zum Betrieb gemeinsamer '
+            'Abfrageplattformen, zu welcher die Konferenz der '
+            'Kantonalen Justiz- und Polizeidirektorinnen und '
+            '–direktoren (KKJPD) zur Zeit eine Vernehmlassung '
+            'durchführt.',
+            recommendation='Stellungnahme privatim näher prüfen.',
+            status=status,
+            secondary_tags=tags,
+        )
+        db.add_all(tags)
+        db.add(consultation)
+        db.add(status)
+        db.flush()
+
+    if add_vemz:
+        status = Status(name='In Überprüfung')
+        tags = [Tag(name=n) for n in ['AG', 'ZH']]
+        here = Path(__file__).parent
+        pdfname = ('sample-pdf-for-initialize-db/privatim_Vernehmlassung_VEMZ'
+                   '.pdf')
+        pdf = here / pdfname
+        content = pdf.read_bytes()
+        consultation = Consultation(
+            documents=[
+                ConsultationDocument(
+                    name=pdfname, content=content
+                )
+            ],
+            title='Verordnung über den Einsatz elektronischer Mittel zur Ton- '
+            'und Bildübertragung in Zivilverfahren (VEMZ)',
+            description='Mit der Revision der Schweizerischen '
+            'Zivilprozessordnung können die Gerichte in '
+            'Zivilverfahren ab dem 1. Januar 2025 unter bestimmten '
+            'Voraussetzungen mündliche Prozesshandlungen (insb. '
+            'Verhandlungen) mittels Video- und ausnahmsweise mittels '
+            'Telefonkonferenzen durchführen oder den am Verfahren '
+            'beteiligten Personen die Teilnahme mittels solcher '
+            'Mittel gestatten. In der neuen Verordnung regelt der '
+            'Bundesrat die technischen Voraussetzungen und die '
+            'Anforderungen an den Datenschutz und die '
+            'Datensicherheit beim Einsatz dieser Mittel. So sollen '
+            'die Gerichte und Verfahrensbeteiligten über die '
+            'notwendige Infrastruktur verfügen und beim Einsatz '
+            'gewisse Vorgaben einhalten. Durch ausreichende '
+            'Schutzvorkehrungen und Information der Teilnehmenden '
+            'soll gewährleistet werden, dass die Daten aller '
+            'Beteiligten bei der Vorbereitung und Durchführung der '
+            'Prozesshandlung sowie bei der Aufzeichnung von Ton und '
+            'Bild hinreichend geschützt sind. Vernehmlassungsfrist: '
+            '22. Mai 2024 ',
+            recommendation='Stellungnahme privatim näher prüfen.',
+            status=status,
+            secondary_tags=tags,
+        )
+        db.add_all(tags)
+        db.add(consultation)
+        db.add(status)
+        db.flush()
 
 
 if __name__ == '__main__':
