@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
-from fliestorage_download import download_consultation_document
+from privatim.fliestorage_download import download_consultation_document
 
 from privatim.route_factories import (agenda_item_factory,
                                       general_file_factory,
@@ -290,7 +290,7 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='POST',
         xhr=False,
-        request_param='target_url'
+        request_param=['target_url', 'parent_id']
     )
 
     #

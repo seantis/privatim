@@ -13,7 +13,20 @@ if TYPE_CHECKING:
 
 
 class Comment(Base, Associable):
-    """A comment that can be attached to any model."""
+    """A generic comment that shall be attachable to any model.
+    Meant to be used in conjunction with `Commentable`.
+
+    class Commentable:
+        comments = associated(Comment, 'comments')
+
+    class YourModel(Base, Commentable):
+        name: Mapped[str]
+        ...
+
+    model = YourModel(name='stuff')
+    model .comments.append(Comment('Interesting sqlalchemy design pattern'))
+
+   """
 
     __tablename__ = 'comments'
 
@@ -55,8 +68,6 @@ class Comment(Base, Associable):
         uselist=True,
         viewonly=True
     )
-
-    upvotes: Mapped[int] = mapped_column(default=0, nullable=False)
 
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'

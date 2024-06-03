@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
+    from privatim.models.commentable import Comment
 
 
 def first(iterable: 'Iterable[Any] | None', default: Any | None = None) -> Any:
@@ -119,3 +120,19 @@ def path_to_filename(path: str | None) -> str | None:
 def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
     return db_time and to_timezone(
         db_time, 'Europe/Zurich') or db_time
+
+
+def flatten_comments(
+    top_level_comments: 'Iterable[Comment]',
+) -> list[dict[str, Any]]:
+    """Displays all top-level comments and their direct replies.
+    The UI only shows one level of nesting, so deeply nested comments
+    are not displayed with further indentation. Which is why this function
+    does not need to do a proper tree traversal."""
+
+    flattened_comments = []
+    for comment in top_level_comments:
+        children = sorted(comment.children, key=lambda c: c.created)
+        flattened_comments.append({'comment': comment, 'children': children})
+
+    return flattened_comments

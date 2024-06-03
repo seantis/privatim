@@ -1,4 +1,4 @@
-from sqlalchemy_utils import QueryChain as QueryChainBase
+from sqlalchemy_utils import QueryChain as QueryChainBase  # type: ignore
 
 
 from typing import TypeVar, TYPE_CHECKING

@@ -18,7 +18,8 @@
                              class="img-thumbnail border-0 profile-icon rounded-circle" alt="Profile Picture"
                              title="Change your avatar">
                         <div class="dropdown">
-                            <a id="profileUploadButton"
+                            <a i18n:translate=""
+                               id="profileUploadButton"
                                tabindex="0"
                                class=" position-absolute color-bg-default rounded-2 color-fg-default px-2 py-1 left-0 ml-2 mb-2 border"
                                data-bs-toggle="dropdown"

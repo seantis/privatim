@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 def download_consultation_document(
         doc: 'ConsultationDocument',
         request: 'IRequest'
-):
+) -> Response:
 
     response = Response(body=doc.content, request=request)
     response.headers['Content-Disposition'] = (

@@ -1,21 +1,21 @@
 /* css for the comments */
 
 /* The 'add comment' component */
-.input-field {
+.comment-input-field {
     position: relative;
 }
 
-.input-field textarea {
+.comment-input-field textarea {
     color: black;
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
-.input-field textarea:focus {
+.comment-input-field textarea:focus {
     outline: none;
     border-color: #798187;
 }
 
-.input-field span {
+.comment-input-field span {
     pointer-events: none;
     opacity: 0.75;
     position: absolute;
@@ -27,8 +27,8 @@
     cursor: text;
 }
 
-.input-field textarea:focus + span,
-.input-field textarea:not(:placeholder-shown) + span {
+.comment-input-field textarea:focus + span,
+.comment-input-field textarea:not(:placeholder-shown) + span {
     top: -15px;
     -webkit-transform: scale(0.8) translateY(-50%) translateX(-4px);
     transform: scale(0.8) translateY(-50%) translateX(-4px);
@@ -38,8 +38,8 @@
 }
 
 
-.input-field textarea,
-.input-field span {
+.comment-input-field textarea,
+.comment-input-field span {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -52,12 +52,27 @@
 }
 
 
-
-.comment-render-field {
-    /* Show newlines in the comment*/
-    white-space: pre-line
+.comment-text {
+    margin-left: 75px;
 }
 
+/* Animation start: make 'Add Comment' relveal itself */
 .comment-answer-form-container {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+.comment-answer-form-container.show {
+    max-height: 300px;
+    transition: max-height 0.2s ease-in;
+}
+/* Animation End */
+
+
+/* Indentation of the child comment*/
+.indent-child-comments{
+    margin-left: 50px
+}
+.answer-button {
+    /*margin-left: 50px*/
 }

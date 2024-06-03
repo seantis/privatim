@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
-    setupCommentAnswerAppearingTextField();
+    setupCommentAnswerField();
 });
 
 function handleProfilePicFormSubmission() {
@@ -66,14 +66,17 @@ function initializePopoversAndTooltips() {
 }
 
 
-function setupCommentAnswerAppearingTextField() {
+function setupCommentAnswerField() {
     let replys = document.querySelectorAll('.comment-answer-form-container');
     let buttons = document.querySelectorAll('.comment-answer-button');
     for (let i = 0; i < buttons.length; i++) {
         let hiddenCommentForm = replys[i];
         buttons[i].addEventListener('click', () => {
-            hiddenCommentForm.style.setProperty('display', 'block', 'important');
+            hiddenCommentForm.classList.add('show');
+            setTimeout(() => {
+                hiddenCommentForm.querySelector('textarea').focus();
+            }, 200);
         });
+
     }
 }
-

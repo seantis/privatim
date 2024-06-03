@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 14:04+0200\n"
+"POT-Creation-Date: 2024-06-03 17:02+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -294,6 +294,10 @@ msgstr "Dokumente"
 msgid "Tags"
 msgstr "Tags"
 
+#: src/privatim/views/templates/consultation.pt
+msgid "Your Comment"
+msgstr "Ihr Kommentar"
+
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
@@ -337,6 +341,10 @@ msgstr "→ Passwort vergessen / Account aktivieren "
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Profilbild"
+
+#: src/privatim/views/templates/profile.pt
+msgid "<dynamic element> Edit"
+msgstr "Bearbeiten"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Personal information"
@@ -508,7 +516,7 @@ msgstr "Kantone"
 
 #: src/privatim/forms/add_comment.py
 msgid "Add Comment"
-msgstr "Kommentar hinzufügen"
+msgstr "Kommentar erfassen"
 
 #: src/privatim/forms/add_comment.py
 msgid "Comment"
@@ -516,7 +524,7 @@ msgstr "Kommentar"
 
 #: src/privatim/forms/add_comment.py
 msgid "Add comment"
-msgstr "Kommentar hinzufügen"
+msgstr "Kommentar erfassen"
 
 #: src/privatim/forms/fields.py
 msgid "Select..."

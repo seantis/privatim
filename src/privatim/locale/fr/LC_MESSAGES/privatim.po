@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 14:04+0200\n"
+"POT-Creation-Date: 2024-06-03 17:02+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -293,6 +293,10 @@ msgstr "Documents"
 msgid "Tags"
 msgstr "Étiquettes"
 
+#: src/privatim/views/templates/consultation.pt
+msgid "Your Comment"
+msgstr "Votre commentaire"
+
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
@@ -337,6 +341,10 @@ msgstr "→ Mot de passe oublié / Activer le compte"
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Photo de profil"
+
+#: src/privatim/views/templates/profile.pt
+msgid "<dynamic element> Edit"
+msgstr "éditer"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Personal information"
