@@ -1,8 +1,7 @@
 from wtforms import validators
 from wtforms import TextAreaField, SubmitField
 from privatim.forms.core import Form
-from privatim.i18n import _
-
+from privatim.i18n import _, translate
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -15,11 +14,10 @@ class CommentForm(Form):
             self,
             context: 'Incomplete',
             request: 'IRequest',
+            title: str = _('Add Comment')
     ) -> None:
 
-        self._title = (
-            _('Add Comment')
-        )
+        self._title = title
         super().__init__(
             request.POST,
             obj=context,
@@ -31,7 +29,7 @@ class CommentForm(Form):
         validators=[validators.InputRequired()],
         render_kw={
             'rows': 4,
-            'class': 'form-control shadow-none',
+            'class': 'form-control shadow-none'
         },
     )
     submit = SubmitField(

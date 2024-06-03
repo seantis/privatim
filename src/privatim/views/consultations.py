@@ -35,6 +35,7 @@ def consultation_view(
         'consultation': context,
         'documents': documents,
         'consultation_comment_form': form,
+        'nested_comment_form': CommentForm(context, request, _('Answer'))
     }
 
 

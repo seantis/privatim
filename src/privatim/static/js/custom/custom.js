@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
+    setupCommentAnswerAppearingTextField();
 });
 
 function handleProfilePicFormSubmission() {
@@ -63,3 +64,16 @@ function initializePopoversAndTooltips() {
         }
     });
 }
+
+
+function setupCommentAnswerAppearingTextField() {
+    let replys = document.querySelectorAll('.comment-answer-form-container');
+    let buttons = document.querySelectorAll('.comment-answer-button');
+    for (let i = 0; i < buttons.length; i++) {
+        let hiddenCommentForm = replys[i];
+        buttons[i].addEventListener('click', () => {
+            hiddenCommentForm.style.setProperty('display', 'block', 'important');
+        });
+    }
+}
+

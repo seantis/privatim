@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 10:32+0200\n"
+"POT-Creation-Date: 2024-06-03 14:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: ./src/privatim/layouts/macros.pt
+#: ./src/privatim/layouts/macros.pt ./src/privatim/views/consultations.py
 msgid "Answer"
 msgstr ""
 

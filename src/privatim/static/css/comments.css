@@ -1,21 +1,21 @@
-/* css concerning comments */
+/* css for the comments */
 
 /* The 'add comment' component */
-.inputField {
+.input-field {
     position: relative;
 }
 
-.inputField textarea {
+.input-field textarea {
     color: black;
-    font-size: 1.6em;
+    font-size: 1.5em;
 }
 
-.inputField textarea:focus {
+.input-field textarea:focus {
     outline: none;
     border-color: #798187;
 }
 
-.inputField span {
+.input-field span {
     pointer-events: none;
     opacity: 0.75;
     position: absolute;
@@ -27,8 +27,8 @@
     cursor: text;
 }
 
-.inputField textarea:focus + span,
-.inputField textarea:not(:placeholder-shown) + span {
+.input-field textarea:focus + span,
+.input-field textarea:not(:placeholder-shown) + span {
     top: -15px;
     -webkit-transform: scale(0.8) translateY(-50%) translateX(-4px);
     transform: scale(0.8) translateY(-50%) translateX(-4px);
@@ -38,8 +38,8 @@
 }
 
 
-.inputField textarea,
-.inputField span {
+.input-field textarea,
+.input-field span {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -51,7 +51,13 @@
     transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
+
+
 .comment-render-field {
     /* Show newlines in the comment*/
     white-space: pre-line
+}
+
+.comment-answer-form-container {
+    display: none;
 }
