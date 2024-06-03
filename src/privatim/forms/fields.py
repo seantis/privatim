@@ -144,8 +144,6 @@ class SearchableSelectField(SelectField):
     Note: you need to call form.raw_data() to actually get the choices as list
     """
 
-
-    # overwrite __call__:
     def __call__(self, *args, **kwargs):
         init_tom_select.need()
         return super().__call__(*args, **kwargs)
@@ -254,7 +252,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
     compressed base64 strings together with the filename, size and mimetype.
 
     This acts both like a single file field with multiple and like a list
-    of :class:`onegov.form.fields.UploadFile` for uploaded files. This way
+    of UploadFile for uploaded files. This way
     we get the best of both worlds.
 
     """
@@ -280,7 +278,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         description: str = '',
         id: str | None = None,
         default: 'Sequence[FileDict]' = (),
-        widget: 'Widget[Self] | None' = None,
+        widget: 'Widget[Self] | None' = None,  # type:ignore
         render_kw: dict[str, Any] | None = None,
         name: str | None = None,
         upload_widget: 'Widget[UploadField] | None' = None,

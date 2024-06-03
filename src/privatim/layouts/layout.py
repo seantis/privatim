@@ -1,4 +1,10 @@
-from privatim.static import bootstrap_css, bootstrap_js, tom_select_css
+import arrow
+import babel.dates
+import babel.numbers
+from pyramid.decorator import reify
+from pyramid.renderers import get_renderer
+from privatim.static import (bootstrap_css, bootstrap_js, tom_select_css,
+                             comments_css, profile_css, custom_js)
 from pytz import timezone
 import re
 from datetime import date, datetime
@@ -7,11 +13,9 @@ from datetime import date, datetime
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from pytz import BaseTzInfo
 
 
 DEFAULT_TIMEZONE = timezone('Europe/Zurich')
-
 _private_regex = re.compile(r':[0-9a-z]+@')
 
 
@@ -25,6 +29,10 @@ class Layout:
         bootstrap_css.need()
         bootstrap_js.need()
         tom_select_css.need()
+        comments_css.need()
+        custom_js.need()
+        if 'profile' in request.matched_route.name:
+            profile_css.need()
 
     def show_steps(self) -> bool:
         return self.request.show_steps
@@ -50,16 +58,43 @@ class Layout:
             return _private_regex.sub('@', sentry_dsn)
         return None
 
-    def datetime_format(
-            self,
-            dt: datetime,
-            format: str = '%H:%M %d.%m.%y',
-            tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
-    ) -> str:
+    @reify
+    def macros(self) -> Any:
+        renderer = get_renderer("macros.pt")
+        return renderer.implementation().macros
 
-        if not dt.tzinfo:
-            # If passed datetime does not carry any timezone information, we
-            # assume (and force) it to be UTC, as all timestamps should be.
-            dt = timezone('UTC').localize(dt)
+    def format_date(self, dt: datetime | date | None, format: str) -> str:
+        """ Takes a datetime and formats it according to local timezone and
+        the given format.
 
-        return dt.astimezone(tz).strftime(format)
+        """
+        if dt is None:
+            return ''
+
+        if getattr(dt, 'tzinfo', None) is not None:
+            dt = DEFAULT_TIMEZONE.normalize(
+                dt.astimezone(DEFAULT_TIMEZONE)  # type:ignore[attr-defined]
+            )
+
+        locale = self.request.locale_name
+        assert locale is not None, "Cannot format date without a locale"
+        if format == 'relative':
+            adt = arrow.get(dt)
+
+            try:
+                return adt.humanize(locale=locale)
+            except ValueError:
+                return adt.humanize(locale=locale.split('_')[0])
+
+        fmt = getattr(self, format + '_format')
+        if fmt.startswith('skeleton:'):
+            return babel.dates.format_skeleton(
+                fmt.replace('skeleton:', ''),
+                datetime=dt,
+                fuzzy=False,
+                locale=locale
+            )
+        elif hasattr(dt, 'hour'):
+            return babel.dates.format_datetime(dt, format=fmt, locale=locale)
+        else:
+            return babel.dates.format_date(dt, format=fmt, locale=locale)

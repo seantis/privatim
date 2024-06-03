@@ -43,16 +43,13 @@
                     <div class="dropdown text-end">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="${layout.static_url('privatim:static/default_profile_icon.png')}" alt="mdo" width="40" height="40"
+                            <img src="${request.user_pic}" alt="mdo" width="40" height="40"
                                  class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
-
-<!--?                            Uncomment once we have Settings or other -->
-<!--?                            <li><a class="dropdown-item" href="#" i18n:translate>Settings</a></li>-->
-<!--?                            <li><a class="dropdown-item" href="#" i18n:translate>Profile</a></li>-->
-<!--?                            <li><hr class="dropdown-divider"></li>-->
-                            <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate>Sign out</a></li>
+                            <li><a class="dropdown-item" href="${request.route_url('profile')}" i18n:translate=""><i class="far fa-user-circle"></i> Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate=""><i class="fas fa-sign-out-alt"></i> Sign out</a></li>
                         </ul>
                     </div>
                </div>

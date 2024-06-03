@@ -1,0 +1,22 @@
+:root {
+    --profile-icon-width: 200px;
+    --profile-icon-height: 200px;
+}
+
+.profile-icon {
+    width: var(--profile-icon-width);
+    height: var(--profile-icon-height);
+}
+
+.profile-icon-container {
+    cursor: pointer;
+}
+
+#profileUploadButton, #profileUploadButton:hover {
+    box-sizing: border-box;
+    background-color: white !important;
+    text-decoration: none;
+    color: inherit !important;
+    top: calc(var(--profile-icon-height) * -0.3);
+    left: calc(var(--profile-icon-width) * 0.05);
+}

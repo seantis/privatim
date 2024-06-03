@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 
 class UploadWidget(FileInput):
-    """ An upload widget for the :class:`onegov.form.fields.UploadField` class,
-    which supports keeping, removing and replacing already uploaded files.
+    """ An upload widget for the UploadField class, which supports keeping,
+    removing and replacing already uploaded files.
 
     This is necessary as file inputs are read-only on the client and it's
     therefore rather easy for users to lose their input otherwise (e.g. a
@@ -175,8 +175,8 @@ class UploadWidget(FileInput):
 
 
 class UploadMultipleWidget(FileInput):
-    """ A widget for the :class:`onegov.form.fields.UploadMultipleField` class,
-    which supports keeping, removing and replacing already uploaded files.
+    """ A widget for the UploadMultipleField class, which supports keeping,
+    removing and replacing already uploaded files.
 
     This is necessary as file inputs are read-only on the client and it's
     therefore rather easy for users to lose their input otherwise (e.g. a

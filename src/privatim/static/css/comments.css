@@ -1,0 +1,78 @@
+/* css for the comments */
+
+/* The 'add comment' component */
+.comment-input-field {
+    position: relative;
+}
+
+.comment-input-field textarea {
+    color: black;
+    font-size: 1.2em;
+}
+
+.comment-input-field textarea:focus {
+    outline: none;
+    border-color: #798187;
+}
+
+.comment-input-field span {
+    pointer-events: none;
+    opacity: 0.75;
+    position: absolute;
+    padding-left: 20px;
+    left: -5px;
+    top: 5px;
+    -webkit-transform: translateY(0); /* No initial translation */
+    transform: translateY(0); /* No initial translation */
+    cursor: text;
+}
+
+.comment-input-field textarea:focus + span,
+.comment-input-field textarea:not(:placeholder-shown) + span {
+    top: -15px;
+    -webkit-transform: scale(0.8) translateY(-50%) translateX(-4px);
+    transform: scale(0.8) translateY(-50%) translateX(-4px);
+    /* Change to primary color once at the top: */
+    color: var(--primary-color);
+    opacity: 100%;
+}
+
+
+.comment-input-field textarea,
+.comment-input-field span {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    transition: all 0.2s;
+    -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+
+.comment-text {
+    margin-left: 75px;
+}
+
+/* Animation start: make 'Add Comment' relveal itself */
+.comment-answer-form-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+.comment-answer-form-container.show {
+    max-height: 300px;
+    transition: max-height 0.2s ease-in;
+}
+/* Animation End */
+
+
+/* Indentation of the child comment*/
+.indent-child-comments{
+    margin-left: 50px
+}
+.answer-button {
+    /*margin-left: 50px*/
+}

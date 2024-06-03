@@ -49,11 +49,10 @@ class MeetingForm(Form):
 
     time = TimezoneDateTimeField(
         _('Time'),
-        format='%Y-%m-%dT%H:%M',
-        # default=utcnow,
-        validators=[validators.InputRequired()],
         timezone='Europe/Zurich',
+        validators=[validators.InputRequired()],
     )
+
     attendees = SearchableSelectField(
         _('Attendees'),
         validators=[validators.InputRequired()],

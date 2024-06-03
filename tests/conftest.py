@@ -15,6 +15,11 @@ from sqlalchemy_file.storage import StorageManager
 from tests.shared.client import Client
 
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pyramid.config import Configurator
+
+
 @pytest.fixture
 def base_config():
     msg = '.*SQLAlchemy must convert from floating point.*'
@@ -29,7 +34,10 @@ def base_config():
 
 
 @pytest.fixture
-def config(base_config, monkeypatch, tmpdir):
+def config(base_config, monkeypatch, tmpdir) -> 'Configurator':
+    """ Returns the config used in tests. Note that this has side effects
+    on `DummyRequest` in that the session becomes available. """
+
     base_config.include('privatim.models')
     base_config.include('pyramid_chameleon')
     base_config.include('pyramid_layout')

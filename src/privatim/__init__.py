@@ -1,12 +1,10 @@
 from fanstatic import Fanstatic
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Table, MetaData, Column, ForeignKey, Text
+from sqlalchemy import Table, MetaData, Column, ForeignKey
 from sqlalchemy_file import FileField
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
-from privatim.models.consultation import Tag
-from privatim.orm.meta import Base
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
 from pyramid.settings import asbool
@@ -21,6 +19,9 @@ __version__ = '0.0.0'
 
 
 from typing import Any, TYPE_CHECKING
+
+from privatim.views.profile import user_pic_url
+
 if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
@@ -64,6 +65,7 @@ def includeme(config: Configurator) -> None:
     config.set_default_csrf_options(require_csrf=True)
 
     config.add_request_method(authenticated_user, 'user', property=True)
+    config.add_request_method(user_pic_url, 'user_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
 
@@ -107,25 +109,8 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             Column('document', FileField),
         )
         consultation_assets.create(context.engine)
-  #
-    # if not context.has_column('consultations', 'secondary_tags_id'):
-    #     context.add_column(
-    #         'consultations',
-    #         Column(
-    #             'secondary_tags_id', UUIDStrType,
-    #             ForeignKey('secondary_tags.id'),
-    #             index=True,
-    #             nullable=True
-    #         ),
-    #     )
-    # if not context.has_column('status', 'consultation_id'):
-    #     context.add_column(
-    #         'status',
-    #         Column(
-    #             'consultation_id', UUIDStrType,
-    #             ForeignKey('consultations.id'),
-    #             nullable=True
-    #         ),
-    #     )
+
+    if context.has_column('consultations', 'documents'):
+        context.drop_column('consultations', 'documents')
 
     context.commit()

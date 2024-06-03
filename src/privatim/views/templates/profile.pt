@@ -1,0 +1,67 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+
+    <tal:block metal:fill-slot="content">
+        <div class="container">
+            <h1 class="title">Profile</h1>
+            <div class="row">
+
+                <!--? Left side -->
+                <div class="col-md-6">
+                    <p class="lead fw-bold" i18n:translate="">Profile Picture</p>
+                    <div class="profile-icon-container mt-4">
+                        <img src="${request.user_pic}"
+                             class="img-thumbnail border-0 profile-icon rounded-circle" alt="Profile Picture"
+                             title="Change your avatar">
+                        <div class="dropdown">
+                            <a i18n:translate=""
+                               id="profileUploadButton"
+                               tabindex="0"
+                               class=" position-absolute color-bg-default rounded-2 color-fg-default px-2 py-1 left-0 ml-2 mb-2 border"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16"
+                                     data-view-component="true" class="octicon octicon-pencil">
+                                    <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path>
+                                </svg>
+                                Edit
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                        ${upload_profile_picture_button}
+                                    <input type="file" id="fileInput" name="profilePic" style="display: none;">
+                                </li>
+                                <hr class="dropdown-divider">
+                                <li>
+                                        ${delete_profile_picture_button}
+                                </li>
+                            </ul>
+                        </div>
+                        <form id="uploadForm" action="${request.route_url('add_profile_image')}" method="post"
+                              enctype="multipart/form-data" style="display: none;">
+                            <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
+                            <input type="file" id="fileUploadInput" name="profilePic">
+                        </form>
+                    </div>
+                </div>
+
+                <!--? Right side -->
+                <div class="col-md-6">
+                    <p class="lead fwbold" i18n:translate="">Personal information</p>
+                    <ul>
+                        <li>
+                            <span i18n:translate="">Name</span>: ${user.fullname}
+                        </li>
+                        <li>
+                            <span i18n:translate="">E-Mail-Address</span>: ${user.email}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </tal:block>
+</metal:block>

@@ -1,14 +1,15 @@
 from sqlalchemy import select
+from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 from privatim.models.attached_document import ConsultationDocument
-from privatim.utils import dictionary_to_binary
+from privatim.utils import dictionary_to_binary, flatten_comments
+
+
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
@@ -16,22 +17,24 @@ if TYPE_CHECKING:
 
 
 def consultation_view(
-        context: Consultation, request: 'IRequest'
+    context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
 
-    documents = []
-    for doc in context.documents:
-        documents.append({
-            'document': doc,
-            'download_url': request.route_url(
-                'download_document',
-                consultation_doc_id=doc.id
-            )
-        })
-
+    top_level_comments = (c for c in context.comments if c.parent_id is None)
     return {
         'consultation': context,
-        'documents': documents,
+        'documents': [
+            {
+                'document': doc,
+                'download_url': request.route_url(
+                    'download_document', consultation_doc_id=doc.id
+                ),
+            }
+            for doc in context.documents
+        ],
+        'consultation_comment_form': CommentForm(context, request),
+        'nested_comment_form': NestedCommentForm(context, request),
+        'flattened_comments_tree': flatten_comments(top_level_comments)
     }
 
 
@@ -62,7 +65,6 @@ def create_consultation_from_form(
     consultation = Consultation(
         title=form.title.data,
         description=form.description.data,
-        comments=form.comments.data,
         recommendation=form.recommendation.data,
         status=status,
         secondary_tags=tags

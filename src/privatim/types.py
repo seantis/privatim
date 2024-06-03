@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
-    from pyramid.httpexceptions import HTTPFound
+    from decimal import Decimal
+    from fractions import Fraction
+    from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPError
     from pyramid.interfaces import IResponse, IRequest
 
     from typing import Any, Literal, TypeVar, Protocol
@@ -27,8 +29,20 @@ if TYPE_CHECKING:
 
     ACL: TypeAlias = tuple[Literal['Allow', 'Deny'], str, list[str]]
 
+    HTMLParam = str | int | float | Decimal | Fraction | bool | None
+    HTTPMethod = Literal[
+        'GET',
+        'POST',
+        'PUT',
+        'PATCH',
+        'DELETE',
+    ]
+
     RenderData: TypeAlias = dict[str, Any]
     RenderDataOrRedirect: TypeAlias = RenderData | HTTPFound
+    RenderDataOrRedirectOrForbidden: TypeAlias = (
+        RenderData | HTTPFound | HTTPForbidden | HTTPError
+    )
     RenderDataOrResponse: TypeAlias = RenderData | IResponse
 
     # NOTE: For now we only allow complex return types if we return JSON

@@ -1,13 +1,14 @@
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy.exc import IntegrityError
-from privatim.models.consultation import Status
+from privatim.models.consultation import Status, Tag
 from privatim.orm import get_engine
 from privatim.models import User, Consultation
 from privatim.models.group import WorkingGroup
 from privatim.orm import Base
 import click
-from typing import TYPE_CHECKING
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
@@ -73,6 +74,7 @@ def add_example_content(db: 'Session', only_consultation: bool) -> None:
 
     # add a consultations:
     status = Status(name='In Bearbeitung')
+    tags = [Tag(name=n) for n in ['AG', 'ZH']]
     consultation = Consultation(
         title='Vernehmlassung zur Interkantonalen Vereinbarung über den '
         'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen  ',
@@ -89,7 +91,9 @@ def add_example_content(db: 'Session', only_consultation: bool) -> None:
         'und andererseits Hinweise zu einzelnen Bestimmungen '
         'des Vereinbarungsentwurfs..',
         status=status,
+        secondary_tags=tags,
     )
+    db.add_all(tags)
     db.add(consultation)
     db.add(status)
     db.flush()

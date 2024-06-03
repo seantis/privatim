@@ -7,6 +7,7 @@ from wtforms.validators import Optional
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
 
+
 if TYPE_CHECKING:
     from wtforms import Field, Form
     from collections.abc import Sequence

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 10:56+0200\n"
+"POT-Creation-Date: 2024-06-03 20:27+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -52,6 +52,14 @@ msgstr "Kontakt"
 msgid "Close"
 msgstr "Schliessen"
 
+#: src/privatim/layouts/macros.pt
+msgid "Message"
+msgstr "Nachricht"
+
+#: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
+msgid "Answer"
+msgstr "Antworten"
+
 #: src/privatim/layouts/navbar.pt src/privatim/layouts/navbar.py
 #: src/privatim/views/activities.py
 msgid "Activities"
@@ -76,12 +84,34 @@ msgid "Search..."
 msgstr "Suchen..."
 
 #: src/privatim/layouts/navbar.pt
-msgid "Sign out"
-msgstr "Logout"
+msgid "<dynamic element> Profile"
+msgstr " Profil"
+
+#: src/privatim/layouts/navbar.pt
+msgid "<dynamic element> Sign out"
+msgstr " Abmelden"
+
+#: src/privatim/views/profile.py
+msgid "Upload a photo..."
+msgstr "Foto hochladen..."
+
+#: src/privatim/views/profile.py
+msgid "Delete photo"
+msgstr "Foto löschen"
+
+#: src/privatim/views/profile.py
+msgid "Successfully updated profile picture"
+msgstr "Profilbild erfolgreich geändert"
+
+#: src/privatim/views/general_file.py
+#, python-format
+msgid "Successfully deleted file \"${title}\""
+msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
 #. format data
 #.
 #: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
 #: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
 #: src/privatim/forms/working_group_forms.py
 msgid "Name"
@@ -159,6 +189,10 @@ msgstr ""
 "Das Passwort muss mindestens 8 Zeichen lang sein und einen Großbuchstaben, "
 "einen Kleinbuchstaben, eine Ziffer und ein Sonderzeichen enthalten."
 
+#: src/privatim/views/comment.py
+msgid "Successfully added comment"
+msgstr "Kommentar erfolgreich hinzugefügt"
+
 #: src/privatim/views/working_groups.py
 #, python-format
 msgid "Successfully added working group \"${name}\""
@@ -195,6 +229,7 @@ msgstr ""
 "eingegeben haben."
 
 #: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
+#: src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -248,10 +283,6 @@ msgid "Description:"
 msgstr "Beschreibung:"
 
 #: src/privatim/views/templates/consultation.pt
-msgid "Comments:"
-msgstr "Kommentare:"
-
-#: src/privatim/views/templates/consultation.pt
 msgid "Recommendation:"
 msgstr "Empfehlung:"
 
@@ -265,6 +296,10 @@ msgstr "Dokumente"
 msgid "Status"
 msgstr "Status"
 
+#: src/privatim/views/templates/consultation.pt
+msgid "Your Comment"
+msgstr "Ihr Kommentar"
+
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
@@ -274,9 +309,8 @@ msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
 "by adding a Meeting of a Working Group."
 msgstr ""
-"Noch keine Aktivitäten erfasst. Sie können Aktivitäten im Tab "
-"Vernehmlassungen hinzufügen oder indem Sie eine Sitzung eines Gremium "
-"erfassen."
+"Keine Aktivitäten erfasst. Sie können Aktivitäten im Tab 'Vernehmlassungen' "
+"hinzufügen oder eine Sitzung einer Arbeitsgruppe erfassen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Max Müller"
@@ -305,6 +339,22 @@ msgstr "Anmelden"
 #: src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
 msgstr "→ Passwort vergessen / Account aktivieren "
+
+#: src/privatim/views/templates/profile.pt
+msgid "Profile Picture"
+msgstr "Profilbild"
+
+#: src/privatim/views/templates/profile.pt
+msgid "<dynamic element> Edit"
+msgstr "Bearbeiten"
+
+#: src/privatim/views/templates/profile.pt
+msgid "Personal information"
+msgstr "Persönliche Informationen"
+
+#: src/privatim/views/templates/profile.pt
+msgid "E-Mail-Address"
+msgstr "E-Mail-Adresse"
 
 #: src/privatim/views/templates/people.pt
 msgid "List of Persons"
@@ -437,10 +487,6 @@ msgid "Description"
 msgstr "Beschreibung"
 
 #: src/privatim/forms/consultation_form.py
-msgid "Comments"
-msgstr "Kommmentare"
-
-#: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
 msgstr "Empfehlung"
 
@@ -459,6 +505,18 @@ msgstr "in Bearbeitung"
 #: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Kantone"
+
+#: src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr "Kommentar erfassen"
+
+#: src/privatim/forms/add_comment.py
+msgid "Comment"
+msgstr "Kommentar"
+
+#: src/privatim/forms/add_comment.py
+msgid "Add comment"
+msgstr "Kommentar erfassen"
 
 #: src/privatim/forms/fields.py
 msgid "Select..."
@@ -499,3 +557,18 @@ msgstr "Mitglieder"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
+
+#~ msgid "Tags"
+#~ msgstr "Tags"
+
+#~ msgid ""
+#~ "Here you can add meetings in the context of a working group. Click \"Add "
+#~ "working group\" to get started."
+#~ msgstr ""
+#~ "Hier können Sie Sitzungen im Kontext einer Arbeitsgruppe hinzufügen. "
+
+#~ msgid "Group"
+#~ msgstr "Gruppe"
+
+#~ msgid "Comments"
+#~ msgstr "Kommmentare"

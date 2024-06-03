@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
-from fliestorage_download import download_consultation_document
+from privatim.fliestorage_download import download_consultation_document
 
-from privatim.route_factories import agenda_item_factory
-from privatim.route_factories import consultation_document_factory
+from privatim.route_factories import (agenda_item_factory,
+                                      general_file_factory,
+                                      consultation_document_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -17,6 +18,8 @@ from privatim.views.agenda_items import edit_agenda_item_view
 from privatim.views.consultations import add_or_edit_consultation_view
 from privatim.views.consultations import consultation_view
 from privatim.views.consultations import consultations_view
+from privatim.views.general_file import download_general_file_view, \
+    delete_general_file_view
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
@@ -27,8 +30,12 @@ from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
 from privatim.views.meetings import meetings_view
 from privatim.views.password_change import password_change_view
-from privatim.views.password_retrieval import password_retrieval_view
+from privatim.views.password_retrieval import (  # type: ignore
+    password_retrieval_view)
+
 from privatim.views.people import people_view, person_view
+from privatim.views.profile import profile_view, add_profile_image_view
+from privatim.views.comment import add_comment_view
 from privatim.views.working_groups import add_or_edit_group_view
 from privatim.views.working_groups import working_groups_view
 
@@ -271,6 +278,59 @@ def includeme(config: 'Configurator') -> None:
         xhr=True
     )
 
+    # Consultation Comments
+    config.add_route(
+        'add_comment',
+        '/comments/{id}/add',
+        factory=consultation_factory
+    )
+    config.add_view(
+        add_comment_view,
+        route_name='add_comment',
+        renderer='json',
+        request_method='POST',
+        xhr=False,
+        request_param=['target_url', 'parent_id']
+    )
+
+    #
+    # config.add_route(
+    #     'edit_comment',
+    #     '/comments/{id}/edit',
+    #     factory=agenda_item_factory
+    # )
+    # config.add_view(
+    #     edit_agenda_item_view,
+    #     route_name='edit_comment',
+    #     renderer='templates/form.pt',
+    #     xhr=False
+    # )
+    # config.add_view(
+    #     edit_agenda_item_view,
+    #     route_name='edit_comment',
+    #     renderer='json',
+    #     request_method='POST',
+    #     xhr=True
+    # )
+    #
+    # config.add_route(
+    #     'delete_comment',
+    #     '/comments/{id}/delete',
+    #     factory=agenda_item_factory
+    # )
+    # config.add_view(
+    #     delete_agenda_item_view,
+    #     route_name='delete_comment',
+    #     xhr=False
+    # )
+    # config.add_view(
+    #     delete_agenda_item_view,
+    #     route_name='delete_comment',
+    #     renderer='json',
+    #     request_method='DELETE',
+    #     xhr=True
+    # )
+
     # view for single person
     config.add_route(
         'person',
@@ -327,4 +387,55 @@ def includeme(config: 'Configurator') -> None:
         request_method=('GET', 'POST'),
         require_csrf=False,
         permission=NO_PERMISSION_REQUIRED
+    )
+
+    config.add_route(
+        'profile',
+        '/profile'
+    )
+    config.add_view(
+        profile_view,
+        route_name='profile',
+        request_method='GET',
+        renderer='templates/profile.pt'
+    )
+
+    config.add_route('add_profile_image', '/profile/add_image')
+    config.add_view(
+        add_profile_image_view,
+        route_name='add_profile_image',
+        renderer='json',
+        request_method='POST',
+        xhr=False,
+    )
+
+    # General file
+    config.add_route(
+        'download_general_file',
+        '/download/file/{id}',
+        general_file_factory,
+    )
+    config.add_view(
+        download_general_file_view,
+        route_name='download_general_file',
+        request_method='GET',
+    )
+
+    config.add_route(
+        'delete_general_file',
+        '/delete/file/{id}',
+        general_file_factory,
+    )
+    config.add_view(
+        delete_general_file_view,
+        route_name='delete_general_file',
+        request_param='target_url'
+    )
+    config.add_view(
+        delete_general_file_view,
+        route_name='delete_general_file',
+        renderer='json',
+        request_method='DELETE',
+        xhr=True,
+        request_param='target_url'
     )

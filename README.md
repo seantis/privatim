@@ -19,7 +19,7 @@ source venv/bin/activate
 ```
 
 ```
-cp development.ini.example development.ini
+cp development.ini.example config/development.ini
 # adjust `assets_dir` in development.ini to some directory (e.g. /tmp/privatim_assets)
 ```
 
@@ -34,11 +34,16 @@ pip install --upgrade pip setuptools
 ```
 make install
 ```
+- Add a user
+
+```
+add_user --email admin@example.org --password test  config/development.ini
+```
 
 - Load default data into the database using a script.
 
 ```
-initialize_db development.ini
+initialize_db config/development.ini --only-consultation
 ```
 
 
@@ -64,6 +69,9 @@ We use `uv` to manage dependencies
 ## Regenerate requirements files based on new dependencies
 
     ./requirements/compile.sh
+
+This generates `requirements.txt` and `test_requirements.txt` based on the dependencies in setup.cfg`.
+This is used by puppet and the CI to install the dependencies on the server.
 
 ## Upgrade dependencies to latest version
 
@@ -93,13 +101,15 @@ then open http://127.0.0.1:8080/
 
 
 ## Miscellaneous
-### Javascript dependencies
+### Javascript/Css dependencies
+
+The project includes js/css files.
+If you need to update them, you can find the sources in the following locations:
+
+####  Tom Select
 The project uses [Tom Select](https://github.com/orchidjs/tom-select) for some forms.
 These files are included in the project. They have been downloaded from these CDN links:
-
 ```
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 ```
-
-

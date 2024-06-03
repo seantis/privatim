@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 10:56+0200\n"
+"POT-Creation-Date: 2024-06-03 20:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,6 +47,14 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: ./src/privatim/layouts/macros.pt
+msgid "Message"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt ./src/privatim/forms/add_comment.py
+msgid "Answer"
+msgstr ""
+
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/layouts/navbar.py
 #: ./src/privatim/views/activities.py
 msgid "Activities"
@@ -71,13 +79,35 @@ msgid "Search..."
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
-msgid "Sign out"
+msgid "<dynamic element> Profile"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "<dynamic element> Sign out"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Upload a photo..."
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Delete photo"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Successfully updated profile picture"
+msgstr ""
+
+#: ./src/privatim/views/general_file.py
+#, python-format
+msgid "Successfully deleted file \"${title}\""
 msgstr ""
 
 #. format data
-#. 
+#.
 #: ./src/privatim/views/meetings.py
 #: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/profile.pt
 #: ./src/privatim/views/templates/people.pt
 #: ./src/privatim/forms/meeting_form.py
 #: ./src/privatim/forms/working_group_forms.py
@@ -153,6 +183,10 @@ msgid ""
 "letter, one lower case letter, one digit and one special character."
 msgstr ""
 
+#: ./src/privatim/views/comment.py
+msgid "Successfully added comment"
+msgstr ""
+
 #: ./src/privatim/views/working_groups.py
 #, python-format
 msgid "Successfully added working group \"${name}\""
@@ -186,7 +220,7 @@ msgid ""
 msgstr ""
 
 #: ./src/privatim/views/templates/form.pt
-#: ./src/privatim/views/templates/table.pt
+#: ./src/privatim/views/templates/table.pt ./src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr ""
 
@@ -241,10 +275,6 @@ msgid "Description:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
-msgid "Comments:"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultation.pt
 msgid "Recommendation:"
 msgstr ""
 
@@ -256,6 +286,10 @@ msgstr ""
 #: ./src/privatim/views/templates/consultation.pt
 #: ./src/privatim/forms/consultation_form.py
 msgid "Status"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Your Comment"
 msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
@@ -294,6 +328,22 @@ msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
+msgstr ""
+
+#: ./src/privatim/views/templates/profile.pt
+msgid "Profile Picture"
+msgstr ""
+
+#: ./src/privatim/views/templates/profile.pt
+msgid "<dynamic element> Edit"
+msgstr ""
+
+#: ./src/privatim/views/templates/profile.pt
+msgid "Personal information"
+msgstr ""
+
+#: ./src/privatim/views/templates/profile.pt
+msgid "E-Mail-Address"
 msgstr ""
 
 #: ./src/privatim/views/templates/people.pt
@@ -427,10 +477,6 @@ msgid "Description"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
-msgid "Comments"
-msgstr ""
-
-#: ./src/privatim/forms/consultation_form.py
 msgid "Recommendation"
 msgstr ""
 
@@ -448,6 +494,18 @@ msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
 msgid "Cantons"
+msgstr ""
+
+#: ./src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr ""
+
+#: ./src/privatim/forms/add_comment.py
+msgid "Comment"
+msgstr ""
+
+#: ./src/privatim/forms/add_comment.py
+msgid "Add comment"
 msgstr ""
 
 #: ./src/privatim/forms/fields.py

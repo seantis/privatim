@@ -1,4 +1,5 @@
-from privatim.models import User, WorkingGroup, Group
+from privatim.models import User, WorkingGroup, Group, GeneralFile
+from sqlalchemy import select
 
 
 def test_set_password(config):
@@ -72,3 +73,43 @@ def test_group_type_polymorphism(config):
     assert not isinstance(group, WorkingGroup)
     assert isinstance(working_group, WorkingGroup)
     assert isinstance(working_group, Group)  # Inherits from Group
+
+
+def test_user_default_profile_picture(session):
+    # Create a user without providing a profile_pic_id
+    user = User(
+        first_name='John',
+        last_name='Doe',
+        email='john.doe@example.com',
+    )
+    session.add(user)
+    session.flush()
+
+    pic = user.picture
+    assert pic.file.saved is True
+    assert pic.file.file
+
+    # # Create another user with a custom profile picture
+    custom_profile_picture = GeneralFile('custom_profile_pic.jpg',
+                                         b'custom_pic_data')
+    session.add(custom_profile_picture)
+    session.flush()
+    session.refresh(custom_profile_picture)
+
+    user_with_custom_pic = User(
+        first_name='Jane',
+        last_name='Smith',
+        email='jane.smith@example.com',
+    )
+    user_with_custom_pic.profile_pic_id = custom_profile_picture.id
+    session.add(user_with_custom_pic)
+    session.flush()
+
+    stored_user_with_custom_pic = session.execute(
+        select(User).filter_by(email='jane.smith@example.com')
+    ).scalar_one_or_none()
+
+    assert (
+        stored_user_with_custom_pic.profile_pic.filename
+        == 'custom_profile_pic.jpg'
+    )
