@@ -50,3 +50,8 @@
     -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
     transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
+
+.comment-render-field {
+    /* Show newlines in the comment*/
+    white-space: pre-line
+}
