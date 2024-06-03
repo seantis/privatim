@@ -1,9 +1,8 @@
-from datetime import datetime, timezone
-
+from pytz import timezone
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 
-from privatim.controls import Button
+from controls.controls import Button
 from privatim.data_table import AJAXDataTable, DataColumn, maybe_escape
 from sqlalchemy import func, select
 
@@ -21,13 +20,14 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Query
     from privatim.types import RenderData, XHRDataOrRedirect
-
+    from datetime import datetime
+    from pytz import BaseTzInfo
     _Q = TypeVar("_Q", bound=Query[Any])
     from privatim.types import MixedDataOrRedirect
 
 
 def datetime_format(
-        dt: datetime,
+        dt: 'datetime',
         format: str = '%H:%M %d.%m.%y',
         tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
 ) -> str:
@@ -45,7 +45,6 @@ def meeting_view(
 ) -> 'RenderData':
     """ Displays a single meeting. """
 
-    # Assuming meeting.time is a datetime object
     formatted_time = datetime_format(context.time)
     assert isinstance(context, Meeting)
 
@@ -173,12 +172,14 @@ def add_meeting_view(
 
     assert isinstance(context, WorkingGroup)
     target_url = request.route_url('meetings', id=context.id)
-
-    form = MeetingForm(context, request)
+    # if we decide to use data tables, we need to remove this prefix param
+    form = MeetingForm(context, request, prefix='')
     session = request.dbsession
+
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
         attendees = list(session.execute(stmt).scalars().all())
+        assert form.time.data is not None
         time = fix_utc_to_local_time(form.time.data)
         meeting = Meeting(
             name=form.name.data,

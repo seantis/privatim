@@ -57,5 +57,3 @@ CANTONS_SHORT = [
     ('ZG', 'ZG'),
     ('ZH', 'ZH'),
 ]
-
-

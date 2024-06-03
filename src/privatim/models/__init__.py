@@ -12,6 +12,7 @@ from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.attached_document import ConsultationDocument
 from privatim.models.meeting import Meeting, AgendaItem
+from privatim.models.file import GeneralFile
 from privatim.models.consultation import Tag
 from privatim.models.statement import Statement
 from privatim.models.password_change_token import PasswordChangeToken
@@ -31,6 +32,7 @@ Meeting
 AgendaItem
 Statement
 PasswordChangeToken
+GeneralFile
 
 
 if TYPE_CHECKING:

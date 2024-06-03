@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from privatim.forms.add_comment import CommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
@@ -29,9 +30,11 @@ def consultation_view(
             )
         })
 
+    form = CommentForm(context, request)
     return {
         'consultation': context,
         'documents': documents,
+        'consultation_comment_form': form,
     }
 
 
@@ -62,7 +65,6 @@ def create_consultation_from_form(
     consultation = Consultation(
         title=form.title.data,
         description=form.description.data,
-        comments=form.comments.data,
         recommendation=form.recommendation.data,
         status=status,
         secondary_tags=tags

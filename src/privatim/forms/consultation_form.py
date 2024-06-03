@@ -6,9 +6,9 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields import UploadMultipleField, \
-    SearchableSelectField  # type:ignore
+from privatim.forms.fields import UploadMultipleField, SearchableSelectField  # type:ignore # noqa: E501
 from privatim.i18n import _
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -35,7 +35,6 @@ class ConsultationForm(Form):
     )
 
     description = TextAreaField(_('Description'))
-    comments = TextAreaField(_('Comments'))
     recommendation = StringField(_('Recommendation'))
     status = SelectField(
         _('Status'),

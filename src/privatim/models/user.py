@@ -1,24 +1,33 @@
 import uuid
 from functools import cached_property
+from sqlalchemy import select
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 import bcrypt
 from datetime import datetime
 from datetime import timezone
+
+from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
 
 from privatim.models import Group, WorkingGroup
+from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
 from privatim.models.meeting import meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
+from privatim.static import get_default_profile_pic_data
+from privatim.models.file import GeneralFile
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.models import Meeting
+    from privatim.models.commentable import Comment
 
 
 class User(Base):
@@ -32,6 +41,20 @@ class User(Base):
     password: Mapped[str_128 | None]
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
+
+    profile_pic_id: Mapped[UUIDStrType | None] = mapped_column(
+        ForeignKey('general_files.id', ondelete='SET NULL'),
+        nullable=True
+    )
+    profile_pic: Mapped[GeneralFile | None] = relationship(
+        'GeneralFile',
+        single_parent=True,
+        passive_deletes=True,
+        cascade='all, delete-orphan'
+    )
+
+    # the function of the user in the organization
+    function: Mapped[str | None]
 
     modified: Mapped[datetime | None] = mapped_column()
 
@@ -60,16 +83,19 @@ class User(Base):
         foreign_keys='[Statement.drafted_by]',  # todo: check this is needed
     )
 
+    comments: Mapped[list['Comment']] = relationship(
+        'Comment', back_populates='user',
+    )
+
     def __init__(
             self,
-            email: str | None = None,
+            email: str,
             first_name: str | None = None,
             last_name: str | None = None,
             groups: list[Group] | None = None,
     ):
         self.id = str(uuid.uuid4())
         self.email = email
-        self.modified = datetime.now(timezone.utc)
         self.first_name = first_name
         self.last_name = last_name
         self.groups = groups or []
@@ -101,8 +127,32 @@ class User(Base):
             return self.email
         return ' '.join(parts)
 
+    @property
+    def picture(self) -> GeneralFile:
+        """ Returns the user's profile picture or the default picture. """
+        session = object_session(self)
+        assert session is not None
+        if self.profile_pic:
+            return self.profile_pic
+        else:
+            return get_or_create_default_profile_pic(session)
+
     def __acl__(self) -> list['ACL']:
         """ Allow the profile to be viewed by logged-in users."""
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+
+def get_or_create_default_profile_pic(session: Session) -> GeneralFile:
+    stmt = select(GeneralFile).where(
+        GeneralFile.filename == 'default_profile_picture.png'
+    )
+    default_profile_picture = session.execute(stmt).scalar_one_or_none()
+    if default_profile_picture is None:
+        filename, data = get_default_profile_pic_data()
+        default_profile_picture = GeneralFile(filename=filename, content=data)
+        session.add(default_profile_picture)
+        session.flush()
+        session.refresh(default_profile_picture)
+    return default_profile_picture

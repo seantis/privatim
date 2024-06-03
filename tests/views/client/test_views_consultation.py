@@ -7,7 +7,6 @@ from webtest.forms import Upload
 def test_view_consultation(client):
 
     client.login_admin()
-    client.get('/activities')
     db = client.db
 
     # add a consultations:
@@ -32,9 +31,14 @@ def test_view_consultation(client):
     db.add(consultation)
     db.add(status)
     db.flush()
+    db.refresh(consultation)
 
-    page = client.get('/activities')
+    page = client.get('/consultations')
+
+    assert 'Noch keine' not in page
     assert 'Vernehmlassung zur Interkantonalen Vereinbarung über den' in page
+
+    print(str(consultation.id))
     # page = client.get(f'/consultations/{str(consultation.id)}')
 
 
@@ -52,7 +56,6 @@ def test_view_add_consultation(client):
     page = page.click('Vernehmlassung Erfassen')
     page.form['title'] = 'test'
     page.form['description'] = 'the description'
-    page.form['comments'] = 'the comments'
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
     page.form['cantons'] = ['AG', 'ZH']
@@ -64,15 +67,10 @@ def test_view_add_consultation(client):
     consultation_id = session.execute(
         select(Consultation.id).filter_by(description='the description')
     ).scalar_one()
-    # visit the consultation page
-    print(f'/consultations/{str(consultation_id)}')
     page = client.get(f'/consultations/{str(consultation_id)}')
 
     assert 'the description' in page
-    assert 'the comments' in page
-    # check the file is also in the page
     assert 'Test.txt' in page
-
     href = tostring(page.pyquery('a.document-link')[0]).decode(
         'utf-8')
     href = client.extract_href(href)

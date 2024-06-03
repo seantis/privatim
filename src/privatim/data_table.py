@@ -19,9 +19,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
     from pyramid.interfaces import IRequest
-
-    from privatim.controls import Button
     from privatim.types import Callback
+    from controls.controls import Button
 
     Getter = Callable[[str], Callable[['RT'], Any]]
     # NOTE: We are more lenient to support functions such as len

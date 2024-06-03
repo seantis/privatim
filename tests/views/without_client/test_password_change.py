@@ -24,7 +24,6 @@ def test_password_change_view_password_strength(config, user):
     token_obj = PasswordChangeToken(user, '127.0.0.1')
     session.add(token_obj)
     session.flush()
-    return
 
     request = DummyRequest()
     request.client_addr = '127.0.0.1'

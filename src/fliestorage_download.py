@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING
-
 from pyramid.response import Response
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.attached_document import ConsultationDocument

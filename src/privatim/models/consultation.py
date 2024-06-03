@@ -4,8 +4,8 @@ from sqlalchemy import Column, String, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-from sqlalchemy.orm import object_session
 from privatim.models.attached_document import ConsultationDocument
+from privatim.models.commentable import Commentable
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
@@ -44,7 +44,7 @@ class Tag(Base):
     )
 
 
-class Consultation(Base):
+class Consultation(Base, Commentable):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -56,11 +56,10 @@ class Consultation(Base):
         back_populates='consultation',
         cascade="all, delete-orphan"
     )
+
     title = Column(String, nullable=False)
 
     description = Column(Text)
-
-    comments = Column(Text)
 
     recommendation = Column(String)
 
@@ -73,20 +72,6 @@ class Consultation(Base):
     secondary_tags: Mapped[list[Tag]] = relationship(
         'Tag', back_populates='consultation',
     )
-
-    def get_asset(self, name: str) -> ConsultationDocument | None:
-        """
-        Returns asset by its name, if present.
-        """
-        return (
-            object_session(self)  # type: ignore
-            .query(ConsultationDocument)
-            .filter_by(
-                product_catalogue=self,
-                filename=name
-            )
-            .one_or_none()
-        )
 
     def __acl__(self) -> list['ACL']:
         return [

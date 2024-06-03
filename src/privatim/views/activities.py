@@ -1,26 +1,27 @@
 from sqlalchemy import select, desc, union_all, literal_column
-
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _
-from typing import TYPE_CHECKING
 
 
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from ..types import RenderData
+    from sqlalchemy import Select
+    from datetime import datetime
 
 
 def activities_view(request: 'IRequest') -> 'RenderData':
     """ Display all activities in the system. (It's the landing page.)"""
 
     session = request.dbsession
-    consultation_stmt = select(
+    consultation_stmt: 'Select[tuple[str, datetime, Any]]' = select(
         Consultation.id.label('id'),
         Consultation.created.label('timestamp'),
         literal_column("'consultation'").label('type')
     )
 
-    meeting_stmt = select(
+    meeting_stmt: 'Select[Any]' = select(
         Meeting.id.label('id'),
         Meeting.time.label('timestamp'),
         literal_column("'meeting'").label('type')
@@ -48,7 +49,7 @@ def activities_view(request: 'IRequest') -> 'RenderData':
     }
     meeting_dict = {meeting.id: meeting for meeting in meetings}
 
-    activities = []
+    activities: list[Consultation | Meeting] = []
     for row in result:
         if row.type == 'consultation':
             activities.append(consultation_dict[row.id])

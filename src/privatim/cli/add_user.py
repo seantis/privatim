@@ -11,8 +11,8 @@ from privatim.orm import get_engine, Base
 @click.argument('config_uri')
 @click.option('--email', prompt=True)
 @click.option('--password', prompt=True, hide_input=True)
-@click.option('--first_name', prompt=True)
-@click.option('--last_name', prompt=True, hide_input=True)
+@click.option('--first_name')
+@click.option('--last_name')
 def add_user(
     config_uri: str, email: str, password: str, first_name: str, last_name: str
 ) -> None:

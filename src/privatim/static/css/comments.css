@@ -1,0 +1,52 @@
+/* css concerning comments */
+
+/* The 'add comment' component */
+.inputField {
+    position: relative;
+}
+
+.inputField textarea {
+    color: black;
+    font-size: 1.6em;
+}
+
+.inputField textarea:focus {
+    outline: none;
+    border-color: #798187;
+}
+
+.inputField span {
+    pointer-events: none;
+    opacity: 0.75;
+    position: absolute;
+    padding-left: 20px;
+    left: -5px;
+    top: 5px;
+    -webkit-transform: translateY(0); /* No initial translation */
+    transform: translateY(0); /* No initial translation */
+    cursor: text;
+}
+
+.inputField textarea:focus + span,
+.inputField textarea:not(:placeholder-shown) + span {
+    top: -15px;
+    -webkit-transform: scale(0.8) translateY(-50%) translateX(-4px);
+    transform: scale(0.8) translateY(-50%) translateX(-4px);
+    /* Change to primary color once at the top: */
+    color: var(--primary-color);
+    opacity: 100%;
+}
+
+
+.inputField textarea,
+.inputField span {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    transition: all 0.2s;
+    -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
