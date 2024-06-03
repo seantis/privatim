@@ -17,14 +17,10 @@
 
         <div class="table-responsive">
 
-            <tal:b tal:condition="not:working_groups">
-                <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click "Add working group" to get started.</p>
-            </tal:b>
-
             <table class="table align-middle mb-0 ">
                 <thead class="bg-light">
                 <tr>
-                    <th class="col-7" i18n:translate="">Group</th>
+                    <th class="col-7" i18n:translate="">Committee</th>
                     <th class="col-2" i18n:translate="">People</th>
                 </tr>
                 </thead>
