@@ -219,7 +219,7 @@ def test_short_filename():
 
 def test_long_filename():
     filename = "this_is_a_very_long_filename_that_exceeds_32_chars.txt"
-    expected_output = "this_is_a_very_long_filen...txt"
+    expected_output = "this_is_a_very_long_filename...txt"
     assert trim_filename(filename) == expected_output
 
 
