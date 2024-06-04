@@ -67,7 +67,10 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 def create_consultation_from_form(
     form: ConsultationForm, session: 'Session'
 ) -> Consultation | None:
-    status = Status(name=form.status.name)
+
+    status = Status(name=form.status.data)
+    status.name = dict(form.status.choices)[form.status.data]
+
     session.add(status)
     session.flush()
     session.refresh(status)
@@ -112,13 +115,14 @@ def add_or_edit_consultation_view(
     if request.method == 'POST' and form.validate():
         if consultation is None:
             consultation = create_consultation_from_form(form, session)
-            request.dbsession.add(consultation)
-            message = _(
-                'Successfully added consultation "${name}"',
-                mapping={'name': form.title.data}
-            )
-            if not request.is_xhr:
-                request.messages.add(message, 'success')
+            if consultation is not None:
+                request.dbsession.add(consultation)
+                message = _(
+                    'Successfully added consultation "${name}"',
+                    mapping={'name': form.title.data}
+                )
+                if not request.is_xhr:
+                    request.messages.add(message, 'success')
 
         # edit
         # form.populate_obj(group)

@@ -28,6 +28,9 @@ class Status(Base):
         nullable=True
     )
 
+    def __repr__(self) -> str:
+        return f'<Status {self.name}>'
+
 
 class Tag(Base):
 

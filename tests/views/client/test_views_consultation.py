@@ -62,7 +62,8 @@ def test_view_add_consultation(client):
     page.form['documents'] = Upload('Test.txt', b'File content.')
     page.form.submit()
 
-    # query the consultation id
+    # query the consultation id so we can navigate to it (page.click is very
+    # flak
     session = client.db
     consultation_id = session.execute(
         select(Consultation.id).filter_by(description='the description')
@@ -78,3 +79,6 @@ def test_view_add_consultation(client):
 
     assert not resp.status_code == 404
     assert resp.status_code == 200
+
+    status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
+    assert status_text_badge == 'Erstellt'
