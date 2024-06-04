@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: [1]  # expand as needed
+        group: [1]  # expand as needed for parallelizing
 
     runs-on: ubuntu-latest
 
