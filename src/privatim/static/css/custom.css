@@ -211,3 +211,17 @@ main {
     height: 30px;
     display: inline-block;
 }
+
+
+/* icon sidebar */
+.document-link {
+    display: flex;
+    align-items: center;
+}
+.fas {
+    margin-right: 10px; /* Add space between the icon and the text */
+}
+.icon-container {
+    display: flex; /* Makes the file icon be on the same height as the text */
+    align-items: center; /* Ensure the icon is centered vertically */
+}

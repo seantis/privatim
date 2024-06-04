@@ -8,7 +8,7 @@
 
             <!-- Main Content -->
             <div class="row mb-4">
-                <div class="col-lg-9 mb-4">
+                <div class="col-lg-8  mb-4">
                     <h1 class="mb-4">${consultation.title}</h1>
                     <p tal:condition="consultation.description">
                         <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
@@ -19,19 +19,21 @@
                 </div>
 
                 <!-- Sidebar for documents and status, starts below the title -->
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h5 i18n:translate="" class="card-title">Documents</h5>
                             <ul class="list-group list-group-flush" tal:condition="documents">
                                 <li tal:repeat="item documents" class="list-group-item">
                                     <a href="${item.download_url}"
-                                       class="stretched-link text-decoration-none document-link" target="_blank">
+                                       class="text-decoration-none document-link" target="_blank">
+                                    <span class="icon-container">
                                         <i tal:condition="python:'pdf' in item.document.content_type"
                                                 class="fas fa-file-pdf"></i>
                                         <i tal:condition="python:'pdf' not in item.document.content_type"
                                                 class="fas fa-file"></i>
                                             ${item.document.filename}
+                                    </span>
                                     </a>
                                 </li>
                             </ul>
