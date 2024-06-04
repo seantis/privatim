@@ -1,6 +1,6 @@
 from datetime import datetime
 from sedate import utcnow
-from sqlalchemy import Column, String, Text, ForeignKey
+from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -60,11 +60,11 @@ class Consultation(Base, Commentable):
         cascade="all, delete-orphan"
     )
 
-    title = Column(String, nullable=False)
+    title: Mapped[str] = mapped_column(nullable=False)
 
-    description = Column(Text)
+    description: Mapped[str]
 
-    recommendation = Column(String)
+    recommendation: Mapped[str]
 
     status: Mapped[Status] = relationship(
         'Status', back_populates='consultations',
