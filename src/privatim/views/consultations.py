@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
@@ -25,7 +27,8 @@ def consultation_view(
         'consultation': context,
         'documents': [
             {
-                'document': doc,
+                'display_filename': trim_filename(doc.filename),
+                'doc_content_type': doc.content_type,
                 'download_url': request.route_url(
                     'download_document', consultation_doc_id=doc.id
                 ),
@@ -36,6 +39,17 @@ def consultation_view(
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments)
     }
+
+
+def trim_filename(filename: str) -> str:
+    name, extension = os.path.splitext(filename)
+    max_name_length = 35 - len(extension)
+    if len(filename) <= 35:
+        return filename
+    else:
+        trimmed_name = name[:max_name_length-3] + ".."
+        trimmed_filename = trimmed_name + extension
+        return trimmed_filename
 
 
 def consultations_view(request: 'IRequest') -> 'RenderData':

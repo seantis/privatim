@@ -28,11 +28,11 @@
                                     <a href="${item.download_url}"
                                        class="text-decoration-none document-link" target="_blank">
                                     <span class="icon-container">
-                                        <i tal:condition="python:'pdf' in item.document.content_type"
+                                        <i tal:condition="python:'pdf' in item.doc_content_type"
                                                 class="fas fa-file-pdf"></i>
-                                        <i tal:condition="python:'pdf' not in item.document.content_type"
+                                        <i tal:condition="python:'pdf' not in item.doc_content_type"
                                                 class="fas fa-file"></i>
-                                            ${item.document.filename}
+                                            ${item.display_filename}
                                     </span>
                                     </a>
                                 </li>
