@@ -69,4 +69,6 @@ def add_profile_image_view(
 
 def user_pic_url(request: 'IRequest') -> str:
     user = request.user
+    if not user:
+        return ''
     return request.route_url('download_general_file', id=user.picture.id)

@@ -81,4 +81,5 @@ __all__ = (
     'Statement',
     'Meeting',
     'Consultation',
+    'ConsultationDocument'
 )
