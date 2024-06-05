@@ -388,3 +388,58 @@ def test_user_deletion_keep_comments(session):
         str(comment1.id),
         str(comment2.id),
     }
+
+
+def test_user_comments_relationship(session):
+    user1 = User(email='user1@example.com')
+    user2 = User(email='user2@example.com')
+
+    comment1_user1 = Comment(content='Comment 1 by User 1', user=user1)
+    comment2_user1 = Comment(content='Comment 2 by User 1', user=user1)
+    comment3_user1 = Comment(content='Comment 3 by User 1', user=user1)
+
+    comment1_user2 = Comment(content='Comment 1 by User 2', user=user2)
+    comment2_user2 = Comment(content='Comment 2 by User 2', user=user2)
+
+    session.add_all(
+        [
+            user1,
+            user2,
+            comment1_user1,
+            comment2_user1,
+            comment3_user1,
+            comment1_user2,
+            comment2_user2,
+        ]
+    )
+    session.flush()
+
+    for user in session.query(User).all():
+        if user.email == 'user1@example.com':
+            assert len(user.comments) == 3
+            assert {comment.content for comment in user.comments} == {
+                'Comment 1 by User 1',
+                'Comment 2 by User 1',
+                'Comment 3 by User 1',
+            }
+        elif user.email == 'user2@example.com':
+            assert len(user.comments) == 2
+            assert {comment.content for comment in user.comments} == {
+                'Comment 1 by User 2',
+                'Comment 2 by User 2',
+            }
+
+    # Check the reverse relationship (comment to user)
+    comments = session.query(Comment).all()
+
+    assert len(comments) == 5
+
+    for comment in comments:
+        if comment.content.startswith('Comment') and comment.content.endswith(
+            'by User 1'
+        ):
+            assert comment.user == user1
+        elif comment.content.startswith(
+            'Comment'
+        ) and comment.content.endswith('by User 2'):
+            assert comment.user == user2
