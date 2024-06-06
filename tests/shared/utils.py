@@ -41,7 +41,7 @@ def create_meeting(attendees=None) -> Meeting:
     )
 
 
-def create_consultation(documents=None, tags=None):
+def create_consultation(documents=None, tags=None, user=None):
 
     documents = documents or [
         ConsultationDocument(
@@ -53,7 +53,7 @@ def create_consultation(documents=None, tags=None):
             content=b'Content of Document 2',
         ),
     ]
-
+    user = user or User(email='testuser@example.org')
     tags = tags or [
         Tag(name='SZ'),
         Tag(name='AG'),
@@ -67,4 +67,5 @@ def create_consultation(documents=None, tags=None):
         created=utcnow(),
         documents=documents,
         secondary_tags=tags,
+        creator=user
     )

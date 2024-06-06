@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
-    from sqlalchemy.orm import Session
 
 
 def consultation_view(
@@ -65,9 +64,10 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
 
 def create_consultation_from_form(
-    form: ConsultationForm, session: 'Session'
+    form: ConsultationForm, request: 'IRequest'
 ) -> Consultation | None:
 
+    session = request.dbsession
     status = Status(name=form.status.data)
     status.name = dict(form.status.choices)[form.status.data]
 
@@ -79,12 +79,16 @@ def create_consultation_from_form(
     session.add_all(tags)
     session.flush()
 
+    user = request.user
+    if not user:
+        return None
     consultation = Consultation(
         title=form.title.data,
         description=form.description.data,
         recommendation=form.recommendation.data,
         status=status,
-        secondary_tags=tags
+        secondary_tags=tags,
+        creator=user
     )
     if form.documents.data is None:
         return None
@@ -114,9 +118,9 @@ def add_or_edit_consultation_view(
 
     if request.method == 'POST' and form.validate():
         if consultation is None:
-            consultation = create_consultation_from_form(form, session)
+            consultation = create_consultation_from_form(form, request)
             if consultation is not None:
-                request.dbsession.add(consultation)
+                session.add(consultation)
                 message = _(
                     'Successfully added consultation "${name}"',
                     mapping={'name': form.title.data}

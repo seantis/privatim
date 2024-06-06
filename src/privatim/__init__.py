@@ -113,4 +113,15 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     if context.has_column('consultations', 'documents'):
         context.drop_column('consultations', 'documents')
 
+    if not context.has_column('consultations', 'creator_id'):
+        context.add_column(
+            'consultations',
+            Column(
+                'creator_id',
+                UUIDStrType,
+                ForeignKey('users.id'),
+                nullable=True,
+            ),
+        )
+
     context.commit()

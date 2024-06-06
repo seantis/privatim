@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
-from privatim.models import Consultation, ConsultationDocument
+from privatim.models import Consultation, ConsultationDocument, User
 from privatim.models.consultation import Status, Tag
 from tests.shared.utils import create_consultation
 
@@ -17,7 +17,8 @@ def test_consultation_status_relationship(session):
         title='Datenschutzgesetz',
         description='Review the impacts of the proposed construction.',
         recommendation='Proceed with caution',
-        status=status
+        status=status,
+        creator=User(email='f@example.org')
     )
     session.add(consultation)
     session.flush()
@@ -29,7 +30,6 @@ def test_consultation_status_relationship(session):
         ).scalar_one()
     )
     assert stored_consultation is not None
-
     assert stored_consultation.status is not None
     assert stored_consultation.status.name == 'Active'
 
@@ -50,7 +50,8 @@ def test_consultation_tag(session):
         description='Review the impacts of the proposed construction.',
         recommendation='Proceed with caution',
         status=status,
-        secondary_tags=tags
+        secondary_tags=tags,
+        creator=User(email='admin@example.org')
     )
     session.add(consultation)
     session.flush()
@@ -90,3 +91,29 @@ def test_consultation_document(session):
     assert session.execute(smt).scalar_one().content == (
         b'Content of Document 1'
     )
+
+
+def test_consultation_creator_relationship(session):
+
+    creator = User(email='creator@example.com')
+    session.add(creator)
+    session.flush()
+
+    consultation = Consultation(
+        title='foo',
+        description='bar',
+        recommendation='barfoo',
+        creator=creator
+    )
+    session.add(consultation)
+    session.flush()
+
+    stored_consultation = (
+        session.execute(
+            select(Consultation).filter_by(title='foo')
+        ).scalar_one()
+    )
+    assert stored_consultation is not None
+
+    assert stored_consultation.creator is not None
+    assert stored_consultation.creator.email == 'creator@example.com'

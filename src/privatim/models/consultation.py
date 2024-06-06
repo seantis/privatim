@@ -4,6 +4,7 @@ from sqlalchemy import Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
+
 from privatim.models.attached_document import ConsultationDocument
 from privatim.models.commentable import Commentable
 from privatim.orm import Base
@@ -14,6 +15,7 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.types import ACL
+    from privatim.models import User
 
 
 class Status(Base):
@@ -74,6 +76,16 @@ class Consultation(Base, Commentable):
 
     secondary_tags: Mapped[list[Tag]] = relationship(
         'Tag', back_populates='consultation',
+    )
+
+    creator: Mapped['User'] = relationship(
+        'User',
+        back_populates='consultations',
+    )
+    # in theory this could be nullable=False, but let's avoid problems with
+    # user deletion
+    creator_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('users.id'), nullable=True
     )
 
     def __acl__(self) -> list['ACL']:

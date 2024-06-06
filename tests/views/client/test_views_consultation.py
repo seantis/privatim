@@ -1,4 +1,6 @@
 from lxml.etree import tostring
+
+from privatim.models import User
 from privatim.models.consultation import Status, Consultation
 from sqlalchemy import select
 from webtest.forms import Upload
@@ -27,6 +29,7 @@ def test_view_consultation(client):
         'und andererseits Hinweise zu einzelnen Bestimmungen des '
                        'Vereinbarungsentwurfs...',
         status=status,
+        creator=User(email='test@foo.com')
     )
     db.add(consultation)
     db.add(status)
@@ -63,7 +66,7 @@ def test_view_add_consultation(client):
     page.form.submit()
 
     # query the consultation id so we can navigate to it (page.click is very
-    # flak
+    # flaky)
     session = client.db
     consultation_id = session.execute(
         select(Consultation.id).filter_by(description='the description')

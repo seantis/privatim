@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.models import Meeting
     from privatim.models.commentable import Comment
+    from privatim.models import Consultation
 
 
 class User(Base):
@@ -85,6 +86,10 @@ class User(Base):
 
     comments: Mapped[list['Comment']] = relationship(
         'Comment', back_populates='user',
+    )
+
+    consultations: Mapped[list['Consultation']] = relationship(
+        'Consultation', back_populates='creator'
     )
 
     def __init__(
