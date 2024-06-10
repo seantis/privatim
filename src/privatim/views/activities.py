@@ -36,12 +36,13 @@ def activities_view(request: 'IRequest') -> 'RenderData':
     consultation_ids = [row.id for row in result if row.type == 'consultation']
     meeting_ids = [row.id for row in result if row.type == 'meeting']
 
-    consultations = (
-        session.query(Consultation)
-        .filter(Consultation.id.in_(consultation_ids))
-        .all()
-    )
-    meetings = session.query(Meeting).filter(Meeting.id.in_(meeting_ids)).all()
+    consultations = session.scalars(
+        select(Consultation).filter(Consultation.id.in_(consultation_ids))
+    ).all()
+
+    meetings = session.scalars(
+        select(Meeting).filter(Meeting.id.in_(meeting_ids))
+    ).all()
 
     # Create a dictionary for quick lookup
     consultation_dict = {
