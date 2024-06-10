@@ -34,8 +34,13 @@
                             <div class="profile-section">
                                 <img src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                      class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                <p class="profile-name" i18n:translate="">Max Müller</p>
-                                <p class="text-secondary">21.05.2024<br/> 13:30</p>
+                                <tal:b tal:switch="activity.__class__.__name__">
+                                    <a href="${request.route_url('person', id=activity.creator.id)}">
+                                        <p tal:case="'Consultation'"
+                                                class="profile-name" i18n:translate="">${activity.creator.fullname}</p>
+                                    </a>
+                                </tal:b>
+                                <p tal:condition="activity.__class__.__name__ == 'Consultation'" class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
                             </div>
 
                             <tal:b tal:switch="activity.__class__.__name__">

@@ -21,6 +21,16 @@ _private_regex = re.compile(r':[0-9a-z]+@')
 
 class Layout:
 
+    time_format = 'HH:mm'
+    date_format = 'dd.MM.yyyy'
+    datetime_format = 'dd.MM.yyyy HH:mm'
+
+    date_long_format = 'dd. MMMM yyyy'
+    datetime_long_format = 'd. MMMM yyyy HH:mm'
+    weekday_long_format = 'EEEE'
+    weekday_short_format = 'E'
+    month_long_format = 'MMMM'
+
     def __init__(self, context: Any, request: 'IRequest') -> None:
         self.context = context
         self.request = request
