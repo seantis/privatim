@@ -4,12 +4,23 @@
          i18n:domain="privatim">
 
     <div metal:fill-slot="content">
-
-        <h1>${person.fullname}</h1>
-
-
+        <h1>${user.fullname}</h1>
         <ul>
-            <li>${person.email}</li>
+            <li>${user.email}</li>
+        </ul>
+        <h2 tal:condition="meeting_urls" i18n:translate="">Meetings</h2>
+        <ul tal:condition="meeting_urls">
+            <li tal:repeat="meeting_url meeting_urls">
+                <a tal:attributes="href meeting_url[1]">${meeting_url[0].name}</a>
+            </li>
+        </ul>
+        <h2 tal:condition="consultation_urls" i18n:translate="">Consultations</h2>
+        <ul tal:condition="consultation_urls">
+            <li tal:repeat="consultation_url consultation_urls">
+                <a tal:attributes="href consultation_url[1]">${consultation_url[0].title}</a>
+            </li>
         </ul>
     </div>
+
 </metal:block>
+

@@ -112,8 +112,6 @@ class Meeting(Base, Commentable):
         'WorkingGroup', back_populates='meetings'
     )
 
-    # todo: does this also want documents?
-
     def __acl__(self) -> list['ACL']:
         return [
             (Allow, Authenticated, ['view']),
