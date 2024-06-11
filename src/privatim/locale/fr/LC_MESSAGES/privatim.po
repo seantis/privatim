@@ -72,7 +72,7 @@ msgstr "Consultations"
 #: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
-msgstr "Groupe de travail"
+msgstr "Comités"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Search..."
@@ -249,7 +249,7 @@ msgstr "Participants:"
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/views/templates/activities.pt
 msgid "Working Group:"
-msgstr "Groupe de travail:"
+msgstr "Comité:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Agenda Items"

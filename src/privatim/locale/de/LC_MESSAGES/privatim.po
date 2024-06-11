@@ -77,7 +77,7 @@ msgstr "Vernehmlassungen"
 #: src/privatim/layouts/navbar.pt
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
-msgstr "Arbeitsgruppen"
+msgstr "Gremien"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Search..."
