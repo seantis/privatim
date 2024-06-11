@@ -90,7 +90,8 @@
                 </div>
 
                 <!-- Sidebar (1/3 width) -->
-                <div class="col-md-4 order-md-2 mt-5">
+                <!-- Note: hidden until we decide to implement it -->
+                <div class="col-md-4 order-md-2 mt-5" style="display: none;">
                     <div class="mb-5 p-3">
                         <label for="kantonDropdown" class="form-label">Kanton</label>
                         <select class="form-select" id="kantonDropdown" disabled>
@@ -114,6 +115,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </tal:block>
