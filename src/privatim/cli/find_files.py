@@ -50,7 +50,7 @@ def find_ini_file_or_abort() -> str:
     specify the .ini file in the args for every command, encouraging its
     frequent use.
 
-    It works by greedily searching file system from *here* upwards for .ini
+    It works by greedily searching the file system from *here* upwards for .ini
     files. It then asks the user to confirm or quit.
 
     """
