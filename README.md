@@ -4,61 +4,48 @@ privatim [![Tests](https://github.com/seantis/privatim/actions/workflows/tests.y
 Getting Started
 ---------------
 
-tl,dr:
 ```
 git clone git@github.com:seantis/privatim.git
 cd privatim
 python3 -m venv venv
 source venv/bin/activate
 make install
-make run
-```
-
-```
 cp development.ini.example development.ini
 ```
 
-- Upgrade packaging tools, if necessary.
-
-```
-pip install --upgrade pip setuptools
-```
-
-- Install the project in editable mode with its testing requirements.
-
-```
-make install
-```
 - Add a user
 
 ```
 add_user --email admin@example.org --password test  development.ini
 ```
 
-- Load default data into the database using a script.
+- Load default data into the database using a script (optional).
 
 ```
-initialize_db development.ini --only-consultation
+initialize_db development.ini
 ```
 
-- Run your project's tests.
-
-```
-pytest
-```
-
-## Run dev server
+### Run dev server
 
 ```
 make run
 ```
+
+
+## Run the project's tests
+
+```
+pytest -n 3
+```
+
 
 - Login at http://localhost:6543 with admin@example.org / test
 
 
 # Manage dependencies
 
-We use `uv` to manage dependencies. However, you don't need to directly interact with `uv`
+We use `uv` to manage dependencies. However, you don't need to directly interact with `uv`. Generally you can just use `make install`, `make update` and `make compile` if you've added new dependencies. The `make compile` commands generates the `requirements.txt` and `test_requirements.txt` which is then used in production.
+
 
 ## Regenerate requirements files based on new dependencies
 
@@ -87,11 +74,6 @@ This will remove packages that have been manually installed locally
 
     uv pip sync requirements.txt test_requirements.txt
 
-## Testing the Dockerfile works
-
-    docker run --rm -p 8080:6543 -v $PWD/config:/app/config privatim-1 development.ini
-
-then open http://127.0.0.1:8080/
 
 
 ## Miscellaneous
