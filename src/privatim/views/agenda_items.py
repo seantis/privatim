@@ -1,6 +1,6 @@
 from pyramid.httpexceptions import HTTPFound
 
-from privatim.data_table import maybe_escape
+from privatim.utils import maybe_escape
 from privatim.forms.agenda_item_form import AgendaItemForm
 from privatim.i18n import _
 from privatim.i18n import translate

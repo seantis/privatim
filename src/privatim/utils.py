@@ -5,6 +5,7 @@ from PIL import Image
 import magic
 from io import BytesIO
 from sedate import to_timezone
+from markupsafe import escape
 
 
 from typing import Any, TYPE_CHECKING, overload
@@ -136,3 +137,9 @@ def flatten_comments(
         flattened_comments.append({'comment': comment, 'children': children})
 
     return flattened_comments
+
+
+def maybe_escape(value: str | None) -> str:
+    if value is None:
+        return ''
+    return escape(value)

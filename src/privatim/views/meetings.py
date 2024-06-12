@@ -3,12 +3,11 @@ from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 
 from controls.controls import Button
-from privatim.data_table import AJAXDataTable, DataColumn, maybe_escape
-from sqlalchemy import func, select
+from privatim.utils import maybe_escape
+from sqlalchemy import select
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.utils import fix_utc_to_local_time
-from privatim.static import xhr_edit_js
 from privatim.forms.meeting_form import MeetingForm
 from privatim.models import Meeting, User, WorkingGroup
 from privatim.i18n import _
@@ -61,55 +60,6 @@ def meeting_view(
         'meeting': context,
         'agenda_items': items,
     }
-
-
-class MeetingTable(AJAXDataTable[Meeting]):
-    default_options = {
-        'length_menu': [[25, 50, 100, -1], [25, 50, 100, 'All']],
-        'order': [[0, 'asc']]  # corresponds to column name
-    }
-
-    # format data
-    name = DataColumn(title=_('Name'))
-
-    # time = DataColumn(
-    #     _('Time'), format_data=lambda d: d.strftime('%m/%d/%Y, %H:%M:%S')
-    # )
-
-    def __init__(self, org: WorkingGroup, request: 'IRequest') -> None:
-        super().__init__(org, request, id='meeting-table')
-        xhr_edit_js.need()
-        assert isinstance(self.context, WorkingGroup)
-
-    def apply_static_filters(self, query: '_Q') -> '_Q':
-        return query.filter(Meeting.working_group_id == self.context.id)
-
-    def total_records(self) -> int:
-        if not hasattr(self, '_total_records'):
-            session = self.request.dbsession
-            query = session.query(func.count(Meeting.id))
-            query = self.apply_static_filters(query)
-            self._total_records: int = query.scalar()
-        return self._total_records
-
-    def query(self) -> 'Query[Meeting]':
-        session = self.request.dbsession
-        query = session.query(Meeting)
-        query = self.apply_static_filters(query)
-        if self.order_by:
-            query = query.order_by(
-                getattr(getattr(Meeting, self.order_by), self.order_dir)()
-            )
-        else:
-            query = query.order_by(Meeting.name.asc())
-        return query
-
-    def buttons(self, meeting: Meeting | None = None) -> list[Button]:
-        if meeting is None:
-            return []
-
-        assert isinstance(meeting, Meeting)
-        return meeting_buttons(meeting,  self.request)
 
 
 def meeting_buttons(
