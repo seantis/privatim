@@ -1,5 +1,4 @@
 from pyramid.httpexceptions import HTTPFound
-
 from privatim.utils import maybe_escape
 from privatim.forms.agenda_item_form import AgendaItemForm
 from privatim.i18n import _
@@ -36,6 +35,7 @@ def add_agenda_item_view(
             description=form.description.data,
             meeting=context,
         )
+        breakpoint()
         session.add(agenda_item)
         message = _(
             'Successfully added agend item "${title}"',

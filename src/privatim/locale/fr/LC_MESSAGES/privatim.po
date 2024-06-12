@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 20:27+0200\n"
+"POT-Creation-Date: 2024-06-12 11:54+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -66,6 +66,7 @@ msgid "People"
 msgstr "Les personnes"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
+#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Consultations"
 
@@ -103,14 +104,9 @@ msgstr "Image de profil mise à jour avec succès"
 msgid "Successfully deleted file \"${title}\""
 msgstr "Fichier supprimé avec succès \"${titre}\""
 
-#. format data
-#.
-#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Nom"
+#: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
+msgstr "Traiter un point de l'ordre du jour"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
@@ -275,6 +271,13 @@ msgid ""
 "meeting\" to get started."
 msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Nom"
+
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr "Description"
@@ -301,6 +304,10 @@ msgstr "Votre commentaire"
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
+#: src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr "Réunions"
+
 #: src/privatim/views/templates/activities.pt
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
@@ -309,10 +316,6 @@ msgstr ""
 "Aucune activité n'a encore été ajoutée. Vous pouvez ajouter des activités "
 "dans l'onglet Consultations ou en ajoutant une réunion d'un groupe de "
 "travail."
-
-#: src/privatim/views/templates/activities.pt
-msgid "Max Müller"
-msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
@@ -475,6 +478,18 @@ msgid "Zurich"
 msgstr "Zurich"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr "Créé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr "Terminé"
+
+#: src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr "En cours de traitement"
+
+#: src/privatim/forms/consultation_form.py
 #: src/privatim/forms/agenda_item_form.py
 msgid "Title"
 msgstr "Titre"
@@ -487,18 +502,6 @@ msgstr "Description"
 #: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
 msgstr "Recommandation"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Open"
-msgstr "Créé"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Closed"
-msgstr "Terminé"
-
-#: src/privatim/forms/consultation_form.py
-msgid "In Progress"
-msgstr "En cours de traitement"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Cantons"
@@ -532,10 +535,6 @@ msgstr "Temps"
 msgid "Attendees"
 msgstr "Participants"
 
-#: src/privatim/forms/agenda_item_form.py
-msgid "Edit Agenda Item"
-msgstr "Traiter un point de l'ordre du jour"
-
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Groupe de travail sur l'édition"
@@ -555,6 +554,9 @@ msgstr "Membres"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Télécharger des fichiers supplémentaires"
+
+#~ msgid "Max Müller"
+#~ msgstr "Max Müller"
 
 #~ msgid "Sign out"
 #~ msgstr "Déconnecter"

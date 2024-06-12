@@ -86,7 +86,7 @@ By default, files are managed by sqlalchemy-file and are saved in the ./files di
 The project includes js/css files.
 If you need to update them, you can find the sources in the following locations:
 
-####  Tom Select
+###  Tom Select
 The project uses [Tom Select](https://github.com/orchidjs/tom-select) for some forms.
 These files are included in the project. They have been downloaded from these CDN links:
 ```

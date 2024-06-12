@@ -53,8 +53,16 @@ def meeting_view(
             'title': item.title,
             'description': item.description,
             'id': item.id,
+            'edit_btn': Button(
+                url=(
+                    request.route_url(
+                        'edit_agenda_item', meeting_id=item.id
+                    )
+                ),
+                icon='edit',
+                description=_('Edit Agenda Item'),
+                css_class='btn-sm btn secondary')
         })
-
     return {
         'time': formatted_time,
         'meeting': context,

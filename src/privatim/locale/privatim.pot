@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 20:27+0200\n"
+"POT-Creation-Date: 2024-06-12 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,6 +66,7 @@ msgid "People"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr ""
 
@@ -103,15 +104,8 @@ msgstr ""
 msgid "Successfully deleted file \"${title}\""
 msgstr ""
 
-#. format data
-#.
-#: ./src/privatim/views/meetings.py
-#: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/views/templates/profile.pt
-#: ./src/privatim/views/templates/people.pt
-#: ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Name"
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -270,6 +264,14 @@ msgid ""
 "meeting\" to get started."
 msgstr ""
 
+#: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/profile.pt
+#: ./src/privatim/views/templates/people.pt
+#: ./src/privatim/forms/meeting_form.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr ""
+
 #: ./src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr ""
@@ -296,14 +298,14 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
+#: ./src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr ""
+
 #: ./src/privatim/views/templates/activities.pt
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
 "by adding a Meeting of a Working Group."
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Max Müller"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -467,6 +469,18 @@ msgid "Zurich"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
 #: ./src/privatim/forms/agenda_item_form.py
 msgid "Title"
 msgstr ""
@@ -478,18 +492,6 @@ msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
 msgid "Recommendation"
-msgstr ""
-
-#: ./src/privatim/forms/consultation_form.py
-msgid "Open"
-msgstr ""
-
-#: ./src/privatim/forms/consultation_form.py
-msgid "Closed"
-msgstr ""
-
-#: ./src/privatim/forms/consultation_form.py
-msgid "In Progress"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
@@ -522,10 +524,6 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "Attendees"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-msgid "Edit Agenda Item"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py

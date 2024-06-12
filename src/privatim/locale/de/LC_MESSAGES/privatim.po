@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-03 20:27+0200\n"
+"POT-Creation-Date: 2024-06-12 11:54+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -71,6 +71,7 @@ msgid "People"
 msgstr "Personen"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
+#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Vernehmlassungen"
 
@@ -108,14 +109,9 @@ msgstr "Profilbild erfolgreich geändert"
 msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
-#. format data
-#.
-#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Name"
+#: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
+msgstr "Traktandum bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
@@ -278,6 +274,13 @@ msgid ""
 "meeting\" to get started."
 msgstr "Hier können Sie Sitzungen im Kontext eines Gremiums hinzufügen."
 
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Name"
+
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr "Beschreibung:"
@@ -304,6 +307,10 @@ msgstr "Ihr Kommentar"
 msgid "Change Password"
 msgstr "Passwort ändern"
 
+#: src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr "Sitzungen"
+
 #: src/privatim/views/templates/activities.pt
 msgid ""
 "No activities added yet. You can add activities in the Consultations tab or "
@@ -311,10 +318,6 @@ msgid ""
 msgstr ""
 "Keine Aktivitäten erfasst. Sie können Aktivitäten im Tab 'Vernehmlassungen' "
 "hinzufügen oder eine Sitzung einer Arbeitsgruppe erfassen"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Max Müller"
-msgstr "Max Müller"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
@@ -477,6 +480,18 @@ msgid "Zurich"
 msgstr "Zurich"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Open"
+msgstr "Erstellt"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Closed"
+msgstr "Abgeschlossen"
+
+#: src/privatim/forms/consultation_form.py
+msgid "In Progress"
+msgstr "in Bearbeitung"
+
+#: src/privatim/forms/consultation_form.py
 #: src/privatim/forms/agenda_item_form.py
 msgid "Title"
 msgstr "Titel"
@@ -489,18 +504,6 @@ msgstr "Beschreibung"
 #: src/privatim/forms/consultation_form.py
 msgid "Recommendation"
 msgstr "Empfehlung"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Open"
-msgstr "Erstellt"
-
-#: src/privatim/forms/consultation_form.py
-msgid "Closed"
-msgstr "Abgeschlossen"
-
-#: src/privatim/forms/consultation_form.py
-msgid "In Progress"
-msgstr "in Bearbeitung"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Cantons"
@@ -534,10 +537,6 @@ msgstr "Zeit"
 msgid "Attendees"
 msgstr "Teilnehmer"
 
-#: src/privatim/forms/agenda_item_form.py
-msgid "Edit Agenda Item"
-msgstr "Traktandum bearbeiten"
-
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Arbeitsgruppe bearbeiten"
@@ -557,6 +556,9 @@ msgstr "Mitglieder"
 #: src/privatim/forms/widgets.py
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
+
+#~ msgid "Max Müller"
+#~ msgstr "Max Müller"
 
 #~ msgid "Tags"
 #~ msgstr "Tags"
