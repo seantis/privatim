@@ -1,8 +1,11 @@
+from functools import cache
 from pathlib import Path
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
+from sqlalchemy import select
+
 from privatim.models.consultation import Status, Tag
 from privatim.orm import get_engine
-from privatim.models import Consultation, ConsultationDocument
+from privatim.models import Consultation, ConsultationDocument, User
 from privatim.orm import Base
 import click
 
@@ -34,6 +37,12 @@ def main(config_uri: str, add_vemz: bool) -> None:
         add_example_content(db, add_vemz)
 
 
+@cache
+def get_first_admin_user(session: 'Session') -> User | None:
+    stmt = select(User).filter(User.email.contains('admin'))
+    return session.scalars(stmt).first()
+
+
 def add_example_content(db: 'Session', add_vemz: bool) -> None:
 
     con_name = ('Vernehmlassung zur Interkantonalen Vereinbarung über den '
@@ -41,6 +50,12 @@ def add_example_content(db: 'Session', add_vemz: bool) -> None:
     consultation = (
         db.query(Consultation).filter(Consultation.title == con_name).first()
     )
+
+    admin_user = get_first_admin_user(db)
+    if admin_user is None:
+        print("A user 'admin' is required to initialize default data.")
+        exit(1)
+
     if not consultation:
         status = Status(name='In Bearbeitung')
         tags = [Tag(name=n) for n in ['BS', 'BE', 'AI']]
@@ -57,6 +72,7 @@ def add_example_content(db: 'Session', add_vemz: bool) -> None:
             recommendation='Stellungnahme privatim näher prüfen.',
             status=status,
             secondary_tags=tags,
+            creator=admin_user
         )
         db.add_all(tags)
         db.add(consultation)
