@@ -4,23 +4,18 @@ privatim [![Tests](https://github.com/seantis/privatim/actions/workflows/tests.y
 Getting Started
 ---------------
 
-
-
+tl,dr:
 ```
 git clone git@github.com:seantis/privatim.git
 cd privatim
-```
-
-- Create a Python virtual environment, if not already created.
-
-```
 python3 -m venv venv
 source venv/bin/activate
+make install
+make run
 ```
 
 ```
-cp development.ini.example config/development.ini
-# adjust `assets_dir` in development.ini to some directory (e.g. /tmp/privatim_assets)
+cp development.ini.example development.ini
 ```
 
 - Upgrade packaging tools, if necessary.
@@ -37,15 +32,14 @@ make install
 - Add a user
 
 ```
-add_user --email admin@example.org --password test  config/development.ini
+add_user --email admin@example.org --password test  development.ini
 ```
 
 - Load default data into the database using a script.
 
 ```
-initialize_db config/development.ini --only-consultation
+initialize_db development.ini --only-consultation
 ```
-
 
 - Run your project's tests.
 
@@ -56,15 +50,15 @@ pytest
 ## Run dev server
 
 ```
-make run  # uses pserve
+make run
 ```
 
-- Login at http://localhost:9090 with admin@example.org / test
+- Login at http://localhost:6543 with admin@example.org / test
 
 
 # Manage dependencies
 
-We use `uv` to manage dependencies
+We use `uv` to manage dependencies. However, you don't need to directly interact with `uv`
 
 ## Regenerate requirements files based on new dependencies
 
@@ -95,12 +89,16 @@ This will remove packages that have been manually installed locally
 
 ## Testing the Dockerfile works
 
-    docker run --rm -p 8080:6543 -v $PWD/config:/app/config privatim-1 config/development.ini
+    docker run --rm -p 8080:6543 -v $PWD/config:/app/config privatim-1 development.ini
 
 then open http://127.0.0.1:8080/
 
 
 ## Miscellaneous
+
+###  Filestorage location
+By default, files are managed by sqlalchemy-file and are saved in the ./files directory
+
 ### Javascript/Css dependencies
 
 The project includes js/css files.

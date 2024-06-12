@@ -32,7 +32,7 @@ compile: in_virtual_env
 	@./requirements/compile.sh
 
 run: in_virtual_env
-	pserve --reload config/development.ini
+	pserve --reload development.ini
 
 in_virtual_env:
 	@if python -c 'import sys; (hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)) and sys.exit(1) or sys.exit(0)'; then \

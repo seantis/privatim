@@ -1,5 +1,6 @@
 # files created with sqlalchemy-file (documents_dir in development.ini )
 files/
+!files/assets/.gitkeep
 
 tests/uploads/
 

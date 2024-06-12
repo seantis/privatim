@@ -10,7 +10,7 @@ pyramid.reload_templates = true
 pyramid.debug_authorization = true
 pyramid.debug_notfound = false
 pyramid.debug_routematch = false
-pyramid.default_locale_name = en
+pyramid.default_locale_name = de
 pyramid.available_languages =
     de
     fr
@@ -59,7 +59,7 @@ file_template = %%(year)d%%(month).2d%%(day).2d_%%(rev)s
 
 [server:main]
 use = egg:waitress#main
-listen = localhost:8080
+listen = localhost:6543
 
 ###
 # logging configuration
