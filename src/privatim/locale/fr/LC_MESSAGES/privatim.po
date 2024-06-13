@@ -323,7 +323,7 @@ msgstr "Afficher les détails"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
-msgstr ""
+msgstr "Afficher la réunion"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting"
@@ -347,7 +347,7 @@ msgstr "→ Mot de passe oublié / Activer le compte"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"

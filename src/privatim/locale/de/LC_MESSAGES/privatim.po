@@ -317,7 +317,7 @@ msgid ""
 "by adding a Meeting of a Working Group."
 msgstr ""
 "Keine Aktivitäten erfasst. Sie können Aktivitäten im Tab 'Vernehmlassungen' "
-"hinzufügen oder eine Sitzung einer Arbeitsgruppe erfassen"
+"hinzufügen oder eine Sitzung einer Arbeitsgruppe erfassen."
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
@@ -325,7 +325,7 @@ msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
-msgstr ""
+msgstr "Sitzung anzeigen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting"
@@ -349,7 +349,7 @@ msgstr "→ Passwort vergessen / Account aktivieren "
 
 #: src/privatim/views/templates/profile.pt
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
