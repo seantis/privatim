@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function handleProfilePicFormSubmission() {
+    // Manually submit the form in profile picture view.
 
     // We have to use js here which is a bit unfortunate, but placing the form inside a dropdown menu creates a lot of
     // styling problems. So we keep the form outside.
@@ -67,6 +68,7 @@ function initializePopoversAndTooltips() {
 
 
 function setupCommentAnswerField() {
+    // Makes the answer comment form appear.
     let replys = document.querySelectorAll('.comment-answer-form-container');
     let buttons = document.querySelectorAll('.comment-answer-button');
     for (let i = 0; i < buttons.length; i++) {
