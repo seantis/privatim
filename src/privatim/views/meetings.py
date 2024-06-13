@@ -44,25 +44,25 @@ def meeting_view(
 ) -> 'RenderData':
     """ Displays a single meeting. """
 
-    formatted_time = datetime_format(context.time)
     assert isinstance(context, Meeting)
+    formatted_time = datetime_format(context.time)
 
     items = []
     for item in context.agenda_items:
-        items.append({
-            'title': item.title,
-            'description': item.description,
-            'id': item.id,
-            'edit_btn': Button(
-                url=(
-                    request.route_url(
-                        'edit_agenda_item', meeting_id=item.id
-                    )
+        items.append(
+            {
+                'title': item.title,
+                'description': item.description,
+                'id': item.id,
+                'edit_btn': Button(
+                    url=request.route_url('edit_agenda_item', id=item.id),
+                    icon='edit',
+                    description=_('Edit Agenda Item'),
+                    css_class='',
                 ),
-                icon='edit',
-                description=_('Edit Agenda Item'),
-                css_class='btn-sm btn secondary')
-        })
+            }
+        )
+
     return {
         'time': formatted_time,
         'meeting': context,

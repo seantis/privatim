@@ -225,3 +225,12 @@ main {
     display: flex; /* Makes the file icon be on the same height as the text */
     align-items: center; /* Ensure the icon is centered vertically */
 }
+
+.agenda-item-accordion {
+    display: flex;
+}
+
+span.accordion-text-9 {
+    flex-grow: 9; /* Make the agenda item text take up 90% of the space */
+    text-align: left;
+}

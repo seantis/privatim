@@ -3,7 +3,8 @@
         <div class="d-flex flex-wrap align-items-center justify-content-between">
             <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
                href="${request.route_url('home')}">
-                <img src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo" class="bi me-4"
+                <img src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo"
+                     class="bi me-4"
                      width="242" height="87">
             </a>
 
@@ -31,29 +32,36 @@
                     <li>
                         <a href="${request.route_url('working_groups')}"
                            class="nav-link px-3 link-body-emphasis"
-                           id="${'active_tab' if any(route in request.matched_route.name for route in ['working_group', 'working_groups', 'meeting']) else ''}"
+                           id="${'active_tab' if any(route in request.matched_route.name for route in ['working_group', 'working_groups', 'meeting', 'meetings']) else ''}"
                                  i18n:translate>Working Groups</a>
                     </li>
                 </ul>
 
                 <div class="d-flex">
-                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                        <input type="search" disabled="disabled" class="form-control" placeholder="Search..." aria-label="Search" i18n:attributes="placeholder">
-                    </form>
-                    <div class="dropdown text-end">
-                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="${request.user_pic}" alt="mdo" width="40" height="40"
-                                 class="rounded-circle">
-                        </a>
-                        <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item" href="${request.route_url('profile')}" i18n:translate=""><i class="far fa-user-circle"></i> Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate=""><i class="fas fa-sign-out-alt"></i> Sign out</a></li>
-                        </ul>
-                    </div>
-               </div>
-            </tal:block>
+                            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                                <input type="search" disabled="disabled" class="form-control" placeholder="Search..."
+                                       aria-label="Search" i18n:attributes="placeholder">
+                            </form>
+                            <div class="dropdown text-end">
+                                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="${request.user_pic}" alt="mdo" width="40" height="40"
+                                         class="rounded-circle">
+                                </a>
+                                <ul class="dropdown-menu text-small">
+                                    <li><a class="dropdown-item"
+                                           href="${request.route_url('profile')}" i18n:translate=""><i
+                                            class="far fa-user-circle"></i> Profile</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                           href="${request.route_url('logout')}" i18n:translate=""><i
+                                            class="fas fa-sign-out-alt"></i> Sign out</a></li>
+                                </ul>
+                            </div>
         </div>
+        </tal:block>
+    </div>
     </div>
 </header>

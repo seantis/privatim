@@ -37,12 +37,10 @@
 
                     <div class="accordion" id="agenda-items">
                         <div class="accordion-item" tal:repeat="item agenda_items">
-                            <h2 class="accordion-header">
-<!--?
-                                ${item.edit_btn}
--->
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}">
-                                    ${item.title}
+                            <h2 class="accordion-header button-fix-for-accordion-header">
+                                <button class="accordion-button collapsed agenda-item-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}" >
+                                    <span class="accordion-text-9">${item.title}</span>
+                                    ${item.edit_btn()}
                                 </button>
                             </h2>
                             <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">

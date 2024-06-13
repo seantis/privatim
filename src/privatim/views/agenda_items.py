@@ -35,14 +35,12 @@ def add_agenda_item_view(
             description=form.description.data,
             meeting=context,
         )
-        breakpoint()
         session.add(agenda_item)
         message = _(
             'Successfully added agend item "${title}"',
             mapping={'title': form.title.data}
         )
         request.messages.add(message, 'success')
-
         if request.is_xhr:
             data = {
                 'name': agenda_item.title
@@ -94,6 +92,7 @@ def edit_agenda_item_view(
         return {
             'form': form,
             'target_url': target_url,
+            'title': form._title,
             'csrf_token': request.session.get_csrf_token()
         }
 
