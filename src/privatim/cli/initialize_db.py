@@ -1,11 +1,14 @@
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy import select
 
+from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models.consultation import Status, Tag
 from privatim.orm import get_engine
-from privatim.models import Consultation, ConsultationDocument, User
+from privatim.models import (Consultation, ConsultationDocument, User, Meeting,
+                             WorkingGroup, AgendaItem)
 from privatim.orm import Base
 import click
 
@@ -22,7 +25,12 @@ if TYPE_CHECKING:
     is_flag=True,
     help='Add Verordnung über den Einsatz elektronischer Mittel',
 )
-def main(config_uri: str, add_vemz: bool) -> None:
+@click.option(
+    '--add-meeting',
+    is_flag=True,
+    help='Add a meeting with AgendaItem',
+)
+def main(config_uri: str, add_vemz: bool, add_meeting: bool) -> None:
     """Add some example placeholder content to the database."""
     setup_logging(config_uri)
 
@@ -34,7 +42,7 @@ def main(config_uri: str, add_vemz: bool) -> None:
 
     with env['request'].tm:
         db = env['request'].dbsession
-        add_example_content(db, add_vemz)
+        add_example_content(db, add_vemz, add_meeting)
 
 
 @cache
@@ -43,10 +51,14 @@ def get_first_admin_user(session: 'Session') -> User | None:
     return session.scalars(stmt).first()
 
 
-def add_example_content(db: 'Session', add_vemz: bool) -> None:
+def add_example_content(
+    db: 'Session', add_vemz: bool, add_meeting: bool
+) -> None:
 
-    con_name = ('Vernehmlassung zur Interkantonalen Vereinbarung über den '
-                'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen')
+    con_name = (
+        'Vernehmlassung zur Interkantonalen Vereinbarung über den '
+        'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen'
+    )
     consultation = (
         db.query(Consultation).filter(Consultation.title == con_name).first()
     )
@@ -72,7 +84,7 @@ def add_example_content(db: 'Session', add_vemz: bool) -> None:
             recommendation='Stellungnahme privatim näher prüfen.',
             status=status,
             secondary_tags=tags,
-            creator=admin_user
+            creator=admin_user,
         )
         db.add_all(tags)
         db.add(consultation)
@@ -88,11 +100,7 @@ def add_example_content(db: 'Session', add_vemz: bool) -> None:
         pdf = here / pdfname
         content = pdf.read_bytes()
         consultation = Consultation(
-            documents=[
-                ConsultationDocument(
-                    name=pdfname, content=content
-                )
-            ],
+            documents=[ConsultationDocument(name=pdfname, content=content)],
             title='Verordnung über den Einsatz elektronischer Mittel zur Ton- '
             'und Bildübertragung in Zivilverfahren (VEMZ)',
             description='Mit der Revision der Schweizerischen '
@@ -122,6 +130,40 @@ def add_example_content(db: 'Session', add_vemz: bool) -> None:
         db.add_all(tags)
         db.add(consultation)
         db.add(status)
+        db.flush()
+
+    if add_meeting:
+        attendees = [admin_user]
+        agenda_items = [
+            AgendaItem(
+                title='Begrüssung',
+                description='Begrüssung der Anwesenden und Eröffnung der '
+                'Sitzung',
+            ),
+            AgendaItem(
+                title='Neque porro quisquam est qui dolorem',
+                description='Lorem ipsum dolor sit amet, consectetur '
+                            'adipiscing elit. Nulla dui metus, viverra '
+                            'tristique congue eu, congue sit amet mauris. In '
+                            'ornare metus ut tellus auctor aliquet. In mi '
+                            'leo, convallis rhoncus ipsum a, convallis '
+                            'rutrum leo. Ut iaculis lacinia dolor id '
+                            'convallis. Class aptent taciti sociosqu ad '
+                            'litora torquent per conubia nostra, '
+                            'per inceptos himenaeos. ',
+            ),
+        ]
+        meeting = Meeting(
+            name='Cras Tristisque',
+            time=datetime.now(tz=DEFAULT_TIMEZONE),
+            attendees=attendees,
+            working_group=WorkingGroup(
+                name='1. Gremium', leader=admin_user, users=attendees
+            ),
+            agenda_items=agenda_items
+        )
+        db.add_all(agenda_items)
+        db.add(meeting)
         db.flush()
 
 

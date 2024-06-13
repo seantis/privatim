@@ -76,13 +76,16 @@ class Meeting(Base, Commentable):
             name: str,
             time: 'datetime',
             attendees: list['User'],
-            working_group: 'WorkingGroup'
+            working_group: 'WorkingGroup',
+            agenda_items: list[AgendaItem] | None = None,
     ):
         self.id = str(uuid4())
         self.name = name
         self.time = time
         self.attendees = attendees
         self.working_group = working_group
+        if agenda_items:
+            self.agenda_items = agenda_items
 
     id: Mapped[UUIDStrPK]
 
