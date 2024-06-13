@@ -31,7 +31,7 @@
                     <div tal:repeat="activity activities" class="mt-4">
 
                         <div class="card d-flex flex-row activity-card-wrapper">
-                            <div class="profile-section">
+                            <div class="profile-section m-3">
                                 <img src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                      class="rounded-circle m-3 profile-icon" alt="Profile Icon">
                                 <tal:b tal:switch="activity.__class__.__name__">
@@ -63,7 +63,7 @@
                                         </ul>
                                     </tal:b>
                                     <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate=""
-                                       class="details-link justify-content-end">Show Details</a>
+                                       class="details-link justify-content-end">Show Meeting</a>
                                 </div>
                             </tal:b>
 
