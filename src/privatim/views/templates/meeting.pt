@@ -36,9 +36,10 @@
                     <h2 i18n:translate="">Agenda Items</h2>
 
                     <div class="accordion" id="agenda-items">
-                        <div class="accordion-item" tal:repeat="item agenda_items">
+                        <div class="accordion-item draggable-item" tal:repeat="item agenda_items">
                             <h2 class="accordion-header button-fix-for-accordion-header">
                                 <button class="accordion-button collapsed agenda-item-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}" >
+                                    <i class="fas fa-arrows-alt handle"></i>
                                     <span class="accordion-text-9">${item.title}</span>
                                     ${item.edit_btn()}
                                 </button>

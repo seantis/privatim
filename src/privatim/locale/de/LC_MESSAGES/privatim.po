@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-12 11:54+0200\n"
+"POT-Creation-Date: 2024-06-13 11:25+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -324,6 +324,10 @@ msgid "Show Details"
 msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/activities.pt
+msgid "Show Meeting"
+msgstr ""
+
+#: src/privatim/views/templates/activities.pt
 msgid "Meeting"
 msgstr "Sitzung"
 
@@ -342,6 +346,10 @@ msgstr "Anmelden"
 #: src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
 msgstr "→ Passwort vergessen / Account aktivieren "
+
+#: src/privatim/views/templates/profile.pt
+msgid "Profile"
+msgstr ""
 
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"

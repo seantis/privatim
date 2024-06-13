@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-12 11:54+0200\n"
+"POT-Creation-Date: 2024-06-13 11:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -313,6 +313,10 @@ msgid "Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
+msgid "Show Meeting"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
 msgid "Meeting"
 msgstr ""
 
@@ -330,6 +334,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
+msgstr ""
+
+#: ./src/privatim/views/templates/profile.pt
+msgid "Profile"
 msgstr ""
 
 #: ./src/privatim/views/templates/profile.pt
