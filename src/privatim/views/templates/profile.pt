@@ -7,7 +7,7 @@
 
     <tal:block metal:fill-slot="content">
         <div class="container">
-            <h1 class="title">Profile</h1>
+            <h1 class="title" i18n:translate="">Profile</h1>
             <div class="row">
 
                 <!--? Left side -->
@@ -51,7 +51,7 @@
 
                 <!--? Right side -->
                 <div class="col-md-6">
-                    <p class="lead fwbold" i18n:translate="">Personal information</p>
+                    <p class="lead fw-bold" i18n:translate="">Personal information</p>
                     <ul>
                         <li>
                             <span i18n:translate="">Name</span>: ${user.fullname}
