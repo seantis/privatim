@@ -539,11 +539,11 @@ msgstr "Sitzung bearbeiten"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
-msgstr "Zeit"
+msgstr "Datum / Uhrzeit"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Attendees"
-msgstr "Teilnehmer"
+msgstr "Teilnehmende"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"

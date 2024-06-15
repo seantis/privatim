@@ -537,7 +537,7 @@ msgstr "Modifier la réunion"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
-msgstr "Temps"
+msgstr "Date / heure"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Attendees"
