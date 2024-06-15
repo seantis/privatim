@@ -130,8 +130,7 @@ def add_meeting_view(
 
     assert isinstance(context, WorkingGroup)
     target_url = request.route_url('meetings', id=context.id)
-    # if we decide to use data tables, we need to remove this prefix param
-    form = MeetingForm(context, request, prefix='')
+    form = MeetingForm(context, request)
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
@@ -153,30 +152,19 @@ def add_meeting_view(
         request.messages.add(message, 'success')
 
         if request.is_xhr:
-            # link_to_meeting = request.route_url('meeting', id=meeting.id)
-            data = {
-                'name': meeting.name
-                # 'time': meeting.time,
-            }
-
-            request.dbsession.flush()
-            request.dbsession.refresh(meeting)
-            data['DT_RowId'] = f'row-{meeting.id}'
-
-            data['buttons'] = Markup(' ').join(
-                meeting_buttons(meeting, request))
-            data['message'] = translate(message, request.locale_name)
-            return data
+            return {'redirect_to': target_url}
         else:
             return HTTPFound(location=target_url)
 
-    form.name.data = ''
-    return {
-        'form': form,
-        'title': form._title,
-        'target_url': target_url,
-        'csrf_token': request.session.get_csrf_token()
-    }
+    if request.is_xhr:
+        return {'errors': form.errors}
+    else:
+        return {
+            'form': form,
+            'title': form._title,
+            'target_url': target_url,
+            'csrf_token': request.session.get_csrf_token()
+        }
 
 
 def edit_meeting_view(

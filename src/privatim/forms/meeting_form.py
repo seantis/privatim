@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from wtforms import (
     StringField,
-    validators,
 )
 
+from wtforms.validators import InputRequired
 from privatim.forms.core import Form
 
 from privatim.forms.fields import TimezoneDateTimeField  # type: ignore
@@ -23,7 +23,6 @@ class MeetingForm(Form):
             self,
             context: WorkingGroup | Meeting,
             request: 'IRequest',
-            prefix:  str = 'edit-xhr'
     ) -> None:
 
         self._title = (
@@ -35,7 +34,6 @@ class MeetingForm(Form):
         super().__init__(
             request.POST,
             obj=context,
-            prefix=prefix,
             meta={
                 'context': context,
                 'dbsession': session
@@ -45,17 +43,17 @@ class MeetingForm(Form):
         users = session.execute(select(User)).scalars().all()
         self.attendees.choices = [(str(u.id), u.fullname) for u in users]
 
-    name = StringField(label=_('Name'), validators=[validators.DataRequired()])
+    name = StringField(label=_('Name'), validators=[InputRequired()])
 
     time = TimezoneDateTimeField(
         _('Time'),
         timezone='Europe/Zurich',
-        validators=[validators.InputRequired()],
+        validators=[InputRequired()],
     )
 
     attendees = SearchableSelectField(
         _('Attendees'),
-        validators=[validators.InputRequired()],
+        validators=[InputRequired()],
     )
 
     def populate_obj(self, obj: Meeting) -> None:
