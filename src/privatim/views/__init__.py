@@ -99,7 +99,7 @@ def includeme(config: 'Configurator') -> None:
     # view for single consultation
     config.add_route(
         'consultation',
-        '/consultations/{id}',
+        '/consultation/{id}',
         factory=consultation_factory
     )
     config.add_view(

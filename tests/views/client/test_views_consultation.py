@@ -47,6 +47,7 @@ def test_view_consultation(client):
 
 def test_view_add_consultation(client):
 
+    session = client.db
     client.login_admin()
     # test without document upload
     page = client.get('/consultations')
@@ -63,15 +64,17 @@ def test_view_add_consultation(client):
     page.form['status'] = '1'
     page.form['cantons'] = ['AG', 'ZH']
     page.form['documents'] = Upload('Test.txt', b'File content.')
-    page.form.submit()
+    page = page.form.submit().follow()
 
-    # query the consultation id so we can navigate to it (page.click is very
-    # flaky)
-    session = client.db
     consultation_id = session.execute(
         select(Consultation.id).filter_by(description='the description')
     ).scalar_one()
-    page = client.get(f'/consultations/{str(consultation_id)}')
+
+    # assert we are redirected to the just created consultation:
+    assert f'consultation/{str(consultation_id)}' in page.request.url
+
+    # navigate with id (page.click is very flaky)
+    page = client.get(f'/consultation/{str(consultation_id)}')
 
     assert 'the description' in page
     assert 'Test.txt' in page

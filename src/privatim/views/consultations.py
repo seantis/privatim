@@ -113,7 +113,7 @@ def add_or_edit_consultation_view(
         consultation = None
 
     form = ConsultationForm(context, request)
-    target_url = request.route_url('activities')  # change later
+    target_url = request.route_url('activities')  # fallback
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
@@ -121,6 +121,12 @@ def add_or_edit_consultation_view(
             consultation = create_consultation_from_form(form, request)
             if consultation is not None:
                 session.add(consultation)
+                session.flush()
+                target_url = request.route_url(
+                    'consultation',
+                    id=str(consultation.id)
+                )
+
                 message = _(
                     'Successfully added consultation "${name}"',
                     mapping={'name': form.title.data}
