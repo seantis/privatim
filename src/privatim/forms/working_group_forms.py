@@ -41,16 +41,6 @@ class WorkingGroupForm(Form):
         self.leader.choices = (('0', _('No Leader')),) + user_choices
         self.members.choices = user_choices
 
-        #  todo: somehow not working, but it's not really needed
-        # number = session.execute(
-        #     select(func.count()).select_from(WorkingGroup)
-        # ).scalar()
-        # default_name = _(
-        #     'Working Group "${name}"',
-        #     mapping={'name': number + 1},
-        # )
-        # self.name.default = default_name
-
     name: StringField = StringField(_('Name'), validators=[DataRequired()])
 
     leader: SelectField = SelectField(_('Leader'))
