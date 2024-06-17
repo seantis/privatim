@@ -13,8 +13,8 @@
             <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
 
             <div class="mb-3" tal:repeat="field form">
-                ${field.label(class_='form-label')}
-                ${field(class_='form-control')}
+                ${field.label}${' *' if field.flags.required else ''}
+                ${field()}
                 <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
             </div>
 
