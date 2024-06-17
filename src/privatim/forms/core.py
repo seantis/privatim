@@ -3,7 +3,6 @@ from wtforms import Form as BaseForm
 from wtforms import Label
 from wtforms.meta import DefaultMeta
 
-from pyramid.threadlocal import get_current_registry
 from privatim.i18n import pluralize
 from privatim.i18n import translate
 from privatim.i18n import _
@@ -49,12 +48,6 @@ class PyramidTranslations:
 
 
 class BootstrapMeta(DefaultMeta):
-
-    def __init__(self) -> None:
-        registry = get_current_registry()
-        settings = registry.settings or {}
-        locale = settings.get('default_locale_name', 'de')
-        self.locales = [locale]
 
     def bind_field(
             self,
