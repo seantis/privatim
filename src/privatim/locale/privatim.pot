@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-13 11:25+0200\n"
+"POT-Creation-Date: 2024-06-16 19:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,15 +23,6 @@ msgstr ""
 
 #: ./src/privatim/testing.py
 msgid "<b>bold</b>"
-msgstr ""
-
-#: ./src/privatim/wtform/validators.py
-msgid "This field is required."
-msgstr ""
-
-#: ./src/privatim/wtform/validators.py
-#, python-format
-msgid "File does not have an approved extension: {extensions}"
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -518,8 +509,21 @@ msgstr ""
 msgid "Add comment"
 msgstr ""
 
-#: ./src/privatim/forms/fields.py
-msgid "Select..."
+#: ./src/privatim/forms/validators.py
+msgid "This field is required."
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+#, python-format
+msgid "File does not have an approved extension: {extensions}"
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "This field is disabled."
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "This field is read only."
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
@@ -532,6 +536,10 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "Attendees"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py
+msgid "A meeting with this name already exists."
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
@@ -550,6 +558,10 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
-#: ./src/privatim/forms/widgets.py
+#: ./src/privatim/forms/widgets/widgets.py
 msgid "Upload additional files"
+msgstr ""
+
+#: ./src/privatim/forms/fields/fields.py
+msgid "Select..."
 msgstr ""

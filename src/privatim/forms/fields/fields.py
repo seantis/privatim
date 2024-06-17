@@ -1,4 +1,3 @@
-# type: ignore
 import inspect
 import sedate
 from privatim.static import init_tom_select
@@ -10,7 +9,7 @@ from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import FileField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
-from privatim.forms.widgets import UploadWidget, UploadMultipleWidget
+from privatim.forms.widgets.widgets import UploadWidget, UploadMultipleWidget
 from privatim.i18n import _
 from privatim.utils import (
     binary_to_dictionary,
@@ -144,7 +143,7 @@ class SearchableSelectField(SelectField):
     Note: you need to call form.raw_data() to actually get the choices as list
     """
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         init_tom_select.need()
         return super().__call__(*args, **kwargs)
 
@@ -281,7 +280,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         widget: 'Widget[Self] | None' = None,  # type:ignore
         render_kw: dict[str, Any] | None = None,
         name: str | None = None,
-        upload_widget: 'Widget[UploadField] | None' = None,
+        upload_widget: 'Widget[UploadField] | None' = None,  # type:ignore
         _form: 'BaseForm | None' = None,
         _prefix: str = '',
         _translations: '_SupportsGettextAndNgettext | None' = None,
@@ -304,7 +303,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
             max_entries=None,
             id=id,
             default=default,
-            widget=widget,  # type:ignore
+            widget=widget,
             render_kw=render_kw,
             name=name,
             _form=_form,

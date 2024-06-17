@@ -1,14 +1,16 @@
-import re
 from cgi import FieldStorage
-from typing import TYPE_CHECKING
-
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
+import re
+from privatim.i18n import _
 
 
+from typing import Any
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from abc import abstractmethod
     from wtforms import Field, Form
     from collections.abc import Sequence
 
@@ -111,3 +113,47 @@ def password_validator(form: 'Form', field: 'Field') -> None:
             'one special character.'
         )
         raise ValidationError(msg)
+
+
+class Immutable:
+    """
+    This marker class is only useful as a common base class to the derived
+    validators.
+
+    Our custom form class  will skip any fields that have a validator derived
+     from this class when executing Form.populate_obj()
+    """
+    field_flags: dict[str, Any] = {}
+    if TYPE_CHECKING:
+        @abstractmethod
+        def __call__(self, form: 'Form', field: 'Field') -> None: ...
+
+
+class Disabled(Immutable):
+    """
+    Sets a field to disabled.
+
+    Validation fails if formdata is supplied anyways.
+    """
+
+    def __init__(self) -> None:
+        self.field_flags = {'disabled': True, 'aria_disabled': 'true'}
+
+    def __call__(self, form: 'Form', field: 'Field') -> None:
+        if field.raw_data is not None:
+            raise ValidationError(_('This field is disabled.'))
+
+
+class ReadOnly(Immutable):
+    """
+    Sets a field to disabled.
+
+    Validation fails if formdata is supplied anyways.
+    """
+
+    def __init__(self) -> None:
+        self.field_flags = {'readonly': True, 'aria_readonly': 'true'}
+
+    def __call__(self, form: 'Form', field: 'Field') -> None:
+        if field.data != field.object_data:
+            raise ValidationError(_('This field is read only.'))

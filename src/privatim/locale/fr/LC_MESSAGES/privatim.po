@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-13 11:25+0200\n"
+"POT-Creation-Date: 2024-06-16 19:42+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -24,15 +24,6 @@ msgstr "Juste un test"
 #: src/privatim/testing.py
 msgid "<b>bold</b>"
 msgstr "<b>gras</b>"
-
-#: src/privatim/wtform/validators.py
-msgid "This field is required."
-msgstr "Ce champ est obligatoire."
-
-#: src/privatim/wtform/validators.py
-#, python-format
-msgid "File does not have an approved extension: {extensions}"
-msgstr "Ce champ est obligatoire."
 
 #: src/privatim/layouts/footer.pt
 msgid "About us"
@@ -527,9 +518,22 @@ msgstr "Commentaire"
 msgid "Add comment"
 msgstr "Ajouter un commentaire"
 
-#: src/privatim/forms/fields.py
-msgid "Select..."
-msgstr "Sélectionner..."
+#: src/privatim/forms/validators.py
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
+
+#: src/privatim/forms/validators.py
+#, python-format
+msgid "File does not have an approved extension: {extensions}"
+msgstr "Ce champ est obligatoire."
+
+#: src/privatim/forms/validators.py
+msgid "This field is disabled."
+msgstr "Ce champ est désactivé."
+
+#: src/privatim/forms/validators.py
+msgid "This field is read only."
+msgstr "Ce champ est en lecture seule."
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
@@ -542,6 +546,10 @@ msgstr "Date / heure"
 #: src/privatim/forms/meeting_form.py
 msgid "Attendees"
 msgstr "Participants"
+
+#: src/privatim/forms/meeting_form.py
+msgid "A meeting with this name already exists."
+msgstr "Une réunion avec ce nom existe déjà."
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
@@ -559,31 +567,10 @@ msgstr "Chef de file"
 msgid "Members"
 msgstr "Membres"
 
-#: src/privatim/forms/widgets.py
+#: src/privatim/forms/widgets/widgets.py
 msgid "Upload additional files"
 msgstr "Télécharger des fichiers supplémentaires"
 
-#~ msgid "Max Müller"
-#~ msgstr "Max Müller"
-
-#~ msgid "Sign out"
-#~ msgstr "Déconnecter"
-
-#~ msgid "Comments:"
-#~ msgstr "Commentaires:"
-
-#~ msgid "Tags"
-#~ msgstr "Étiquettes"
-
-#~ msgid ""
-#~ "Here you can add meetings in the context of a working group. Click \"Add "
-#~ "working group\" to get started."
-#~ msgstr ""
-#~ "Ici, vous pouvez ajouter des réunions dans le contexte d'un groupe de "
-#~ "travail. Cliquez sur \"Ajouter un groupe de travail\" pour commencer."
-
-#~ msgid "Group"
-#~ msgstr "Groupe"
-
-#~ msgid "Comments"
-#~ msgstr "Commentaires"
+#: src/privatim/forms/fields/fields.py
+msgid "Select..."
+msgstr "Sélectionner..."

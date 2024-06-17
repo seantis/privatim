@@ -1,6 +1,6 @@
 from pyramid.httpexceptions import HTTPForbidden, HTTPFound, HTTPClientError
 
-from controls.controls import Button
+from privatim.controls.controls import Button
 from privatim.i18n import _
 from privatim import authenticated_user
 from privatim.models import GeneralFile

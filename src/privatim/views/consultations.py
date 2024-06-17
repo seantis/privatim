@@ -141,15 +141,12 @@ def add_or_edit_consultation_view(
         else:
             return HTTPFound(location=target_url)
 
-    if request.is_xhr:
-        return {'errors': form.errors}
-    else:
-        return {
-            'form': form,
-            'target_url': target_url,
-            'title': (
-                _('Add Consultation')
-                if consultation is None
-                else _('Edit Consultation')
-            ),
-        }
+    return {
+        'form': form,
+        'target_url': target_url,
+        'title': (
+            _('Add Consultation')
+            if consultation is None
+            else _('Edit Consultation')
+        ),
+    }

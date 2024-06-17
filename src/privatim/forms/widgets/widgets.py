@@ -6,8 +6,8 @@ from wtforms.widgets import FileInput
 
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
-    from privatim.forms.fields import UploadMultipleField  # type:ignore
-    from privatim.forms.fields import UploadField  # type:ignore
+    from privatim.forms.fields import UploadMultipleField
+    from privatim.forms.fields import UploadField
 
 
 class UploadWidget(FileInput):

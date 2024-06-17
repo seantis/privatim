@@ -6,7 +6,7 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields import UploadMultipleField, SearchableSelectField  # type:ignore # noqa: E501
+from privatim.forms.fields import UploadMultipleField, SearchableSelectField
 from privatim.i18n import _, translate
 
 from typing import TYPE_CHECKING

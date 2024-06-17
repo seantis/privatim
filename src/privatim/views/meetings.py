@@ -2,7 +2,7 @@ from pytz import timezone
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 
-from controls.controls import Button
+from privatim.controls.controls import Button
 from privatim.utils import maybe_escape
 from sqlalchemy import select
 

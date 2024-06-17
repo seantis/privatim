@@ -1,13 +1,11 @@
 from sqlalchemy import select
-from wtforms import (
-    StringField,
-)
+from wtforms import (StringField, validators, )
 
 from wtforms.validators import InputRequired
 from privatim.forms.core import Form
 
-from privatim.forms.fields import TimezoneDateTimeField  # type: ignore
-from privatim.forms.fields import SearchableSelectField  # type: ignore
+from privatim.forms.fields import TimezoneDateTimeField
+from privatim.forms.fields import SearchableSelectField
 from privatim.models import User, Meeting
 from privatim.models import WorkingGroup
 from privatim.i18n import _
@@ -15,6 +13,7 @@ from privatim.i18n import _
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
+    from wtforms import Field
 
 
 class MeetingForm(Form):
@@ -56,7 +55,16 @@ class MeetingForm(Form):
         validators=[InputRequired()],
     )
 
-    def populate_obj(self, obj: Meeting) -> None:
+    def validate_name(self, field: 'Field') -> None:
+        session = self.meta.dbsession
+        stmt = select(Meeting).where(Meeting.name == field.data)
+        meeting = session.execute(stmt).scalar()
+        if meeting:
+            raise validators.ValidationError(_(
+                'A meeting with this name already exists.'
+            ))
+
+    def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
         for name, field in self._fields.items():
             if isinstance(field, SearchableSelectField):
                 session = self.meta.dbsession

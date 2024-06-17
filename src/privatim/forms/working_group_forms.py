@@ -3,7 +3,7 @@ from wtforms import StringField, SelectField
 from privatim.forms.core import Form
 from wtforms.validators import DataRequired
 
-from privatim.forms.fields import SearchableSelectField  # type:ignore
+from privatim.forms.fields import SearchableSelectField
 from privatim.i18n import _
 from privatim.models import User
 

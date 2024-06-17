@@ -14,7 +14,7 @@ from ..mail import IMailer
 from ..models import PasswordChangeToken
 from ..models import User
 from ..security_policy import PasswordException
-from ..wtform.validators import email_validator
+from privatim.forms.validators import email_validator
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest

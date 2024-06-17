@@ -11,7 +11,7 @@ from privatim.i18n import _
 
 from ..models import PasswordChangeToken
 from ..security_policy import PasswordException
-from ..wtform.validators import password_validator
+from privatim.forms.validators import password_validator
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest

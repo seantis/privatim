@@ -36,6 +36,7 @@ class AgendaItemForm(Form):
     )
     description = TextAreaField(_('Description'))
 
-    def populate_obj(self, obj: 'AgendaItem') -> None:
+    def populate_obj(self, obj: 'AgendaItem') -> None:  # type:ignore[override]
+        super().populate_obj(obj)
         for name, field in self._fields.items():
             field.populate_obj(obj, name)
