@@ -5,38 +5,52 @@
 
     <div metal:fill-slot="content">
 
-        <div class="row align-items-center">
+        <div class="row mb-3">
             <div class="col-md-6">
                 <h1>
-                    <tal:block i18n:translate>Working Group</tal:block> ${group.name}</h1>
+                    <tal:block i18n:translate="">Working Group</tal:block> ${title}</h1>
             </div>
-            <div class="col-md-6 text-end">
-                        <a href="${request.route_url('add_meeting', id=group.id)}" class="btn btn-primary" role="button"
-                           tabindex="1" i18n:translate="">Add Meeting</a>
+
+
+            <!--?           Display basic info about the group. -->
+            <div class="text-start resource-collection">
+                <p>
+                    <span class="fw-bold" i18n:translate="">Leader</span>: ${leader}
+                </p>
+                    ${user_list}
             </div>
         </div>
 
-        <div class="table-responsive">
 
-            <tal:b tal:condition="not:meetings">
-                <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click
-                    "Add meeting" to get started.</p>
-            </tal:b>
+        <div class="col-lg-9 mb-4">
 
-            <table class="table align-middle mb-0 ">
-                <thead class="bg-light">
-                <tr>
-                    <th class="col-7" i18n:translate="">Name</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr tal:repeat="meeting meetings">
-                    <td>
-                        <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1">${meeting.name}</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="text-end mt-4">
+                <a href="${add_meeting_link}" class="btn btn-primary" role="button"
+                   tabindex="1" i18n:translate="">Add Meeting</a>
+            </div>
+            <div class="table-responsive">
+
+                <tal:b tal:condition="not:meetings">
+                    <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click
+                        "Add meeting" to get started.</p>
+                </tal:b>
+
+                <h2 i18n:translate="">Meetings</h2>
+                <table class="table align-middle mb-0 ">
+                    <thead class="bg-light">
+                    <tr>
+                        <th class="col-7" i18n:translate="">Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr tal:repeat="meeting meetings">
+                        <td>
+                            <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1">${meeting.name}</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

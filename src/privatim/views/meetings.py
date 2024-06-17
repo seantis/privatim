@@ -1,8 +1,8 @@
 from pytz import timezone
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from pyramid.httpexceptions import HTTPFound
 
-from privatim.controls.controls import Button
+from privatim.controls.controls import Button, Icon, IconStyle
 from privatim.utils import maybe_escape
 from sqlalchemy import select
 
@@ -13,7 +13,7 @@ from privatim.models import Meeting, User, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
 
-from typing import TypeVar, TYPE_CHECKING, Any
+from typing import TypeVar, TYPE_CHECKING, Any, Sequence
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -108,6 +108,37 @@ def meeting_buttons(
     ]
 
 
+def get_generic_user_list(
+    request: 'IRequest',
+    users: Sequence[User],
+    title: str
+) -> Markup:
+    """Returns an HTML list of users with links to their profiles within a
+    container."""
+    user_items = tuple(
+        Markup(
+            '<li class="user-list-item">{} '
+            '<a href="{}" class="mb-1">{}</a>'
+            '</li>'
+        ).format(
+            Icon('user', IconStyle.solid),
+            request.route_url("person", id=user.id),
+            escape(user.fullname)
+        )
+        for user in users
+    )
+    return Markup(
+        '''
+    <div class="generic-user-list-container">
+        <p>
+            <span class="fw-bold">{}:</span>
+        </p>
+        <ul class="generic-user-list">{}</ul>
+    </div>
+    '''
+    ).format(title, Markup('').join(user_items))
+
+
 def meetings_view(
         context: WorkingGroup,
         request: 'IRequest'
@@ -116,9 +147,19 @@ def meetings_view(
 
     assert isinstance(context, WorkingGroup)
 
+    add_meeting_link = request.route_url('add_meeting', id=context.id)
+    leader = Markup(  # noqa: MS001
+        '<a href="{}" class="mb-1">{}</a>'.format(
+            request.route_url("person", id=context.leader.id),
+            context.leader.fullname
+        )
+    )
+    title = translate(_('Participants'))
     return {
-        'group': context,
-        'title': f'{context.name}: Sitzungen',
+        'title': context.name,
+        'add_meeting_link': add_meeting_link,
+        'leader': leader,
+        'user_list': get_generic_user_list(request, context.users, title),
         'meetings': context.meetings,
     }
 

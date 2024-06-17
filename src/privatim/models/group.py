@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from sedate import utcnow
 from sqlalchemy import Text, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
@@ -47,6 +50,8 @@ class Group(Base):
 
     # the name of this group
     name: Mapped[str] = mapped_column()
+
+    created: Mapped[datetime] = mapped_column(default=utcnow)
 
     users: Mapped[list['User']] = relationship(
         'User',

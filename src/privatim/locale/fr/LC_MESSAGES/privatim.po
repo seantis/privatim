@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-16 19:42+0200\n"
+"POT-Creation-Date: 2024-06-17 23:23+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -107,9 +107,13 @@ msgstr "Des détails"
 msgid "Edit Meeting"
 msgstr "Modifier la réunion"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/table.pt
+#: src/privatim/views/meetings.py
 msgid "Delete"
 msgstr "Supprimer"
+
+#: src/privatim/views/meetings.py
+msgid "Participants"
+msgstr "Participants"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -212,18 +216,13 @@ msgstr ""
 "Si vous ne recevez pas d'e-mail, veuillez confirmer que vous avez saisi "
 "l'adresse e-mail l'adresse électronique correcte."
 
-#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
-#: src/privatim/forms/add_comment.py
+#: src/privatim/views/templates/form.pt src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
+#: src/privatim/views/templates/form.pt
 msgid "Save"
 msgstr "Sauver"
-
-#: src/privatim/views/templates/table.pt
-msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Date / Time:"
@@ -257,10 +256,20 @@ msgid "Add Meeting"
 msgstr "Ajouter une session"
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr "Chef de file"
+
+#: src/privatim/views/templates/working_group.pt
 msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
 msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
+
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr "Réunions"
 
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/views/templates/profile.pt
@@ -294,10 +303,6 @@ msgstr "Votre commentaire"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
-
-#: src/privatim/views/templates/person.pt
-msgid "Meetings"
-msgstr "Réunions"
 
 #: src/privatim/views/templates/activities.pt
 msgid ""
@@ -560,10 +565,6 @@ msgid "No Leader"
 msgstr "Pas de chef"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Leader"
-msgstr "Chef de file"
-
-#: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Membres"
 
@@ -574,3 +575,6 @@ msgstr "Télécharger des fichiers supplémentaires"
 #: src/privatim/forms/fields/fields.py
 msgid "Select..."
 msgstr "Sélectionner..."
+
+#~ msgid "Do you really wish to delete \"${item_title}\"?"
+#~ msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"

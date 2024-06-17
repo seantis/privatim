@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-16 19:42+0200\n"
+"POT-Creation-Date: 2024-06-17 23:23+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -110,9 +110,13 @@ msgstr "Details"
 msgid "Edit Meeting"
 msgstr "Sitzung bearbeiten"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/table.pt
+#: src/privatim/views/meetings.py
 msgid "Delete"
 msgstr "Löschen"
+
+#: src/privatim/views/meetings.py
+msgid "Participants"
+msgstr "Mitwirkende"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -213,18 +217,13 @@ msgstr ""
 "erhalten, überprüfen Sie bitte, ob Sie die korrekte E-Mail-Adresse "
 "eingegeben haben."
 
-#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
-#: src/privatim/forms/add_comment.py
+#: src/privatim/views/templates/form.pt src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/privatim/views/templates/form.pt src/privatim/views/templates/table.pt
+#: src/privatim/views/templates/form.pt
 msgid "Save"
 msgstr "Speichern"
-
-#: src/privatim/views/templates/table.pt
-msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Date / Time:"
@@ -232,7 +231,7 @@ msgstr "Datum / Zeit:"
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Attendees:"
-msgstr "Teilnehmer:"
+msgstr "Teilnehmende:"
 
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/views/templates/activities.pt
@@ -258,10 +257,20 @@ msgid "Add Meeting"
 msgstr "Sitzung hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/forms/working_group_forms.py
+msgid "Leader"
+msgstr "Leiter"
+
+#: src/privatim/views/templates/working_group.pt
 msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
-msgstr "Hier können Sie Sitzungen im Kontext eines Gremiums hinzufügen."
+msgstr "Hier können Sie Sitzungen dieses Gremiums hinzufügen."
+
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr "Sitzungen"
 
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/views/templates/profile.pt
@@ -295,10 +304,6 @@ msgstr "Ihr Kommentar"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
-
-#: src/privatim/views/templates/person.pt
-msgid "Meetings"
-msgstr "Sitzungen"
 
 #: src/privatim/views/templates/activities.pt
 msgid ""
@@ -562,10 +567,6 @@ msgid "No Leader"
 msgstr "Kein Leiter"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Leader"
-msgstr "Leiter"
-
-#: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Mitglieder"
 
@@ -576,3 +577,6 @@ msgstr "Weitere Dokumente hochladen"
 #: src/privatim/forms/fields/fields.py
 msgid "Select..."
 msgstr "Auswählen"
+
+#~ msgid "Do you really wish to delete \"${item_title}\"?"
+#~ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"

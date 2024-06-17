@@ -232,3 +232,23 @@ span.accordion-text-9 {
     flex-grow: 9; /* Make the agenda item text take up 90% of the space */
     text-align: left;
 }
+
+/* 'resource-collection' means this cluster of lists of _stuff_, like
+"documents", "attendees", "links".  */
+.resource-collection * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.generic-user-list-container {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.generic-user-list {
+    list-style: none;
+}
+
+.user-list-item {
+    color: var(--primary-color);
+}
