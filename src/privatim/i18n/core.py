@@ -6,13 +6,16 @@ from pyramid.threadlocal import get_current_request
 
 def translate(
     term:     str,
-    language: str | None = None
+    language: str | None = None,
+    domain: str | None = None
 ) -> str:
+    if domain is not None:
+        assert domain in {'privatim', 'wtforms'}
 
     if language is None:
         request = get_current_request()
         if request:
-            return request.localizer.translate(term)
+            return request.localizer.translate(term, domain)
         elif hasattr(term, 'interpolate'):
             return term.interpolate()
         return term

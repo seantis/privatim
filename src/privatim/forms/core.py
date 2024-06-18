@@ -5,7 +5,6 @@ from wtforms.meta import DefaultMeta
 
 from privatim.i18n import pluralize
 from privatim.i18n import translate
-from privatim.i18n import _
 
 from .fields import TransparentFormField
 from .validators import Immutable
@@ -40,8 +39,10 @@ def update_field_class(
 class PyramidTranslations:
 
     def gettext(self, string: str) -> str:
-        # Note: Need to create a TranslationString again
-        return translate(_(string))
+        t = translate(string)
+        if t != string:
+            return t
+        return translate(string, domain='wtforms')
 
     def ngettext(self, singular: str, plural: str, n: int) -> str:
         return pluralize(singular, plural, n)
