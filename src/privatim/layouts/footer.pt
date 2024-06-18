@@ -1,10 +1,6 @@
 <footer class="footer py-5 mt-auto bg-light" i18n:domain="privatim">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-
-
-            </div>
+        <div class="row justify-content-center">
             <div class="col-6 col-md">
                 <!-- Heading -->
                 <h5 i18n:translate="" class="text-uppercase mb-md-3">
@@ -17,7 +13,7 @@
 
             <div class="col-6 col-md">
                 <!-- Heading -->
-                <h5 i18n:translate=""  class="text-uppercase mb-md-3">
+                <h5 i18n:translate="" class="text-uppercase mb-md-3">
                     Contact
                 </h5>
                 <ul class="list-unstyled">
@@ -25,7 +21,6 @@
                     <li><a href="mailto:kommunikation@privatim.ch">kommunikation@privatim.ch</a></li>
                 </ul>
             </div>
-
         </div>
     </div>
 </footer>
