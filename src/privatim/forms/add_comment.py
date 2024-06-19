@@ -33,7 +33,7 @@ class CommentForm(Form):
         },
     )
     submit = SubmitField(
-        _('Add comment'), render_kw={'class': 'btn btn-primary btn-sm'}
+        _('Add comment'), render_kw={'class': 'btn btn-primary btn-sm w-auto'}
     )
 
 
