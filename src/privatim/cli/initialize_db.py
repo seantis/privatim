@@ -95,9 +95,8 @@ def add_example_content(
         status = Status(name='In Überprüfung')
         tags = [Tag(name=n) for n in ['AG', 'ZH']]
         here = Path(__file__).parent
-        pdfname = ('sample-pdf-for-initialize-db/privatim_Vernehmlassung_VEMZ'
-                   '.pdf')
-        pdf = here / pdfname
+        pdfname = 'privatim_Vernehmlassung_VEMZ.pdf'
+        pdf = here / 'sample-pdf-for-initialize-db/' / pdfname
         content = pdf.read_bytes()
         consultation = Consultation(
             documents=[ConsultationDocument(name=pdfname, content=content)],

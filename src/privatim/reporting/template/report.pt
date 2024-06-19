@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+         i18n:domain="privatim"
+      class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <link href="${layout.static_url('privatim:static/css/report.css')}" media="print" rel="stylesheet">
+    <title>${document.title}</title>
+    <meta name="description" content="${document.title}">
+</head>
+
+<body>
+<!--!
+   Erstellungsdatum
+-->
+
+<!--?    <p class="page-meta-timestamp">${document.created_at}</p>-->
+<!--?</header>-->
+
+<!--!
+    Company logo - will be moved into the page header
+-->
+<img class="logo" src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo"
+     class="bi me-4">
+
+
+<div class="col-lg-9 mb-4">
+    <div class="text-start">
+
+        <h1 i18n:translate="">Protocol of meeting ${document.title}</h1>
+
+        <p>
+            <span class="fw-bold" i18n:translate="">Date / Time:</span> ${meeting_time}
+        </p>
+        <p>
+            <span class="fw-bold" i18n:translate="">Working Group</span> ${meeting.working_group.name}
+        </p>
+        <p tal:condition="meeting.attendees">
+            <span class="fw-bold" i18n:translate="">Attendees:</span>
+        </p>
+
+        <ul>
+            <li tal:repeat="user meeting.attendees">
+                <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
+                <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
+            </li>
+        </ul>
+
+        <h2 i18n:translate="" class="mt-4">Agenda Items</h2>
+        <ol tal:repeat="item meeting.agenda_items">
+            <li>
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            </li>
+        </ol>
+
+    </div>
+</div>
+
+</body>
+</html>

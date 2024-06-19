@@ -4,8 +4,11 @@ from functools import lru_cache
 from PIL import Image
 import magic
 from io import BytesIO
+from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
+
+from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
 from typing import Any, TYPE_CHECKING, overload
@@ -14,6 +17,19 @@ if TYPE_CHECKING:
     from typing import Iterable
     from datetime import datetime
     from privatim.models.commentable import Comment
+
+
+def datetime_format(
+        dt: 'datetime',
+        format: str = '%d.%m.%y %H:%M',
+        tz: BaseTzInfo = DEFAULT_TIMEZONE
+) -> str:
+
+    if not dt.tzinfo:
+        # If passed datetime does not carry any timezone information, we
+        # assume (and force) it to be UTC, as all timestamps should be.
+        dt = timezone('UTC').localize(dt)
+    return dt.astimezone(tz).strftime(format)
 
 
 def first(iterable: 'Iterable[Any] | None', default: Any | None = None) -> Any:

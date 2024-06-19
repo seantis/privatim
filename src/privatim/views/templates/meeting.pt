@@ -1,64 +1,71 @@
 <metal:block use-macro="main_template"
              xmlns="http://www.w3.org/1999/xhtml"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
-             i18n:domain="privatim">
+         i18n:domain="privatim">
 
     <div metal:fill-slot="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="mb-3">Sitzung ${meeting.name}</h1>
+
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h1 class="mb-3">Sitzung ${meeting.name}</h1>
+            </div>
+
+            <div class="col-md-6 text-end">
+                    ${panel('action_menu')}
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 mb-4">
+                <div class="text-start">
+                    <p>
+                        <span class="fw-bold" i18n:translate="">Date / Time:</span> ${time}
+                    </p>
+                    <p tal:condition="meeting.attendees">
+                        <span class="fw-bold" i18n:translate="">Attendees:</span>
+                    <ul>
+                        <li tal:repeat="user meeting.attendees">
+                            <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
+                            <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
+                        </li>
+                    </ul>
+                    </p>
+                    <p>
+                        <span class="fw-bold" i18n:translate="">Working Group:</span> ${meeting.working_group.name}
+                    </p>
                 </div>
+            </div>
 
-                <!-- Main Content -->
-                <div class="col-lg-9 mb-4">
-                    <div class="text-start">
-                        <p>
-                            <span class="fw-bold" i18n:translate="">Date / Time:</span> ${time}
-                        </p>
-                        <p tal:condition="meeting.attendees">
-                            <span class="fw-bold" i18n:translate="">Attendees:</span>
-                            <ul>
-                                <li tal:repeat="user meeting.attendees">
-                                    <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
-                                    <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
-                                </li>
-                            </ul>
-                        </p>
-                        <p>
-                            <span class="fw-bold" i18n:translate="">Working Group:</span> ${meeting.working_group.name}
-                        </p>
-                    </div>
-                </div>
+            <div class="col-lg-9 mb-4">
 
-                <div class="col-lg-9 mb-4">
+                <h2 i18n:translate="">Agenda Items</h2>
 
-                    <h2 i18n:translate="">Agenda Items</h2>
-
-                    <div class="accordion" id="agenda-items">
-                        <div class="accordion-item draggable-item" tal:repeat="item agenda_items">
-                            <h2 class="accordion-header button-fix-for-accordion-header">
-                                <button class="accordion-button collapsed agenda-item-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}" >
-                                    <i class="fas fa-arrows-alt handle"></i>
-                                    <span class="accordion-text-9">${item.title}</span>
+                <div class="accordion" id="agenda-items">
+                    <div class="accordion-item draggable-item" tal:repeat="item agenda_items">
+                        <h2 class="accordion-header button-fix-for-accordion-header">
+                            <button class="accordion-button collapsed agenda-item-accordion" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false"
+                                    aria-controls="item-${item.id}">
+                                <i class="fas fa-arrows-alt handle"></i>
+                                <span class="accordion-text-9">${item.title}</span>
                                     ${item.edit_btn()}
-                                </button>
-                            </h2>
-                            <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">
-                                <div class="accordion-body">
+                            </button>
+                        </h2>
+                        <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">
+                            <div class="accordion-body">
                                     ${item.description}
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="text-end mt-4">
-                        <a i18n:translate="" href="${request.route_url('add_agenda_item', id=meeting.id)}" class="btn btn-primary" role="button" tabindex="1">Add Agenda Item</a>
-                    </div>
-
+                <div class="text-end mt-4">
+                    <a i18n:translate="" href="${request.route_url('add_agenda_item', id=meeting.id)}"
+                                         class="btn btn-primary" role="button" tabindex="1">Add Agenda Item</a>
                 </div>
 
             </div>
+
         </div>
     </div>
 </metal:block>

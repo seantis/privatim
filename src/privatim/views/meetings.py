@@ -1,12 +1,15 @@
-from pytz import timezone
 from markupsafe import Markup, escape
-from pyramid.httpexceptions import HTTPFound
-
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.response import Response
+from privatim.reporting.report import (
+    MeetingReport,
+    ReportOptions,
+    HTMLReportRenderer,
+)
 from privatim.controls.controls import Button, Icon, IconStyle
-from privatim.utils import maybe_escape
+from privatim.utils import maybe_escape, datetime_format
 from sqlalchemy import select
 
-from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.utils import fix_utc_to_local_time
 from privatim.forms.meeting_form import MeetingForm
 from privatim.models import Meeting, User, WorkingGroup
@@ -19,23 +22,8 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Query
     from privatim.types import RenderData, XHRDataOrRedirect
-    from datetime import datetime
-    from pytz import BaseTzInfo
     _Q = TypeVar("_Q", bound=Query[Any])
     from privatim.types import MixedDataOrRedirect
-
-
-def datetime_format(
-        dt: 'datetime',
-        format: str = '%d.%m.%y %H:%M',
-        tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
-) -> str:
-
-    if not dt.tzinfo:
-        # If passed datetime does not carry any timezone information, we
-        # assume (and force) it to be UTC, as all timestamps should be.
-        dt = timezone('UTC').localize(dt)
-    return dt.astimezone(tz).strftime(format)
 
 
 def meeting_view(
@@ -46,6 +34,11 @@ def meeting_view(
 
     assert isinstance(context, Meeting)
     formatted_time = datetime_format(context.time)
+
+    request.add_action_menu_entry(
+        translate(_('Export meeting protocol')),
+        request.route_url('export_meeting_as_pdf_view', id=context.id),
+    )
 
     items = []
     for item in context.agenda_items:
@@ -113,8 +106,7 @@ def get_generic_user_list(
     users: Sequence[User],
     title: str
 ) -> Markup:
-    """Returns an HTML list of users with links to their profiles within a
-    container."""
+    """Returns an HTML list of users with links to their profiles """
     user_items = tuple(
         Markup(
             '<li class="user-list-item">{} '
@@ -137,6 +129,25 @@ def get_generic_user_list(
     </div>
     '''
     ).format(title, Markup('').join(user_items))
+
+
+def export_meeting_as_pdf_view(
+    context: Meeting, request: 'IRequest',
+) -> Response:
+
+    session = request.dbsession
+    meeting_id = context.id
+    meeting = session.get(Meeting, meeting_id)
+
+    if meeting is None:
+        return HTTPNotFound()
+    renderer = HTMLReportRenderer()
+    options = ReportOptions(language=request.locale_name)
+    report = MeetingReport(request, meeting, options, renderer).build()
+    response = Response(report.data)
+    response.content_type = 'application/pdf'
+    response.content_disposition = f'inline;filename={report.filename}'
+    return response
 
 
 def meetings_view(

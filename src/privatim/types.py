@@ -4,7 +4,12 @@ if TYPE_CHECKING:
 
     from decimal import Decimal
     from fractions import Fraction
-    from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPError
+    from pyramid.httpexceptions import (
+        HTTPFound,
+        HTTPForbidden,
+        HTTPError,
+        HTTPNotFound
+    )
     from pyramid.interfaces import IResponse, IRequest
 
     from typing import Any, Literal, TypeVar, Protocol
@@ -40,10 +45,12 @@ if TYPE_CHECKING:
 
     RenderData: TypeAlias = dict[str, Any]
     RenderDataOrRedirect: TypeAlias = RenderData | HTTPFound
+    RenderDataOrNotFound: TypeAlias = RenderData | HTTPNotFound
     RenderDataOrRedirectOrForbidden: TypeAlias = (
         RenderData | HTTPFound | HTTPForbidden | HTTPError
     )
     RenderDataOrResponse: TypeAlias = RenderData | IResponse
+    ResponseOrNotFound: TypeAlias = IResponse | HTTPNotFound
 
     # NOTE: For now we only allow complex return types if we return JSON
     #       If you want to return a scalar type as JSON you need to be

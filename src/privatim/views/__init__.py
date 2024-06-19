@@ -24,7 +24,8 @@ from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
-from privatim.views.meetings import add_meeting_view
+from privatim.views.meetings import add_meeting_view, \
+    export_meeting_as_pdf_view
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
@@ -218,6 +219,17 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='DELETE',
         xhr=True
+    )
+    # download the meeting report
+    config.add_route(
+        'export_meeting_as_pdf_view',
+        '/meetings/{id}/export',
+        factory=meeting_factory
+    )
+    config.add_view(
+        export_meeting_as_pdf_view,
+        route_name='export_meeting_as_pdf_view',
+        request_method='GET',
     )
 
     # Agenda items

@@ -86,6 +86,7 @@
 :root {
     --primary-color: #FF545F; /* privatim's primary color used globally*/
     --hover-color: #e64c56; /* hover = 10% darker */
+    --secondary-hover-color: #e9ecef;
 }
 
 .btn-primary {
@@ -101,6 +102,17 @@ a.btn-primary:hover {
 a {
     /* set color for all link */
     color: var(--primary-color);
+}
+
+
+.btn-secondary {
+    background: white;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-secondary:hover {
+    background: var(--secondary-hover-color);
+    color: white;
 }
 
 a:hover {
@@ -216,9 +228,11 @@ main {
     display: flex;
     align-items: center;
 }
+
 .fas {
     margin-right: 10px; /* Add space between the icon and the text */
 }
+
 .icon-container {
     display: flex; /* Makes the file icon be on the same height as the text */
     align-items: center; /* Ensure the icon is centered vertically */

@@ -1,4 +1,6 @@
+from functools import partial
 from fanstatic import Fanstatic
+from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Table, MetaData, Column, ForeignKey
@@ -25,6 +27,7 @@ from privatim.views.profile import user_pic_url
 if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
+    from pyramid.interfaces import IRequest
 
 
 def includeme(config: Configurator) -> None:
@@ -67,6 +70,24 @@ def includeme(config: Configurator) -> None:
     config.add_request_method(authenticated_user, 'user', property=True)
     config.add_request_method(user_pic_url, 'user_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)
+
+    def add_action_menu_entry(
+        request: 'IRequest',
+        title: str,
+        url: str,
+    ) -> None:
+        """  The entries are temporarily stored on the request object. They are
+        then retrieved in action_menu.py
+        """
+        if not hasattr(request, 'action_menu_entries'):
+            request.action_menu_entries = []
+        request.action_menu_entries.append(ActionMenuEntry(title, url))
+
+    config.add_request_method(
+        lambda request: partial(add_action_menu_entry, request),
+        'add_action_menu_entry',
+        reify=True
+    )
 
 
 def main(

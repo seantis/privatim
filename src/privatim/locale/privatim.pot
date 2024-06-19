@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-17 23:23+0200\n"
+"POT-Creation-Date: 2024-06-19 22:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,10 @@ msgstr ""
 #. Default: Close
 #: ./src/privatim/layouts/flash.pt
 msgid "Close"
+msgstr ""
+
+#: ./src/privatim/layouts/action_menu.pt
+msgid "Actions"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
@@ -93,6 +97,10 @@ msgstr ""
 #: ./src/privatim/views/general_file.py
 #, python-format
 msgid "Successfully deleted file \"${title}\""
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Export meeting protocol"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
@@ -217,10 +225,12 @@ msgid "Save"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
+#: ./src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
+#: ./src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr ""
 
@@ -230,6 +240,7 @@ msgid "Working Group:"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
+#: ./src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr ""
 
@@ -239,17 +250,18 @@ msgid "Add Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/reporting/template/report.pt
 msgid "Working Group"
-msgstr ""
-
-#: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/forms/meeting_form.py
-msgid "Add Meeting"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Leader"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/forms/meeting_form.py
+msgid "Add Meeting"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
@@ -564,4 +576,8 @@ msgstr ""
 
 #: ./src/privatim/forms/fields/fields.py
 msgid "Select..."
+msgstr ""
+
+#: ./src/privatim/reporting/template/report.pt
+msgid "Protocol of meeting ${document.title}"
 msgstr ""

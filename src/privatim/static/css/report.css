@@ -1,0 +1,103 @@
+/*
+ *  CSS stylesheet for the printable report.
+ *
+ *  Uses the CSS Paged Media Module (https://www.w3.org/TR/css-page-3/). This
+ *  module allows to design documents for a paged presentation (unlike the web,
+ *  where the content is mostly continuous). Most regular CSS directives apply
+ *  here too, but there are some extra directives.
+ *
+ *  In addition, Weasyprint might not (yet) support all Paged Media Module
+ *  extensions. A good overview can be found here: https://print-css.rocks/lessons
+ *
+ *  For further reading and reference:
+ *  - Live Preview: https://printcss.live/
+ *  - Header and footers: https://css4.pub/2022/running-headers/
+ *  - CSS at-rules: https://www.qhmit.com/css/at-rules/
+ */
+
+/* dm-sans-regular - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''),
+    url(../fonts/dm-sans-v6-latin-ext_latin-regular.woff2) format('woff2'),
+    url(../fonts/dm-sans-v6-latin-ext_latin-regular.woff) format('woff');
+}
+
+/* dm-sans-italic - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local(''),
+    url(../fonts/dm-sans-v6-latin-ext_latin-italic.woff2) format('woff2'),
+    url(../fonts/dm-sans-v6-latin-ext_latin-italic.woff) format('woff');
+}
+
+/* dm-sans-500 - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: local(''),
+    url(../fonts/dm-sans-v6-latin-ext_latin-500.woff2) format('woff2'),
+    url(../fonts/dm-sans-v6-latin-ext_latin-500.woff) format('woff');
+}
+
+/* Global page settings.  */
+@page {
+    size: A4;
+
+    /* Configure inner margins */
+    margin: 2cm;
+
+    /* Font for the headers and footers. */
+    font-family: DM Sans;
+
+    /* Setup header and footer */
+    @top-left {
+        /* NOTE: We use a running element, i.e., taking an element from the page
+         * and display it in the header. Alternatively, you can set the logo as
+         * the background-image and scale it down, however, we have experienced
+         * image quality loss when doing that.
+         */
+        content: element(header);
+    }
+
+    @top-center {
+        font-weight: bold;
+        font-size: 16pt;
+        content: string(title);
+    }
+
+    @top-right {
+        font-size: 10pt;
+        content: string(doc-creation-date);
+    }
+
+    @bottom-right {
+        font-size: 10pt;
+        content: "Seite " counter(page) "/" counter(pages);
+    }
+}
+
+
+/* || CSS resets and global styles */
+* {
+    /*padding: 0;*/
+    /*margin: 0;*/
+}
+
+img {
+    min-width: 5cm;
+    max-width: 5cm;
+    max-height: 3.5cm;
+
+}
+
+body {
+    font-family: DM Sans;
+    font-size: 10pt;
+}
+

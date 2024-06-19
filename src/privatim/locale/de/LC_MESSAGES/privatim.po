@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-17 23:23+0200\n"
+"POT-Creation-Date: 2024-06-19 22:52+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -40,6 +40,10 @@ msgstr "Kontakt"
 #: src/privatim/layouts/flash.pt
 msgid "Close"
 msgstr "Schliessen"
+
+#: src/privatim/layouts/action_menu.pt
+msgid "Actions"
+msgstr "Aktionen"
 
 #: src/privatim/layouts/macros.pt
 msgid "Message"
@@ -97,6 +101,10 @@ msgstr "Profilbild erfolgreich geändert"
 #, python-format
 msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Sitzungsprotokoll exportieren"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
@@ -226,10 +234,12 @@ msgid "Save"
 msgstr "Speichern"
 
 #: src/privatim/views/templates/meeting.pt
+#: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr "Datum / Zeit:"
 
 #: src/privatim/views/templates/meeting.pt
+#: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
 
@@ -239,6 +249,7 @@ msgid "Working Group:"
 msgstr "Gremium:"
 
 #: src/privatim/views/templates/meeting.pt
+#: src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr "Traktanden"
 
@@ -248,18 +259,19 @@ msgid "Add Agenda Item"
 msgstr "Traktandum hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/reporting/template/report.pt
 msgid "Working Group"
 msgstr "Gremium"
-
-#: src/privatim/views/templates/working_group.pt
-#: src/privatim/forms/meeting_form.py
-msgid "Add Meeting"
-msgstr "Sitzung hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/working_group_forms.py
 msgid "Leader"
 msgstr "Leiter"
+
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/forms/meeting_form.py
+msgid "Add Meeting"
+msgstr "Sitzung hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
 msgid ""
@@ -577,6 +589,10 @@ msgstr "Weitere Dokumente hochladen"
 #: src/privatim/forms/fields/fields.py
 msgid "Select..."
 msgstr "Auswählen"
+
+#: src/privatim/reporting/template/report.pt
+msgid "Protocol of meeting ${document.title}"
+msgstr "Protokoll der Sitzung ${document.title}"
 
 #~ msgid "Do you really wish to delete \"${item_title}\"?"
 #~ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"

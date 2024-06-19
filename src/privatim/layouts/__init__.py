@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from privatim.layouts.action_menu import action_menu
+
 from .flash import flash
 from .layout import Layout
 from .navbar import navbar
@@ -32,4 +34,10 @@ def includeme(config: 'Configurator') -> None:
         panel=footer,
         name='footer',
         renderer='footer.pt'
+    )
+
+    config.add_panel(
+        panel=action_menu,
+        name='action_menu',
+        renderer='action_menu.pt'
     )
