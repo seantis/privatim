@@ -59,7 +59,7 @@ class NestedCommentForm(Form):
         },
     )
     submit = SubmitField(
-        _('Answer'), render_kw={'class': 'btn btn-primary btn-sm'}
+        _('Answer'), render_kw={'class': 'btn btn-primary btn-sm w-auto'}
     )
     cancel = SubmitField(
         _('Cancel'), render_kw={'class': 'btn btn-secondary btn-sm'}
