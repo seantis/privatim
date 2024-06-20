@@ -10,6 +10,7 @@ from privatim.models import (
     Consultation,
 )
 from privatim.models.consultation import Status
+from privatim.testing import DummyRequest
 
 
 def find_login_form(resp_forms):
@@ -69,3 +70,13 @@ def create_consultation(documents=None, tags=None, user=None):
         secondary_tags=tags,
         creator=user
     )
+
+
+class CustomDummyRequest(DummyRequest):
+    """ A request such that static_url works."""
+    def static_url(self, path: str) -> str:
+        # Assuming the input path has a prefix "privatim:static/"
+        prefix = 'privatim:static/'
+        if path.startswith(prefix):
+            path = path[len(prefix):]
+        return f'{self.host}/static/{path}'

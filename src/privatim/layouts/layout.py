@@ -41,9 +41,7 @@ class Layout:
         tom_select_css.need()
         comments_css.need()
         custom_js.need()
-
-        if 'profile' in request.matched_route.name:
-            profile_css.need()
+        profile_css.need()
 
     def show_steps(self) -> bool:
         return self.request.show_steps

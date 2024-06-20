@@ -49,12 +49,12 @@
         </ul>
 
         <h2 i18n:translate="" class="mt-4">Agenda Items</h2>
-        <ol tal:repeat="item meeting.agenda_items">
+        <ul tal:repeat="item meeting.agenda_items">
             <li>
                 <h3>${item.title}</h3>
                 <p>${item.description}</p>
             </li>
-        </ol>
+        </ul>
 
     </div>
 </div>

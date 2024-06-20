@@ -149,9 +149,7 @@ class HTMLReportRenderer:
         Render processed chameleon template as PDF.
         """
 
-        # todo: use resource_base_url
         resource_base_url = Path.cwd() / 'privatim' / 'reporting'
-
         buffer = BytesIO()
         HTML(string=html, base_url=str(resource_base_url)).write_pdf(buffer)
         return buffer.getvalue()
