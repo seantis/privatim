@@ -5,6 +5,7 @@ from pathlib import Path
 
 from babel.dates import format_datetime
 
+from privatim.i18n import translate, _
 from privatim.layouts.layout import DEFAULT_TIMEZONE, Layout
 from privatim.utils import datetime_format
 from pyramid.renderers import render
@@ -131,7 +132,11 @@ class HTMLReportRenderer:
         """Render chameleon report template."""
 
         document_context = {'title': meeting.name, 'created_at': timestamp}
+
+        title = translate(_("Protocol of meeting ${title}",
+                          mapping={'title': document_context['title']}))
         ctx = {
+            'title': title,
             'meeting': meeting,
             'meeting_time': datetime_format(meeting.time),
             'document': document_context,

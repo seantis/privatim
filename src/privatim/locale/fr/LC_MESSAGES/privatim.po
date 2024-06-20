@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-19 22:52+0200\n"
+"POT-Creation-Date: 2024-06-20 09:55+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -588,9 +588,10 @@ msgstr "Télécharger des fichiers supplémentaires"
 msgid "Select..."
 msgstr "Sélectionner..."
 
-#: src/privatim/reporting/template/report.pt
-msgid "Protocol of meeting ${document.title}"
-msgstr "Procès-verbal de la réunion ${document.title}"
+#: src/privatim/reporting/report.py
+#, python-format
+msgid "Protocol of meeting ${title}"
+msgstr "Procès-verbal de la réunion ${title}"
 
 #~ msgid "Do you really wish to delete \"${item_title}\"?"
 #~ msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"
