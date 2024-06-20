@@ -101,7 +101,7 @@ msgstr "Fichier supprimé avec succès \"${titre}\""
 
 #: src/privatim/views/meetings.py
 msgid "Export meeting protocol"
-msgstr "Exporter le protocole de la réunion"
+msgstr "Imprimer le protocole"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
