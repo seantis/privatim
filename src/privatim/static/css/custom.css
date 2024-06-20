@@ -100,7 +100,7 @@ a.btn-primary:hover {
 }
 
 a {
-    /* set color for all link */
+    /* set color for all links */
     color: var(--primary-color);
 }
 
@@ -110,6 +110,7 @@ a {
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
+
 .btn-secondary:hover {
     background: var(--secondary-hover-color);
     color: white;
@@ -265,4 +266,15 @@ span.accordion-text-9 {
 
 .user-list-item {
     color: var(--primary-color);
+}
+
+.accordion {
+    counter-reset: section; /* Reset the section counter */
+}
+
+.accordion-text-9::before {
+    counter-increment: section; /* Increment the section counter */
+    content: counter(section) ". "; /* Display the counter */
+    font-weight: bold;
+    margin-right: 10px;
 }
