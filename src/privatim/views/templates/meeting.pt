@@ -11,6 +11,7 @@
                 <h1 class="mb-3">Sitzung ${meeting.name}</h1>
             </div>
 
+            <!-- Dropdown button with common actions  -->
             <div class="col-md-6 text-end">
                     ${panel('action_menu')}
             </div>

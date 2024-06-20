@@ -1,18 +1,19 @@
-<div class="container"  i18n:domain="privatim">
-    <div class="dropdown">
-        <a class="btn btn-secondary dropdown-toggle w-20" type="button" id="actionMenuDropdown"
-           data-bs-toggle="dropdown"
-           aria-haspopup="true" aria-expanded="false" i18n:translate="">
-           Actions
-        </a>
-        <div class="dropdown-menu dropdown-secondary" aria-labelledby="actionMenuDropdown">
-            <tal:b tal:condition="action_menu_entries" tal:repeat="action_menu_entry action_menu_entries"
-                    tal:replace="action_menu_entry">
-                <tal:b tal:condition="len(action_menu_entries) > 1">
-                    <hr class="dropdown-divider">
+<tal:b tal:condition="action_menu_entries">
+    <div class="container"  i18n:domain="privatim">
+        <div class="dropdown">
+            <a class="btn btn-secondary dropdown-toggle w-20" type="button" id="actionMenuDropdown"
+               data-bs-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false" i18n:translate="">
+                Actions
+            </a>
+            <div class="dropdown-menu dropdown-secondary " aria-labelledby="actionMenuDropdown">
+                <tal:b tal:repeat="action_menu_entry action_menu_entries"
+                         tal:replace="action_menu_entry">
+                    <tal:b tal:condition="len(action_menu_entries) > 1">
+                        <hr class="dropdown-divider">
+                    </tal:b>
                 </tal:b>
-<!--?                <a class="dropdown-item" href="#" i18n:translate="">Action</a>-->
-            </tal:b>
+            </div>
         </div>
     </div>
-</div>
+</tal:b>

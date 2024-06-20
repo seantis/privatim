@@ -88,3 +88,58 @@ def test_view_add_consultation(client):
 
     status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
     assert status_text_badge == 'Erstellt'
+
+
+def test_view_edit_consultation(client):
+
+    session = client.db
+    client.login_admin()
+
+    # Create a new consultation
+    page = client.get('/consultations')
+    page = page.click('Vernehmlassung Erfassen')
+    page.form['title'] = 'test'
+    page.form['description'] = 'the description'
+    page.form['recommendation'] = 'the recommendation'
+    page.form['status'] = '1'
+    page.form['cantons'] = ['AG', 'ZH']
+    page.form['documents'] = Upload('Test.txt', b'File content.')
+    page = page.form.submit().follow()
+
+    consultation_id = session.execute(
+        select(Consultation.id).filter_by(description='the description')
+    ).scalar_one()
+
+    # assert we are redirected to the just created consultation:
+    assert f'consultation/{str(consultation_id)}' in page.request.url
+
+    # navigate to the edit page
+    page = client.get(f'/consultations/{str(consultation_id)}/edit')
+
+    # edit the consultation
+    page.form['title'] = 'updated title'
+    page.form['description'] = 'updated description'
+    page.form['recommendation'] = 'updated recommendation'
+    page.form['status'] = '2'
+    page.form['cantons'] = ['BE', 'LU']
+    page.form['documents'] = Upload('UpdatedTest.txt', b'Updated file content.')
+    page = page.form.submit().follow()
+
+    # assert we are redirected to the edited consultation:
+    # assert f'consultation/{str(consultation_id)}' in page.request.url
+
+    # navigate with id to verify the edits
+    page = client.get(f'/consultations/{str(consultation_id)}')
+
+    assert 'updated description' in page
+    assert 'UpdatedTest.txt' in page
+    href = tostring(page.pyquery('a.document-link')[0]).decode(
+        'utf-8')
+    href = client.extract_href(href)
+    resp = client.get(href)
+
+    assert not resp.status_code == 404
+    assert resp.status_code == 200
+
+    status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
+    assert status_text_badge == 'Updated'

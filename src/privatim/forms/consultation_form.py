@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
 from wtforms import StringField
@@ -10,10 +12,12 @@ from privatim.forms.fields import UploadMultipleField, SearchableSelectField
 from privatim.i18n import _, translate
 
 from typing import TYPE_CHECKING
+
+from privatim.models.consultation import Status
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.models import Consultation
-
+    from privatim.models import Consultation, Tag
 
 STATUS_CHOICES = [
     (code, label) for code, label in [
@@ -63,3 +67,30 @@ class ConsultationForm(Form):
             validators.Optional(),
         ]
     )
+
+    def _populate_select_field(self, field):
+        # this a bit crude, but how else are you going to get the value?
+        for key, value in field.choices:
+            if key == field.data:
+                 return value
+        return None
+
+    def populate_obj(self, obj: 'Consultation') -> None:
+        for name, field in self._fields.items():
+            if (isinstance(field, SearchableSelectField) and field.raw_data
+                    is not None):
+                session = self.meta.dbsession
+                stmt = select(Tag).where(Tag.name.in_(field.raw_data))
+                tags = session.execute(stmt).scalars().all()
+                obj.secondary_tags = tags
+            elif isinstance(field, SelectField) and field.data is not None:
+                value = self._populate_select_field(field)
+                # stmt = select(Status).where(Tag.name.in_(field.raw_data))
+                breakpoint()
+                if value:
+                    setattr(obj, name, Status(name=value))
+            elif isinstance(field, UploadMultipleField):
+                breakpoint()
+            else:
+                field.populate_obj(obj, name)
+

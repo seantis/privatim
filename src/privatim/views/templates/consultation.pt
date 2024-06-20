@@ -4,29 +4,38 @@
          i18n:domain="privatim">
 
     <div metal:fill-slot="content">
-        <div class="container py-3">
 
-            <!-- Main Content -->
-            <div class="row mb-4">
-                <div class="col-lg-8  mb-4">
-                    <h1 class="mb-4">${consultation.title}</h1>
-                    <p tal:condition="consultation.description">
-                        <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
-                    </p>
-                    <p tal:condition="consultation.recommendation">
-                        <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
-                    </p>
-                </div>
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <h1 class="mb-3">${consultation.title}</h1>
+            </div>
 
-                <!-- Sidebar for documents and status, starts below the title -->
-                <div class="col-lg-4">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 i18n:translate="" class="card-title">Documents</h5>
-                            <ul class="list-group list-group-flush" tal:condition="documents">
-                                <li tal:repeat="item documents" class="list-group-item">
-                                    <a href="${item.download_url}"
-                                       class="text-decoration-none document-link" target="_blank">
+            <!-- Dropdown button with common actions  -->
+            <div class="col-md-4 text-end">
+                    ${panel('action_menu')}
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row mt-4 mb-4">
+            <div class="col-lg-8 mb-4">
+                <p tal:condition="consultation.description">
+                    <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
+                </p>
+                <p tal:condition="consultation.recommendation">
+                    <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
+                </p>
+            </div>
+
+            <!-- Sidebar for documents and status, starts below the title -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 i18n:translate="" class="card-title">Documents</h5>
+                        <ul class="list-group list-group-flush" tal:condition="documents">
+                            <li tal:repeat="item documents" class="list-group-item">
+                                <a href="${item.download_url}"
+                                   class="text-decoration-none document-link" target="_blank">
                                     <span class="icon-container">
                                         <i tal:condition="python:'pdf' in item.doc_content_type"
                                                 class="fas fa-file-pdf"></i>
@@ -34,39 +43,38 @@
                                                 class="fas fa-file"></i>
                                             ${item.display_filename}
                                     </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 i18n:translate="" class="card-title">Status</h5>
-                            <p class="card-text" tal:condition="consultation.status">
-                                <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
-                            </p>
-                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 i18n:translate="" class="card-title">Status</h5>
+                        <p class="card-text" tal:condition="consultation.status">
+                            <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
+                        </p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!--? Controls the width of the comments section-->
-            <div class="col-7">
-                <div class="row">
-                    <div class=mt-5></div>
-                    <metal:block use-macro="layout.macros['display_comments']"
-                             tal:define="comments flattened_comments_tree">
-                    </metal:block>
-                </div>
-                <h2 i18n:translate="" class="m-4">Your Comment</h2>
-                <div class="row">
-                    <metal:block use-macro="layout.macros['add_comment_form']"
-                             tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
-                                    _query={'target_url': 'consultation',
-                                            'parent_id': 'root'});
-                                    form consultation_comment_form">
-                    </metal:block>
-                </div>
+        <!--? Controls the width of the comments section-->
+        <div class="col-7">
+            <div class="row">
+                <div class=mt-5></div>
+                <metal:block use-macro="layout.macros['display_comments']"
+                         tal:define="comments flattened_comments_tree">
+                </metal:block>
+            </div>
+            <h2 i18n:translate="" class="m-4">Your Comment</h2>
+            <div class="row">
+                <metal:block use-macro="layout.macros['add_comment_form']"
+                         tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
+                                _query={'target_url': 'consultation',
+                                        'parent_id': 'root'});
+                                form consultation_comment_form">
+                </metal:block>
             </div>
         </div>
     </div>

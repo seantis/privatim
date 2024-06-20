@@ -5,7 +5,7 @@ from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
-from privatim.i18n import _
+from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
 from privatim.models.attached_document import ConsultationDocument
 from privatim.utils import dictionary_to_binary, flatten_comments
@@ -21,6 +21,10 @@ def consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
 
+    request.add_action_menu_entry(
+        translate(_('Edit Consultation')),
+        request.route_url('edit_consultation', id=context.id),
+    )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     return {
         'consultation': context,
@@ -134,8 +138,20 @@ def add_or_edit_consultation_view(
                 if not request.is_xhr:
                     request.messages.add(message, 'success')
 
-        # edit
-        # form.populate_obj(group)
+        else:
+            form.populate_obj(consultation)
+            session.flush()
+            target_url = request.route_url(
+                'consultation',
+                id=str(consultation.id)
+            )
+            message = _(
+                'Successfully edited consultation "${name}"',
+                mapping={'name': form.title.data}
+            )
+            if not request.is_xhr:
+                request.messages.add(message, 'success')
+
         if request.is_xhr:
             return {'redirect_to': target_url}
         else:

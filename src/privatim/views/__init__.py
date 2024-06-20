@@ -97,6 +97,25 @@ def includeme(config: 'Configurator') -> None:
         xhr=True
     )
 
+    config.add_route(
+        'edit_consultation',
+        '/consultations/{id}/edit',
+        factory=consultation_factory
+    )
+    config.add_view(
+        add_or_edit_consultation_view,
+        route_name='edit_consultation',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        add_or_edit_consultation_view,
+        route_name='edit_consultation',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
     # view for single consultation
     config.add_route(
         'consultation',
