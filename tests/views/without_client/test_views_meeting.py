@@ -2,7 +2,7 @@ import io
 import pypdf
 from privatim.views import export_meeting_as_pdf_view
 
-from shared.utils import create_meeting, CustomDummyRequest
+from tests.shared.utils import create_meeting, CustomDummyRequest
 
 
 def test_export_meeting_without_agenda_items(config):

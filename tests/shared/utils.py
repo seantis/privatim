@@ -73,7 +73,7 @@ def create_consultation(documents=None, tags=None, user=None):
 
 
 class CustomDummyRequest(DummyRequest):
-    """ A request such that static_url works."""
+    """ Make `static_url` work for the cases we need it to work."""
     def static_url(self, path: str) -> str:
         # Assuming the input path has a prefix "privatim:static/"
         prefix = 'privatim:static/'

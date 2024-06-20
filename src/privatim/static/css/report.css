@@ -83,10 +83,8 @@
 }
 
 
-/* || CSS resets and global styles */
-* {
-    /*padding: 0;*/
-    /*margin: 0;*/
+.agenda-items-list {
+    list-style: none;
 }
 
 img {

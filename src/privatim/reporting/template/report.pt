@@ -49,9 +49,9 @@
         </ul>
 
         <h2 i18n:translate="" class="mt-4">Agenda Items</h2>
-        <ul tal:repeat="item meeting.agenda_items">
+        <ul tal:repeat="item meeting.agenda_items" class="agenda-items-list">
             <li>
-                <h3>${item.title}</h3>
+                <h3><span>${repeat.item.index + 1}. </span>${item.title}</h3>
                 <p>${item.description}</p>
             </li>
         </ul>
