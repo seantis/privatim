@@ -122,7 +122,7 @@ class DummyMailer:
              tag:         Optional[str] = None,
              attachments: Optional[List['MailAttachment']] = None,
              **kwargs:    Any) -> 'MailID':
-        params: 'MailParams' = {
+        params: MailParams = {
             'receivers': receivers,
             'subject': subject,
             'content': content
@@ -151,7 +151,7 @@ class DummyMailer:
                       attachments: Optional[List['MailAttachment']] = None,
                       **kwargs:    Any) -> 'MailID':
 
-        params: 'TemplateMailParams' = {
+        params: TemplateMailParams = {
             'receivers': receivers,
             # NOTE: Not ideal to have this implementation detail in the
             #       dummy mailer. Maybe there's a better way...

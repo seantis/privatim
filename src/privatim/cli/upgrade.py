@@ -31,7 +31,7 @@ class UpgradeContext:
 
     def __init__(self, db: 'Session'):
         self.session = db
-        self.engine: 'Engine' = self.session.bind  # type: ignore
+        self.engine: Engine = self.session.bind  # type: ignore
 
         self.operations_connection = db._connection_for_bind(
             self.engine

@@ -11,13 +11,15 @@ from wtforms import validators
 from privatim.forms.fields import UploadMultipleField, SearchableSelectField
 from privatim.i18n import _, translate
 
-from typing import TYPE_CHECKING
-
+from privatim.models import Tag
 from privatim.models.consultation import Status
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.models import Consultation, Tag
+    from privatim.models import Consultation
+
 
 STATUS_CHOICES = [
     (code, label) for code, label in [
@@ -72,7 +74,7 @@ class ConsultationForm(Form):
         # this a bit crude, but how else are you going to get the value?
         for key, value in field.choices:
             if key == field.data:
-                 return value
+                return value
         return None
 
     def populate_obj(self, obj: 'Consultation') -> None:
@@ -93,4 +95,3 @@ class ConsultationForm(Form):
                 breakpoint()
             else:
                 field.populate_obj(obj, name)
-

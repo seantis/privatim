@@ -123,7 +123,7 @@ class TranslationMarkup(TranslationString):
                     _mapping = {k: escape(v) for k, v in msgid.mapping.items()}
             msgid = Markup(str(msgid))  # noqa: MS001
 
-        instance: 'Self' = str.__new__(cls, msgid)
+        instance: Self = str.__new__(cls, msgid)
         instance.domain = domain
         instance.context = context
         if _default is None:

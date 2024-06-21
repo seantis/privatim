@@ -163,7 +163,7 @@ class PostmarkMailer:
                 '@blackhole.postmarkapp.com', receivers
             )
 
-        message: 'JSONObject' = {
+        message: JSONObject = {
             'From': self.default_sender,
             'To': receivers,
             'MessageStream': self.stream,
@@ -197,10 +197,10 @@ class PostmarkMailer:
 
     def prepare_attachments(self, attachments: list['MailAttachment']
                             ) -> 'JSONArray':
-        result: 'JSONArray' = []
+        result: JSONArray = []
         for attachment in attachments:
             content = base64.b64encode(attachment['content'])
-            payload: 'JSONObject' = {
+            payload: JSONObject = {
                 'Name': attachment['filename'],
                 'Content': content.decode('ascii'),
                 'ContentType': attachment['content_type'],
@@ -255,7 +255,7 @@ class PostmarkMailer:
              attachments: list['MailAttachment'] | None = None,
              **kwargs:    Any) -> 'MailID':
 
-        params: 'MailParams' = {
+        params: MailParams = {
             'receivers': receivers,
             'subject': subject,
             'content': content
@@ -280,7 +280,7 @@ class PostmarkMailer:
                       attachments: list['MailAttachment'] | None = None,
                       **kwargs:    Any) -> 'MailID':
 
-        params: 'TemplateMailParams' = {
+        params: TemplateMailParams = {
             'receivers': receivers,
             'template': template,
             'data': data
@@ -332,7 +332,7 @@ class PostmarkMailer:
                        postamble: bytes = b']}'
                        ) -> list[Union['MailID', MailState]]:
 
-        messages: 'JSONArray' = []
+        messages: JSONArray = []
         for mail in mails:
             if template:
                 mail = cast('TemplateMailParams', mail)
@@ -357,7 +357,7 @@ class PostmarkMailer:
         buffer = io.BytesIO()
         buffer.write(preamble)
         num_included = 0
-        result: list[Union['MailID', MailState]] = []
+        result: list[Union[MailID, MailState]] = []
 
         def finish_batch() -> None:
             nonlocal buffer
