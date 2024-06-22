@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-20 09:55+0200\n"
+"POT-Creation-Date: 2024-06-22 21:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,6 +103,10 @@ msgstr ""
 msgid "Export meeting protocol"
 msgstr ""
 
+#: ./src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr ""
+
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr ""
@@ -139,18 +143,23 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
+#: ./src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#: ./src/privatim/views/templates/activities.pt
-msgid "Add Consultation"
+#, python-format
+msgid "Successfully edited consultation \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#: ./src/privatim/forms/consultation_form.py
-msgid "Edit Consultation"
+#: ./src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
 msgstr ""
 
 #: ./src/privatim/views/password_change.py

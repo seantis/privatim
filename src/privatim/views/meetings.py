@@ -39,6 +39,10 @@ def meeting_view(
         translate(_('Export meeting protocol')),
         request.route_url('export_meeting_as_pdf_view', id=context.id),
     )
+    request.add_action_menu_entry(
+        translate(_('Delete Meeting')),
+        request.route_url('delete_meeting', id=context.id),
+    )
 
     items = []
     for item in context.agenda_items:
@@ -266,6 +270,7 @@ def delete_meeting_view(
 
     assert isinstance(context, Meeting)
     name = context.name
+    working_group_id = context.working_group.id
 
     session = request.dbsession
     session.delete(context)
@@ -281,5 +286,5 @@ def delete_meeting_view(
 
     request.messages.add(message, 'success')
     return HTTPFound(
-        location=request.route_url('working_groups'),
+        location=request.route_url('meetings', id=working_group_id),
     )

@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import select
 
-from privatim.models import User, WorkingGroup
+from privatim.models import User, WorkingGroup, Meeting
 
 
 def test_view_add_working_group_with_meeting(client):
@@ -55,3 +55,10 @@ def test_view_add_working_group_with_meeting(client):
     page = page.form.submit().follow()
 
     assert 'Weekly Meeting' in page
+
+    stmt = select(Meeting).where(Meeting.working_group_id == group.id)
+    meeting = client.db.execute(stmt).scalars().first()
+    assert 'Weekly Meeting' in page
+
+    page = client.get(f'/meetings/{meeting.id}/delete').follow()
+    assert 'erfolgreich gelöscht' in page

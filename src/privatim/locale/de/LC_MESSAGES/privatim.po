@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-20 09:55+0200\n"
+"POT-Creation-Date: 2024-06-22 21:53+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -106,6 +106,10 @@ msgstr "Datei \"${title}\" erfolgreich gelöscht"
 msgid "Export meeting protocol"
 msgstr "Protokoll drucken"
 
+#: src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr "Sitzung löschen"
+
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traktandum bearbeiten"
@@ -141,19 +145,24 @@ msgstr "Sitzung \"${name}\" erfolgreich bearbeitet"
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Sitzung \"${name}\" erfolgreich gelöscht"
 
+#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
+msgid "Edit Consultation"
+msgstr "Vernehmlassung bearbeiten"
+
 #: src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
 
 #: src/privatim/views/consultations.py
+#, python-format
+msgid "Successfully edited consultation \"${name}\""
+msgstr "Vernehmlassung \"${name}\" erfolgreich bearbeitet"
+
+#: src/privatim/views/consultations.py
 #: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung Erfassen"
-
-#: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
-msgid "Edit Consultation"
-msgstr "Vernehmlassung bearbeiten"
 
 #: src/privatim/views/password_change.py
 msgid "Email"
