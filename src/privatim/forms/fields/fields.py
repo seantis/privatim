@@ -462,9 +462,7 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
         output: list[GeneralFile] = []
         print(self.entries)
 
-        # for field, file in zip_longest(self.entries, files): print('l');
         for field, file in zip_longest(self.entries, files):
-            print('l')
             if field is None:
                 # breakpoint()
                 # this generally shouldn't happen, but we should

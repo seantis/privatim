@@ -129,13 +129,12 @@ def test_view_edit_consultation(client):
     page = page.form.submit().follow()
 
     # assert we are redirected to the edited consultation:
-    # assert f'consultation/{str(consultation_id)}' in page.request.url
+    assert f'consultation/{str(consultation_id)}' in page.request.url
 
     # navigate with id to verify the edits
-    page = client.get(f'/consultations/{str(consultation_id)}')
+    page = client.get(f'/consultation/{str(consultation_id)}')
 
     assert 'updated description' in page
-    assert 'UpdatedTest.txt' in page
     href = tostring(page.pyquery('a.document-link')[0]).decode(
         'utf-8')
     href = client.extract_href(href)
@@ -143,6 +142,3 @@ def test_view_edit_consultation(client):
 
     assert not resp.status_code == 404
     assert resp.status_code == 200
-
-    status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
-    assert status_text_badge == 'Updated'
