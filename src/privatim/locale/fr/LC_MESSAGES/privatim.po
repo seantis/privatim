@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-22 21:53+0200\n"
+"POT-Creation-Date: 2024-06-23 03:54+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -124,6 +124,10 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: src/privatim/views/meetings.py
+msgid "Delete Working Group"
+msgstr "Supprimer le comité"
+
+#: src/privatim/views/meetings.py
 msgid "Participants"
 msgstr "Participants"
 
@@ -207,6 +211,20 @@ msgstr "Comité \"${name}\" ajouté avec succès"
 #: src/privatim/views/templates/working_groups.pt
 msgid "Add Working Group"
 msgstr "Ajouter un comité"
+
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid ""
+"Cannot delete working group \"${name}\" because it has associated meetings. "
+"Please delete all meetings first."
+msgstr ""
+"Le comité \"${Name}\" ne peut pas être supprimé car il a des réunions "
+"associées. Veuillez d'abord supprimer toutes les réunions"
+
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully deleted working group \"${name}\""
+msgstr "Comité \"${name}\" supprimé avec succès"
 
 #: src/privatim/views/agenda_items.py
 #, python-format

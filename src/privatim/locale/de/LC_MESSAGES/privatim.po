@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-22 21:53+0200\n"
+"POT-Creation-Date: 2024-06-23 03:54+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -127,6 +127,10 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: src/privatim/views/meetings.py
+msgid "Delete Working Group"
+msgstr "Gremium löschen"
+
+#: src/privatim/views/meetings.py
 msgid "Participants"
 msgstr "Mitwirkende"
 
@@ -208,6 +212,20 @@ msgstr "Gremium \"${name}\" erfolgreich hinzugefügt"
 #: src/privatim/views/templates/working_groups.pt
 msgid "Add Working Group"
 msgstr "Gremium hinzufügen"
+
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid ""
+"Cannot delete working group \"${name}\" because it has associated meetings. "
+"Please delete all meetings first."
+msgstr ""
+"Das Gremium \"${Name}\" kann nicht gelöscht werden, da sie über zugehörige "
+"Sitzungen verfügt. Bitte löschen Sie zuerst alle Besprechungen."
+
+#: src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully deleted working group \"${name}\""
+msgstr "Gremium \"${name}\" erfolgreich gelöscht"
 
 #: src/privatim/views/agenda_items.py
 #, python-format

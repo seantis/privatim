@@ -154,6 +154,7 @@ def export_meeting_as_pdf_view(
     return response
 
 
+# alias working_group_view
 def meetings_view(
         context: WorkingGroup,
         request: 'IRequest'
@@ -161,6 +162,11 @@ def meetings_view(
     """ Displays the table of meetings a single working group has. """
 
     assert isinstance(context, WorkingGroup)
+
+    request.add_action_menu_entry(
+        translate(_('Delete Working Group')),
+        request.route_url('delete_working_group', id=context.id)
+    )
 
     add_meeting_link = request.route_url('add_meeting', id=context.id)
     leader = Markup(  # noqa: MS001

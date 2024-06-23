@@ -37,7 +37,10 @@ from privatim.views.password_retrieval import (  # type: ignore
 from privatim.views.people import people_view, person_view
 from privatim.views.profile import profile_view, add_profile_image_view
 from privatim.views.comment import add_comment_view
-from privatim.views.working_groups import add_or_edit_group_view
+from privatim.views.working_groups import (
+    add_or_edit_working_group,
+    delete_working_group_view,
+)
 from privatim.views.working_groups import working_groups_view
 
 
@@ -156,13 +159,13 @@ def includeme(config: 'Configurator') -> None:
         '/working_groups/add',
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_or_edit_working_group,
         route_name='add_working_group',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_group_view,
+        add_or_edit_working_group,
         route_name='add_working_group',
         renderer='json',
         request_method='POST',
@@ -180,6 +183,25 @@ def includeme(config: 'Configurator') -> None:
         meetings_view,
         route_name='meetings',
         renderer='templates/working_group.pt',
+    )
+
+    # Delete working group
+    config.add_route(
+        'delete_working_group',
+        '/working_groups/{id}/delete',
+        factory=working_group_factory
+    )
+    config.add_view(
+        delete_working_group_view,
+        route_name='delete_working_group',
+        xhr=False
+    )
+    config.add_view(
+        delete_working_group_view,
+        route_name='delete_working_group',
+        renderer='json',
+        request_method='DELETE',
+        xhr=True
     )
 
     # Add meeting per working_group

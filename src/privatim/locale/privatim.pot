@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-22 21:53+0200\n"
+"POT-Creation-Date: 2024-06-23 03:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,6 +124,10 @@ msgid "Delete"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
+msgid "Delete Working Group"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
 msgid "Participants"
 msgstr ""
 
@@ -201,6 +205,18 @@ msgstr ""
 #: ./src/privatim/views/working_groups.py
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "Add Working Group"
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid ""
+"Cannot delete working group \"${name}\" because it has associated meetings. "
+"Please delete all meetings first."
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully deleted working group \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/agenda_items.py

@@ -11,6 +11,10 @@
                     <tal:block i18n:translate="">Working Group</tal:block> ${title}</h1>
             </div>
 
+            <!-- Dropdown button with common actions  -->
+            <div class="col-md-6 text-end">
+                    ${panel('action_menu')}
+            </div>
 
             <!--?           Display basic info about the group. -->
             <div class="text-start resource-collection">
