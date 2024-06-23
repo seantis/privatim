@@ -1,5 +1,4 @@
 from datetime import datetime
-from functools import cache
 from pathlib import Path
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy import select
@@ -45,10 +44,15 @@ def main(config_uri: str, add_vemz: bool, add_meeting: bool) -> None:
         add_example_content(db, add_vemz, add_meeting)
 
 
-@cache
 def get_first_admin_user(session: 'Session') -> User | None:
-    stmt = select(User).filter(User.email.contains('admin'))
-    return session.scalars(stmt).first()
+    """ Very heuristically attempt to find the default user . """
+    stmt_admin = select(User).filter(User.email.contains('admin'))
+    admin_user = session.scalars(stmt_admin).first()
+    if admin_user is not None:
+        return admin_user
+
+    stmt_foo = select(User).filter(User.email.contains('privatim@'))
+    return session.scalars(stmt_foo).first()
 
 
 def add_example_content(
