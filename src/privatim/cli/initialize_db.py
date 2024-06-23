@@ -99,7 +99,7 @@ def add_example_content(
         pdf = here / 'sample-pdf-for-initialize-db/' / pdfname
         content = pdf.read_bytes()
         consultation = Consultation(
-            documents=[GeneralFile(filename=pdfname, content=content)],
+            files=[GeneralFile(filename=pdfname, content=content)],
             title='Verordnung über den Einsatz elektronischer Mittel zur Ton- '
             'und Bildübertragung in Zivilverfahren (VEMZ)',
             description='Mit der Revision der Schweizerischen '
