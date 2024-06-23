@@ -30,17 +30,46 @@
                             <div class="profile-section m-3">
                                 <img src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                      class="rounded-circle m-3 profile-icon" alt="Profile Icon">
+
                                 <tal:b tal:switch="activity.__class__.__name__">
-                                    <a tal:condition="activity.creator" href="${request.route_url('person', id=activity.creator.id)}" tal:case="'Consultation'">
-                                        <p class="profile-name" i18n:translate="">${activity.creator.fullname}</p>
-                                    </a>
+                                    <div tal:case="'Consultation'">
+                                        <tal:define define="has_creator python: activity.creator is not None">
+                                            <tal:condition condition="has_creator">
+                                                <a tal:attributes="href request.route_url('person', id=activity.creator.id)">
+                                                    <p class="profile-name" i18n:translate="">${activity.creator.fullname}</p>
+                                                </a>
+                                            </tal:condition>
+                                            <tal:condition condition="not:has_creator">
+                                                <p class="profile-name"
+                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
+                                                    Unbekannter Ersteller</p>
+                                            </tal:condition>
+                                        </tal:define>
+                                        <p class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
+                                    </div>
+                                    <div tal:case="'Meeting'">
+                                        <tal:define define="has_leader python: activity.working_group.leader is not None">
+                                            <tal:condition condition="has_leader">
+                                                <a tal:attributes="href request.route_url('person', id=activity.working_group.leader.id)">
+                                                    <p class="profile-name" i18n:translate="">${activity.working_group.leader.fullname}</p>
+                                                </a>
+                                            </tal:condition>
+                                            <tal:condition condition="not:has_leader">
+                                                <p class="profile-name"
+                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
+                                                    Kein Leiter</p>
+                                            </tal:condition>
+                                        </tal:define>
+                                    </div>
                                 </tal:b>
-                                <p tal:condition="activity.__class__.__name__ == 'Consultation'" class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
                             </div>
 
                             <tal:b tal:switch="activity.__class__.__name__">
                                 <div tal:case="'Consultation'" class="card-body col-md-8 d-flex flex-column">
                                     <h5 class="card-title fw-bold" i18n:translate="">${activity.title}</h5>
+                                    <!-- Note: We could use a .text-truncate class to truncate the text with an ellipsis.
+                                    However, by using a fixed length, this approach minimizes variables and creates a more manageable and predictable layout.
+                                    -->
                                     <p class="card-text" tal:condition="activity.recommendation" tal:content="activity.description if len(activity.description) < 100 else activity.description[:100] + '...'"></p>
                                     <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate=""
                                        class="details-link">Show Details</a>
