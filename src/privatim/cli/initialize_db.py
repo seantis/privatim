@@ -7,8 +7,8 @@ from sqlalchemy import select
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models.consultation import Status, Tag
 from privatim.orm import get_engine
-from privatim.models import (Consultation, ConsultationDocument, User, Meeting,
-                             WorkingGroup, AgendaItem)
+from privatim.models import (Consultation, User, Meeting, WorkingGroup,
+                             AgendaItem, GeneralFile)
 from privatim.orm import Base
 import click
 
@@ -99,7 +99,7 @@ def add_example_content(
         pdf = here / 'sample-pdf-for-initialize-db/' / pdfname
         content = pdf.read_bytes()
         consultation = Consultation(
-            documents=[ConsultationDocument(name=pdfname, content=content)],
+            documents=[GeneralFile(filename=pdfname, content=content)],
             title='Verordnung über den Einsatz elektronischer Mittel zur Ton- '
             'und Bildübertragung in Zivilverfahren (VEMZ)',
             description='Mit der Revision der Schweizerischen '

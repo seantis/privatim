@@ -1,3 +1,62 @@
+""" Generic associations are an interesting SQLAlchemy design pattern
+that allow for collections of records to be attached to other models by
+mere inheritance.
+
+Generic associations are useful in situations where a model should be
+attachable to a number of third-party models. For example, we might say that
+a comment model should be attacheable to any other model (say a page or a
+ticket). In such an instance generic associations offer the benefit of
+being simple to integrate on the third-party model.
+
+Additionally we can define generic methods that work on all third-party
+models that inherit from the associated model (in our example imagine a
+"Commentable" class that leads to the automatic attachment of comments to
+Page/Ticket models).
+
+See also:
+https://github.com/zzzeek/sqlalchemy/blob/master/examples/
+generic_associations/table_per_association.py
+
+Note that you do not want to use these associations in lieue of simple
+relationships between two models. The standard way of doing this leads to a
+strong relationship on the database and is easier to change and reason about.
+
+Generic associations are meant for generic usecases. These currently include
+payments (any model may be payable) and files (any model may have files
+attached). Other generic associations should be introduced along these
+lines.
+
+A single model may be associated to any number of other models. For example::
+
+                            ┌─────────────┐
+                      ┌─────│ Reservation │
+    ┌────────────┐    │     └─────────────┘
+    │  Payment   │◀───┤
+    └────────────┘    │     ┌─────────────┐
+                      └─────│    Form     │
+                            └─────────────┘
+
+Here, ``Payment`` is associable (through the ``Payable`` mixin).
+``Reservation`` and ``Form`` in turn inherit from ``Payable``.
+
+This all is probably best understood in an example:
+
+        class Payment(Base, Associable):
+            __tablename__ == 'payments'
+
+        class Payable:
+            payment = associated(Payment, 'payment', 'one-to-one')
+
+        class Product(Base, Payable):
+            __tablename__ == 'products'
+
+This results in a product model which has a payment attribute attached to it.
+The payments are stored in the ``payments`` table, products in the ``products``
+table. The link between the two is established in the automatically created
+``payments_for_products`` table.
+
+"""
+
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, joinedload, Mapped

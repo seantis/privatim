@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 03:54+0200\n"
+"POT-Creation-Date: 2024-06-23 05:02+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -159,9 +159,8 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
 
 #: src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully edited consultation \"${name}\""
-msgstr "Vernehmlassung \"${name}\" erfolgreich bearbeitet"
+msgid "Successfully edited consultation."
+msgstr "Vernehmlassung erfolgreich bearbeitet."
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/activities.pt
@@ -343,14 +342,6 @@ msgstr "Ihr Kommentar"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
-
-#: src/privatim/views/templates/activities.pt
-msgid ""
-"No activities added yet. You can add activities in the Consultations tab or "
-"by adding a Meeting of a Working Group."
-msgstr ""
-"Keine Aktivitäten erfasst. Sie können Aktivitäten im Tab 'Vernehmlassungen' "
-"hinzufügen oder eine Sitzung einer Arbeitsgruppe erfassen."
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
@@ -599,7 +590,7 @@ msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
-msgstr "Arbeitsgruppe bearbeiten"
+msgstr "Gremium bearbeiten"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "No Leader"
@@ -608,6 +599,22 @@ msgstr "Kein Leiter"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Mitglieder"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Uploaded file"
+msgstr "Hochgeladene Datei"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Keep file"
+msgstr "Datei behalten"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Delete file"
+msgstr "Datei löschen"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Replace file"
+msgstr "Datei ersetzen"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Upload additional files"

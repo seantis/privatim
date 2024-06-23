@@ -5,7 +5,8 @@ import transaction
 from libcloud.storage.drivers.local import LocalStorageDriver
 from pyramid import testing
 from sqlalchemy import engine_from_config
-from privatim import main, setup_filestorage
+from privatim import main
+from privatim.file.setup import setup_filestorage
 from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session

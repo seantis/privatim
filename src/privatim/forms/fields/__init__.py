@@ -1,6 +1,12 @@
-from .fields import ChosenSelectWidget, DateTimeLocalField, \
-    TimezoneDateTimeField, SearchableSelectField, UploadField, \
-    UploadMultipleField
+from .fields import (
+    ChosenSelectWidget,
+    DateTimeLocalField,
+    TimezoneDateTimeField,
+    SearchableSelectField,
+    UploadField,
+    UploadMultipleField,
+    # UploadOrSelectExistingMultipleFilesField,
+)
 from .transparent_form_field import TransparentFormField
 
 
@@ -25,4 +31,5 @@ __all__ = (
     "SearchableSelectField",
     "UploadField",
     "UploadMultipleField",
+    # "UploadOrSelectExistingMultipleFilesField"
 )

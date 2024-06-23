@@ -23,10 +23,6 @@
             <div class="row">
                 <!-- Main content area (2/3 width) -->
                 <div class="col-md-8 order-md-1">
-                    <tal:b tal:condition="not:activities">
-                        <p class="lead" i18n:translate="">No activities added yet. You can add activities in the
-                            Consultations tab or by adding a Meeting of a Working Group.</p>
-                    </tal:b>
 
                     <div tal:repeat="activity activities" class="mt-4">
 

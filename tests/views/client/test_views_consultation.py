@@ -63,7 +63,7 @@ def test_view_add_consultation(client):
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
     page.form['cantons'] = ['AG', 'ZH']
-    page.form['documents'] = Upload('Test.txt', b'File content.')
+    page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
     consultation_id = session.execute(
@@ -103,7 +103,7 @@ def test_view_edit_consultation(client):
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
     page.form['cantons'] = ['AG', 'ZH']
-    page.form['documents'] = Upload('Test.txt', b'File content.')
+    page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
     consultation_id = session.execute(
@@ -122,7 +122,10 @@ def test_view_edit_consultation(client):
     page.form['recommendation'] = 'updated recommendation'
     page.form['status'] = '2'
     page.form['cantons'] = ['BE', 'LU']
-    page.form['documents'] = Upload('UpdatedTest.txt', b'Updated file content.')
+    page.form['files'] = Upload(
+        'UpdatedTest.txt',
+        b'Updated file ' b'content.'
+    )
     page = page.form.submit().follow()
 
     # assert we are redirected to the edited consultation:

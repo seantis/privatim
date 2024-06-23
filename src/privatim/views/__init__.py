@@ -1,11 +1,9 @@
 from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
-from privatim.fliestorage_download import download_consultation_document
 
 from privatim.route_factories import (agenda_item_factory,
-                                      general_file_factory,
-                                      consultation_document_factory)
+                                      general_file_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -18,14 +16,18 @@ from privatim.views.agenda_items import edit_agenda_item_view
 from privatim.views.consultations import add_or_edit_consultation_view
 from privatim.views.consultations import consultation_view
 from privatim.views.consultations import consultations_view
-from privatim.views.general_file import download_general_file_view, \
-    delete_general_file_view
+from privatim.views.general_file import (
+    download_general_file_view,
+    delete_general_file_view,
+)
 from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
-from privatim.views.meetings import add_meeting_view, \
-    export_meeting_as_pdf_view
+from privatim.views.meetings import (
+    add_meeting_view,
+    export_meeting_as_pdf_view,
+)
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
@@ -394,17 +396,6 @@ def includeme(config: 'Configurator') -> None:
         person_view,
         route_name='person',
         renderer='templates/person.pt',
-    )
-
-    config.add_route(
-        'download_document',
-        '/media/assets/{consultation_doc_id}',
-        factory=consultation_document_factory
-    )
-    config.add_view(
-        download_consultation_document,
-        request_method='GET',
-        route_name='download_document'
     )
 
     # single meeting view

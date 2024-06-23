@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 03:54+0200\n"
+"POT-Creation-Date: 2024-06-23 05:02+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -156,9 +156,8 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully edited consultation \"${name}\""
-msgstr "Consultation modifiée avec succès \"${nom}\""
+msgid "Successfully edited consultation."
+msgstr "Consultation modifiée avec succès."
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/activities.pt
@@ -342,15 +341,6 @@ msgstr "Votre commentaire"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
-
-#: src/privatim/views/templates/activities.pt
-msgid ""
-"No activities added yet. You can add activities in the Consultations tab or "
-"by adding a Meeting of a Working Group."
-msgstr ""
-"Aucune activité n'a encore été ajoutée. Vous pouvez ajouter des activités "
-"dans l'onglet Consultations ou en ajoutant une réunion d'un groupe de "
-"travail."
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
@@ -606,6 +596,22 @@ msgstr "Pas de chef"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Membres"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Uploaded file"
+msgstr "Fichier téléchargé"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Keep file"
+msgstr "Conserver le fichier"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Delete file"
+msgstr "Supprimer le fichier"
+
+#: src/privatim/forms/widgets/widgets.py
+msgid "Replace file"
+msgstr "Remplacer le fichier"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Upload additional files"

@@ -3,14 +3,13 @@ from fanstatic import Fanstatic
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Table, MetaData, Column, ForeignKey
-from sqlalchemy_file import FileField
+from sqlalchemy import Column, ForeignKey
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
 from pyramid.settings import asbool
-from privatim.file import setup_filestorage
+from privatim.file.setup import setup_filestorage
 from privatim.flash import MessageQueue
 from privatim.i18n import LocaleNegotiator
 from privatim.route_factories.root_factory import root_factory
@@ -119,20 +118,6 @@ def main(
 
 
 def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
-    if not context.has_table('consultation_assets'):
-        consultation_assets = Table(
-            'consultation_assets',
-            MetaData(),
-            Column('id', UUIDStrType, primary_key=True),
-            Column(
-                'consultation_id', UUIDStrType, ForeignKey('consultations.id')
-            ),
-            Column('document', FileField),
-        )
-        consultation_assets.create(context.engine)
-
-    if context.has_column('consultations', 'documents'):
-        context.drop_column('consultations', 'documents')
 
     if not context.has_column('consultations', 'creator_id'):
         context.add_column(

@@ -1,26 +1,24 @@
 import uuid
 from functools import cached_property
-from sqlalchemy import select
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 import bcrypt
 from datetime import datetime
 from datetime import timezone
 
-from sqlalchemy.orm.session import Session, object_session
+from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey
 
 from privatim.models import Group, WorkingGroup
+from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
 from privatim.models.meeting import meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
-from privatim.static import get_default_profile_pic_data
-from privatim.models.file import GeneralFile
 
 
 from typing import TYPE_CHECKING
@@ -29,6 +27,7 @@ if TYPE_CHECKING:
     from privatim.models import Meeting
     from privatim.models.commentable import Comment
     from privatim.models import Consultation
+    from privatim.models import GeneralFile
 
 
 class User(Base):
@@ -47,7 +46,7 @@ class User(Base):
         ForeignKey('general_files.id', ondelete='SET NULL'),
         nullable=True
     )
-    profile_pic: Mapped[GeneralFile | None] = relationship(
+    profile_pic: Mapped['GeneralFile | None'] = relationship(
         'GeneralFile',
         single_parent=True,
         passive_deletes=True,
@@ -133,7 +132,7 @@ class User(Base):
         return ' '.join(parts)
 
     @property
-    def picture(self) -> GeneralFile:
+    def picture(self) -> 'GeneralFile':
         """ Returns the user's profile picture or the default picture. """
         session = object_session(self)
         assert session is not None
@@ -147,17 +146,3 @@ class User(Base):
         return [
             (Allow, Authenticated, ['view']),
         ]
-
-
-def get_or_create_default_profile_pic(session: Session) -> GeneralFile:
-    stmt = select(GeneralFile).where(
-        GeneralFile.filename == 'default_profile_picture.png'
-    )
-    default_profile_picture = session.execute(stmt).scalar_one_or_none()
-    if default_profile_picture is None:
-        filename, data = get_default_profile_pic_data()
-        default_profile_picture = GeneralFile(filename=filename, content=data)
-        session.add(default_profile_picture)
-        session.flush()
-        session.refresh(default_profile_picture)
-    return default_profile_picture

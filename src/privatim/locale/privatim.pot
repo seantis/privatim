@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 03:54+0200\n"
+"POT-Creation-Date: 2024-06-23 05:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,8 +157,7 @@ msgid "Successfully added consultation \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully edited consultation \"${name}\""
+msgid "Successfully edited consultation."
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -332,12 +331,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid ""
-"No activities added yet. You can add activities in the Consultations tab or "
-"by adding a Meeting of a Working Group."
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -593,6 +586,22 @@ msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Members"
+msgstr ""
+
+#: ./src/privatim/forms/widgets/widgets.py
+msgid "Uploaded file"
+msgstr ""
+
+#: ./src/privatim/forms/widgets/widgets.py
+msgid "Keep file"
+msgstr ""
+
+#: ./src/privatim/forms/widgets/widgets.py
+msgid "Delete file"
+msgstr ""
+
+#: ./src/privatim/forms/widgets/widgets.py
+msgid "Replace file"
 msgstr ""
 
 #: ./src/privatim/forms/widgets/widgets.py

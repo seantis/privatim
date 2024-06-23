@@ -169,12 +169,14 @@ def meetings_view(
     )
 
     add_meeting_link = request.route_url('add_meeting', id=context.id)
-    leader = Markup(  # noqa: MS001
-        '<a href="{}" class="mb-1">{}</a>'.format(
-            request.route_url("person", id=context.leader.id),
-            context.leader.fullname
+    leader = None
+    if context.leader is not None:
+        leader = Markup(  # noqa: MS001
+            '<a href="{}" class="mb-1">{}</a>'.format(
+                request.route_url("person", id=context.leader.id),
+                context.leader.fullname
+            )
         )
-    )
     title = translate(_('Participants'))
     return {
         'title': context.name,

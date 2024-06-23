@@ -1,5 +1,8 @@
 import inspect
+from itertools import zip_longest
+
 import sedate
+from sqlalchemy import select
 from privatim.static import init_tom_select
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
@@ -18,10 +21,13 @@ from privatim.utils import (
     get_supported_image_mime_types,
 )
 from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
+from privatim.models import GeneralFile
+from operator import itemgetter
 
 
 from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
 if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
     from wtforms.fields.choices import SelectFieldBase
     from markupsafe import Markup
     from collections.abc import Sequence
@@ -69,7 +75,21 @@ __all__ = [
     "SearchableSelectField",
     "UploadField",
     "UploadMultipleField",
+    # "UploadFileWithORMSupport",
+    # "UploadMultipleFilesWithORMSupport",
+    # "UploadOrLinkExistingFileField",
+    # "UploadOrSelectExistingFileField",
+    # "UploadOrSelectExistingMultipleFilesField"
 ]
+
+
+def file_choices_from_session(session: 'Session') -> list[tuple[str, str]]:
+    stmt = select(GeneralFile.id, GeneralFile.filename)
+    result = session.execute(stmt)
+    return sorted(
+        ((file_id, name) for file_id, name in result),
+        key=itemgetter(1),
+    )
 
 
 class ChosenSelectWidget(Select):
@@ -199,8 +219,6 @@ class UploadField(FileField):
             self.data = {}
             return
 
-        fieldstorage: RawFormValue
-        action: RawFormValue
         if len(valuelist) == 4:
             # resend_upload
             action = valuelist[0]
@@ -229,11 +247,14 @@ class UploadField(FileField):
             raise NotImplementedError()
 
     def process_fieldstorage(
-        self, fs: 'RawFormValue'
+        self, field_storage: 'RawFormValue'
     ) -> 'StrictFileDict | FileDict':
 
-        self.file = getattr(fs, 'file', getattr(fs, 'stream', None))
-        self.filename = path_to_filename(getattr(fs, 'filename', None))
+        self.file = getattr(
+            field_storage, 'file', getattr(field_storage, 'stream', None)
+        )
+        self.filename = path_to_filename(getattr(field_storage,
+                                                 'filename', None))
 
         if not self.file:
             return {}
@@ -285,6 +306,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         _prefix: str = '',
         _translations: '_SupportsGettextAndNgettext | None' = None,
         _meta: 'DefaultMeta | None' = None,
+        **extra_arguments: Any
     ):
         if upload_widget is None:
             upload_widget = self.upload_widget
@@ -295,7 +317,8 @@ class UploadMultipleField(UploadMultipleBase, FileField):
             filters=filters,
             description=description,
             widget=upload_widget,
-        )
+            render_kw=render_kw,
+            **extra_arguments)
         super().__init__(
             unbound_field,
             label,
@@ -359,7 +382,315 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         # we fake the formdata for the new field
         # we use a werkzeug MultiDict because the WebOb version
         # needs to get wrapped to be usable in WTForms
-        formdata: MultiDict[str, RawFormValue] = MultiDict()
+        formdata: MultiDict[str, 'RawFormValue'] = MultiDict()
         name = f'{self.short_name}{self._separator}{len(self)}'
         formdata.add(name, fs)
         return self._add_entry(formdata)
+
+
+class _DummyFile:
+    file: GeneralFile | None
+
+
+class UploadFileWithORMSupport(UploadField):
+    """ Extends the upload field with onegov.file support. """
+
+    file_class: type[GeneralFile]
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        self.file_class = kwargs.pop('file_class')
+        super().__init__(*args, **kwargs)
+
+    def create(self) -> GeneralFile | None:
+        if not getattr(self, 'file', None):
+            return None
+
+        assert self.file is not None
+        self.file.seek(0)
+        assert self.filename is not None
+        return GeneralFile(filename=self.filename, content=self.file.read())
+
+    def populate_obj(self, obj: object, name: str) -> None:
+
+        if not getattr(self, 'action', None):
+            return
+
+        if self.action == 'keep':
+            pass
+
+        elif self.action == 'delete':
+            setattr(obj, name, None)
+
+        elif self.action == 'replace':
+            setattr(obj, name, self.create())
+
+        else:
+            raise NotImplementedError(f"Unknown action: {self.action}")
+
+    def process_data(self, value: GeneralFile | None) -> None:
+
+        if value:
+            try:
+                size = value.file.size
+            except IOError:
+                # if the file doesn't exist on disk we try to fail
+                # silently for now
+                size = -1
+            self.data = {
+                'filename': value.filename,
+                'size': size,
+                'mimetype': value.content_type
+            }
+        else:
+            super().process_data(value)
+
+
+class UploadMultipleFilesWithORMSupport(UploadMultipleField):
+    """ Extends the upload multiple field with file support. """
+
+    file_class: type[GeneralFile]
+    added_files: list[GeneralFile]
+    upload_field_class = UploadFileWithORMSupport
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        self.file_class = kwargs['file_class']
+        super().__init__(*args, **kwargs)
+
+    def populate_obj(self, obj: object, name: str) -> None:
+        self.added_files = []
+        files = getattr(obj, name, ())
+        output: list[GeneralFile] = []
+        print(self.entries)
+
+        # for field, file in zip_longest(self.entries, files): print('l');
+        for field, file in zip_longest(self.entries, files):
+            print('l')
+            if field is None:
+                # breakpoint()
+                # this generally shouldn't happen, but we should
+                # guard against it anyways, since it can happen
+                # if people manually call pop_entry()
+                break
+
+            dummy = _DummyFile()
+            dummy.file = file
+            field.populate_obj(dummy, 'file')
+            if dummy.file is not None:
+                output.append(dummy.file)
+                if (
+                    dummy.file is not file
+                    # an upload field may mark a file as having already
+                    # existed previously, in this case we don't consider
+                    # it having being added
+                    and getattr(field, 'existing_file', None) is None
+                ):
+                    # added file
+                    self.added_files.append(dummy.file)
+
+        # breakpoint()
+        setattr(obj, name, output)
+#
+#
+# class UploadOrLinkExistingFileField(UploadFileWithORMSupport):
+#     """ An extension of :class:`onegov.form.fields.UploadFileWithORMSupport`
+#     which will select existing uploaded files to link from a given
+#     :class:`onegov.file.FileCollection` class in addition to uploading
+#     new files.
+#
+#     This class is mostly useful in conjunction with
+#     :class:`onegov.org.forms.fields.UploadOrSelectExistingMultipleFilesField`
+#     if you want to link or upload only a single file, then you should
+#     use :class:`onegov.org.forms.fields.UploadOrSelectExistingFileField`.
+#
+#     """
+#
+#     existing_file: GeneralFile | None
+#     widget = UploadOrLinkExistingFileWidget()
+#
+#     def __init__(
+#             self,
+#             *args: Any,
+#             **kwargs: Any
+#     ) -> None:
+#         # if we got this argument we discard it, we don't use it
+#         kwargs.pop('_choices', None)
+#
+#         # we don't really use file_class since we use the collection
+#         # to create the files instead
+#         kwargs.setdefault('file_class', GeneralFile)
+#         super().__init__(*args, **kwargs)
+#
+#         meta = kwargs.get('_meta') or kwargs['_form'].meta
+#         if not hasattr(meta, 'dbsession'):
+#             super().__init__(*args, **kwargs, file_class=GeneralFile)
+#             return
+#
+#         self.session = meta.dbsession
+#
+#     def populate_obj(self, obj: object, name: str) -> None:
+#         # shortcut for when a file was explicitly selected
+#         existing = getattr(self, 'existing_file', None)
+#         if existing is not None:
+#             setattr(obj, name, existing)
+#             return
+#
+#         super().populate_obj(obj, name)
+#
+#     def create(self) -> GeneralFile | None:
+#         if not getattr(self, 'file', None):
+#             return None
+#
+#         assert self.file is not None
+#         self.file.seek(0)
+#
+#         file = GeneralFile(filename=self.filename, content=self.file.read())
+#         self.session.add(file)
+#         self.session.flush()
+#         return file
+#
+#
+# class UploadOrSelectExistingFileField(UploadOrLinkExistingFileField):
+#     """ An extension of :class:`onegov.form.fields.UploadFileWithORMSupport`
+#     to allow selecting existing uploaded files from a given
+#     :class:`onegov.file.FileCollection` class in addition to uploading
+#     new files.
+#
+#     :param file_collection:
+#         The file collection class to use, should be a subclass of
+#         :class:`onegov.file.FileCollection`.
+#
+#     :param file_type:
+#         The polymorphic type to use and to filter for.
+#
+#     :param allow_duplicates:
+#         Prevents duplicates if set to false. Rather than throw an error
+#         it will link to the existing file and discard the new file.
+#
+#     """
+#
+#     widget = UploadOrSelectExistingFileWidget()
+#
+#     def __init__(
+#             self,
+#             *args: Any,
+#             _choices: list[tuple[str, str]] | None = None,
+#             **kwargs: Any
+#     ):
+#         super().__init__(
+#             *args,
+#             **kwargs
+#         )
+#
+#         if _choices is None:
+#             _choices = file_choices_from_session(self.session)
+#         self.choices = _choices
+#
+#     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+#
+#         if not valuelist:
+#             self.data = {}
+#             return
+#
+#         fieldstorage: RawFormValue
+#         action: RawFormValue
+#         if len(valuelist) == 5:
+#             # resend_upload
+#             action = valuelist[0]
+#             fieldstorage = valuelist[1]
+#             existing = valuelist[2]
+#             self.data = binary_to_dictionary(
+#                 dictionary_to_binary({'data': str(valuelist[4])}),
+#                 str(valuelist[3])
+#             )
+#         elif len(valuelist) == 3:
+#             action, fieldstorage, existing = valuelist
+#         else:
+#             # default
+#             action = 'replace'
+#             fieldstorage = valuelist[0]
+#
+#         if action == 'replace':
+#             self.action = 'replace'
+#             self.data = self.process_fieldstorage(fieldstorage)
+#             self.existing = None
+#         elif action == 'delete':
+#             self.action = 'delete'
+#             self.data = {}
+#             self.existing = None
+#         elif action == 'keep':
+#             self.action = 'keep'
+#             self.existing = None
+#         elif action == 'select':
+#             self.action = 'replace'
+#             if not isinstance(existing, str):
+#                 self.existing = None
+#                 return
+#
+#             if self.collection is None:
+#                 self.collection = self.collection_class(  # type:ignore
+#                     self.meta.request.session,
+#                 )
+#
+#             self.existing = existing
+#             self.existing_file = self.collection.by_id(existing)
+#             self.process_data(self.existing_file)
+#         else:
+#             raise NotImplementedError()
+#
+#
+# class UploadOrSelectExistingMultipleFilesField(
+#     UploadMultipleFilesWithORMSupport
+# ):
+#     """ An extension of
+#     :class:`onegov.form.fields.UploadMultipleFilesWithORMSupport` to
+#     allow selecting existing uploaded files from a given
+#     :class:`onegov.file.FileCollection` class in addition to uploading
+#     new files.
+#
+#
+#     """
+#
+#     widget = UploadOrSelectExistingMultipleFilesWidget()
+#     upload_field_class = UploadOrLinkExistingFileField
+#     upload_widget = UploadOrLinkExistingFileWidget()
+#
+#     def __init__(
+#             self,
+#             *args: Any,
+#             **kwargs: Any
+#     ):
+#         meta = kwargs.get('_meta') or kwargs['_form'].meta
+#         if not hasattr(meta, 'dbsession'):
+#             super().__init__(*args, **kwargs, file_class=GeneralFile)
+#             return
+#         self.session = meta.dbsession
+#         self.choices = file_choices_from_session(self.session)
+#
+#         super().__init__(
+#             *args,
+#             **kwargs,
+#             file_class=GeneralFile,
+#             _choices=self.choices,
+#         )
+#
+#     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+#         if not valuelist:
+#             return
+#
+#         breakpoint()
+#         for value in valuelist:
+#             if isinstance(value, str):
+#                 if any(f.id == value for f in self.object_data or ()):
+#                     # if this file has already been added, then don't add
+#                     # it again
+#                     continue
+#
+#                 existing = self.session.query().filter(
+#                 GeneralFile.id == value).first()
+#                 if existing is not None:
+#                     field = self.append_entry(existing)
+#                     field.existing_file \
+#                     = existing  # type:ignore[attr-defined]
+#
+#             elif hasattr(value, 'file') or hasattr(value, 'stream'):
+#                 self.append_entry_from_field_storage(value)

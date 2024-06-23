@@ -5,7 +5,7 @@ import transaction
 import click
 from pyramid.paster import bootstrap, get_appsettings
 
-from privatim import setup_filestorage
+from privatim.file.setup import setup_filestorage
 from privatim.cli.find_files import find_ini_file_or_abort
 
 from typing import Any

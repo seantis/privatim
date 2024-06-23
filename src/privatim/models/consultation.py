@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
-from privatim.models.attached_document import ConsultationDocument
+from privatim.models.associated_file import AssociatedFiles
 from privatim.models.commentable import Commentable
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
@@ -49,18 +49,13 @@ class Tag(Base):
     )
 
 
-class Consultation(Base, Commentable):
+class Consultation(Base, Commentable, AssociatedFiles):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
     __tablename__ = 'consultations'
 
     id: Mapped[UUIDStrPK]
-
-    documents: Mapped[list[ConsultationDocument]] = relationship(
-        back_populates='consultation',
-        cascade="all, delete-orphan"
-    )
 
     title: Mapped[str] = mapped_column(nullable=False)
 

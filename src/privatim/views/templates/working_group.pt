@@ -18,7 +18,7 @@
 
             <!--?           Display basic info about the group. -->
             <div class="text-start resource-collection">
-                <p>
+                <p tal:condition="leader">
                     <span class="fw-bold" i18n:translate="">Leader</span>: ${leader}
                 </p>
                     ${user_list}

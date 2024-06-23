@@ -1,6 +1,6 @@
 from .root_factory import root_factory
 from .uuid_factory import create_uuid_factory
-from privatim.models import AgendaItem, GeneralFile, ConsultationDocument
+from privatim.models import AgendaItem, GeneralFile
 from privatim.models.commentable import Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 
@@ -59,9 +59,3 @@ def person_factory(request: 'IRequest') -> 'User | Root':
 def general_file_factory(request: 'IRequest') -> GeneralFile:
     factory = create_uuid_factory(GeneralFile)
     return factory(request)
-
-
-consultation_document_factory = create_uuid_factory(
-    ConsultationDocument,
-    key='consultation_doc_id'
-)

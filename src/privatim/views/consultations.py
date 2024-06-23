@@ -3,11 +3,10 @@ import os
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
-from privatim.models import Consultation
+from privatim.models import Consultation, GeneralFile
 from privatim.models.consultation import Status, Tag
 from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
-from privatim.models.attached_document import ConsultationDocument
 from privatim.utils import dictionary_to_binary, flatten_comments
 
 
@@ -33,10 +32,10 @@ def consultation_view(
                 'display_filename': trim_filename(doc.filename),
                 'doc_content_type': doc.content_type,
                 'download_url': request.route_url(
-                    'download_document', consultation_doc_id=doc.id
+                    'download_general_file', id=doc.id
                 ),
             }
-            for doc in context.documents
+            for doc in context.files
         ],
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
@@ -94,12 +93,12 @@ def create_consultation_from_form(
         secondary_tags=tags,
         creator=user
     )
-    if form.documents.data is None:
+    if form.files.data is None:
         return None
 
-    for file in form.documents.data:
-        consultation.documents.append(
-            ConsultationDocument(
+    for file in form.files.data:
+        consultation.files.append(
+            GeneralFile(
                 file['filename'],
                 dictionary_to_binary(file))
         )
@@ -145,10 +144,7 @@ def add_or_edit_consultation_view(
                 'consultation',
                 id=str(consultation.id)
             )
-            message = _(
-                'Successfully edited consultation "${name}"',
-                mapping={'name': form.title.data}
-            )
+            message = _('Successfully edited consultation.')
             if not request.is_xhr:
                 request.messages.add(message, 'success')
 
@@ -156,6 +152,8 @@ def add_or_edit_consultation_view(
             return {'redirect_to': target_url}
         else:
             return HTTPFound(location=target_url)
+    elif not request.POST:
+        form.process(obj=context)
 
     return {
         'form': form,

@@ -10,7 +10,6 @@ from privatim.models.group import Group
 from privatim.models.group import WorkingGroup
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
-from privatim.models.attached_document import ConsultationDocument
 from privatim.models.meeting import Meeting, AgendaItem
 from privatim.models.file import GeneralFile
 from privatim.models.consultation import Tag
@@ -27,7 +26,6 @@ Group
 WorkingGroup
 User
 Consultation
-ConsultationDocument
 Meeting
 AgendaItem
 Statement
@@ -70,16 +68,3 @@ def includeme(config: 'Configurator') -> None:
         'dbsession',
         reify=True
     )
-
-
-__all__ = (
-    'includeme',
-    'AgendaItem',
-    'Group',
-    'WorkingGroup',
-    'User',
-    'Statement',
-    'Meeting',
-    'Consultation',
-    'ConsultationDocument'
-)

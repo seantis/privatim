@@ -1,14 +1,8 @@
 from datetime import datetime
 from sedate import utcnow
 from privatim.layouts.layout import DEFAULT_TIMEZONE
-from privatim.models import (
-    Meeting,
-    WorkingGroup,
-    User,
-    ConsultationDocument,
-    Tag,
-    Consultation,
-)
+from privatim.models import (Meeting, WorkingGroup, User, Tag, Consultation,
+                             GeneralFile, )
 from privatim.models.consultation import Status
 from privatim.testing import DummyRequest
 
@@ -45,12 +39,12 @@ def create_meeting(attendees=None) -> Meeting:
 def create_consultation(documents=None, tags=None, user=None):
 
     documents = documents or [
-        ConsultationDocument(
-            name='document1.pdf',
+        GeneralFile(
+            filename='document1.pdf',
             content=b'Content of Document 1',
         ),
-        ConsultationDocument(
-            name='document2.pdf',
+        GeneralFile(
+            filename='document2.pdf',
             content=b'Content of Document 2',
         ),
     ]
@@ -66,7 +60,7 @@ def create_consultation(documents=None, tags=None, user=None):
         recommendation='Some recommendation',
         status=Status(name='Open'),
         created=utcnow(),
-        documents=documents,
+        files=documents,
         secondary_tags=tags,
         creator=user
     )

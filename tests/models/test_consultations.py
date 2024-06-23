@@ -1,9 +1,7 @@
 from uuid import UUID
-
 from sqlalchemy import select
-from privatim.models import Consultation, ConsultationDocument, User
+from privatim.models import Consultation, User
 from privatim.models.consultation import Status, Tag
-from tests.shared.utils import create_consultation
 
 
 def test_consultation_status_relationship(session):
@@ -71,26 +69,6 @@ def test_consultation_tag(session):
         return all(instance[position] == "-" for position in (8, 13, 18, 23))
 
     assert is_uuid(tag.consultation_id)
-
-
-def test_consultation_document(session):
-
-    documents = [
-        ConsultationDocument(
-            name='document1.pdf',
-            content=b'Content of Document 1',
-        ),
-    ]
-    consultation = create_consultation(documents)
-    session.add(consultation)
-    session.flush()
-
-    smt = select(ConsultationDocument).where(
-        ConsultationDocument.filename == 'document1.pdf'
-    )
-    assert session.execute(smt).scalar_one().content == (
-        b'Content of Document 1'
-    )
 
 
 def test_consultation_creator_relationship(session):

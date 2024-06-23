@@ -8,10 +8,11 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields import UploadMultipleField, SearchableSelectField
+from privatim.forms.fields import SearchableSelectField
+from privatim.forms.fields.fields import UploadMultipleFilesWithORMSupport
 from privatim.i18n import _, translate
 
-from privatim.models import Tag
+from privatim.models import Tag, GeneralFile
 from privatim.models.consultation import Status
 
 
@@ -35,11 +36,16 @@ class ConsultationForm(Form):
         self, context: 'Consultation | None', request: 'IRequest'
     ) -> None:
         self._title = _('Edit Consultation')
+        session = request.dbsession
         super().__init__(
             request.POST,
             obj=context,
-            meta={'context': context, 'request': request},
+            meta={
+                'context': context,
+                'dbsession': session
+            }
         )
+
         translated_choices = [
             (code, translate(label))
             for code, label in STATUS_CHOICES
@@ -63,35 +69,44 @@ class ConsultationForm(Form):
             validators.Optional(),
         ],
     )
-    documents = UploadMultipleField(
-        label=_('Documents'),
-        validators=[
-            validators.Optional(),
-        ]
+
+    files = UploadMultipleFilesWithORMSupport(
+        label=_('Documents'), validators=[validators.Optional()],
+        file_class=GeneralFile
     )
 
-    def _populate_select_field(self, field):
-        # this a bit crude, but how else are you going to get the value?
-        for key, value in field.choices:
-            if key == field.data:
-                return value
-        return None
-
-    def populate_obj(self, obj: 'Consultation') -> None:
+    def populate_obj(
+        self,
+        obj: 'Consultation',  # type: ignore[override]
+    ) -> None:
+        session = self.meta.dbsession
         for name, field in self._fields.items():
-            if (isinstance(field, SearchableSelectField) and field.raw_data
-                    is not None):
-                session = self.meta.dbsession
-                stmt = select(Tag).where(Tag.name.in_(field.raw_data))
-                tags = session.execute(stmt).scalars().all()
-                obj.secondary_tags = tags
+            if (
+                isinstance(field, SearchableSelectField)
+                and field.raw_data is not None
+            ):
+                existing_tags = {
+                    tag.name: tag
+                    for tag in session.execute(
+                        select(Tag).where(Tag.name.in_(field.raw_data))
+                    )
+                    .scalars()
+                    .all()
+                }
+                # Create new tags for those not already existing
+                new_tags = set()
+                for tag_name in field.raw_data:
+                    if tag_name not in existing_tags:
+                        new_tag = Tag(name=tag_name)
+                        session.add(new_tag)
+                        new_tags.add(new_tag)
+                session.flush()
+                # Get all tags (existing + new)
+                all_tags = set(existing_tags.values()).union(new_tags)
+                setattr(obj, name, list(all_tags))
             elif isinstance(field, SelectField) and field.data is not None:
-                value = self._populate_select_field(field)
-                # stmt = select(Status).where(Tag.name.in_(field.raw_data))
-                breakpoint()
-                if value:
+                value = dict(field.choices)[field.data]
+                if value and obj.status.name != value:
                     setattr(obj, name, Status(name=value))
-            elif isinstance(field, UploadMultipleField):
-                breakpoint()
             else:
                 field.populate_obj(obj, name)

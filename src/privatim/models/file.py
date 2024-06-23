@@ -4,6 +4,8 @@ from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy_file import File
+
+from privatim.orm.associable import Associable
 from privatim.orm.meta import UUIDStrPK, AttachedFile
 from privatim.orm import Base
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
 
 
-class GeneralFile(Base):
+class GeneralFile(Base, Associable):
     """ A general file (image, document, pdf, etc), referenced in the database.
 
     A thin wrapper around the `File` from sqlalchemy-file so that we can easily
@@ -28,6 +30,7 @@ class GeneralFile(Base):
     filename: Mapped[str] = mapped_column(nullable=False)
 
     def __init__(self, filename: str, content: bytes) -> None:
+        assert isinstance(content, bytes)
         self.id = str(uuid.uuid4())
         self.filename = filename
         self.file = File(content=content, filename=filename)
@@ -35,6 +38,10 @@ class GeneralFile(Base):
     @property
     def content(self) -> bytes:
         return self.file.file.read()
+
+    @property
+    def content_type(self) -> str:
+        return self.file.content_type
 
     def __acl__(self) -> list['ACL']:
         return [
