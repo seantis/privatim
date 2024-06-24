@@ -137,13 +137,27 @@ def add_example_content(
 
     if add_meeting:
         attendees = [admin_user]
+        meeting = Meeting(
+            name='Cras Tristisque',
+            time=datetime.now(tz=DEFAULT_TIMEZONE),
+            attendees=attendees,
+            working_group=WorkingGroup(
+                name='1. Gremium', leader=admin_user, users=attendees
+            ),
+        )
+        db.add(meeting)
+        db.flush()
+        db.refresh(meeting)
         agenda_items = [
-            AgendaItem(
+            AgendaItem.create(
+                db,
                 title='Begrüssung',
                 description='Begrüssung der Anwesenden und Eröffnung der '
                 'Sitzung',
+                meeting=meeting
             ),
-            AgendaItem(
+            AgendaItem.create(
+                db,
                 title='Neque porro quisquam est qui dolorem',
                 description='Lorem ipsum dolor sit amet, consectetur '
                             'adipiscing elit. Nulla dui metus, viverra '
@@ -154,19 +168,10 @@ def add_example_content(
                             'convallis. Class aptent taciti sociosqu ad '
                             'litora torquent per conubia nostra, '
                             'per inceptos himenaeos. ',
+                meeting=meeting
             ),
         ]
-        meeting = Meeting(
-            name='Cras Tristisque',
-            time=datetime.now(tz=DEFAULT_TIMEZONE),
-            attendees=attendees,
-            working_group=WorkingGroup(
-                name='1. Gremium', leader=admin_user, users=attendees
-            ),
-            agenda_items=agenda_items
-        )
         db.add_all(agenda_items)
-        db.add(meeting)
         db.flush()
 
 

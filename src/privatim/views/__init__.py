@@ -24,10 +24,9 @@ from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
-from privatim.views.meetings import (
-    add_meeting_view,
-    export_meeting_as_pdf_view,
-)
+from privatim.views.meetings import (add_meeting_view,
+                                     export_meeting_as_pdf_view,
+                                     sortable_agenda_items_view)
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
@@ -333,6 +332,26 @@ def includeme(config: 'Configurator') -> None:
         xhr=True
     )
 
+    config.add_route(
+        'sortable_agenda_items',
+        '/meetings/agenda_items/{id}/move/{subject_id}/{direction}/{'
+        'target_id}',
+        factory=meeting_factory
+    )
+    config.add_view(
+        sortable_agenda_items_view,
+        route_name='sortable_agenda_items',
+        request_method='POST',
+        xhr=False
+    )
+    config.add_view(
+        sortable_agenda_items_view,
+        route_name='sortable_agenda_items',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
     # Consultation Comments
     config.add_route(
         'add_comment',
@@ -400,7 +419,9 @@ def includeme(config: 'Configurator') -> None:
 
     # single meeting view
     config.add_route(
-        'meeting', '/meeting/{id}', factory=default_meeting_factory)
+        'meeting', '/meeting/{id}',
+        factory=default_meeting_factory
+    )
     config.add_view(
         meeting_view,
         route_name='meeting',

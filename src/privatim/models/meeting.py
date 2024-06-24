@@ -1,6 +1,5 @@
-from uuid import uuid4
-
-from sqlalchemy import Text
+import uuid
+from sqlalchemy import Text, Integer, select, func
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
@@ -14,12 +13,16 @@ from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 
 
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from privatim.models import User, WorkingGroup
     from datetime import datetime
     from privatim.types import ACL
+    from sqlalchemy.orm import Session
+
+
+class AgendaItemCreationError(Exception):
+    """Custom exception for errors in creating AgendaItem instances."""
+    pass
 
 
 meetings_users_association = Table(
@@ -44,9 +47,55 @@ class AgendaItem(Base):
 
     __tablename__ = 'agenda_items'
 
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        meeting: 'Meeting',
+        position: int,
+    ):
+        if position is None:
+            raise AgendaItemCreationError(
+                'AgendaItem objects must be created using the create class '
+                'method because the attribute `position` has to be set.'
+            )
+        self.id = str(uuid.uuid4())
+        self.title = title
+        self.description = description
+        self.meeting = meeting
+        self.position = position
+
+    @classmethod
+    def create(
+        cls,
+        session: 'Session',
+        title: str,
+        description: str,
+        meeting: 'Meeting'
+    ) -> 'AgendaItem':
+
+        meeting_id = meeting.id
+        max_position = session.scalar(
+            select(func.max(AgendaItem.position)).where(
+                AgendaItem.meeting_id == meeting_id
+            )
+        )
+        new_position = 0 if max_position is None else max_position + 1
+        new_agenda_item = cls(
+            title=title,
+            description=description,
+            meeting=meeting,
+            position=new_position,
+        )
+        session.add(new_agenda_item)
+        return new_agenda_item
+
     id: Mapped[UUIDStrPK]
 
     title: Mapped[str] = mapped_column(Text, nullable=False)
+
+    # the custom order which may be changed by the user
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
 
     description: Mapped[str] = mapped_column(Text)
 
@@ -58,12 +107,15 @@ class AgendaItem(Base):
     meeting: Mapped['Meeting'] = relationship(
         'Meeting',
         back_populates='agenda_items',
+        order_by='AgendaItem.position'
     )
 
     def __acl__(self) -> list['ACL']:
         return [
             (Allow, Authenticated, ['view']),
         ]
+    def __repr__(self) -> str:
+        return f'<AgendaItem {self.title} position {self.position}>'
 
 
 class Meeting(Base, Commentable):
@@ -79,7 +131,7 @@ class Meeting(Base, Commentable):
             working_group: 'WorkingGroup',
             agenda_items: list[AgendaItem] | None = None,
     ):
-        self.id = str(uuid4())
+        self.id = str(uuid.uuid4())
         self.name = name
         self.time = time
         self.attendees = attendees
@@ -99,10 +151,12 @@ class Meeting(Base, Commentable):
         back_populates='meetings'
     )
 
-    # Trantanden (=Themen)
+    # Traktanden (=Themen)
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
         back_populates='meeting',
+        order_by="AgendaItem.position",
+        cascade="all, delete-orphan"
     )
 
     # allfällige Beschlüsse

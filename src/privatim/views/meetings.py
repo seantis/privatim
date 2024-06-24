@@ -1,13 +1,19 @@
 from markupsafe import Markup, escape
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
 from privatim.reporting.report import (
     MeetingReport,
     ReportOptions,
     HTMLReportRenderer,
 )
+from privatim.utils import datetime_format
 from privatim.controls.controls import Button, Icon, IconStyle
-from privatim.utils import maybe_escape, datetime_format
+from pyramid.httpexceptions import (
+    HTTPFound,
+    HTTPNotFound,
+    HTTPBadRequest,
+    HTTPMethodNotAllowed,
+)
+from privatim.utils import maybe_escape
 from sqlalchemy import select
 
 from privatim.utils import fix_utc_to_local_time
@@ -44,13 +50,19 @@ def meeting_view(
         request.route_url('delete_meeting', id=context.id),
     )
 
-    items = []
+    # should already be sorted, (by 'order_by')
+    assert context.agenda_items == sorted(
+        context.agenda_items, key=lambda x: x.position
+    ), "Agenda items are not sorted"
+
+    agenda_items = []
     for item in context.agenda_items:
-        items.append(
+        agenda_items.append(
             {
                 'title': item.title,
                 'description': item.description,
                 'id': item.id,
+                'position': item.position,
                 'edit_btn': Button(
                     url=request.route_url('edit_agenda_item', id=item.id),
                     icon='edit',
@@ -59,11 +71,18 @@ def meeting_view(
                 ),
             }
         )
-
+    data_sortable_url = request.route_url(
+        'sortable_agenda_items',
+        id=context.id,
+        subject_id='{subject_id}',
+        direction='{direction}',
+        target_id='{target_id}',
+    )
     return {
         'time': formatted_time,
         'meeting': context,
-        'agenda_items': items,
+        'agenda_items': agenda_items,
+        'sortable_url': data_sortable_url
     }
 
 
@@ -193,10 +212,11 @@ def add_meeting_view(
 ) -> 'MixedDataOrRedirect':
 
     assert isinstance(context, WorkingGroup)
-    target_url = request.route_url('meetings', id=context.id)
+    target_url = request.route_url('meetings', id=context.id)  # fallback
     form = MeetingForm(context, request)
     session = request.dbsession
 
+    meeting = None
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
         attendees = list(session.execute(stmt).scalars().all())
@@ -219,6 +239,9 @@ def add_meeting_view(
             return {'redirect_to': target_url}
         else:
             return HTTPFound(location=target_url)
+
+    if meeting is not None:
+        target_url = request.route_url('meeting', id=meeting.id)
 
     if request.is_xhr:
         return {'errors': form.errors}
@@ -296,3 +319,52 @@ def delete_meeting_view(
     return HTTPFound(
         location=request.route_url('meetings', id=working_group_id),
     )
+
+
+def sortable_agenda_items_view(
+        context: Meeting, request: 'IRequest'
+) -> 'RenderData':
+
+    try:
+        subject_id = int(request.matchdict['subject_id'])
+        direction = request.matchdict['direction']
+        target_id = int(request.matchdict['target_id'])
+    except (ValueError, KeyError) as e:
+        raise HTTPBadRequest('Request parameters are missing or invalid') \
+            from e
+
+    agenda_items = context.agenda_items
+    subject_item = next(
+        (item for item in agenda_items if item.position == subject_id), None
+    )
+    target_item = next(
+        (item for item in agenda_items if item.position == target_id), None
+    )
+
+    if subject_item is None or target_item is None:
+        raise HTTPMethodNotAllowed('Invalid subject or target id')
+
+    if direction not in ['above', 'below']:
+        raise HTTPMethodNotAllowed('Invalid direction')
+
+    new_position = target_item.position
+    if direction == 'below':
+        new_position += 1
+
+    for item in agenda_items:
+        match direction:
+            case 'above' if (new_position
+                             <= item.position < subject_item.position):
+                item.position += 1
+            case 'below' if (subject_item.position
+                             < item.position <= new_position):
+                item.position -= 1
+
+    subject_item.position = new_position
+
+    return {
+        'status': 'success',
+        'subject_id': subject_id,
+        'direction': direction,
+        'target_id': target_id,
+    }

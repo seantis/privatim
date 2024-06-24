@@ -68,12 +68,13 @@ def test_agenda_item_relationship_with_meeting(session):
     session.flush()
 
     # Creating an agenda item linked to the meeting
-    agenda_item = AgendaItem(
+    item = AgendaItem.create(
+        session,
         title='Budget Overview',
         description='Detailed review of the year\'s budget and spending.',
-        meeting_id=meeting.id,
+        meeting=meeting
     )
-    session.add(agenda_item)
+    session.add(item)
     session.flush()
 
     # Retrieve and assert correct relationship mappings

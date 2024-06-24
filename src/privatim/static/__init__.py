@@ -1,24 +1,29 @@
 from functools import lru_cache
 from pathlib import Path
-
 from fanstatic import Library
 from fanstatic import Resource
+from fanstatic.core import render_js as render_js_default
 
-from typing import TYPE_CHECKING
+
+from typing import TYPE_CHECKING, Callable
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from fanstatic.core import Dependable
-
 
 js_library = Library('privatim:js', 'js')
 css_library = Library('privatim:css', 'css')
 
 
+def render_js_module(url: str) -> str:
+    return f'<script type="module" src="{url}"></script>'
+
+
 def js(
-        relpath:    str,
-        depends:    'Iterable[Dependable] | None' = None,
+        relpath: str,
+        depends: 'Iterable[Dependable] | None' = None,
         supersedes: list[Resource] | None = None,
-        bottom:     bool = False,
+        bottom: bool = False,
+        renderer: Callable[[str], str] = render_js_default  # "text/javascript"
 ) -> Resource:
 
     return Resource(
@@ -27,6 +32,7 @@ def js(
         depends=depends,
         supersedes=supersedes,
         bottom=bottom,
+        renderer=renderer
     )
 
 
@@ -62,9 +68,13 @@ profile_css = css('profile.css')
 
 jquery = js('jquery.min.js')
 bootstrap_core = js('bootstrap.bundle.min.js')
-bootstrap_js = js('bootstrap_custom.js', depends=[jquery, bootstrap_core])
+bootstrap_js = js(
+    'bootstrap_custom.js',
+    depends=[jquery, bootstrap_core]
+)
 
-custom_js = js('custom/custom.js')
+sortable_custom = js('custom/sortable_custom.js', depends=[jquery],
+                     renderer=render_js_module)
 
 
 tom_select_css = css('tom-select.min.css')

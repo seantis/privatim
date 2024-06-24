@@ -1,10 +1,16 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
+
 from sedate import utcnow
+
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models import (Meeting, WorkingGroup, User, Tag, Consultation,
-                             GeneralFile, )
+                             GeneralFile, AgendaItem, )
 from privatim.models.consultation import Status
 from privatim.testing import DummyRequest
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 
 def find_login_form(resp_forms):
@@ -34,6 +40,23 @@ def create_meeting(attendees=None) -> Meeting:
             name='Waffle Workshop Group', leader=attendees[0], users=attendees
         ),
     )
+
+
+def create_meeting_with_agenda_items(
+    agenda_items: list[dict[str, str]], session: 'Session'
+) -> Meeting:
+    meeting = create_meeting()
+    for item in agenda_items:
+       AgendaItem.create(
+            session,
+            title=item['title'],
+            description=item['description'],
+            meeting=meeting,
+        )
+    session.add(meeting)
+    session.flush()
+    return meeting
+
 
 
 def create_consultation(documents=None, tags=None, user=None):
