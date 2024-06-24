@@ -7,22 +7,28 @@
 
     <tal:block metal:fill-slot="content">
 
-        <h1 class="row mt-4 mb-4">${title}</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="mb-3">${title}</h1>
+                </div>
+            </div>
+            <form enctype="multipart/form-data" method="POST" novalidate>
+                <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
 
-        <form enctype="multipart/form-data" method="POST" novalidate>
-            <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-
-            <div class="mb-3" tal:repeat="field form">
+                <div class="mb-3" tal:repeat="field form">
                 ${field.label}${' *' if field.flags.required else ''}
-                ${field()}
-                <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
-            </div>
+                        ${field()}
+                    <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
+                </div>
 
-            <div class="mb-3">
-                <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
-                <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
-            </div>
-        </form>
+                <div class="mb-3">
+                    <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
+                </div>
+            </form>
+        </div>
+
 
     </tal:block>
 </metal:block>
