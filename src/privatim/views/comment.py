@@ -49,8 +49,8 @@ def add_comment_view(
             user=request.user,
             parent=parent,
         )
-        context.comments.append(comment)
         session.add(comment)
+        context.comments.append(comment)
         message = _('Successfully added comment')
         request.messages.add(message, 'success')
         data = {
