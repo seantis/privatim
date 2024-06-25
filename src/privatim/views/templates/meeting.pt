@@ -30,10 +30,6 @@
                             <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
                         </li>
                     </ul>
-                    <p>
-                        <span class="fw-bold" i18n:translate="">Working Group:</span> ${meeting.working_group.name}
-                    </p>
-
                 </div>
             </div>
 
