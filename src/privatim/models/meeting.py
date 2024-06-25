@@ -114,6 +114,7 @@ class AgendaItem(Base):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
     def __repr__(self) -> str:
         return f'<AgendaItem {self.title} position {self.position}>'
 

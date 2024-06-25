@@ -47,7 +47,7 @@ def create_meeting_with_agenda_items(
 ) -> Meeting:
     meeting = create_meeting()
     for item in agenda_items:
-       AgendaItem.create(
+        AgendaItem.create(
             session,
             title=item['title'],
             description=item['description'],
@@ -56,7 +56,6 @@ def create_meeting_with_agenda_items(
     session.add(meeting)
     session.flush()
     return meeting
-
 
 
 def create_consultation(documents=None, tags=None, user=None):
