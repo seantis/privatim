@@ -78,11 +78,15 @@ def meeting_view(
         direction='{direction}',
         target_id='{target_id}',
     )
+    title = translate(_('Attendees'))
     return {
         'time': formatted_time,
         'meeting': context,
+        'meeting_attendees': get_generic_user_list(
+            request, context.attendees, title
+        ),
         'agenda_items': agenda_items,
-        'sortable_url': data_sortable_url
+        'sortable_url': data_sortable_url,
     }
 
 
