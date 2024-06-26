@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
-from privatim.i18n import _
+
+from ..forms.search_form import SearchForm
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -39,10 +40,8 @@ class NavbarEntry:
 
 
 def navbar(context: object, request: 'IRequest') -> 'RenderData':
+    form = SearchForm(request)
     return {
-        'entries': [
-            NavbarEntry(
-                request, _('Activities'), request.route_url('activities')
-            ),
-        ]
+        'form': form,
+        'search': request.route_url('search'),
     }

@@ -160,6 +160,8 @@ class TimezoneDateTimeField(DateTimeLocalField):
 class SearchableSelectField(SelectField):
     """A multiple select field with tom-select.js support.
 
+    Note: This is unrelated to PostgreSQL full-text search, which also uses
+    the term 'searchable'.
     Note: you need to call form.raw_data() to actually get the choices as list
     """
 

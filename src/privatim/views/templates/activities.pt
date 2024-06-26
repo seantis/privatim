@@ -13,10 +13,11 @@
 
                 <tal:b  tal:condition="show_add_button">
                     <div class="col-md-6 text-end">
-                        <a i18n:translate="" href="${request.route_url('add_consultation')}"
-                                             class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
+                         <a i18n:translate="" href="${request.route_url('add_consultation')}"
+                                                    class="btn btn-primary" role="button" tabindex="1">Add
+                        Consultation</a>
                     </div>
-               </tal:b>
+                </tal:b>
 
             </div>
 

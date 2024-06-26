@@ -79,6 +79,10 @@
 }
 
 
+body {
+    font-family: "DM Sans", sans-serif;
+}
+
 .bg-light {
     background-color: #EDEDED !important;
 }
@@ -137,10 +141,14 @@ a:hover {
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
 }
-
-body {
-    font-family: "DM Sans", sans-serif;
+#search-button {
+    border: none;
 }
+#search-button:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+
 
 /* Fix double border in form*/
 .ts-control {

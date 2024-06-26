@@ -22,12 +22,20 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
-def base_config():
+def base_config(_postgresql):
     msg = '.*SQLAlchemy must convert from floating point.*'
     warnings.filterwarnings('ignore', message=msg)
 
+    # config = testing.setUp(settings={
+    #     'sqlalchemy.url': 'sqlite:///:memory:',
+    # })
+
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'sqlite:///:memory:',
+        'sqlalchemy.url': (
+            f'postgresql+psycopg://{_postgresql.info.user}:@'
+            f'{_postgresql.info.host}:{_postgresql.info.port}'
+            f'/{_postgresql.info.dbname}'
+        ),
     })
     yield config
     testing.tearDown()
@@ -45,13 +53,14 @@ def config(base_config, monkeypatch, tmpdir) -> 'Configurator':
     settings = base_config.get_settings()
 
     engine = get_engine(settings)
+
     # enable foreign key constraints in sqlite, so we can rely on them
     # working during testing.
-    sqlalchemy.event.listen(
-        engine,
-        'connect',
-        lambda c, r: c.execute('pragma foreign_keys=ON')
-    )
+    # sqlalchemy.event.listen(
+    #     engine,
+    #     'connect',
+    #     lambda c, r: c.execute('pragma foreign_keys=ON')
+    # )
 
     Base.metadata.create_all(engine)
     session_factory = get_session_factory(engine)
@@ -78,13 +87,14 @@ def config(base_config, monkeypatch, tmpdir) -> 'Configurator':
     return base_config
 
 
-@pytest.fixture
-def pg_config(postgresql, monkeypatch):
+# requires pytest-postgresql:
+@pytest.fixture(scope='session')
+def pg_config(_postgresql, monkeypatch):
     config = testing.setUp(settings={
         'sqlalchemy.url': (
-            f'postgresql+psycopg://{postgresql.info.user}:@'
-            f'{postgresql.info.host}:{postgresql.info.port}'
-            f'/{postgresql.info.dbname}'
+            f'postgresql+psycopg://{_postgresql.info.user}:@'
+            f'{_postgresql.info.host}:{_postgresql.info.port}'
+            f'/{_postgresql.info.dbname}'
         ),
     })
     config.include('privatim.models')
@@ -166,7 +176,7 @@ def mailer(config):
     return mailer
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def engine(app_settings):
     engine = engine_from_config(app_settings)
     Base.metadata.create_all(engine)
@@ -177,16 +187,25 @@ def engine(app_settings):
     return engine
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def connection(engine):
     connection = engine.connect()
     yield connection
     connection.close()
 
 
-@pytest.fixture(scope="session")
-def app_settings():
-    yield {"sqlalchemy.url": "sqlite://"}
+@pytest.fixture(scope='session')
+def _postgresql(postgresql):
+    return postgresql
+
+
+@pytest.fixture(scope='session')
+def app_settings(_postgresql):
+    yield {'sqlalchemy.url': (
+        f'postgresql+psycopg://{_postgresql.info.user}:@'
+        f'{_postgresql.info.host}:{_postgresql.info.port}'
+        f'/{_postgresql.info.dbname}'
+    )}
 
 
 @pytest.fixture(scope="session")
@@ -195,13 +214,13 @@ def app_inner(app_settings):
     yield app
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def app(app_inner, connection):
     app_inner.app.app.registry["dbsession_factory"].kw["bind"] = connection
     yield app_inner
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def client(app, engine):
 
     client = Client(app)

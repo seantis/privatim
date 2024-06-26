@@ -1,5 +1,7 @@
 from functools import partial
 from fanstatic import Fanstatic
+from sqlalchemy.dialects.postgresql import TSVECTOR
+
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
@@ -129,5 +131,13 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
                 nullable=True,
             ),
         )
+
+    if not context.has_column('consultations',
+                             'searchable_text_de_CH'):
+        for column in ('searchable_text_de_CH',):
+            if not context.has_column('consultations', column):
+                context.operations.add_column(
+                    'consultations', Column(column, TSVECTOR())
+                )
 
     context.commit()

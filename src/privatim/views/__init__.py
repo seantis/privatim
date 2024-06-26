@@ -38,6 +38,7 @@ from privatim.views.password_retrieval import (  # type: ignore
 from privatim.views.people import people_view, person_view
 from privatim.views.profile import profile_view, add_profile_image_view
 from privatim.views.comment import add_comment_view
+from privatim.views.search import search
 from privatim.views.working_groups import (
     add_or_edit_working_group,
     delete_working_group_view,
@@ -503,4 +504,11 @@ def includeme(config: 'Configurator') -> None:
         request_method='DELETE',
         xhr=True,
         request_param='target_url'
+    )
+
+    config.add_route('search', '/search')
+    config.add_view(
+        search,
+        route_name='search',
+        renderer='templates/search_results.pt',
     )
