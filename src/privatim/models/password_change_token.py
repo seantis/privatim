@@ -30,7 +30,7 @@ class PasswordChangeToken(Base):
     token: Mapped[str] = mapped_column(String)
     ip_address: Mapped[str] = mapped_column(String)
 
-    user: Mapped['User'] = relationship(lazy='joined')
+    user: Mapped[User] = relationship(lazy='joined')
 
     def __init__(
             self,

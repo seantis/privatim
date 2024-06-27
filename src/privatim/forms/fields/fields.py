@@ -382,7 +382,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         # we fake the formdata for the new field
         # we use a werkzeug MultiDict because the WebOb version
         # needs to get wrapped to be usable in WTForms
-        formdata: MultiDict[str, 'RawFormValue'] = MultiDict()
+        formdata = MultiDict()  # type: ignore
         name = f'{self.short_name}{self._separator}{len(self)}'
         formdata.add(name, fs)
         return self._add_entry(formdata)
