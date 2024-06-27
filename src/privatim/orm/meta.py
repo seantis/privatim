@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
 from typing import Annotated
-from typing import TYPE_CHECKING
 
 from sqlalchemy import BigInteger
 from sqlalchemy import Integer
@@ -12,10 +11,13 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import registry
 from sqlalchemy.schema import MetaData
+from sqlalchemy import DateTime
 from sqlalchemy_file import FileField, File
 from .utcdatetime_type import UTCDateTime
 from .uuid_type import UUIDStr as UUIDStrType
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.sql.schema import _NamingSchemaTD
 
@@ -74,6 +76,7 @@ class Base(DeclarativeBase):
             str_64: String(length=64),
             str_128: String(length=128),
             str_256: String(length=256),
+            DateTimeWithoutTz: DateTime(timezone=False),
             Text: TextType,
             FileContents: LargeBinary,
             AttachedFile: FileField,
