@@ -1,7 +1,7 @@
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
-from sqlalchemy import select
+from sqlalchemy import select, delete
 
 from privatim.models import User
 from privatim.orm import get_engine, Base
@@ -34,3 +34,27 @@ def add_user(
         user = User(email=email, first_name=first_name, last_name=last_name)
         user.set_password(password)
         dbsession.add(user)
+
+
+@click.command()
+@click.argument('config_uri')
+@click.option('--email', prompt=True)
+def delete_user(config_uri: str, email: str) -> None:
+
+    env = bootstrap(config_uri)
+    settings = get_appsettings(config_uri)
+    engine = get_engine(settings)
+    Base.metadata.create_all(engine)
+
+    with env['request'].tm:
+        dbsession = env['request'].dbsession
+
+        query = select(User).filter(User.email == email)
+        existing_user = dbsession.execute(query).scalar_one_or_none()
+        if not existing_user:
+            click.echo(f"No user found with email {email}.")
+            return
+
+        delete_stmt = delete(User).where(User.email == email)
+        dbsession.execute(delete_stmt)
+        click.echo(f"User with email {email} has been deleted.")
