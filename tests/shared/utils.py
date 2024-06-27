@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sedate import utcnow
-
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models import (Meeting, WorkingGroup, User, Tag, Consultation,
                              GeneralFile, AgendaItem, )
@@ -81,7 +79,6 @@ def create_consultation(documents=None, tags=None, user=None):
         description='This is a test consultation',
         recommendation='Some recommendation',
         status=Status(name='Open'),
-        created=utcnow(),
         files=documents,
         secondary_tags=tags,
         creator=user

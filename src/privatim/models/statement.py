@@ -19,11 +19,11 @@ class Statement(Base):
     def __init__(
             self,
             text: str,
-            drafted_by: 'User',
+            drafter: 'User',
     ):
         self.id = str(uuid.uuid4())
         self.text = text
-        self.drafter = drafted_by
+        self.drafter = drafter
 
     id: Mapped[UUIDStrPK]
 

@@ -79,17 +79,19 @@ class Consultation(Base, Commentable, AssociatedFiles):
         title: str,
         description: str,
         recommendation: str,
-        status: Status,
-        secondary_tags: list[Tag],
         creator: 'User',
+        status: Status | None = None,
+        secondary_tags: list[Tag] | None = None,
         files: list['GeneralFile'] | None = None
     ):
         self.id = str(uuid.uuid4())
         self.title = title
         self.description = description
         self.recommendation = recommendation
-        self.status = status
-        self.secondary_tags = secondary_tags
+        if status is not None:
+            self.status = status
+        if secondary_tags is not None:
+            self.secondary_tags = secondary_tags
         self.creator = creator
         if files is not None:
             self.files = files
@@ -102,7 +104,7 @@ class Consultation(Base, Commentable, AssociatedFiles):
 
     recommendation: Mapped[str]
 
-    status: Mapped[Status] = relationship(
+    status: Mapped[Status | None] = relationship(
         'Status', back_populates='consultations',
     )
 

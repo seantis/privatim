@@ -5,17 +5,11 @@ from privatim.models.consultation import Status, Tag
 
 
 def test_consultation_status_relationship(session):
-    # Creating a status
-    status = Status(name='Active')
-    session.add(status)
-    session.flush()
-
-    # Creating a consultation linked to the status
     consultation = Consultation(
         title='Datenschutzgesetz',
         description='Review the impacts of the proposed construction.',
         recommendation='Proceed with caution',
-        status=status,
+        status=Status(name='Active'),
         creator=User(email='f@example.org')
     )
     session.add(consultation)

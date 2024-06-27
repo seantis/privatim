@@ -26,7 +26,7 @@ class Comment(Base, Associable):
         ...
 
     model = YourModel(name='stuff')
-    model .comments.append(Comment('Interesting sqlalchemy design pattern'))
+    model.comments.append(Comment('Interesting sqlalchemy design pattern'))
 
    """
 
@@ -36,7 +36,7 @@ class Comment(Base, Associable):
         self,
         content: str,
         user: 'User',
-        parent: Optional['Comment']
+        parent: Optional['Comment'] = None
     ):
         self.id = str(uuid.uuid4())
         self.content = content
@@ -54,7 +54,7 @@ class Comment(Base, Associable):
         ForeignKey('users.id'),
         nullable=True,
     )
-    user: Mapped['User'] = relationship(
+    user: Mapped['User | None'] = relationship(
         'User',
         back_populates='comments',
     )

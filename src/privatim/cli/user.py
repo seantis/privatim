@@ -48,7 +48,6 @@ def _delete_user(session: 'Session', email: str) -> bool:
         select(User)
         .options(
             joinedload(User.leading_groups),
-            joinedload(User.groups),
             joinedload(User.meetings),
             joinedload(User.statements),
             joinedload(User.comments),
@@ -63,30 +62,33 @@ def _delete_user(session: 'Session', email: str) -> bool:
         return False
 
     try:
-        # Remove user as leader from working groups
+        # # Remove user as leader from groups
         for group in existing_user.leading_groups:
             group.leader = None
-            group.leader_id = None
+        #
+        # # Clear relationships
+        # existing_user.groups = []
+        # existing_user.meetings = []
+        #
+        # # Handle consultations
+        # for consultation in existing_user.consultations:
+        #     consultation.creator = None
 
-        # Remove user from groups
-        existing_user.groups.clear()
+        for comment in existing_user.comments:
+            comment.user_id = None
 
-        # Remove user from meetings
-        existing_user.meetings.clear()
-
-        # Handle consultations
-        for consultation in existing_user.consultations:
-            consultation.creator = None
-
+        session.add(existing_user)
         session.flush()
+        session.refresh(existing_user)
         session.delete(existing_user)
+        session.flush()
+        click.echo(f"User with email {email} successfully deleted.")
         return True
     except SQLAlchemyError as e:
         session.rollback()
         click.echo(
             f"Failed to delete user with email {email}. Error: {str(e)}"
         )
-
         return False
 
 
