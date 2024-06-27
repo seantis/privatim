@@ -1,5 +1,5 @@
 import click
-from privatim.cli.add_user import add_user
+from privatim.cli.user import add_user
 
 
 @click.group()

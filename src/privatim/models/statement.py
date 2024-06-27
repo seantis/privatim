@@ -1,5 +1,5 @@
-
-from sqlalchemy import Column, ForeignKey, Text
+import uuid
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from privatim.orm import Base
@@ -16,9 +16,18 @@ class Statement(Base):
 
     __tablename__ = 'statements'
 
+    def __init__(
+            self,
+            text: str,
+            drafted_by: 'User',
+    ):
+        self.id = str(uuid.uuid4())
+        self.text = text
+        self.drafter = drafted_by
+
     id: Mapped[UUIDStrPK]
 
-    text = Column(Text)
+    text: Mapped[str]
 
     drafted_by: Mapped[UUIDStr] = mapped_column(ForeignKey('users.id'))
     drafter: Mapped['User'] = relationship(

@@ -70,7 +70,7 @@ def shell() -> None:
 
 Example: Query User:
 from privatim.models.user import User
-query = session.query(User).filter_by(username='admin@example.org')
+query = session.query(User).filter_by(email='admin@example.org')
 user = query.one()
 user.username = 'info@example.org'
 commit()

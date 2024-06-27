@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from sedate import utcnow
@@ -67,6 +68,19 @@ class WorkingGroup(Group):
 
     __tablename__ = 'working_groups'
 
+    def __init__(
+            self,
+            name: str,
+            leader: 'User | None' = None,
+            meetings: list['Meeting'] | None = None,
+            users: list['User'] | None = None
+    ):
+        self.id = str(uuid.uuid4())
+        self.name = name
+        self.leader = leader
+        self.meetings = meetings if meetings is not None else []
+        self.users = users if users is not None else []
+
     __mapper_args__ = {
         'polymorphic_identity': 'working_group',
     }
@@ -78,7 +92,7 @@ class WorkingGroup(Group):
     leader_id: Mapped[UUIDStr | None] = mapped_column(
         ForeignKey('users.id'), nullable=True
     )
-    leader: Mapped['User'] = relationship(
+    leader: Mapped['User | None'] = relationship(
         'User',
         back_populates='leading_groups',
     )

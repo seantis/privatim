@@ -1,6 +1,7 @@
+import uuid
 from datetime import datetime
 from sedate import utcnow
-from sqlalchemy import Text, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -15,13 +16,22 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.types import ACL
-    from privatim.models import User
+    from privatim.models import User, GeneralFile
 
 
 class Status(Base):
     __tablename__ = 'status'
+
+    def __init__(
+            self,
+            name: str,
+    ):
+        self.id = str(uuid.uuid4())
+        self.name = name
+
     id: Mapped[UUIDStrPK]
-    name: Mapped[Text] = mapped_column(Text, nullable=False)
+
+    name: Mapped[str] = mapped_column(nullable=False)
     consultations = relationship(
         'Consultation', back_populates='status'
     )
@@ -37,8 +47,17 @@ class Status(Base):
 class Tag(Base):
 
     __tablename__ = 'secondary_tags'
+
+    def __init__(
+        self,
+        name: str,
+    ):
+        self.id = str(uuid.uuid4())
+        self.name = name
+
     id: Mapped[UUIDStrPK]
-    name: Mapped[Text] = mapped_column(Text, nullable=False)
+
+    name: Mapped[str] = mapped_column(nullable=False)
 
     consultation: Mapped['Consultation'] = relationship(
         'Consultation', back_populates='secondary_tags',
@@ -54,6 +73,26 @@ class Consultation(Base, Commentable, AssociatedFiles):
     Frage)"""
 
     __tablename__ = 'consultations'
+
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        recommendation: str,
+        status: Status,
+        secondary_tags: list[Tag],
+        creator: 'User',
+        files: list['GeneralFile'] | None = None
+    ):
+        self.id = str(uuid.uuid4())
+        self.title = title
+        self.description = description
+        self.recommendation = recommendation
+        self.status = status
+        self.secondary_tags = secondary_tags
+        self.creator = creator
+        if files is not None:
+            self.files = files
 
     id: Mapped[UUIDStrPK]
 
@@ -73,7 +112,7 @@ class Consultation(Base, Commentable, AssociatedFiles):
         'Tag', back_populates='consultation',
     )
 
-    creator: Mapped['User'] = relationship(
+    creator: Mapped['User | None'] = relationship(
         'User',
         back_populates='consultations',
     )

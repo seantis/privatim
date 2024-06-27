@@ -96,6 +96,12 @@ def add_example_content(
         db.flush()
 
     if add_vemz:
+
+        admin_user = get_first_admin_user(db)
+        if admin_user is None:
+            print("To create a Consultation we need a creator (User)")
+            exit(1)
+
         status = Status(name='In Überprüfung')
         tags = [Tag(name=n) for n in ['AG', 'ZH']]
         here = Path(__file__).parent
@@ -129,6 +135,7 @@ def add_example_content(
             recommendation='Stellungnahme privatim näher prüfen.',
             status=status,
             secondary_tags=tags,
+            creator=admin_user
         )
         db.add_all(tags)
         db.add(consultation)

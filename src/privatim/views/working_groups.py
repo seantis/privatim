@@ -38,12 +38,16 @@ def add_or_edit_working_group(
         if group is None:
             leader_id = form.leader.data
             leader_id = None if leader_id == '0' else leader_id
+            leader = None
+            if leader_id is not None:
+                leader = session.get(User, leader_id)
 
             stmt = select(User).where(User.id.in_(form.members.raw_data))
-            users = session.execute(stmt).scalars().all()
+            users = list(session.execute(stmt).scalars().all())
+
             group = WorkingGroup(
                 name=form.name.data or '',
-                leader_id=leader_id,
+                leader=leader,
                 users=users
             )
             session.add(group)
