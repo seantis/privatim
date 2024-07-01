@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 05:02+0200\n"
+"POT-Creation-Date: 2024-06-30 17:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,11 +55,6 @@ msgstr ""
 msgid "Activities"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "People"
-msgstr ""
-
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/consultations.py
 #: ./src/privatim/views/templates/person.pt
 msgid "Consultations"
@@ -68,6 +63,11 @@ msgstr ""
 #: ./src/privatim/layouts/navbar.pt
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "People"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
@@ -94,6 +94,10 @@ msgstr ""
 msgid "Successfully updated profile picture"
 msgstr ""
 
+#: ./src/privatim/views/login.py
+msgid "Login failed."
+msgstr ""
+
 #: ./src/privatim/views/general_file.py
 #, python-format
 msgid "Successfully deleted file \"${title}\""
@@ -109,6 +113,10 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
+msgid "Attendees"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -255,16 +263,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
-msgid "Attendees:"
-msgstr ""
-
-#: ./src/privatim/views/templates/meeting.pt
-#: ./src/privatim/views/templates/activities.pt
-msgid "Working Group:"
-msgstr ""
-
-#: ./src/privatim/views/templates/meeting.pt
-#: ./src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr ""
 
@@ -334,7 +332,19 @@ msgid "Change Password"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
+msgid "Unbekannter Ersteller"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "No leader"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
 msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Working Group:"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -569,10 +579,6 @@ msgid "Time"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr ""
-
-#: ./src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr ""
 
@@ -615,4 +621,8 @@ msgstr ""
 #: ./src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
+msgstr ""
+
+#: ./src/privatim/reporting/template/report.pt
+msgid "Attendees:"
 msgstr ""

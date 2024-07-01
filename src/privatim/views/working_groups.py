@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.types import RenderData, RenderDataOrRedirect, \
-        XHRDataOrRedirect
+    from privatim.types import (RenderData, RenderDataOrRedirect,
+                                XHRDataOrRedirect)
 
 
 def working_groups_view(request: 'IRequest') -> 'RenderData':
@@ -36,14 +36,18 @@ def add_or_edit_working_group(
 
     if request.method == 'POST' and form.validate():
         if group is None:
-            leader_id = form.leader.data
-            leader_id = None if leader_id == '0' else leader_id
-            leader = None
-            if leader_id is not None:
-                leader = session.get(User, leader_id)
 
             stmt = select(User).where(User.id.in_(form.members.raw_data))
             users = list(session.execute(stmt).scalars().all())
+
+            leader_id = form.leader.data
+            leader_id = None if leader_id == '0' else leader_id
+            leader = None
+            if leader_id is not None and leader_id != '0':
+                leader = session.get(User, leader_id)
+
+            if leader is not None and leader not in users:
+                users.append(leader)
 
             group = WorkingGroup(
                 name=form.name.data or '',

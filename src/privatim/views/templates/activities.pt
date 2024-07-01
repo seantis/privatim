@@ -57,7 +57,7 @@
                                             <tal:condition condition="not:has_leader">
                                                 <p class="profile-name"
                                                    style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Kein Leiter</p>
+                                                    No leader</p>
                                             </tal:condition>
                                         </tal:define>
                                     </div>

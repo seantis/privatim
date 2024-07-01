@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 05:02+0200\n"
+"POT-Creation-Date: 2024-06-30 17:43+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -58,11 +58,6 @@ msgstr "Antworten"
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: src/privatim/layouts/navbar.pt
-#: src/privatim/views/templates/working_groups.pt
-msgid "People"
-msgstr "Personen"
-
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
 #: src/privatim/views/templates/person.pt
 msgid "Consultations"
@@ -72,6 +67,11 @@ msgstr "Vernehmlassungen"
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Gremien"
+
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
+msgid "People"
+msgstr "Personen"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Search..."
@@ -97,6 +97,10 @@ msgstr "Foto löschen"
 msgid "Successfully updated profile picture"
 msgstr "Profilbild erfolgreich geändert"
 
+#: src/privatim/views/login.py
+msgid "Login failed."
+msgstr "Anmeldung fehlgeschlagen."
+
 #: src/privatim/views/general_file.py
 #, python-format
 msgid "Successfully deleted file \"${title}\""
@@ -113,6 +117,10 @@ msgstr "Sitzung löschen"
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traktandum bearbeiten"
+
+#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
+msgid "Attendees"
+msgstr "Teilnehmende"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
@@ -218,7 +226,7 @@ msgid ""
 "Cannot delete working group \"${name}\" because it has associated meetings. "
 "Please delete all meetings first."
 msgstr ""
-"Das Gremium \"${Name}\" kann nicht gelöscht werden, da sie über zugehörige "
+"Das Gremium \"${name}\" kann nicht gelöscht werden, da sie über zugehörige "
 "Sitzungen verfügt. Bitte löschen Sie zuerst alle Besprechungen."
 
 #: src/privatim/views/working_groups.py
@@ -263,16 +271,6 @@ msgstr "Speichern"
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr "Datum / Zeit:"
-
-#: src/privatim/views/templates/meeting.pt
-#: src/privatim/reporting/template/report.pt
-msgid "Attendees:"
-msgstr "Teilnehmende:"
-
-#: src/privatim/views/templates/meeting.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Working Group:"
-msgstr "Gremium:"
 
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
@@ -344,8 +342,20 @@ msgid "Change Password"
 msgstr "Passwort ändern"
 
 #: src/privatim/views/templates/activities.pt
+msgid "Unbekannter Ersteller"
+msgstr "Unknown Creator"
+
+#: src/privatim/views/templates/activities.pt
+msgid "No leader"
+msgstr "Kein Leiter"
+
+#: src/privatim/views/templates/activities.pt
 msgid "Show Details"
 msgstr "Details anzeigen"
+
+#: src/privatim/views/templates/activities.pt
+msgid "Working Group:"
+msgstr "Gremium:"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
@@ -581,10 +591,6 @@ msgid "Time"
 msgstr "Datum / Uhrzeit"
 
 #: src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Teilnehmende"
-
-#: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
@@ -628,6 +634,10 @@ msgstr "Auswählen"
 #, python-format
 msgid "Protocol of meeting ${title}"
 msgstr "Protokoll der Sitzung ${title}"
+
+#: src/privatim/reporting/template/report.pt
+msgid "Attendees:"
+msgstr "Teilnehmende:"
 
 #~ msgid "Do you really wish to delete \"${item_title}\"?"
 #~ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"

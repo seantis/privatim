@@ -4,7 +4,7 @@ from sqlalchemy import select
 from privatim.models import User, WorkingGroup, Meeting
 
 
-def test_view_add_working_group_without_leader(client):
+def test_view_add_working_group(client):
     users = [
         User(
             email='max@example.org',
@@ -21,11 +21,7 @@ def test_view_add_working_group_without_leader(client):
         user.set_password('test')
         client.db.add(user)
 
-    for user in users:
-        user.set_password('test')
-        client.db.add(user)
     client.db.flush()
-
     client.login_admin()
     page = client.get('/working_groups/add')
     assert page.status_code == 200
@@ -33,10 +29,31 @@ def test_view_add_working_group_without_leader(client):
     page.form['name'] = 'Test Group'
     page.form['members'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
     page = page.form.submit().follow()
-    page.click("Test Group")
+    page = page.click("Test Group")
+
+    user_list = page.pyquery('ul.generic-user-list')[0]
+    assert 'Max Müller' in user_list.text_content().strip()
+    assert 'Kurt Huber' in user_list.text_content().strip()
+
+    u = User(email='a@vivaldi.org', first_name='Vintonio', last_name='Avaldi')
+    client.db.add(u)
+    client.db.flush()
+
+    page = client.get('/working_groups/add')
+    page.form['name'] = 'Test Group2'
+    page.form['members'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['leader'].select(text='Vintonio Avaldi')
+    page = page.form.submit().follow()
+    page = page.click("Test Group2")
+
+    user_list = page.pyquery('ul.generic-user-list')[0]
+
+    assert 'Max Müller' in user_list.text_content().strip()
+    assert 'Kurt Huber' in user_list.text_content().strip()
+    assert 'Vintonio Avaldi' in user_list.text_content().strip()
 
 
-def test_view_add_working_group_with_meeting(client):
+def test_view_add_working_group_with_meeting_and_leader(client):
 
     users = [
         User(

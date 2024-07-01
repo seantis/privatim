@@ -267,6 +267,9 @@ span.accordion-text-9 {
 .user-list-item {
     color: var(--primary-color);
 }
+i.fas {
+    color: var(--primary-color)!important;
+}
 
 .accordion {
     counter-reset: section; /* Reset the section counter */
