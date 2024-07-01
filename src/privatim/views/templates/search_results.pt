@@ -5,48 +5,17 @@
          i18n:domain="privatim">
 
     <tal:block metal:fill-slot="content">
-        <div class="container py-5">
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <h1 class="display-4 text-primary" i18n:translate="">Search Results</h1>
-                    <p class="lead" i18n:translate="">Showing <span tal:replace="search_results.total_count"></span>
-                        results for "<span tal:replace="search_results.query"></span>"</p>
-                    <hr class="my-4">
+        <div class="container mt-4">
+            <h1 i18n:translate="">Search Results</h1>
+            <tal:block tal:repeat="result search_results">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" tal:content="result.title">Title</h5>
+                        <p class="card-text" tal:content="result.description">Description</p>
+                        <a tal:attributes="href result.url" class="btn btn-primary">Read More</a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <tal:block tal:condition="search_results">
-                        <div tal:repeat="result search_results" class="card mb-4 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title mb-0">
-                                        <a tal:attributes="href result.url"
-                                                class="text-decoration-none text-primary"
-                                                 tal:content="result.title"></a>
-                                    </h5>
-                                    <span class="badge bg-secondary" tal:content="result.model_type"></span>
-                                </div>
-                                <p class="card-text text-muted" tal:content="result.description"></p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted" i18n:translate="">Relevance Score: <span
-                                            class="fw-bold" tal:replace="'{:.2f}'.format(result.rank)"></span></small>
-                                    <a tal:attributes="href result.url"
-                                            class="btn btn-outline-primary btn-sm" i18n:translate="">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </tal:block>
-                    <tal:block tal:condition="not:search_results">
-                        <div class="alert alert-info shadow-sm" role="alert">
-                            <h4 class="alert-heading" i18n:translate="">No Results Found</h4>
-                            <p class="mb-0" i18n:translate="">We couldn't find any matches for your search query. Please
-                                try again with different keywords.</p>
-                        </div>
-                    </tal:block>
-                </div>
-            </div>
+            </tal:block>
         </div>
     </tal:block>
 </metal:block>

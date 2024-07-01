@@ -19,4 +19,4 @@ def reindex(config_uri: str) -> None:
 
     with transaction.manager:
         dbsession = get_tm_session(session_factory, transaction.manager)
-        reindex_full_text_search(dbsession, transaction.manager)
+        reindex_full_text_search(dbsession)

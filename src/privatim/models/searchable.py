@@ -53,7 +53,7 @@ def searchable_models() -> tuple[type[Base], ...]:
     return tuple(model_classes)
 
 
-def reindex_full_text_search(session: Session, manager) -> None:
+def reindex_full_text_search(session: Session) -> None:
     """
     Updates the searchable_text_{} columns.
 
@@ -88,6 +88,5 @@ def reindex_full_text_search(session: Session, manager) -> None:
                 updated = getattr(model, f'searchable_text_{locale}')
                 session.execute(update_stmt)
                 print('Reindex full text search for',
-                      f'{model}.searchable_text_{locale}')
+                      f'{model}.searchable_text_{locale} with val {updated}')
     session.flush()
-    # manager.commit()

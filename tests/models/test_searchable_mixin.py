@@ -15,7 +15,7 @@ def test_fulltext_indexing_on_searchable_fields(pg_config):
     session.add(consultation)
     session.flush()
 
-    reindex_full_text_search(session, transaction.manager)
+    reindex_full_text_search(session)
 
     updated = session.execute(
         select(Consultation)

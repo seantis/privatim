@@ -95,6 +95,12 @@ class Consultation(Base, Commentable, AssociatedFiles, SearchableMixin):
         yield 'description'
         yield 'recommendation'
 
+    def __repr__(self) -> str:
+        return (
+            f'<Consultation {self.title} searchable: '
+            f'{self.searchable_text_de_CH}>'
+        )
+
     def __acl__(self) -> list['ACL']:
         return [
             (Allow, Authenticated, ['view']),
