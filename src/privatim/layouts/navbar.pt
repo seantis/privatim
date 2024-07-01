@@ -15,53 +15,53 @@
                         <a href="${request.route_url('activities')}"
                            class="nav-link px-3 link-body-emphasis"
                            id="${'active_tab' if request.matched_route.name == 'activities' else ''}"
-                                 i18n:translate>Activities</a>
+                                 i18n:translate="">Activities</a>
                     </li>
                     <li>
                         <a href="${request.route_url('consultations')}"
                            class="nav-link px-3 link-body-emphasis"
                            id="${'active_tab' if any(route in request.matched_route.name for route in ['consultation', 'consultations']) else ''}"
-                                 i18n:translate>Consultations</a>
+                                 i18n:translate="">Consultations</a>
                     </li>
                     <li>
                         <a href="${request.route_url('working_groups')}"
                            class="nav-link px-3 link-body-emphasis"
                            id="${'active_tab' if any(route in request.matched_route.name for route in ['working_group', 'working_groups', 'meeting', 'meetings']) else ''}"
-                                 i18n:translate>Working Groups</a>
+                                 i18n:translate="">Working Groups</a>
                     </li>
                     <li>
                         <a href="${request.route_url('people')}"
-                               class="nav-link px-3 link-body-emphasis"
-                               id="${'active_tab' if any(route in request.matched_route.name for route in ['person', 'people', 'profile']) else ''}"
-                                     i18n:translate>People</a>
+                           class="nav-link px-3 link-body-emphasis"
+                           id="${'active_tab' if any(route in request.matched_route.name for route in ['person', 'people', 'profile']) else ''}"
+                                 i18n:translate="">People</a>
                     </li>
                 </ul>
 
                 <div class="d-flex">
-                            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                                <input type="search" disabled="disabled" class="form-control" placeholder="Search..."
-                                       aria-label="Search" i18n:attributes="placeholder">
-                            </form>
-                            <div class="dropdown text-end">
-                                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="${request.user_pic}" alt="mdo" width="40" height="40"
-                                         class="rounded-circle">
-                                </a>
-                                <ul class="dropdown-menu text-small">
-                                    <li><a class="dropdown-item"
-                                           href="${request.route_url('profile')}" i18n:translate=""><i
-                                            class="far fa-user-circle"></i> Profile</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item"
-                                           href="${request.route_url('logout')}" i18n:translate=""><i
-                                            class="fas fa-sign-out-alt"></i> Sign out</a></li>
-                                </ul>
-                            </div>
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                        <input type="search" disabled="disabled" class="form-control" placeholder="Search..."
+                               aria-label="Search" i18n:attributes="placeholder">
+                    </form>
+                    <div class="dropdown text-end">
+                        <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="${request.user_pic}" alt="mdo" width="40" height="40"
+                                 class="rounded-circle">
+                        </a>
+                        <ul class="dropdown-menu text-small">
+                            <li><a class="dropdown-item"
+                                   href="${request.route_url('profile')}" i18n:translate=""><i
+                                    class="far fa-user-circle"></i> Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item"
+                                   href="${request.route_url('logout')}" i18n:translate=""><i
+                                    class="fas fa-sign-out-alt"></i> Sign out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </tal:block>
         </div>
-        </tal:block>
-    </div>
     </div>
 </header>
