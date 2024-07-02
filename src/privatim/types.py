@@ -1,4 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type, Union, Iterable
+
+from sqlalchemy import ColumnElement
+
+from privatim.models import SearchableMixin
+from privatim.orm import Base
+from privatim.orm.meta import UUIDStrPK
+
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
@@ -77,3 +84,12 @@ if TYPE_CHECKING:
 
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
+
+
+    class HasSearchableFields(Protocol):
+        id: UUIDStrPK
+
+        @classmethod
+        def searchable_fields(cls) -> Iterable[ColumnElement[Any]]:
+            ...
+

@@ -13,29 +13,41 @@ from privatim.models import Consultation, Meeting
 from privatim.i18n import locales, translate
 from sqlalchemy import or_
 
+from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
 
-from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    List,
+    NamedTuple,
+    Dict,
+    Any,
+    Optional,
+    Iterator,
+)
 
-from privatim.models.searchable import searchable_models
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
+
+    from privatim.orm.meta import UUIDStrPK
+    from privatim.types import HasSearchableFields
+    from builtins import type as type_t
+    from privatim.orm import Base
+    from privatim.models.searchable import SearchableMixin
 
 
 class SearchResult(NamedTuple):
     id: int
     """ headlines are key value pairs of fields on various models that matched
     the search query."""
-    headlines: dict[str, str]
+    headlines: Dict[str, str]
     type: str
-    model: 'Model | None'  # Note that this is not loaded by default for
+    model: 'Optional[type_t[HasSearchableFields]]'  # Note that this is not loaded by
+    # default for
     # performance reasons.
-
-
-Model = TypeVar('Model')
 
 
 class SearchCollection:
@@ -54,26 +66,27 @@ class SearchCollection:
 
     """
 
-    def __init__(self, term: str, session: 'Session', language='de_CH'):
-        self.lang = locales[language]
-        self.session = session
-        self.web_search = term
+    def __init__(self, term: str, session: 'Session', language: str = 'de_CH'):
+        self.lang: str = locales[language]
+        self.session: 'Session' = session
+        self.web_search: str = term
         self.ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
         self.results: List[SearchResult] = []
-        self.models = [Consultation, Meeting, Comment]
 
     def do_search(self) -> None:
         for model in searchable_models():
             self.results.extend(self.search_model(model, self.ts_query))
 
         # Fetch Comment objects after the search
-        comment_ids = [
+        comment_ids: List[int] = [
             result.id for result in self.results if result.type == 'Comment'
         ]
         if comment_ids:
             stmt = select(Comment).filter(Comment.id.in_(comment_ids))
             comments = self.session.scalars(stmt).all()
-            comment_dict = {comment.id: comment for comment in comments}
+            comment_dict: dict[UUIDStrPK, Comment] = {
+                comment.id: comment for comment in comments
+            }
 
             # Update results with fetched Comment objects
             self.results = [
@@ -85,16 +98,18 @@ class SearchCollection:
                 for result in self.results
             ]
 
-    def search_model(self, model: type[Model], ts_query) -> List[SearchResult]:
+    def search_model(
+        self, model: 'type[HasSearchableFields]', ts_query: Any
+    ) -> List[SearchResult]:
         query = self.build_query(model, ts_query)
         raw_results = self.session.execute(query).all()
         return self.process_results(raw_results, model)
 
-    def build_query(self, model: type[Model], ts_query):
+    def build_query(self, model: 'type[HasSearchableFields]', ts_query: Any) -> Any:
 
         headline_expression = self.generate_headlines(model, ts_query)
 
-        select_fields = [
+        select_fields: List[Any] = [
             model.id,
             *headline_expression,
             cast(literal(model.__name__), String).label('type'),  # noqa: MS001
@@ -104,7 +119,9 @@ class SearchCollection:
             or_(*self.term_filter_text_for_model(model, self.lang))
         )
 
-    def generate_headlines(self, model: type[Model], ts_query):
+    def generate_headlines(
+        self, model:'type[HasSearchableFields]', ts_query: Any
+    ) -> List[ColumnElement]:
         """
         Generate headline expressions for all searchable fields of the model.
 
@@ -114,7 +131,7 @@ class SearchCollection:
         field.
 
         Args:
-            model (type[Model]): The model class to generate headlines for.
+            model (type['type[HasSearchableFields]']): The model class to generate headlines for.
             ts_query: The text search query to use for highlighting.
 
         Returns:
@@ -139,15 +156,15 @@ class SearchCollection:
         ]
 
     def term_filter_text_for_model(
-            self, model: type[Model], language: str
+        self, model:'type[HasSearchableFields]', language: str
     ) -> List[ColumnElement[bool]]:
         def match(
-                column: ColumnElement[str],
+            column: ColumnElement[str],
         ) -> ColumnElement[bool]:
             return column.op('@@')(self.ts_query)
 
         def match_convert(
-                column: ColumnElement[str], language: str
+            column: ColumnElement[str], language: str
         ) -> ColumnElement[bool]:
             return match(func.to_tsvector(language, column))
 
@@ -157,11 +174,11 @@ class SearchCollection:
         ]
 
     def process_results(
-            self, raw_results, model: type[Model]
+        self, raw_results: List[Any], model:'type[HasSearchableFields]'
     ) -> List[SearchResult]:
-        processed_results = []
+        processed_results: List[SearchResult] = []
         for result in raw_results:
-            headlines = {
+            headlines: Dict[str, str] = {
                 translate(field.name.capitalize()): value
                 for field in model.searchable_fields()
                 if (value := getattr(result, field.name, None)) is not None
@@ -171,25 +188,25 @@ class SearchCollection:
                     id=result.id,
                     headlines=headlines,
                     type=result.type,
-                    model=None
+                    model=None,
                 )
             )
         return processed_results
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.results)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[SearchResult]:
         return iter(self.results)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> SearchResult:
         return self.results[index]
 
     def __repr__(self) -> str:
         return f'<SearchResultCollection {self.results[:4]}>'
 
 
-def search(request: 'IRequest'):
+def search(request: 'IRequest') -> Dict[str, Any]:
     """
     Handle search form submission using POST/Redirect/GET pattern.
 
@@ -199,20 +216,21 @@ def search(request: 'IRequest'):
 
 
     """
-    session = request.dbsession
-    form = SearchForm(request)
+    session: 'Session' = request.dbsession
+    form: SearchForm = SearchForm(request)
     if request.method == 'POST' and form.validate():
-        query = form.term.data
         return HTTPFound(
             location=request.route_url(
                 'search',
-                _query={'q': query},
+                _query={'q': form.term.data},
             )
         )
 
     query = request.GET.get('q')
     if query:
-        result_collection = SearchCollection(term=query, session=session)
+        result_collection: SearchCollection = SearchCollection(
+            term=query, session=session
+        )
         result_collection.do_search()
         return {
             'search_results': result_collection.results,

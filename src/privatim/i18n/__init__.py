@@ -14,5 +14,5 @@ __all__ = (
     'LocaleNegotiator',
     'pluralize',
     'translate',
-    locales,
+    'locales',
 )

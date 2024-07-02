@@ -7,6 +7,9 @@ from privatim.orm import Base
 
 
 from typing import Iterator, TYPE_CHECKING
+
+from privatim.types import HasSearchableFields
+
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
 
@@ -27,18 +30,13 @@ class SearchableMixin:
         )
 
 
-def searchable_models() -> tuple[type[Base], ...]:
+def searchable_models() -> tuple[type[HasSearchableFields], ...]:
     """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():
         for mapper in Base.registry.mappers:
             cls = mapper.class_
-            if (
-                inspect.isclass(cls)
-                and issubclass(cls, SearchableMixin)
-                and issubclass(cls, Base)
-                and cls != SearchableMixin
-            ):
+            if issubclass(cls, SearchableMixin):
                 model_classes.add(cls)
     return tuple(model_classes)
 
@@ -62,7 +60,6 @@ def reindex_full_text_search(session: 'Session') -> None:
     # todo: remove later
     assert len(models) != 0, "No models with searchable fields found"
     for model in models:
-        assert issubclass(model, SearchableMixin)
         for locale, language in locales.items():
             assert language == 'german'  # todo: remove later
             if hasattr(model, f'searchable_text_{locale}'):
