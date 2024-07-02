@@ -16,13 +16,12 @@
                 <!-- Main content area (2/3 width) -->
                 <div class="col-md-8 order-md-1">
 
+                    <!-- Displaying a search result -->
                     <div tal:repeat="result activities" class="mt-4">
-
                         <div class="card d-flex flex-row activity-card-wrapper">
                             <div class="card-body col-md-8 d-flex flex-column">
                                 <h5 class="card-title fw-bold" i18n:translate="">${result.title}</h5>
-                                <p class="card-text" tal:content="result.description if len(result.description) < 100 else result.description[:100] + '...'"></p>
-                                <div tal:content="structure result.headline"></div>
+                                <div class="search-result-headline" tal:content="structure result.headline"></div>
                                 <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
                                    class="details-link">Show Details</a>
                             </div>

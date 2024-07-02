@@ -15,7 +15,7 @@ from sqlalchemy import or_
 from privatim.models.comment import Comment
 
 
-from typing import TYPE_CHECKING, List, NamedTuple
+from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -29,6 +29,8 @@ class SearchResult(NamedTuple):
     headline: str
     type: str
 
+
+Model = TypeVar('Model')
 
 class SearchCollection:
     """ A class for searching the database for a given term.
@@ -57,65 +59,84 @@ class SearchCollection:
     def do_search(self) -> None:
         """Main interface for getting the search results."""
         ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
-
-        consultation_query = self.build_query(
-            Consultation, ts_query, 'Consultation'
-        )
-        meeting_query = self.build_query(Meeting, ts_query, 'Meeting')
-        comment_query = self.build_query(Comment, ts_query, 'Comment')
-
+        consultation_query = self.build_query(Consultation, ts_query)
+        meeting_query = self.build_query(Meeting, ts_query)
+        comment_query = self.build_query(Comment, ts_query)
         union_query = union_all(
-            consultation_query, meeting_query, comment_query
+            consultation_query,
+            meeting_query,
+            comment_query,
         )
+        raw_results = self.session.execute(union_query).all()
+        self.results = self.process_results(raw_results)
 
-        results = self.session.execute(union_query).all()
-        self.results = [SearchResult(*result) for result in results]
-        breakpoint()
+    def process_results(self, raw_results) -> List[SearchResult]:
+        processed_results = []
+        for result in raw_results:
+            try:
+                processed_results.append(
+                    SearchResult(
+                        id=result.id,
+                        title=result.title,
+                        headline=result.headline,
+                        type=result.type,
+                    )
+                )
+            except AttributeError as e:
+                print(f"Error processing result: {e}")
+        return processed_results
 
-    def build_query(self, model, ts_query, model_name: str):
-        search_fields: list[InstrumentedAttribute] = list(
+    def build_query(self, model: Model, ts_query):
+        search_fields: List[InstrumentedAttribute] = list(
             model.searchable_fields()
         )
-
-        headline_expr = func.ts_headline(
-            self.lang,
-            search_fields[0],  # using the first searchable field as the
-            # headline
-            ts_query,
-            'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, ShortWord=3, HighlightAll=FALSE, MaxFragments=3, FragmentDelimiter=" ... "',
-        ).label('headline')
+        headline_expr = self.generate_headline(model, ts_query)
 
         return select(
-            model.id,  # include the model itself in the search results
-            search_fields[0].label('title'),  # Using the first searchable
-            # field for the title
+            model.id,
+            search_fields[0].label(
+                'title'
+            ),  # Using the first searchable field for the title
             headline_expr,
-            cast(literal(model_name), String).label('type'),
+            cast(literal(model.__name__), String).label('type'),
         ).filter(or_(*self.term_filter_text_for_model(model, self.lang)))
 
-    def term_filter_text_for_model(
-        self, model, language: str
-    ) -> list['ColumnElement[bool]']:
-        """Returns a list of SqlAlchemy filter statements matching possible
-        fulltext attributes based on the term for a given model."""
+    def generate_headline(self, model: Model, ts_query):
+        """The generate_headline method concatenates all searchable
+        fields into a single string, separated by ' | '. This ensures that all
+        searchable fields are included in the headline."""
 
+        search_fields = model.searchable_fields()
+        headline_fields = [func.coalesce(field, '') for field in search_fields]
+        concatenated_fields = func.concat_ws(' | ', *headline_fields)
+
+        # https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-HEADLINE
+        return func.ts_headline(
+            self.lang,
+            concatenated_fields,
+            ts_query,
+            'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
+            'ShortWord=3, HighlightAll=TRUE, MaxFragments=3, '
+            'FragmentDelimiter=" ... "',
+        ).label('headline')
+
+    def term_filter_text_for_model(
+        self, model: Model, lang: str
+    ) -> List[ColumnElement[bool]]:
         def match(
-            column: 'ColumnElement[str] | ColumnElement[str | None]',
-            language: str,
-        ) -> 'ColumnElement[bool]':
+            column: ColumnElement[str], language: str
+        ) -> ColumnElement[bool]:
             return column.op('@@')(
                 func.websearch_to_tsquery(language, self.web_search)
             )
 
         def match_convert(
-            column: 'ColumnElement[str] | ColumnElement[str | None]',
-            language: str,
-        ) -> 'ColumnElement[bool]':
+            column: ColumnElement[str], language: str
+        ) -> ColumnElement[bool]:
             return match(func.to_tsvector(language, column), language)
 
         return [
-            match_convert(field, language)
-            for field in model.searchable_fields()
+            match_convert(field, lang) for field in model.searchable_fields()
         ]
 
     def __len__(self):
