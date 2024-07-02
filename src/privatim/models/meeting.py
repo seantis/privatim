@@ -176,7 +176,6 @@ class Meeting(Base, Commentable, SearchableMixin):
     def searchable_fields(cls) -> Iterator[str]:
         # todo: agenda item (seperately)
         yield cls.name
-        yield cls.name
 
     def __acl__(self) -> list['ACL']:
         return [

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-23 05:02+0200\n"
+"POT-Creation-Date: 2024-07-02 14:17+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -53,8 +53,7 @@ msgstr "Nachricht"
 msgid "Answer"
 msgstr "Antworten"
 
-#: src/privatim/layouts/navbar.pt src/privatim/layouts/navbar.py
-#: src/privatim/views/activities.py
+#: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
 msgstr "Aktivitäten"
 
@@ -72,10 +71,6 @@ msgstr "Vernehmlassungen"
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Gremien"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Search..."
-msgstr "Suchen..."
 
 #: src/privatim/layouts/navbar.pt
 msgid "<dynamic element> Profile"
@@ -339,13 +334,26 @@ msgstr "Status"
 msgid "Your Comment"
 msgstr "Ihr Kommentar"
 
+#: src/privatim/views/templates/search_results.pt
+msgid "Search Results"
+msgstr "Suchergebnisse"
+
+#: src/privatim/views/templates/search_results.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Show Details"
+msgstr "Details anzeigen"
+
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Show Details"
-msgstr "Details anzeigen"
+msgid "Unbekannter Ersteller"
+msgstr "Unbekannter Ersteller"
+
+#: src/privatim/views/templates/activities.pt
+msgid "Kein Leiter"
+msgstr "Kein Leiter"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
@@ -600,6 +608,10 @@ msgstr "Kein Leiter"
 msgid "Members"
 msgstr "Mitglieder"
 
+#: src/privatim/forms/search_form.py
+msgid "Search"
+msgstr ""
+
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
@@ -628,6 +640,9 @@ msgstr "Auswählen"
 #, python-format
 msgid "Protocol of meeting ${title}"
 msgstr "Protokoll der Sitzung ${title}"
+
+#~ msgid "Search..."
+#~ msgstr "Suchen..."
 
 #~ msgid "Do you really wish to delete \"${item_title}\"?"
 #~ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"

@@ -22,7 +22,7 @@ class SearchForm(Form):
                 'dbsession': session
             }
         )
-    search = SearchField(
+    term = SearchField(
         _('Search'),
         [DataRequired()],
         render_kw={

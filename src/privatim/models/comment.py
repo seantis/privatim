@@ -76,7 +76,6 @@ class Comment(Base, Associable, SearchableMixin):
     @classmethod
     def searchable_fields(cls):
         yield cls.content
-        yield cls.content
 
     __table_args__ = (
         Index('ix_comments_parent_id', 'parent_id'),
