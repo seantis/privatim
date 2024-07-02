@@ -1,4 +1,3 @@
-import transaction
 from sqlalchemy import select
 from sqlalchemy.orm import undefer
 from privatim.models import Consultation

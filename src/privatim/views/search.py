@@ -3,7 +3,6 @@ from sqlalchemy import (
     func,
     select,
     ColumnElement,
-    union_all,
     cast,
     literal,
     String,
@@ -12,7 +11,6 @@ from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.models import Consultation, Meeting
 from privatim.i18n import locales, translate
-from privatim.i18n import _
 from sqlalchemy import or_
 
 from privatim.models.comment import Comment
@@ -24,7 +22,7 @@ from privatim.models.searchable import searchable_models
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Session, InstrumentedAttribute
+    from sqlalchemy.orm import Session
 
 
 class SearchResult(NamedTuple):
@@ -99,7 +97,7 @@ class SearchCollection:
         select_fields = [
             model.id,
             *headline_expression,
-            cast(literal(model.__name__), String).label('type'),
+            cast(literal(model.__name__), String).label('type'),  # noqa: MS001
         ]
 
         return select(*select_fields).filter(
@@ -112,7 +110,8 @@ class SearchCollection:
 
         Headlines in this context are snippets of text from the searchable
         fields, with the matching search terms highlighted.
-        They provide context around where the search term appears in each field.
+        They provide context around where the search term appears in each
+        field.
 
         Args:
             model (type[Model]): The model class to generate headlines for.
@@ -204,7 +203,12 @@ def search(request: 'IRequest'):
     form = SearchForm(request)
     if request.method == 'POST' and form.validate():
         query = form.term.data
-        return HTTPFound(location=request.route_url('search', _query={'q': query}))
+        return HTTPFound(
+            location=request.route_url(
+                'search',
+                _query={'q': query},
+            )
+        )
 
     query = request.GET.get('q')
     if query:
@@ -221,4 +225,3 @@ def search(request: 'IRequest'):
         'query': None,
         'layout': Layout(None, request),
     }
-

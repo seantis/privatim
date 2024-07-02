@@ -1,18 +1,14 @@
 from sqlalchemy import func, update, Text
-import transaction
 from sqlalchemy.ext.hybrid import hybrid_property
 import inspect
-from sqlalchemy import text
-import sys
-from functools import cache
-
-from sqlalchemy.orm import Session, class_mapper
 
 from privatim.i18n import locales
 from privatim.orm import Base
 
 
-from typing import Iterator
+from typing import Iterator, TYPE_CHECKING
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
 
 class SearchableMixin:
@@ -47,7 +43,7 @@ def searchable_models() -> tuple[type[Base], ...]:
     return tuple(model_classes)
 
 
-def reindex_full_text_search(session: Session) -> None:
+def reindex_full_text_search(session: 'Session') -> None:
     """
     Updates the searchable_text_{} columns.
 

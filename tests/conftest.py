@@ -1,6 +1,5 @@
 import warnings
 import pytest
-import sqlalchemy
 import transaction
 from libcloud.storage.drivers.local import LocalStorageDriver
 from pyramid import testing
