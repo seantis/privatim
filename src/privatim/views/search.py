@@ -1,21 +1,50 @@
-from sqlalchemy import func, select, ColumnElement, union_all, text, cast, \
-    literal, String
+from sqlalchemy import (
+    func,
+    select,
+    ColumnElement,
+    union_all,
+    cast,
+    literal,
+    String,
+)
 from privatim.forms.search_form import SearchForm
 from privatim.models import Consultation, Meeting
 from privatim.i18n import locales
 from sqlalchemy import or_
 
 from privatim.models.comment import Comment
-from privatim.models.searchable import searchable_models
 
 
-from typing import TYPE_CHECKING, List, NamedTuple, Protocol
+from typing import TYPE_CHECKING, List, NamedTuple
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Query, Session
+    from sqlalchemy.orm import Session, InstrumentedAttribute
+    from sqlalchemy.engine.row import Row
 
 
-class SearchResultCollection:
+class SearchResult(NamedTuple):
+    id: int
+    title: str
+    headline: str
+    type: str
+
+
+class SearchCollection:
+    """ A class for searching the database for a given term.
+
+    We use websearch_to_tsquery, which automatically converts the search term
+    into a tsquery.
+
+    | term | tsquery |
+    |------|---------|
+    | the donkey |	|'donkey' |
+    | "blue donkey" | 'blue' & 'donkey' |
+
+    See also:
+    https://adamj.eu/tech/2024/01/03/postgresql-full-text-search-websearch/
+
+    """
     web_search: str
     results: list
 
@@ -26,73 +55,69 @@ class SearchResultCollection:
         self.results = []
 
     def do_search(self) -> None:
-        """ Main interface for getting the search results from templates"""
+        """Main interface for getting the search results."""
         ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
 
-        consultation_query = select(
-            Consultation.id,
-            Consultation.title.label('title'),
-            Consultation.description.label('description'),
-            func.ts_headline(self.lang, Consultation.description, ts_query).label('headline'),
-            func.ts_rank_cd(func.to_tsvector(self.lang, Consultation.title + ' ' + Consultation.description), ts_query).label('rank'),
-            cast(literal("'consultation'"), String).label('type')
-        ).filter(or_(*self.term_filter_text_for_model(Consultation, self.lang)))
-
-        meeting_query = select(
-            Meeting.id,
-            Meeting.name.label('title'),
-            Meeting.decisions.label('description'),
-            func.ts_headline(self.lang, Meeting.decisions, ts_query).label('headline'),
-            func.ts_rank_cd(func.to_tsvector(self.lang, Meeting.name + ' ' + Meeting.decisions), ts_query).label('rank'),
-            cast(literal("'meeting'"), String).label('type')
-        ).filter(or_(*self.term_filter_text_for_model(Meeting, self.lang)))
-
-        # comment_query = select(
-        #     Comment.id,
-        #     Comment.content.label('title'),
-        #     Comment.content.label('description'),
-        #     func.ts_headline(self.lang, Comment.content, ts_query).label('headline'),
-        #     func.ts_rank_cd(func.to_tsvector(self.lang, Comment.content), ts_query).label('rank'),
-        #     func.literal('Comment').label('type')
-        # ).filter(or_(*self.term_filter_text_for_model(Comment, self.lang)))
-
-        union_query = union_all(consultation_query, meeting_query).order_by(
-            text('rank DESC')
+        consultation_query = self.build_query(
+            Consultation, ts_query, 'Consultation'
         )
-        self.results = list(self.session.execute(union_query).all())
+        meeting_query = self.build_query(Meeting, ts_query, 'Meeting')
+        comment_query = self.build_query(Comment, ts_query, 'Comment')
 
-    def term_filter_text_for_model(self, model, language: str) -> list['ColumnElement[bool]']:
-        """ Returns a list of SqlAlchemy filter statements matching possible
+        union_query = union_all(
+            consultation_query, meeting_query, comment_query
+        )
+
+        results = self.session.execute(union_query).all()
+        self.results = [SearchResult(*result) for result in results]
+        breakpoint()
+
+    def build_query(self, model, ts_query, model_name: str):
+        search_fields: list[InstrumentedAttribute] = list(
+            model.searchable_fields()
+        )
+
+        headline_expr = func.ts_headline(
+            self.lang,
+            search_fields[0],  # using the first searchable field as the
+            # headline
+            ts_query,
+            'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, ShortWord=3, HighlightAll=FALSE, MaxFragments=3, FragmentDelimiter=" ... "',
+        ).label('headline')
+
+        return select(
+            model.id,  # include the model itself in the search results
+            search_fields[0].label('title'),  # Using the first searchable
+            # field for the title
+            headline_expr,
+            cast(literal(model_name), String).label('type'),
+        ).filter(or_(*self.term_filter_text_for_model(model, self.lang)))
+
+    def term_filter_text_for_model(
+        self, model, language: str
+    ) -> list['ColumnElement[bool]']:
+        """Returns a list of SqlAlchemy filter statements matching possible
         fulltext attributes based on the term for a given model."""
+
         def match(
-                column: 'ColumnElement[str] | ColumnElement[str | None]',
-                language: str
+            column: 'ColumnElement[str] | ColumnElement[str | None]',
+            language: str,
         ) -> 'ColumnElement[bool]':
-            return column.op('@@')(func.websearch_to_tsquery(language, self.web_search))
+            return column.op('@@')(
+                func.websearch_to_tsquery(language, self.web_search)
+            )
 
         def match_convert(
-                column: 'ColumnElement[str] | ColumnElement[str | None]',
-                language: str
+            column: 'ColumnElement[str] | ColumnElement[str | None]',
+            language: str,
         ) -> 'ColumnElement[bool]':
             return match(func.to_tsvector(language, column), language)
 
-        if model == Consultation:
-            return [
-                match_convert(Consultation.title, language),
-                match_convert(Consultation.description, language),
-            ]
-        elif model == Meeting:
-            return [
-                match_convert(Meeting.name, language),
-                match_convert(Meeting.decisions, language),
-            ]
-        elif model == Comment:
-            return [
-                match_convert(Comment.content, language),
-            ]
-        else:
-            return []
-    
+        return [
+            match_convert(field, language)
+            for field in model.searchable_fields()
+        ]
+
     def __len__(self):
         return len(self.results)
 
@@ -117,8 +142,8 @@ def search(request: 'IRequest'):
         stmt = select(Consultation.searchable_text_de_CH)
         assert None not in session.execute(stmt).scalars().all()
 
-        result_collection = SearchResultCollection(term=query, session=session)
+        result_collection = SearchCollection(term=query, session=session)
         result_collection.do_search()
-        breakpoint()
 
-        return {'search_results': result_collection}
+        activities = result_collection.results
+        return {'activities': activities}

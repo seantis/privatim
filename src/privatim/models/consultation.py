@@ -91,9 +91,9 @@ class Consultation(Base, Commentable, AssociatedFiles, SearchableMixin):
 
     @classmethod
     def searchable_fields(cls) -> Iterator[str]:
-        yield 'title'
-        yield 'description'
-        yield 'recommendation'
+        yield cls.title
+        yield cls.description
+        yield cls.recommendation
 
     def __repr__(self) -> str:
         return (

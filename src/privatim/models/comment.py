@@ -2,6 +2,7 @@ from datetime import datetime
 from sedate import utcnow
 from privatim.orm import Base
 from privatim.orm.associable import Associable
+from privatim.models import SearchableMixin
 from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, remote
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from privatim.models import User
 
 
-class Comment(Base, Associable):
+class Comment(Base, Associable, SearchableMixin):
     """A generic comment that shall be attachable to any model.
     Meant to be used in conjunction with `Commentable`.
 
@@ -71,6 +72,11 @@ class Comment(Base, Associable):
 
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'
+
+    @classmethod
+    def searchable_fields(cls):
+        yield cls.content
+        yield cls.content
 
     __table_args__ = (
         Index('ix_comments_parent_id', 'parent_id'),

@@ -141,9 +141,11 @@ a:hover {
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
 }
+
 #search-button {
     border: none;
 }
+
 #search-button:hover {
     background-color: transparent;
     color: var(--primary-color);
@@ -285,4 +287,14 @@ span.accordion-text-9 {
     content: counter(section) ". "; /* Display the counter */
     font-weight: bold;
     margin-right: 10px;
+}
+
+
+/* Start search results */
+mark {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    padding: 0 5px;
+    border-radius: 3px;
 }

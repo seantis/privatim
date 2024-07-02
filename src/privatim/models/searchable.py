@@ -25,16 +25,9 @@ class SearchableMixin:
 
     @hybrid_property
     def searchable_text(self) -> str:
+        # todo: extract document text
         return ' '.join(
             str(getattr(self, field)) for field in self.searchable_fields()
-        )
-
-    @searchable_text.expression
-    def searchable_text(cls):
-        # Called when the property is used in a SQL expression
-        return func.concat_ws(
-            ' ',
-            *[getattr(cls, field) for field in cls.searchable_fields()]
         )
 
 
@@ -44,10 +37,10 @@ def searchable_models() -> tuple[type[Base], ...]:
         for mapper in Base.registry.mappers:
             cls = mapper.class_
             if (
-                    inspect.isclass(cls)
-                    and issubclass(cls, SearchableMixin)
-                    and issubclass(cls, Base)
-                    and cls != SearchableMixin
+                inspect.isclass(cls)
+                and issubclass(cls, SearchableMixin)
+                and issubclass(cls, Base)
+                and cls != SearchableMixin
             ):
                 model_classes.add(cls)
     return tuple(model_classes)
@@ -76,17 +69,17 @@ def reindex_full_text_search(session: Session) -> None:
         for locale, language in locales.items():
             assert language == 'german'  # todo: remove later
             if hasattr(model, f'searchable_text_{locale}'):
-                update_stmt = (
-                    update(model)
-                    .values({
+                update_stmt = update(model).values(
+                    {
                         f'searchable_text_{locale}': func.to_tsvector(
-                            language,
-                            func.cast(model.searchable_text, Text)
+                            language, func.cast(model.searchable_text, Text)
                         )
-                    })
+                    }
                 )
                 updated = getattr(model, f'searchable_text_{locale}')
                 session.execute(update_stmt)
-                print('Reindex full text search for',
-                      f'{model}.searchable_text_{locale} with val {updated}')
+                print(
+                    'Reindex full text search for',
+                    f'{model}.searchable_text_{locale} with val {updated}',
+                )
     session.flush()

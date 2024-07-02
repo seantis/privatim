@@ -7,12 +7,14 @@ from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
 from privatim.models.commentable import Commentable
+from privatim.models import SearchableMixin
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
+
 if TYPE_CHECKING:
     from privatim.models import User, WorkingGroup
     from datetime import datetime
@@ -119,7 +121,7 @@ class AgendaItem(Base):
         return f'<AgendaItem {self.title} position {self.position}>'
 
 
-class Meeting(Base, Commentable):
+class Meeting(Base, Commentable, SearchableMixin):
     """Sitzung"""
 
     __tablename__ = 'meetings'
@@ -169,6 +171,12 @@ class Meeting(Base, Commentable):
     working_group: Mapped['WorkingGroup'] = relationship(
         'WorkingGroup', back_populates='meetings'
     )
+
+    @classmethod
+    def searchable_fields(cls) -> Iterator[str]:
+        # todo: agenda item (seperately)
+        yield cls.name
+        yield cls.name
 
     def __acl__(self) -> list['ACL']:
         return [
