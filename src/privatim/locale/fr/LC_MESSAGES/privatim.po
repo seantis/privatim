@@ -333,8 +333,8 @@ msgid "Status"
 msgstr "Statut"
 
 #: src/privatim/views/templates/consultation.pt
-msgid "Your Comment"
-msgstr "Votre commentaire"
+msgid "Add Comment"
+msgstr "Ajouter un commentaire"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"

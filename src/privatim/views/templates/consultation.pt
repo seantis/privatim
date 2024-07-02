@@ -67,7 +67,7 @@
                          tal:define="comments flattened_comments_tree">
                 </metal:block>
             </div>
-            <h2 i18n:translate="" class="m-4">Your Comment</h2>
+            <h2 i18n:translate="" class="m-4">Add Comment</h2>
             <div class="row">
                 <metal:block use-macro="layout.macros['add_comment_form']"
                          tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,

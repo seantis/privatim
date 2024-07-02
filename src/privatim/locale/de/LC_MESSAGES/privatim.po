@@ -334,8 +334,8 @@ msgid "Status"
 msgstr "Status"
 
 #: src/privatim/views/templates/consultation.pt
-msgid "Your Comment"
-msgstr "Ihr Kommentar"
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
