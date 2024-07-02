@@ -60,7 +60,6 @@ class SearchCollection:
         self.lang: str = locales[language]
         self.session = session
         self.web_search: str = term
-
         self.ts_query: 'websearch_to_tsquery' = func.websearch_to_tsquery(
             self.lang, self.web_search
         )
@@ -73,7 +72,7 @@ class SearchCollection:
         self._add_comments_to_results()
 
     def _add_comments_to_results(self):
-        """ Updates SearchResult.model with the complete query for Comment.
+        """ Extends self.results with the complete query for Comment.
 
         This is for displaying more information in the search results.
          """
@@ -103,44 +102,26 @@ class SearchCollection:
         model: type['HasSearchableFields'],
     ) -> 'Select':
 
-        headline_expression = self.generate_headlines(model,)
-
-        select_fields: List[Any] = [
-            model.id,
-            *headline_expression,
-            cast(literal(model.__name__), String).label('type'),  # noqa: MS001
-        ]
-
-        return select(*select_fields).filter(
-            or_(*self.term_filter_text_for_model(model, self.lang))
-        )
-
-    def generate_headlines(
-        self,
-        model: type['HasSearchableFields'],
-    ) -> List[ColumnElement[bool]]:
         """
-        Generate headline expressions for all searchable fields of the model.
+        Builds the actual query for full text search.
 
-        Headlines in this context are snippets of text from the searchable
+        1. Generate headline expressions for all searchable fields of the
+        model. Headlines in this context are snippets of text from the searchable
         fields, with the matching search terms highlighted.
         They provide context around where the search term appears in each
         field.
 
-        Args: model (type['type[HasSearchableFields]']): The model class to
-        generate headlines for. ts_query: The text search query to use for
-        highlighting.
+        2. Perform the actual search in all
+        searchable fields using `create_fulltext_search_conditions`
 
-        Returns:
-            List[ColumnElement]: A list of SQLAlchemy column expressions, each
-            representing a headline for a searchable field. These expressions
-            use the ts_headline function to generate highlighted snippets of
-            text.
+        Returns A list of SQLAlchemy column expressions, each
+            representing a headline for a searchable field.
 
             See also https://www.postgresql.org/docs/current/textsearch
             -controls.html#TEXTSEARCH-HEADLINE
+
         """
-        return [
+        headline_expression = [
             func.ts_headline(
                 self.lang,
                 field,
@@ -151,10 +132,31 @@ class SearchCollection:
             ).label(field.name)
             for field in model.searchable_fields()
         ]
+        select_fields: List[Any] = [
+            model.id,
+            *headline_expression,
+            cast(literal(model.__name__), String).label('type'),  # noqa: MS001
+        ]
 
-    def term_filter_text_for_model(
-        self, model: 'type[HasSearchableFields]', language: str
+        return select(*select_fields).filter(
+            or_(*self.create_fulltext_search_conditions(model.searchable_fields()))
+        )
+
+    def create_fulltext_search_conditions(
+        self,
+        searchable_fields: Iterator['InstrumentedAttribute[str]'],
     ) -> List[ColumnElement[bool]]:
+        """
+         The column.op@@ expression is SQLAlchemy's custom operator
+         functionality to create a full-text search operation.
+
+        Note that we convert to tsvector at runtime, this could be done at
+        indexing time for performance reasons. But for now we keep it simple.
+        For relatively small datasets, as we expect them to be  this will
+        probably not be a bottleneck.
+
+        """
+
         def match(
             column: ColumnElement[str],
         ) -> ColumnElement[bool]:
@@ -165,14 +167,13 @@ class SearchCollection:
         ) -> ColumnElement[bool]:
             return match(func.to_tsvector(language, column))
 
-        return [
-            match_convert(field, language)
-            for field in model.searchable_fields()
-        ]
+        return [match_convert(field, self.lang) for field in searchable_fields]
 
     def process_results(
         self, raw_results: Sequence[Any], model: 'type[HasSearchableFields]'
     ) -> List[SearchResult]:
+        """ Helper function to produce a safe typed output of
+        list[SearchResult] """
         processed_results: List[SearchResult] = []
         for result in raw_results:
             headlines: dict[str, str] = {
@@ -196,11 +197,11 @@ class SearchCollection:
 
 def search(request: 'IRequest') -> 'RenderDataOrRedirect':
     """
-    Handle search form submission using POST/Redirect/GET pattern.
+    Handle search form submission using POST/Redirect/GET design pattern.
 
     This view processes the search form submitted via POST method, then
-    redirects to avoid browser warnings on page refresh. The pattern
-    prevents accidental form resubmission when users refresh the results page.
+    redirects to avoid browser warnings on page refresh. This prevents
+    accidental form resubmission if users refresh the results page.
 
 
     """
