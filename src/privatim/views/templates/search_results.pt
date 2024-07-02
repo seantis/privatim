@@ -14,6 +14,13 @@
                 <!-- Main content area (2/3 width) -->
                 <div class="col-md-8 order-md-1">
                     <!-- Displaying a search result -->
+
+                    <div tal:condition="not search_results" class="mt-4">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle"></i>
+                            <span i18n:translate="">No results containing all your search terms were found..</span>
+                        </div>
+                    </div>
                     <div tal:repeat="result search_results" class="mt-4">
                         <tal:block tal:condition="python: result.type != 'Comment'">
                             <div class="card d-flex flex-row activity-card-wrapper">

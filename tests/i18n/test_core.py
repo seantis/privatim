@@ -40,28 +40,28 @@ def test_translate_markup():
     assert result == Markup('<b>bold</b>')
 
 
-def test_translate_translation_dirs(config):
-    config.add_translation_dirs('privatim:locale/')
+def test_translate_translation_dirs(pg_config):
+    pg_config.add_translation_dirs('privatim:locale/')
     # Testing localizer doesn't seem to work.
-    config.registry.localizer_de = None
+    pg_config.registry.localizer_de = None
     msg = _('Just a test')
     assert translate(msg, 'en') == 'Just a test'
     assert translate(msg, 'de') == 'Nur ein Test'
 
 
-def test_translate_translation_dirs_markup(config):
-    config.add_translation_dirs('privatim:locale/')
+def test_translate_translation_dirs_markup(pg_config):
+    pg_config.add_translation_dirs('privatim:locale/')
     # Testing localizer doesn't seem to work.
-    config.registry.localizer_de = None
+    pg_config.registry.localizer_de = None
     msg = _('<b>bold</b>', markup=True)
     assert escape(translate(msg, 'en')) == Markup('<b>bold</b>')
     assert escape(translate(msg, 'de')) == Markup('<b>fett</b>')
 
 
-def test_translate_translation_dirs_markup_omitted(config):
-    config.add_translation_dirs('privatim:locale/')
+def test_translate_translation_dirs_markup_omitted(pg_config):
+    pg_config.add_translation_dirs('privatim:locale/')
     # Testing localizer doesn't seem to work.
-    config.registry.localizer_de = None
+    pg_config.registry.localizer_de = None
     msg = _('<b>bold</b>')
     assert escape(translate(msg, 'en')) == Markup('&lt;b&gt;bold&lt;/b&gt;')
     assert escape(translate(msg, 'de')) == Markup('&lt;b&gt;fett&lt;/b&gt;')

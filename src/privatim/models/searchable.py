@@ -56,8 +56,6 @@ def reindex_full_text_search(session: 'Session') -> None:
 
     """
     models = searchable_models()
-    # todo: remove later
-    assert len(models) != 0, "No models with searchable fields found"
     for model in models:
         for locale, language in locales.items():
             assert language == 'german'  # todo: remove later

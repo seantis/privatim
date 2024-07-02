@@ -4,7 +4,7 @@ from privatim.testing import DummyRequest
 from privatim.views.password_retrieval import password_retrieval_view
 
 
-def test_view(config):
+def test_view(pg_config):
     request = DummyRequest()
     result = password_retrieval_view(request)
     assert 'form' in result.keys()
@@ -64,7 +64,7 @@ def test_view_submit_username(config, user, mailer):
     assert message['receivers'].addr_spec == 'gregory@house.com'
 
 
-def test_view_submit_invalid(config):
+def test_view_submit_invalid(pg_config):
     request = DummyRequest()
     request.POST['email'] = ''  # Empty username
     request.POST['submit'] = '1'

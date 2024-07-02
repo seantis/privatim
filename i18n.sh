@@ -34,6 +34,21 @@ if [ ! -f "$LOCALES_PATH"/$DOMAIN.pot ]; then
     touch "$LOCALES_PATH"/$DOMAIN.pot
 fi
 
+# Function to insert a space before "msgid"
+insert_space_before_msgid() {
+    local input="$1"
+    echo "$input" | sed 's/msgid/ msgid/'
+}
+
+# Function to remove the fourth space in a string
+remove_fourth_space() {
+    local input="$1"
+    local part1=$(echo "$input" | cut -d' ' -f1-4)
+    local part2=$(echo "$input" | cut -d' ' -f5-)
+    echo "$part1$part2"
+}
+
+
 # no arguments, extract and update
 if [ $# -eq 0 ]; then
     echo "Extract messages"
@@ -47,6 +62,18 @@ if [ $# -eq 0 ]; then
     echo "Compile message catalogs"
     for po in "$LOCALES_PATH"/*/LC_MESSAGES/*.po; do
         msgfmt --statistics -o "${po%.*}.mo" "$po"
+
+        untranslated_messages=$(msggrep -v -T -e "." "$po" | grep -n "msgid" | grep -v '""')
+        if [ -n "$untranslated_messages" ]; then
+            echo -n "${po}:"
+            while IFS= read -r line; do
+                formatted_line=$(insert_space_before_msgid "$line")
+                formatted_line=$(remove_fourth_space "$formatted_line")
+                echo "$formatted_line"
+            done <<< "$untranslated_messages"
+            echo  # Add a newline after all untranslated messages
+        fi
+        echo  # Add a newline after all untranslated messages
     done
 
 # first argument represents language identifier, create catalog

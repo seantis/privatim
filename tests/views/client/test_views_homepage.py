@@ -10,5 +10,5 @@ def test_view_activities(client):
     form = page.forms[0]
     print(form.fields)
 
-    form['search'] = 'My search'
+    form['term'] = 'My search'
     page = form.submit()

@@ -17,7 +17,7 @@ class DummyPostData(dict):
 
 
 @pytest.mark.skip()
-def test_meeting_form_time_not_optional(config):
+def test_meeting_form_time_not_optional(pg_config):
     meeting = create_meeting()
     session = config.dbsession
     session.add(meeting)

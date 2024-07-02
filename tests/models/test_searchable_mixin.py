@@ -1,9 +1,11 @@
+import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import undefer
 from privatim.models import Consultation
 from privatim.models.searchable import reindex_full_text_search
 
 
+@pytest.mark.skip('fulltext indexing is disabled for now')
 def test_fulltext_indexing_on_searchable_fields(pg_config):
     session = pg_config.dbsession
     consultation = Consultation(

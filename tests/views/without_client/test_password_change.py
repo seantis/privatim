@@ -7,7 +7,7 @@ from privatim.testing import DummyRequest
 from privatim.views.password_change import password_change_view
 
 
-def test_password_change_view(config):
+def test_password_change_view(pg_config):
     request = DummyRequest()
     result = password_change_view(request)
     assert 'form' in result
@@ -35,7 +35,7 @@ def test_password_change_view_password_strength(config, user):
     assert 'Password must have minimal length' in messages[0]['message']
 
 
-def test_password_change_view_invalid(config):
+def test_password_change_view_invalid(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -48,7 +48,7 @@ def test_password_change_view_invalid(config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_confirmation(config):
+def test_password_change_view_invalid_confirmation(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -61,7 +61,7 @@ def test_password_change_view_invalid_confirmation(config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_min_length(config):
+def test_password_change_view_invalid_min_length(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -96,7 +96,7 @@ def test_password_change_view_invalid_username(config, user):
     assert 'form' in result
 
 
-def test_password_change_view_invalid_token(config):
+def test_password_change_view_invalid_token(pg_config):
     request = DummyRequest()
     request.params['token'] = '123456'
     request.POST['email'] = 'username'

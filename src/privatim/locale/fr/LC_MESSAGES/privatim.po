@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-02 14:17+0200\n"
+"POT-Creation-Date: 2024-07-02 23:44+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -335,7 +335,11 @@ msgstr "Votre commentaire"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"
-msgstr ""
+msgstr "Résultats de la recherche"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "No results containing all your search terms were found.."
+msgstr "Aucun résultat ne contient tous les termes de votre recherche."
 
 #: src/privatim/views/templates/search_results.pt
 #: src/privatim/views/templates/activities.pt
@@ -348,11 +352,11 @@ msgstr "Changer le mot de passe"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Unbekannter Ersteller"
-msgstr ""
+msgstr "Créateur inconnu"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Kein Leiter"
-msgstr ""
+msgstr "Pas de chef"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
@@ -607,7 +611,7 @@ msgstr "Membres"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

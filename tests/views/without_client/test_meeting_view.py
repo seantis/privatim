@@ -8,7 +8,7 @@ from tests.shared.utils import create_meeting, CustomDummyRequest, \
     create_meeting_with_agenda_items
 
 
-def test_export_meeting_without_agenda_items(config):
+def test_export_meeting_without_agenda_items(pg_config):
     config.add_route('export_meeting_as_pdf_view',
                      '/meetings/{id}/export')
 
@@ -30,7 +30,7 @@ def test_export_meeting_without_agenda_items(config):
     assert 'Logo' in all_text
 
 
-def test_sortable_agenda_items_view(config):
+def test_sortable_agenda_items_view(pg_config):
 
     # Add route
     config.add_route(
