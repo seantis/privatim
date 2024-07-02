@@ -60,9 +60,7 @@ class SearchCollection:
         self.lang: str = locales[language]
         self.session = session
         self.web_search: str = term
-        self.ts_query: 'websearch_to_tsquery' = func.websearch_to_tsquery(
-            self.lang, self.web_search
-        )
+        self.ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
         self.results: List[SearchResult] = []
 
     def do_search(self) -> None:
@@ -93,7 +91,7 @@ class SearchCollection:
         self,
         model: type['HasSearchableFields'],
     ) -> List[SearchResult]:
-        query = self.build_query(model, self.ts_query)
+        query = self.build_query(model)
         raw_results = self.session.execute(query).all()
         return self.process_results(raw_results, model)
 

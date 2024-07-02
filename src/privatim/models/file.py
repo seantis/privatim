@@ -2,11 +2,12 @@ import uuid
 
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, deferred
 from sqlalchemy_file import File
 
 from privatim.orm.associable import Associable
 from privatim.orm.meta import UUIDStrPK, AttachedFile
+from sqlalchemy import Text, ForeignKey
 from privatim.orm import Base
 
 from typing import TYPE_CHECKING
@@ -46,3 +47,29 @@ class GeneralFile(Base, Associable):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+
+class SearchableFile(GeneralFile):
+    """ A file with the intention of being searchable.$
+
+    """
+    __tablename__ = 'searchable_files'
+
+    id: Mapped[UUIDStrPK] = mapped_column(
+        ForeignKey('general_files.id'), primary_key=True
+    )
+
+    # the content of the given file as text.
+    # (it is important that this column be loaded deferred by default, lest
+    # we load massive amounts of text on simple queries)
+    extract: Mapped[str | None] = deferred(mapped_column(Text, nullable=True))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'searchable_file',
+    }
+
+    def __init__(
+        self, filename: str, content: bytes, extract: str | None = None
+    ) -> None:
+        super().__init__(filename, content)
+        self.extract = extract

@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Iterable, Iterator
+from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
     from sqlalchemy.orm import InstrumentedAttribute
-    from sqlalchemy import ColumnElement
     from privatim.orm.meta import UUIDStrPK
     from sqlalchemy.ext.hybrid import hybrid_property
     from decimal import Decimal

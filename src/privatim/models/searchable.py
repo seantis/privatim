@@ -7,11 +7,12 @@ from privatim.orm import Base
 
 from typing import Iterator, TYPE_CHECKING
 if TYPE_CHECKING:
-    from privatim.types import HasSearchableFields
     from sqlalchemy.orm import Session, InstrumentedAttribute
+    from privatim.types import HasSearchableFields
 
 
-class SearchableMixin(HasSearchableFields):
+# todo: should this implement the protocol?
+class SearchableMixin:
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         # Override this method in each model to specify searchable fields
@@ -47,7 +48,7 @@ def reindex_full_text_search(session: 'Session') -> None:
     column to Text type.
     This ensures that we're passing a text value to to_tsvector,
     not a tsvector.
-    j
+
     2. We wrap this in a func.coalesce() call, which will
     return an empty string if the column value is NULL. This prevents
     potential errors if some rows have NULL values in the searchable_text

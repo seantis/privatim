@@ -33,6 +33,7 @@ AgendaItem
 Statement
 PasswordChangeToken
 GeneralFile
+SearchableMixin
 
 
 from typing import TYPE_CHECKING, Any, TypeVar  # noqa: E402
