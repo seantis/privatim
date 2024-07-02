@@ -68,9 +68,15 @@ class SearchCollection:
 
     def do_search(self) -> None:
         for model in searchable_models():
-            self.results.extend(self.search_model(model, self.ts_query))
+            self.results.extend(self.search_model(model))
 
-        # Fetch Comment objects after the search
+        self._add_comments_to_results()
+
+    def _add_comments_to_results(self):
+        """ Updates SearchResult.model with the complete query for Comment.
+
+        This is for displaying more information in the search results.
+         """
         comment_ids = [
             result.id for result in self.results if result.type == 'Comment'
         ]
@@ -80,33 +86,24 @@ class SearchCollection:
             comment_dict: dict[str, Comment] = {
                 comment.id: comment for comment in comments
             }
-
-            # Update results with fetched Comment objects
-            self.results = [
-                (
-                    result._replace(model=comment_dict.get(result.id))
-                    if result.type == 'Comment'
-                    else result
-                )
-                for result in self.results
-            ]
+            self.results = [(result._replace(model=comment_dict.get(
+                result.id)) if result.type == 'Comment' else result) for result
+                in self.results]
 
     def search_model(
         self,
         model: type['HasSearchableFields'],
-        ts_query: 'websearch_to_tsquery',
     ) -> List[SearchResult]:
-        query = self.build_query(model, ts_query)
+        query = self.build_query(model, self.ts_query)
         raw_results = self.session.execute(query).all()
         return self.process_results(raw_results, model)
 
     def build_query(
         self,
         model: type['HasSearchableFields'],
-        ts_query: 'websearch_to_tsquery',
     ) -> 'Select':
 
-        headline_expression = self.generate_headlines(model, ts_query)
+        headline_expression = self.generate_headlines(model,)
 
         select_fields: List[Any] = [
             model.id,
@@ -121,7 +118,6 @@ class SearchCollection:
     def generate_headlines(
         self,
         model: type['HasSearchableFields'],
-        ts_query: 'websearch_to_tsquery',
     ) -> List[ColumnElement[bool]]:
         """
         Generate headline expressions for all searchable fields of the model.
@@ -148,7 +144,7 @@ class SearchCollection:
             func.ts_headline(
                 self.lang,
                 field,
-                ts_query,
+                self.ts_query,
                 'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
                 'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
                 'FragmentDelimiter=" ... "',
@@ -179,7 +175,7 @@ class SearchCollection:
     ) -> List[SearchResult]:
         processed_results: List[SearchResult] = []
         for result in raw_results:
-            headlines: Dict[str, str] = {
+            headlines: dict[str, str] = {
                 translate(field.name.capitalize()): value
                 for field in model.searchable_fields()
                 if (value := getattr(result, field.name, None)) is not None
@@ -193,15 +189,6 @@ class SearchCollection:
                 )
             )
         return processed_results
-
-    def __len__(self) -> int:
-        return len(self.results)
-
-    def __iter__(self) -> Iterator[SearchResult]:
-        return iter(self.results)
-
-    def __getitem__(self, index: int) -> SearchResult:
-        return self.results[index]
 
     def __repr__(self) -> str:
         return f'<SearchResultCollection {self.results[:4]}>'
