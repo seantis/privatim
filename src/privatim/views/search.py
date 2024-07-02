@@ -20,20 +20,20 @@ from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session, InstrumentedAttribute
-    from sqlalchemy.engine.row import Row
 
 
 class SearchResult(NamedTuple):
     id: int
     title: str
-    headline: str
+    headlines: dict[str, str]
     type: str
 
 
 Model = TypeVar('Model')
 
+
 class SearchCollection:
-    """ A class for searching the database for a given term.
+    """A class for searching the database for a given term.
 
     We use websearch_to_tsquery, which automatically converts the search term
     into a tsquery.
@@ -47,81 +47,57 @@ class SearchCollection:
     https://adamj.eu/tech/2024/01/03/postgresql-full-text-search-websearch/
 
     """
-    web_search: str
-    results: list
 
     def __init__(self, term: str, session: 'Session', language='de_CH'):
         self.lang = locales[language]
         self.session = session
         self.web_search = term
-        self.results = []
+        self.results: List[SearchResult] = []
+        self.models = [Consultation, Meeting, Comment]
 
     def do_search(self) -> None:
-        """Main interface for getting the search results."""
         ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
-        consultation_query = self.build_query(Consultation, ts_query)
-        meeting_query = self.build_query(Meeting, ts_query)
-        comment_query = self.build_query(Comment, ts_query)
-        union_query = union_all(
-            consultation_query,
-            meeting_query,
-            comment_query,
-        )
-        raw_results = self.session.execute(union_query).all()
-        self.results = self.process_results(raw_results)
+        for model in self.models:
+            self.results.extend(self.search_model(model, ts_query))
 
-    def process_results(self, raw_results) -> List[SearchResult]:
-        processed_results = []
-        for result in raw_results:
-            try:
-                processed_results.append(
-                    SearchResult(
-                        id=result.id,
-                        title=result.title,
-                        headline=result.headline,
-                        type=result.type,
-                    )
-                )
-            except AttributeError as e:
-                print(f"Error processing result: {e}")
-        return processed_results
+    def search_model(self, model: type[Model], ts_query) -> List[SearchResult]:
+        query = self.build_query(model, ts_query)
+        raw_results = self.session.execute(query).all()
+        return self.process_results(raw_results, model)
 
-    def build_query(self, model: Model, ts_query):
+    def build_query(self, model: type[Model], ts_query):
         search_fields: List[InstrumentedAttribute] = list(
             model.searchable_fields()
         )
-        headline_expr = self.generate_headline(model, ts_query)
+        headline_exprs = self.generate_headlines(model, ts_query)
 
-        return select(
+        select_fields = [
             model.id,
-            search_fields[0].label(
-                'title'
-            ),  # Using the first searchable field for the title
-            headline_expr,
+            search_fields[0].label('title'),
+            *headline_exprs,
             cast(literal(model.__name__), String).label('type'),
-        ).filter(or_(*self.term_filter_text_for_model(model, self.lang)))
+        ]
 
-    def generate_headline(self, model: Model, ts_query):
-        """The generate_headline method concatenates all searchable
-        fields into a single string, separated by ' | '. This ensures that all
-        searchable fields are included in the headline."""
+        return select(*select_fields).filter(
+            or_(*self.term_filter_text_for_model(model, self.lang))
+        )
 
-        search_fields = model.searchable_fields()
-        headline_fields = [func.coalesce(field, '') for field in search_fields]
-        concatenated_fields = func.concat_ws(' | ', *headline_fields)
-
-        # https://www.postgresql.org/docs/current/textsearch-controls.html#TEXTSEARCH-HEADLINE
-        return func.ts_headline(
-            self.lang,
-            concatenated_fields,
-            ts_query,
-            'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
-            'ShortWord=3, HighlightAll=TRUE, MaxFragments=3, '
-            'FragmentDelimiter=" ... "',
-        ).label('headline')
+    def generate_headlines(self, model: type[Model], ts_query):
+        search_fields = list(model.searchable_fields())
+        return [
+            func.ts_headline(
+                self.lang,
+                field,
+                ts_query,
+                'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, ShortWord=3, HighlightAll=FALSE, MaxFragments=3, FragmentDelimiter=" ... "',
+            ).label(field.name)
+            for field in search_fields[
+                1:
+            ]  # Skip the first field as it's used for the title
+        ]
 
     def term_filter_text_for_model(
-        self, model: Model, lang: str
+        self, model: type[Model], language: str
     ) -> List[ColumnElement[bool]]:
         def match(
             column: ColumnElement[str], language: str
@@ -136,8 +112,31 @@ class SearchCollection:
             return match(func.to_tsvector(language, column), language)
 
         return [
-            match_convert(field, lang) for field in model.searchable_fields()
+            match_convert(field, language)
+            for field in model.searchable_fields()
         ]
+
+    def process_results(
+        self, raw_results, model: type[Model]
+    ) -> List[SearchResult]:
+        searchable = list(model.searchable_fields())
+        processed_results = []
+        field_names = [field.name for field in searchable[1:]]
+        for result in raw_results:
+            headlines = {
+                field_name: getattr(result, field_name)
+                for field_name in field_names
+                if getattr(result, field_name)
+            }
+            processed_results.append(
+                SearchResult(
+                    id=result.id,
+                    title=result.title,
+                    headlines=headlines,
+                    type=result.type,
+                )
+            )
+        return processed_results
 
     def __len__(self):
         return len(self.results)
@@ -149,7 +148,6 @@ class SearchCollection:
         return self.results[index]
 
     def __repr__(self) -> str:
-        # diplay the self.results, the first 4
         return f'<SearchResultCollection {self.results[:4]}>'
 
 
@@ -158,10 +156,6 @@ def search(request: 'IRequest'):
     form = SearchForm(request)
     if request.method == 'POST' and form.validate():
         query = request.POST['search']
-
-        # todo:remove later
-        stmt = select(Consultation.searchable_text_de_CH)
-        assert None not in session.execute(stmt).scalars().all()
 
         result_collection = SearchCollection(term=query, session=session)
         result_collection.do_search()

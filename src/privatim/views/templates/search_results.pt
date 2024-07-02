@@ -21,13 +21,16 @@
                         <div class="card d-flex flex-row activity-card-wrapper">
                             <div class="card-body col-md-8 d-flex flex-column">
                                 <h5 class="card-title fw-bold" i18n:translate="">${result.title}</h5>
-                                <div class="search-result-headline" tal:content="structure result.headline"></div>
-                                <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
-                                   class="details-link">Show Details</a>
+                                <div tal:repeat="item result.headlines.items()" class="search-result-headline">
+                                    <strong>${item[0]}:</strong>
+                                    <span tal:content="structure item[1]"></span>
+                                </div>
+                                <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate="" class="details-link" tal:condition="result.type != 'Comment'">Show Details</a>
                             </div>
-
                         </div>
                     </div>
+
+
                 </div>
 
                 <!-- Sidebar (1/3 width) -->

@@ -53,6 +53,8 @@ configure_mappers()
 def update_searchable_text_listener(
     mapper: Mapper['SearchableBase'], connection: 'Connection', target: Any
 ) -> None:
+    return
+    # we will implement this for updates of document text
     if connection.engine.name != 'postgresql':
         # todo: fallback if local development uses sqlite?
         raise ValueError('Only PostgreSQL is supported')
