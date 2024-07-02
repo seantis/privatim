@@ -139,9 +139,9 @@ class SearchCollection:
         processed_results = []
         for result in raw_results:
             headlines = {
-                field.name: getattr(result, field.name)
+                field.name: value
                 for field in searchable
-                if getattr(result, field.name)
+                if (value := getattr(result, field.name, None)) is not None
             }
             processed_results.append(
                 SearchResult(
