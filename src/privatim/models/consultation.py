@@ -2,7 +2,12 @@ from datetime import datetime
 from sedate import utcnow
 from sqlalchemy import Text, ForeignKey
 from sqlalchemy.dialects.postgresql import TSVECTOR
-from sqlalchemy.orm import Mapped, mapped_column, relationship, deferred
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+    deferred
+)
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
@@ -19,6 +24,7 @@ from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.models import User
+    from sqlalchemy.orm import InstrumentedAttribute
 
 
 class Status(Base):
@@ -90,7 +96,7 @@ class Consultation(Base, Commentable, AssociatedFiles, SearchableMixin):
     searchable_text_de_CH: Mapped[str] = deferred(mapped_column(TSVECTOR))
 
     @classmethod
-    def searchable_fields(cls) -> Iterator[str]:
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.title
         yield cls.description
         yield cls.recommendation

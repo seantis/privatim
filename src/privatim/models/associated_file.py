@@ -44,7 +44,7 @@ class AssociatedFiles:
     def searchable_files(self) -> Sequence[GeneralFile]:
         # For now we just consider PDF's
         stmt = select(GeneralFile).where(
-            GeneralFile.content_type == 'application/pdf'
+            GeneralFile.content_type.is_('application/pdf')
         )
         return object_session(self).execute(stmt).scalars().all()
 

@@ -1,14 +1,11 @@
-from typing import TYPE_CHECKING, Type, Union, Iterable
-
-from sqlalchemy import ColumnElement
-
-from privatim.models import SearchableMixin
-from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK
-
+from typing import TYPE_CHECKING, Iterable, Iterator
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
+    from sqlalchemy.orm import InstrumentedAttribute
+    from sqlalchemy import ColumnElement
+    from privatim.orm.meta import UUIDStrPK
+    from sqlalchemy.ext.hybrid import hybrid_property
     from decimal import Decimal
     from fractions import Fraction
     from pyramid.httpexceptions import (
@@ -85,11 +82,13 @@ if TYPE_CHECKING:
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
 
-
     class HasSearchableFields(Protocol):
         id: UUIDStrPK
 
         @classmethod
-        def searchable_fields(cls) -> Iterable[ColumnElement[Any]]:
+        def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
             ...
 
+        @hybrid_property
+        def searchable_text(self) -> str:
+            ...

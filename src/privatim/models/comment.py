@@ -3,14 +3,21 @@ from sedate import utcnow
 from privatim.orm import Base
 from privatim.orm.associable import Associable
 from privatim.models import SearchableMixin
-from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, remote
+from sqlalchemy.orm import (
+    relationship,
+    Mapped,
+    mapped_column,
+    foreign,
+    remote,
+)
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
 
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.models import User
+    from sqlalchemy.orm import InstrumentedAttribute
 
 
 class Comment(Base, Associable, SearchableMixin):
@@ -74,7 +81,7 @@ class Comment(Base, Associable, SearchableMixin):
         return f'<Comment id={self.id}; content={self.content}>'
 
     @classmethod
-    def searchable_fields(cls):
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.content
 
     __table_args__ = (

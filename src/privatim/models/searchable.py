@@ -1,22 +1,19 @@
 from sqlalchemy import func, update, Text
 from sqlalchemy.ext.hybrid import hybrid_property
-import inspect
 
 from privatim.i18n import locales
 from privatim.orm import Base
 
 
 from typing import Iterator, TYPE_CHECKING
-
-from privatim.types import HasSearchableFields
-
 if TYPE_CHECKING:
-    from sqlalchemy.orm import Session
+    from privatim.types import HasSearchableFields
+    from sqlalchemy.orm import Session, InstrumentedAttribute
 
 
-class SearchableMixin:
+class SearchableMixin(HasSearchableFields):
     @classmethod
-    def searchable_fields(cls) -> Iterator[str]:
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         # Override this method in each model to specify searchable fields
         raise NotImplementedError(
             "Searchable fields must be defined for each model"
@@ -26,11 +23,12 @@ class SearchableMixin:
     def searchable_text(self) -> str:
         # todo: extract document text
         return ' '.join(
-            str(getattr(self, field)) for field in self.searchable_fields()
+            str(getattr(self, field.key))
+            for field in self.__class__.searchable_fields()
         )
 
 
-def searchable_models() -> tuple[type[HasSearchableFields], ...]:
+def searchable_models() -> tuple[type['HasSearchableFields'], ...]:
     """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():

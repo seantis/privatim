@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from datetime import datetime
     from privatim.types import ACL
     from sqlalchemy.orm import Session
+    from sqlalchemy.orm import InstrumentedAttribute
 
 
 class AgendaItemCreationError(Exception):
@@ -173,7 +174,7 @@ class Meeting(Base, Commentable, SearchableMixin):
     )
 
     @classmethod
-    def searchable_fields(cls) -> Iterator[str]:
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         # todo: agenda item (seperately)
         yield cls.name
 

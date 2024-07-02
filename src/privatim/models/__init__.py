@@ -40,18 +40,13 @@ if TYPE_CHECKING:
     from pyramid.config import Configurator
     from sqlalchemy.engine import Connection
 
-    T = TypeVar('T', bound='SearchableBase')
-
-    class SearchableBase(Base, SearchableMixin):
-        pass
-
 # Run ``configure_mappers`` after defining all of the models to ensure
 # all relationships can be setup.
 configure_mappers()
 
 
 def update_searchable_text_listener(
-    mapper: Mapper['SearchableBase'], connection: 'Connection', target: Any
+    mapper: Mapper['Any'], connection: 'Connection', target: Any
 ) -> None:
     return
     # we will implement this for updates of document text
@@ -67,7 +62,7 @@ def update_searchable_text_listener(
             )
 
 
-def register_search_listeners(model) -> None:
+def register_search_listeners(model: 'type[Consultation | Meeting]') -> None:
     event.listen(model, 'after_insert', update_searchable_text_listener)
     event.listen(model, 'after_update', update_searchable_text_listener)
 
