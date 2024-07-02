@@ -32,6 +32,7 @@ class SearchableMixin:
 
 
 def searchable_models() -> tuple[type[Base], ...]:
+    """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():
         for mapper in Base.registry.mappers:

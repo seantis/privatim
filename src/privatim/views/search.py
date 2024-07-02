@@ -9,6 +9,7 @@ from sqlalchemy import (
     String,
 )
 from privatim.forms.search_form import SearchForm
+from privatim.layouts import Layout
 from privatim.models import Consultation, Meeting
 from privatim.i18n import locales, translate
 from privatim.i18n import _
@@ -18,6 +19,8 @@ from privatim.models.comment import Comment
 
 
 from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
+
+from privatim.models.searchable import searchable_models
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -30,6 +33,8 @@ class SearchResult(NamedTuple):
     the search query."""
     headlines: dict[str, str]
     type: str
+    model: 'Model | None'  # Note that this is not loaded by default for
+    # performance reasons.
 
 
 Model = TypeVar('Model')
@@ -60,8 +65,27 @@ class SearchCollection:
         self.models = [Consultation, Meeting, Comment]
 
     def do_search(self) -> None:
-        for model in self.models:
+        for model in searchable_models():
             self.results.extend(self.search_model(model, self.ts_query))
+
+        # Fetch Comment objects after the search
+        comment_ids = [
+            result.id for result in self.results if result.type == 'Comment'
+        ]
+        if comment_ids:
+            stmt = select(Comment).filter(Comment.id.in_(comment_ids))
+            comments = self.session.scalars(stmt).all()
+            comment_dict = {comment.id: comment for comment in comments}
+
+            # Update results with fetched Comment objects
+            self.results = [
+                (
+                    result._replace(model=comment_dict.get(result.id))
+                    if result.type == 'Comment'
+                    else result
+                )
+                for result in self.results
+            ]
 
     def search_model(self, model: type[Model], ts_query) -> List[SearchResult]:
         query = self.build_query(model, ts_query)
@@ -70,11 +94,11 @@ class SearchCollection:
 
     def build_query(self, model: type[Model], ts_query):
 
-        headline_exprs = self.generate_headlines(model, ts_query)
+        headline_expression = self.generate_headlines(model, ts_query)
 
         select_fields = [
             model.id,
-            *headline_exprs,
+            *headline_expression,
             cast(literal(model.__name__), String).label('type'),
         ]
 
@@ -99,6 +123,9 @@ class SearchCollection:
             representing a headline for a searchable field. These expressions
             use the ts_headline function to generate highlighted snippets of
             text.
+
+            See also https://www.postgresql.org/docs/current/textsearch
+            -controls.html#TEXTSEARCH-HEADLINE
         """
         return [
             func.ts_headline(
@@ -133,12 +160,11 @@ class SearchCollection:
     def process_results(
             self, raw_results, model: type[Model]
     ) -> List[SearchResult]:
-        searchable = list(model.searchable_fields())
         processed_results = []
         for result in raw_results:
             headlines = {
-                field.name: value
-                for field in searchable
+                translate(field.name.capitalize()): value
+                for field in model.searchable_fields()
                 if (value := getattr(result, field.name, None)) is not None
             }
             processed_results.append(
@@ -146,6 +172,7 @@ class SearchCollection:
                     id=result.id,
                     headlines=headlines,
                     type=result.type,
+                    model=None
                 )
             )
         return processed_results
@@ -175,7 +202,6 @@ def search(request: 'IRequest'):
     """
     session = request.dbsession
     form = SearchForm(request)
-
     if request.method == 'POST' and form.validate():
         query = form.term.data
         return HTTPFound(location=request.route_url('search', _query={'q': query}))
@@ -184,19 +210,15 @@ def search(request: 'IRequest'):
     if query:
         result_collection = SearchCollection(term=query, session=session)
         result_collection.do_search()
+        return {
+            'search_results': result_collection.results,
+            'query': query,
+            'layout': Layout(None, request),
+        }
 
-        translated_results = []
-        for result in result_collection.results:
-            headlines_with_translated_keys = {
-                translate(key.capitalize()): value
-                for key, value in result.headlines.items()
-            }
-            translated_results.append(SearchResult(
-                id=result.id,
-                headlines=headlines_with_translated_keys,
-                type=result.type
-            ))
+    return {
+        'search_results': [],
+        'query': None,
+        'layout': Layout(None, request),
+    }
 
-        return {'search_results': translated_results, 'query': query}
-
-    return {'search_results': [], 'query': None}
