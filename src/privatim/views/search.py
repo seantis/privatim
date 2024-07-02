@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 class SearchResult(NamedTuple):
     id: int
-    """ headlines are key value pairs of fields on various models that matched 
+    """ headlines are key value pairs of fields on various models that matched
     the search query."""
     headlines: dict[str, str]
     type: str
@@ -55,13 +55,13 @@ class SearchCollection:
         self.lang = locales[language]
         self.session = session
         self.web_search = term
+        self.ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
         self.results: List[SearchResult] = []
         self.models = [Consultation, Meeting, Comment]
 
     def do_search(self) -> None:
-        ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
         for model in self.models:
-            self.results.extend(self.search_model(model, ts_query))
+            self.results.extend(self.search_model(model, self.ts_query))
 
     def search_model(self, model: type[Model], ts_query) -> List[SearchResult]:
         query = self.build_query(model, ts_query)
@@ -113,19 +113,17 @@ class SearchCollection:
         ]
 
     def term_filter_text_for_model(
-        self, model: type[Model], language: str
+            self, model: type[Model], language: str
     ) -> List[ColumnElement[bool]]:
         def match(
-            column: ColumnElement[str], language: str
+                column: ColumnElement[str],
         ) -> ColumnElement[bool]:
-            return column.op('@@')(
-                func.websearch_to_tsquery(language, self.web_search)
-            )
+            return column.op('@@')(self.ts_query)
 
         def match_convert(
-            column: ColumnElement[str], language: str
+                column: ColumnElement[str], language: str
         ) -> ColumnElement[bool]:
-            return match(func.to_tsvector(language, column), language)
+            return match(func.to_tsvector(language, column))
 
         return [
             match_convert(field, language)
@@ -202,5 +200,3 @@ def search(request: 'IRequest'):
         return {'search_results': translated_results, 'query': query}
 
     return {'search_results': [], 'query': None}
-
-
