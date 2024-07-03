@@ -3,7 +3,7 @@ from privatim.views import logout_view
 
 
 def test_logout_view(pg_config):
-    config.add_route('login', '/login')
+    pg_config.add_route('login', '/login')
 
     request = DummyRequest()
     response = logout_view(request)

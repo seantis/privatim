@@ -4,7 +4,6 @@ if TYPE_CHECKING:
 
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.orm.meta import UUIDStrPK
-    from sqlalchemy.ext.hybrid import hybrid_property
     from decimal import Decimal
     from fractions import Fraction
     from pyramid.httpexceptions import (
@@ -86,8 +85,4 @@ if TYPE_CHECKING:
 
         @classmethod
         def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
-            ...
-
-        @hybrid_property
-        def searchable_text(self) -> str:
             ...

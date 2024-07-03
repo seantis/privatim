@@ -82,6 +82,13 @@
 body {
     font-family: "DM Sans", sans-serif;
 }
+h1 {
+    margin-top: 1.0rem;
+}
+.main-content {
+    /* Main container design. */
+    /*background-color: #f3f2ee;*/
+}
 
 .bg-light {
     background-color: #EDEDED !important;
@@ -297,4 +304,6 @@ mark {
     font-weight: bold;
     padding: 0 5px;
     border-radius: 3px;
+}
+
 }

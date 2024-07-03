@@ -10,11 +10,11 @@ def test_view(pg_config):
     assert 'form' in result.keys()
 
 
-def test_view_submit(config, user, mailer, caplog):
+def test_view_submit(pg_config, user, mailer, caplog):
     caplog.set_level(logging.INFO)
-    config.add_route('login', '/login')
-    config.add_route('password_change', '/password_change')
-    session = config.dbsession
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_change', '/password_change')
+    session = pg_config.dbsession
 
     user.email = 'gregory@house.com'
     session.flush()
@@ -41,10 +41,10 @@ def test_view_submit(config, user, mailer, caplog):
     assert msg in caplog.text
 
 
-def test_view_submit_username(config, user, mailer):
-    config.add_route('login', '/login')
-    config.add_route('password_change', '/password_change')
-    session = config.dbsession
+def test_view_submit_username(pg_config, user, mailer):
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_change', '/password_change')
+    session = pg_config.dbsession
 
     user.first_name = 'Gregory'
     user.last_name = 'House'
@@ -72,8 +72,8 @@ def test_view_submit_invalid(pg_config):
     assert 'form' in result.keys()
 
 
-def test_view_submit_invalid_username(config, caplog):
-    config.add_route('login', '/login')
+def test_view_submit_invalid_username(pg_config, caplog):
+    pg_config.add_route('login', '/login')
     request = DummyRequest()
     request.POST['email'] = 'gregory@house.com'
     request.POST['submit'] = '1'

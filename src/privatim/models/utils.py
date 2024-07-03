@@ -37,7 +37,7 @@ def extract_pdf_info(
     """
     try:
         content.seek(0)  # type:ignore[attr-defined]
-    except Exception:
+    except Exception:  # nosec:B110
         pass
 
     pages = PDF(content)

@@ -48,7 +48,7 @@ make run
 ## Run the project's tests
 
 ```
-pytest -n auto 
+pytest -n auto
 ```
 
 

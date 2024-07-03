@@ -16,9 +16,9 @@ def test_password_change_view(pg_config):
     assert 'Password must have minimal length of 8' in msg['message']
 
 
-def test_password_change_view_password_strength(config, user):
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_password_strength(pg_config, user):
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -74,9 +74,9 @@ def test_password_change_view_invalid_min_length(pg_config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_username(config, user):
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_invalid_username(pg_config, user):
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -109,10 +109,10 @@ def test_password_change_view_invalid_token(pg_config):
     assert 'form' in result
 
 
-def test_password_change_view_expired_token(config, user):
-    config.add_route('login', '/login')
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_expired_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     dt = datetime.utcnow() - timedelta(days=30)
@@ -134,10 +134,10 @@ def test_password_change_view_expired_token(config, user):
     assert 'This password reset link has expired.' in text
 
 
-def test_password_change_view_consumed_token(config, user):
-    config.add_route('login', '/login')
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_consumed_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -157,9 +157,9 @@ def test_password_change_view_consumed_token(config, user):
     assert 'This password reset link has expired.' in text
 
 
-def test_password_change_view_token(config, user):
-    config.add_route('login', '/login')
-    session = config.dbsession
+def test_password_change_view_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')

@@ -3,12 +3,13 @@ import os
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
-from privatim.models import Consultation, GeneralFile
+from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
 from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
-from privatim.utils import dictionary_to_binary, flatten_comments
 
+from privatim.models.file import SearchableFile
+from privatim.utils import dictionary_to_binary, flatten_comments, maybe_escape
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -85,10 +86,11 @@ def create_consultation_from_form(
     user = request.user
     if not user:
         return None
+
     consultation = Consultation(
-        title=form.title.data,
-        description=form.description.data,
-        recommendation=form.recommendation.data,
+        title=maybe_escape(form.title.data),
+        description=maybe_escape(form.description.data),
+        recommendation=maybe_escape(form.recommendation.data),
         status=status,
         secondary_tags=tags,
         creator=user
@@ -98,7 +100,7 @@ def create_consultation_from_form(
 
     for file in form.files.data:
         consultation.files.append(
-            GeneralFile(
+            SearchableFile(
                 file['filename'],
                 dictionary_to_binary(file))
         )

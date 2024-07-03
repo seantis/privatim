@@ -15,19 +15,20 @@
 <!-- Header -->
 ${panel('navbar')}
 
+<div class="main-content flex-grow-1">
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
 
-<!-- Begin page content -->
-<main class="flex-shrink-0">
+    ${panel('flash')}
 
-${panel('flash')}
+        <div class="container">
+            <tal:block metal:define-slot="content" />
+        </div>
 
-    <div class="container">
-        <tal:block metal:define-slot="content" />
-    </div>
+        <tal:block metal:define-slot="modals" />
 
-    <tal:block metal:define-slot="modals" />
-
-</main>
+    </main>
+</div>
 
 <!-- footer -->
 ${panel('footer')}

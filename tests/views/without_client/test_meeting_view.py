@@ -9,10 +9,9 @@ from tests.shared.utils import create_meeting, CustomDummyRequest, \
 
 
 def test_export_meeting_without_agenda_items(pg_config):
-    config.add_route('export_meeting_as_pdf_view',
-                     '/meetings/{id}/export')
+    pg_config.add_route('export_meeting_as_pdf_view', '/meetings/{id}/export')
 
-    db = config.dbsession
+    db = pg_config.dbsession
     meeting = create_meeting()
     db.add(meeting)
     db.flush()
@@ -33,14 +32,14 @@ def test_export_meeting_without_agenda_items(pg_config):
 def test_sortable_agenda_items_view(pg_config):
 
     # Add route
-    config.add_route(
+    pg_config.add_route(
         'sortable_agenda_items',
         '/meetings/agenda_items/{id}/move/{subject_id}/{direction}/{'
         'target_id}',
     )
 
     # Create a meeting with agenda items
-    db = config.dbsession
+    db = pg_config.dbsession
 
     agenda_items = [
         {'title': 'Introduction', 'description': 'Welcome and introductions.'},

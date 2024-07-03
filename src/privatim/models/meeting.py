@@ -15,6 +15,8 @@ from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 
 from typing import TYPE_CHECKING, Iterator
 
+from privatim.utils import maybe_escape
+
 if TYPE_CHECKING:
     from privatim.models import User, WorkingGroup
     from datetime import datetime
@@ -28,7 +30,7 @@ class AgendaItemCreationError(Exception):
     pass
 
 
-meetings_users_association = Table(
+meetings_users_association: Table = Table(
     'meetings_users_association', Base.metadata,
     Column(
         'meeting_id',
@@ -85,8 +87,8 @@ class AgendaItem(Base):
         )
         new_position = 0 if max_position is None else max_position + 1
         new_agenda_item = cls(
-            title=title,
-            description=description,
+            title=maybe_escape(title),
+            description=maybe_escape(description),
             meeting=meeting,
             position=new_position,
         )
@@ -136,7 +138,7 @@ class Meeting(Base, Commentable, SearchableMixin):
             agenda_items: list[AgendaItem] | None = None,
     ):
         self.id = str(uuid.uuid4())
-        self.name = name
+        self.name = maybe_escape(name)
         self.time = time
         self.attendees = attendees
         self.working_group = working_group

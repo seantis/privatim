@@ -3,6 +3,8 @@ from itertools import zip_longest
 
 import sedate
 from sqlalchemy import select
+
+from privatim.models.file import SearchableFile
 from privatim.static import init_tom_select
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
@@ -384,33 +386,33 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         # we fake the formdata for the new field
         # we use a werkzeug MultiDict because the WebOb version
         # needs to get wrapped to be usable in WTForms
-        formdata: MultiDict[str, RawFormValue] = MultiDict()
+        formdata: 'MultiDict[str, RawFormValue]' = MultiDict()
         name = f'{self.short_name}{self._separator}{len(self)}'
         formdata.add(name, fs)
         return self._add_entry(formdata)
 
 
 class _DummyFile:
-    file: GeneralFile | None
+    file: SearchableFile | None
 
 
 class UploadFileWithORMSupport(UploadField):
-    """ Extends the upload field with onegov.file support. """
+    """ Extends the upload field with file support. """
 
-    file_class: type[GeneralFile]
+    file_class: type[SearchableFile]
 
     def __init__(self, *args: Any, **kwargs: Any):
         self.file_class = kwargs.pop('file_class')
         super().__init__(*args, **kwargs)
 
-    def create(self) -> GeneralFile | None:
+    def create(self) -> SearchableFile | None:
         if not getattr(self, 'file', None):
             return None
 
         assert self.file is not None
         self.file.seek(0)
         assert self.filename is not None
-        return GeneralFile(filename=self.filename, content=self.file.read())
+        return SearchableFile(filename=self.filename, content=self.file.read())
 
     def populate_obj(self, obj: object, name: str) -> None:
 
@@ -429,7 +431,7 @@ class UploadFileWithORMSupport(UploadField):
         else:
             raise NotImplementedError(f"Unknown action: {self.action}")
 
-    def process_data(self, value: GeneralFile | None) -> None:
+    def process_data(self, value: SearchableFile | None) -> None:
 
         if value:
             try:
@@ -450,8 +452,8 @@ class UploadFileWithORMSupport(UploadField):
 class UploadMultipleFilesWithORMSupport(UploadMultipleField):
     """ Extends the upload multiple field with file support. """
 
-    file_class: type[GeneralFile]
-    added_files: list[GeneralFile]
+    file_class: type[SearchableFile]
+    added_files: list[SearchableFile]
     upload_field_class = UploadFileWithORMSupport
 
     def __init__(self, *args: Any, **kwargs: Any):
@@ -461,7 +463,7 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
     def populate_obj(self, obj: object, name: str) -> None:
         self.added_files = []
         files = getattr(obj, name, ())
-        output: list[GeneralFile] = []
+        output: list[SearchableFile] = []
         print(self.entries)
 
         for field, file in zip_longest(self.entries, files):

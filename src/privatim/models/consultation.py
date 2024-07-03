@@ -1,17 +1,15 @@
 from datetime import datetime
 from sedate import utcnow
 from sqlalchemy import Text, ForeignKey
-from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
     relationship,
-    deferred
 )
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
-from privatim.models.associated_file import AssociatedFiles
+from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
 from privatim.models.searchable import SearchableMixin
 from privatim.orm import Base
@@ -58,7 +56,9 @@ class Tag(Base):
     )
 
 
-class Consultation(Base, Commentable, AssociatedFiles, SearchableMixin):
+class Consultation(
+    Base, Commentable, SearchableAssociatedFiles, SearchableMixin
+):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -91,9 +91,6 @@ class Consultation(Base, Commentable, AssociatedFiles, SearchableMixin):
     creator_id: Mapped[UUIDStrType] = mapped_column(
         ForeignKey('users.id'), nullable=True
     )
-
-    # searchable attachment texts
-    searchable_text_de_CH: Mapped[str] = deferred(mapped_column(TSVECTOR))
 
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:

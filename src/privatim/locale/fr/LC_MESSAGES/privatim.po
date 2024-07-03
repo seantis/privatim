@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-02 23:44+0200\n"
+"POT-Creation-Date: 2024-07-03 09:36+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -338,7 +338,7 @@ msgid "Search Results"
 msgstr "Résultats de la recherche"
 
 #: src/privatim/views/templates/search_results.pt
-msgid "No results containing all your search terms were found.."
+msgid "No results containing all your search terms were found."
 msgstr "Aucun résultat ne contient tous les termes de votre recherche."
 
 #: src/privatim/views/templates/search_results.pt

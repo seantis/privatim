@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-02 23:44+0200\n"
+"POT-Creation-Date: 2024-07-03 09:36+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -340,7 +340,8 @@ msgstr "Suchergebnisse"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "No results containing all your search terms were found."
-msgstr "Es wurden keine Ergebnisse gefunden, die alle Ihre Suchbegriffe enthalten."
+msgstr ""
+"Es wurden keine Ergebnisse gefunden, die alle Ihre Suchbegriffe enthalten."
 
 #: src/privatim/views/templates/search_results.pt
 #: src/privatim/views/templates/activities.pt
@@ -614,7 +615,7 @@ msgstr "Mitglieder"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"
-msgstr ""
+msgstr "Volltextsuche"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

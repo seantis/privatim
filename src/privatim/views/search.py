@@ -16,15 +16,12 @@ from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
 
-from typing import (TYPE_CHECKING, List, NamedTuple, Dict, Any, Optional,
-                    Iterator, Sequence, )
-
-
+from typing import (TYPE_CHECKING, List, NamedTuple, Any, Optional,
+                    Iterator, Sequence, TypedDict)
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Session
-    from sqlalchemy.dialects.postgresql.ext import websearch_to_tsquery
+    from sqlalchemy.orm import Session, InstrumentedAttribute
     from privatim.types import HasSearchableFields, RenderDataOrRedirect
     from builtins import type as type_t
 
@@ -33,14 +30,21 @@ class SearchResult(NamedTuple):
     id: str
     """ headlines are key value pairs of fields on various models that matched
     the search query."""
-    headlines: Dict[str, str]
+    headlines: dict[str, str]
     type: str
     model: 'Optional[type_t[HasSearchableFields]]'  # We only load this if it
     # makes sense int he UI to display additional attributes from the model,
     #  otherwise we can save ourselves a query.
 
 
+class SearchResultType(TypedDict):
+    id: str
+    headlines: dict[str, str]
+    type: str
+
+
 class SearchCollection:
+
     """A class for searching the database for a given term.
 
     We use websearch_to_tsquery, which automatically converts the search term
@@ -98,7 +102,7 @@ class SearchCollection:
     def build_query(
         self,
         model: type['HasSearchableFields'],
-    ) -> 'Select':
+    ) -> 'Select[tuple[SearchResultType, ...]]':
 
         """
         Builds the actual query for full text search.
@@ -135,8 +139,8 @@ class SearchCollection:
             cast(literal(model.__name__), String).label('type'),  # noqa: MS001
         ]
 
-        return select(*select_fields).filter(
-            or_(*self.create_fulltext_search_conditions(model.searchable_fields()))
+        return select(*select_fields).filter(or_(
+            *self.create_fulltext_search_conditions(model.searchable_fields()))
         )
 
     def create_fulltext_search_conditions(
@@ -205,7 +209,7 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
     accidental form resubmission if users refresh the results page.
 
     """
-    session: Session = request.dbsession
+    session: 'Session' = request.dbsession
     form: SearchForm = SearchForm(request)
     if request.method == 'POST' and form.validate():
         return HTTPFound(

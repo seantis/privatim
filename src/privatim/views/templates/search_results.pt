@@ -18,7 +18,7 @@
                     <div tal:condition="not search_results" class="mt-4">
                         <div class="alert alert-info" role="alert">
                             <i class="fas fa-info-circle"></i>
-                            <span i18n:translate="">No results containing all your search terms were found..</span>
+                            <span i18n:translate="">No results containing all your search terms were found.</span>
                         </div>
                     </div>
                     <div tal:repeat="result search_results" class="mt-4">
