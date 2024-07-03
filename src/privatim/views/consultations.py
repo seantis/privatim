@@ -95,6 +95,7 @@ def create_consultation_from_form(
         secondary_tags=tags,
         creator=user
     )
+
     if form.files.data is None:
         return None
 

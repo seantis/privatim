@@ -227,6 +227,9 @@ def associated(
                     nullable=False
                 )
             )
+            back_populates = None
+        else:
+            back_populates = backref_name
 
         assert issubclass(associated_cls, Associable)
 
@@ -242,6 +245,7 @@ def associated(
         return relationship(
             argument=associated_cls,
             secondary=association_table,
+            back_populates=back_populates,
             single_parent=True,
             cascade='all, delete-orphan',
             uselist=True,

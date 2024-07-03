@@ -4,6 +4,7 @@ from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, deferred, mapped_column, declared_attr
 from sqlalchemy_utils import observes
+from sqlalchemy_utils.observer import PropertyObserver
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -41,7 +42,7 @@ class SearchableAssociatedFiles:
             nullable=True
         ))
 
-    # fieme: Tricky typing
+    # fixme: tricky to get typing right here.
     @declared_attr
     def __table_args__(cls):  # type: ignore
         return (
@@ -81,16 +82,3 @@ class SearchableAssociatedFiles:
                 f'searchable_text_{locale}',
                 func.to_tsvector(locales[locale], text),
             )
-
-    @observes('files')
-    def files_observer(self) -> None:
-        """
-        Observer method for the 'files' relationship. Triggers a full reindex
-        if any file changes.
-
-        While potentially inefficient for large collections, it's typically
-        fine as the number of files is expected to be small (1-5). Consider
-        optimizing if performance issues arise.
-        """
-
-        self.reindex_files()

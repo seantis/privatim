@@ -1,6 +1,10 @@
+from sqlalchemy import event
 
-from sqlalchemy.orm import configure_mappers
+from sqlalchemy.orm import configure_mappers, Mapper
 
+
+from privatim.i18n import locales
+from privatim.models.associated_file import SearchableAssociatedFiles
 # XXX import or define all models here to ensure they are attached to the
 # Base.metadata prior to any initialization routines
 # https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest/database/sqlalchemy.html#importing-all-sqlalchemy-models
@@ -15,7 +19,7 @@ from privatim.models.file import GeneralFile
 from privatim.models.consultation import Tag
 from privatim.models.statement import Statement
 from privatim.models.password_change_token import PasswordChangeToken
-from privatim.orm import get_engine
+from privatim.orm import get_engine, Base
 from privatim.orm import get_session_factory
 from privatim.orm import get_tm_session
 
@@ -34,13 +38,12 @@ GeneralFile
 SearchableMixin
 
 
-from typing import TYPE_CHECKING  # noqa: E402
+from typing import TYPE_CHECKING, Any  # noqa: E402
+from typing import Any as Incomplete
 if TYPE_CHECKING:
     from pyramid.config import Configurator
-
-# Run ``configure_mappers`` after defining all of the models to ensure
-# all relationships can be setup.
-configure_mappers()
+    from sqlalchemy.orm import Mapper
+    from sqlalchemy.engine import Connection
 
 
 def includeme(config: 'Configurator') -> None:
@@ -69,3 +72,52 @@ def includeme(config: 'Configurator') -> None:
         'dbsession',
         reify=True
     )
+
+
+def update_fulltext_search_text_for_files(
+        mapper: 'Mapper[Incomplete]', connection: 'Connection', target: Incomplete
+) -> None:
+    """
+    Event listener for the 'files' relationship. Triggers a full reindex
+    if any file changes.
+
+    While potentially inefficient for large collections, it's typically
+    fine as the number of files is expected to be small (1-5). Consider
+    optimizing if performance issues arise.
+    """
+    for locale in locales:
+        if hasattr(target, f'searchable_text_{locale}'):
+            target.reindex_files()
+
+
+def register_search_listeners(
+    model: 'type[SearchableAssociatedFiles]',
+) -> None:
+    event.listen(model, 'after_insert',
+        update_fulltext_search_text_for_files
+    )
+    event.listen(model, 'after_update',
+        update_fulltext_search_text_for_files,
+    )
+
+
+def reindex_models_with_searchable_files():
+
+    seen = set()
+    for _ in Base.metadata.tables.values():
+        for mapper in Base.registry.mappers:
+            cls = mapper.class_
+            if issubclass(
+                cls, SearchableAssociatedFiles
+            ):
+                if cls not in seen:
+                    register_search_listeners(cls)
+                seen.add(cls)
+
+
+reindex_models_with_searchable_files()
+
+
+# Run ``configure_mappers`` after defining all of the models to ensure
+# all relationships can be setup.
+configure_mappers()

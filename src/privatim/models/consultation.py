@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User, GeneralFile
+    from privatim.models.file import SearchableFile
 
 
 class Status(Base):
@@ -87,7 +88,7 @@ class Consultation(
         creator: 'User',
         status: Status | None = None,
         secondary_tags: list[Tag] | None = None,
-        files: list['GeneralFile'] | None = None
+        files: list['SearchableFile'] | None = None
     ):
         self.id = str(uuid.uuid4())
         self.title = title
@@ -137,7 +138,7 @@ class Consultation(
 
     def __repr__(self) -> str:
         return (
-            f'<Consultation {self.title} searchable: '
+            f'<Consultation {self.title}, searchable_text_de_CH: '
             f'{self.searchable_text_de_CH}>'
         )
 
