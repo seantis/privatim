@@ -12,6 +12,7 @@ from privatim.layouts import Layout
 from privatim.i18n import locales, translate
 from sqlalchemy import or_
 
+from privatim.models import SearchableAssociatedFiles
 from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
@@ -21,7 +22,7 @@ from typing import (TYPE_CHECKING, List, NamedTuple, Any, Optional,
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Session, InstrumentedAttribute
+    from sqlalchemy.orm import Session, InstrumentedAttribute, undefer
     from privatim.types import HasSearchableFields, RenderDataOrRedirect
     from builtins import type as type_t
 
@@ -139,13 +140,20 @@ class SearchCollection:
             cast(literal(model.__name__), String).label('type'),  # noqa: MS001
         ]
 
-        return select(*select_fields).filter(or_(
-            *self.create_fulltext_search_conditions(model.searchable_fields()))
+        full_text = (
+            True if issubclass(model, SearchableAssociatedFiles) else False
         )
+        query = select(*select_fields).filter(or_(
+            *self.create_fulltext_search_conditions(model, full_text))
+        )
+        if not full_text:
+            return query
+        else:
+            query = query.options(undefer(model.searchable_text_de_CH))
+            return query
 
     def create_fulltext_search_conditions(
-        self,
-        searchable_fields: Iterator['InstrumentedAttribute[str]'],
+        self, model: type['HasSearchableFields'], full_text: bool
     ) -> List[ColumnElement[bool]]:
         """
         Returns a list of SqlAlchemy filter statements matching possible
@@ -172,7 +180,19 @@ class SearchCollection:
         ) -> ColumnElement[bool]:
             return match(func.to_tsvector(language, column))
 
-        return [match_convert(field, self.lang) for field in searchable_fields]
+        matches_in_attributes = [
+            match_convert(field, self.lang)
+            for field in model.searchable_fields()
+        ]
+
+        if full_text:
+            assert isinstance(model, SearchableAssociatedFiles)
+            matches_in_files = [
+                match(model.searchable_text_de_CH),
+            ]
+        else:
+            matches_in_files = []
+        return matches_in_attributes + matches_in_files
 
     def process_results(
         self, raw_results: Sequence[Any], model: 'type[HasSearchableFields]'
