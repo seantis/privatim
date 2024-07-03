@@ -1,28 +1,24 @@
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (
-    func,
-    select,
-    ColumnElement,
-    cast,
-    literal,
-    String,
-)
+from sqlalchemy import (func, select, ColumnElement, cast, literal, String)
+from sqlalchemy.orm import aliased
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales, translate
 from sqlalchemy import or_
+from sqlalchemy.orm import undefer
 
 from privatim.models import SearchableAssociatedFiles
+from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
 
-from typing import (TYPE_CHECKING, List, NamedTuple, Any, Optional,
-                    Iterator, Sequence, TypedDict)
+from typing import (TYPE_CHECKING, List, NamedTuple, Any, Optional, Sequence,
+                    TypedDict)
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Session, InstrumentedAttribute, undefer
+    from sqlalchemy.orm import Session
     from privatim.types import HasSearchableFields, RenderDataOrRedirect
     from builtins import type as type_t
 
@@ -134,23 +130,42 @@ class SearchCollection:
             ).label(field.name)
             for field in model.searchable_fields()
         ]
+
+        full_text = (
+            True if issubclass(model, SearchableAssociatedFiles) else False
+        )
+        if full_text:
+            SearchableFileAlias = aliased(SearchableFile)
+            file_texts = (
+                select(func.array_to_string(func.array_agg(SearchableFileAlias.extract), ' '))
+                .where(SearchableFileAlias.id == model.id)
+                .correlate(model)
+                .as_scalar()
+            )
+            headline_expression.append(
+                func.ts_headline(
+                    self.lang,
+                    file_texts,
+                    self.ts_query,
+                    'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
+                    'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
+                    'FragmentDelimiter=" ... "',
+                ).label('searchable_text_headline')
+            )
+
         select_fields: List[Any] = [
             model.id,
             *headline_expression,
             cast(literal(model.__name__), String).label('type'),  # noqa: MS001
         ]
 
-        full_text = (
-            True if issubclass(model, SearchableAssociatedFiles) else False
-        )
         query = select(*select_fields).filter(or_(
             *self.create_fulltext_search_conditions(model, full_text))
         )
-        if not full_text:
-            return query
-        else:
+        if full_text:
             query = query.options(undefer(model.searchable_text_de_CH))
-            return query
+            query = query.options(undefer(SearchableFileAlias.extract))
+        return query
 
     def create_fulltext_search_conditions(
         self, model: type['HasSearchableFields'], full_text: bool
@@ -186,7 +201,7 @@ class SearchCollection:
         ]
 
         if full_text:
-            assert isinstance(model, SearchableAssociatedFiles)
+            assert issubclass(model, SearchableAssociatedFiles)
             matches_in_files = [
                 match(model.searchable_text_de_CH),
             ]
@@ -195,10 +210,8 @@ class SearchCollection:
         return matches_in_attributes + matches_in_files
 
     def process_results(
-        self, raw_results: Sequence[Any], model: 'type[HasSearchableFields]'
+            self, raw_results: Sequence[Any], model: 'type[HasSearchableFields]'
     ) -> List[SearchResult]:
-        """ Helper function to produce a safe typed output of
-        list[SearchResult] """
         processed_results: List[SearchResult] = []
         for result in raw_results:
             headlines: dict[str, str] = {
@@ -206,15 +219,22 @@ class SearchCollection:
                 for field in model.searchable_fields()
                 if (value := getattr(result, field.name, None)) is not None
             }
+
+            if headline := getattr(result, 'searchable_text_headline', None):
+                headlines['File Content'] = headline
+
+            result_type = 'SearchableFile' if 'File Content' in headlines else result.type
+
             processed_results.append(
                 SearchResult(
                     id=result.id,
                     headlines=headlines,
-                    type=result.type,
+                    type=result_type,
                     model=None,
                 )
             )
         return processed_results
+
 
     def __repr__(self) -> str:
         return f'<SearchResultCollection {self.results[:4]}>'
