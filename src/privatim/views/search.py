@@ -69,7 +69,7 @@ class SearchCollection:
 
         self._add_comments_to_results()
 
-    def _add_comments_to_results(self):
+    def _add_comments_to_results(self) -> None:
         """ Extends self.results with the complete query for Comment.
 
         This is for displaying more information in the search results.
@@ -91,8 +91,8 @@ class SearchCollection:
         self,
         model: type['HasSearchableFields'],
     ) -> List[SearchResult]:
-        query = self.build_query(model)
-        raw_results = self.session.execute(query).all()
+        model_fulltext_query = self.build_query(model)
+        raw_results = self.session.execute(model_fulltext_query).all()
         return self.process_results(raw_results, model)
 
     def build_query(
@@ -104,13 +104,12 @@ class SearchCollection:
         Builds the actual query for full text search.
 
         1. Generate headline expressions for all searchable fields of the
-        model. Headlines in this context are snippets of text from the searchable
-        fields, with the matching search terms highlighted.
-        They provide context around where the search term appears in each
-        field.
+        model. Headlines in this context are snippets of text from the
+        searchable fields, with the matching search terms highlighted. They
+        provide context around where the search term appears in each field.
 
-        2. Perform the actual search in all
-        searchable fields using `create_fulltext_search_conditions`
+        2. Perform the actual search in all searchable fields using
+        the filters of `create_fulltext_search_conditions`
 
         Returns A list of SQLAlchemy column expressions, each
             representing a headline for a searchable field.
@@ -145,13 +144,17 @@ class SearchCollection:
         searchable_fields: Iterator['InstrumentedAttribute[str]'],
     ) -> List[ColumnElement[bool]]:
         """
-         The column.op@@ expression is SQLAlchemy's custom operator
-         functionality to create a full-text search operation.
+        Returns a list of SqlAlchemy filter statements matching possible
+        fulltext attributes based on the term.
 
-        Note that we convert to tsvector at runtime, this could be done at
-        indexing time for performance reasons. But for now we keep it simple.
-        For relatively small datasets, as we expect them to be  this will
-        probably not be a bottleneck.
+        This is somewhat inspired from
+        `onegov.swissvotes.collections.votes.SwissVoteCollection`.
+
+        **Note:** We convert the searchable fields to `tsvector` at runtime.
+        This could be precomputed for example using SQLAlchemy's `observes` for
+        better performance. For simplicity, we're doing it during the search.
+        Given our relatively small dataset, this approach should not be a
+        problem.
 
         """
 
@@ -200,7 +203,6 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
     This view processes the search form submitted via POST method, then
     redirects to avoid browser warnings on page refresh. This prevents
     accidental form resubmission if users refresh the results page.
-
 
     """
     session: Session = request.dbsession
