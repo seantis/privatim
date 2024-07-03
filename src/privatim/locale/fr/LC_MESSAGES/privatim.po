@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-03 09:36+0200\n"
+"POT-Creation-Date: 2024-07-03 17:07+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -54,11 +54,6 @@ msgstr "Répondre"
 msgid "Activities"
 msgstr "Activités"
 
-#: src/privatim/layouts/navbar.pt
-#: src/privatim/views/templates/working_groups.pt
-msgid "People"
-msgstr "Les personnes"
-
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
 #: src/privatim/views/templates/person.pt
 msgid "Consultations"
@@ -68,6 +63,11 @@ msgstr "Consultations"
 #: src/privatim/views/templates/working_groups.pt
 msgid "Working Groups"
 msgstr "Comités"
+
+#: src/privatim/layouts/navbar.pt
+#: src/privatim/views/templates/working_groups.pt
+msgid "People"
+msgstr "Les personnes"
 
 #: src/privatim/layouts/navbar.pt
 msgid "<dynamic element> Profile"
@@ -89,6 +89,10 @@ msgstr "Supprimer la photo"
 msgid "Successfully updated profile picture"
 msgstr "Image de profil mise à jour avec succès"
 
+#: src/privatim/views/login.py
+msgid "Login failed."
+msgstr "Échec de la connexion."
+
 #: src/privatim/views/general_file.py
 #, python-format
 msgid "Successfully deleted file \"${title}\""
@@ -105,6 +109,10 @@ msgstr "Supprimer la réunion"
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traiter un point de l'ordre du jour"
+
+#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
+msgid "Attendees"
+msgstr "Participants"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
@@ -212,7 +220,7 @@ msgid ""
 "Cannot delete working group \"${name}\" because it has associated meetings. "
 "Please delete all meetings first."
 msgstr ""
-"Le comité \"${Name}\" ne peut pas être supprimé car il a des réunions "
+"Le comité \"${name}\" ne peut pas être supprimé car il a des réunions "
 "associées. Veuillez d'abord supprimer toutes les réunions"
 
 #: src/privatim/views/working_groups.py
@@ -257,16 +265,6 @@ msgstr "Sauver"
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr "Date / Heure:"
-
-#: src/privatim/views/templates/meeting.pt
-#: src/privatim/reporting/template/report.pt
-msgid "Attendees:"
-msgstr "Participants:"
-
-#: src/privatim/views/templates/meeting.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Working Group:"
-msgstr "Comité:"
 
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
@@ -330,8 +328,9 @@ msgid "Status"
 msgstr "Statut"
 
 #: src/privatim/views/templates/consultation.pt
-msgid "Your Comment"
-msgstr "Votre commentaire"
+#: src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr "Ajouter un commentaire"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"
@@ -351,12 +350,16 @@ msgid "Change Password"
 msgstr "Changer le mot de passe"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Unbekannter Ersteller"
+msgid "Unknown Creator"
 msgstr "Créateur inconnu"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Kein Leiter"
+msgid "No leader"
 msgstr "Pas de chef"
+
+#: src/privatim/views/templates/activities.pt
+msgid "Working Group:"
+msgstr "Comité:"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Show Meeting"
@@ -553,10 +556,6 @@ msgid "Cantons"
 msgstr "Les cantons"
 
 #: src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr "Ajouter un commentaire"
-
-#: src/privatim/forms/add_comment.py
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -588,10 +587,6 @@ msgstr "Modifier la réunion"
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
 msgstr "Date / heure"
-
-#: src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Participants"
 
 #: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
@@ -642,8 +637,12 @@ msgstr "Sélectionner..."
 msgid "Protocol of meeting ${title}"
 msgstr "Procès-verbal de la réunion ${title}"
 
+#: src/privatim/reporting/template/report.pt
+msgid "Attendees:"
+msgstr "Participants:"
+
+#~ msgid "Unbekannter Ersteller"
+#~ msgstr "Créateur inconnu"
+
 #~ msgid "Search..."
 #~ msgstr "Recherche"
-
-#~ msgid "Do you really wish to delete \"${item_title}\"?"
-#~ msgstr "Souhaitez-vous vraiment supprimer \"${item_title}\" ?"

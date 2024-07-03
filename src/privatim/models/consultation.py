@@ -1,11 +1,8 @@
+import uuid
 from datetime import datetime
 from sedate import utcnow
-from sqlalchemy import Text, ForeignKey
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    relationship,
-)
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
@@ -21,14 +18,23 @@ from typing import TYPE_CHECKING, Iterator
 
 if TYPE_CHECKING:
     from privatim.types import ACL
-    from privatim.models import User
     from sqlalchemy.orm import InstrumentedAttribute
+    from privatim.models import User, GeneralFile
 
 
 class Status(Base):
     __tablename__ = 'status'
+
+    def __init__(
+            self,
+            name: str,
+    ):
+        self.id = str(uuid.uuid4())
+        self.name = name
+
     id: Mapped[UUIDStrPK]
-    name: Mapped[Text] = mapped_column(Text, nullable=False)
+
+    name: Mapped[str] = mapped_column(nullable=False)
     consultations = relationship(
         'Consultation', back_populates='status'
     )
@@ -44,8 +50,17 @@ class Status(Base):
 class Tag(Base):
 
     __tablename__ = 'secondary_tags'
+
+    def __init__(
+        self,
+        name: str,
+    ):
+        self.id = str(uuid.uuid4())
+        self.name = name
+
     id: Mapped[UUIDStrPK]
-    name: Mapped[Text] = mapped_column(Text, nullable=False)
+
+    name: Mapped[str] = mapped_column(nullable=False)
 
     consultation: Mapped['Consultation'] = relationship(
         'Consultation', back_populates='secondary_tags',
@@ -64,6 +79,28 @@ class Consultation(
 
     __tablename__ = 'consultations'
 
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        recommendation: str,
+        creator: 'User',
+        status: Status | None = None,
+        secondary_tags: list[Tag] | None = None,
+        files: list['GeneralFile'] | None = None
+    ):
+        self.id = str(uuid.uuid4())
+        self.title = title
+        self.description = description
+        self.recommendation = recommendation
+        if status is not None:
+            self.status = status
+        if secondary_tags is not None:
+            self.secondary_tags = secondary_tags
+        self.creator = creator
+        if files is not None:
+            self.files = files
+
     id: Mapped[UUIDStrPK]
 
     title: Mapped[str] = mapped_column(nullable=False)
@@ -72,7 +109,7 @@ class Consultation(
 
     recommendation: Mapped[str]
 
-    status: Mapped[Status] = relationship(
+    status: Mapped[Status | None] = relationship(
         'Status', back_populates='consultations',
     )
 
@@ -82,7 +119,7 @@ class Consultation(
         'Tag', back_populates='consultation',
     )
 
-    creator: Mapped['User'] = relationship(
+    creator: Mapped['User | None'] = relationship(
         'User',
         back_populates='consultations',
     )

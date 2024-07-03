@@ -1,9 +1,8 @@
 import secrets
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from datetime import timedelta
 
-from sedate import utcnow
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
@@ -50,7 +49,7 @@ class PasswordChangeToken(Base):
 
         if time_requested is None:
             time_requested = datetime.utcnow()
-        self.time_requested = time_requested.replace(tzinfo=timezone.utc)
+        self.time_requested = time_requested.replace(tzinfo=None)
         self.time_consumed = None
         self.token = secrets.token_urlsafe()
 
@@ -70,7 +69,7 @@ class PasswordChangeToken(Base):
             raise PasswordException(f'Token "{self.token}" has expired')
 
         time_consumed = datetime.now()
-        time_consumed = time_consumed.replace(tzinfo=timezone.utc)
+        time_consumed = time_consumed.replace(tzinfo=None)
         self.time_consumed = time_consumed
 
     @property
@@ -93,6 +92,6 @@ class PasswordChangeToken(Base):
             return True
 
         expiring_time = self.time_requested + timedelta(hours=48)
-        if utcnow() > expiring_time:
+        if datetime.utcnow() > expiring_time:
             return True
         return False

@@ -33,6 +33,19 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = 'users'
 
+    def __init__(
+            self,
+            email: str,
+            first_name: str | None = None,
+            last_name: str | None = None,
+            groups: list[Group] | None = None,
+    ):
+        self.id = str(uuid.uuid4())
+        self.email = email
+        self.first_name = first_name
+        self.last_name = last_name
+        self.groups = groups or []
+
     id: Mapped[UUIDStrPK]
 
     first_name: Mapped[str_256 | None]
@@ -90,19 +103,6 @@ class User(Base):
     consultations: Mapped[list['Consultation']] = relationship(
         'Consultation', back_populates='creator'
     )
-
-    def __init__(
-            self,
-            email: str,
-            first_name: str | None = None,
-            last_name: str | None = None,
-            groups: list[Group] | None = None,
-    ):
-        self.id = str(uuid.uuid4())
-        self.email = email
-        self.first_name = first_name
-        self.last_name = last_name
-        self.groups = groups or []
 
     def set_password(self, password: str) -> None:
         password = password or ''

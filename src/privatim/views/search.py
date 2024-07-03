@@ -209,7 +209,7 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
     accidental form resubmission if users refresh the results page.
 
     """
-    session: 'Session' = request.dbsession
+    session = request.dbsession
     form: SearchForm = SearchForm(request)
     if request.method == 'POST' and form.validate():
         return HTTPFound(

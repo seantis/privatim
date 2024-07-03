@@ -43,7 +43,7 @@
                                             <tal:condition condition="not:has_creator">
                                                 <p class="profile-name"
                                                    style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Unbekannter Ersteller</p>
+                                                    Unknown Creator</p>
                                             </tal:condition>
                                         </tal:define>
                                         <p class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
@@ -58,7 +58,7 @@
                                             <tal:condition condition="not:has_leader">
                                                 <p class="profile-name"
                                                    style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Kein Leiter</p>
+                                                    No leader</p>
                                             </tal:condition>
                                         </tal:define>
                                     </div>

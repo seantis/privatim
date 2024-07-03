@@ -4,7 +4,8 @@ import babel.numbers
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from privatim.static import (bootstrap_css, bootstrap_js, tom_select_css,
-                             comments_css, profile_css, sortable_custom)
+                             comments_css, profile_css, sortable_custom,
+                             custom_js)
 from pytz import timezone
 import re
 from datetime import date, datetime
@@ -41,6 +42,7 @@ class Layout:
         tom_select_css.need()
         comments_css.need()
         sortable_custom.need()
+        custom_js.need()
         profile_css.need()
 
     def show_steps(self) -> bool:

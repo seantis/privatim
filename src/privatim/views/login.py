@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
+from privatim.i18n import _
 from sqlalchemy import select
 from wtforms import Form
 from wtforms import PasswordField
@@ -56,6 +57,6 @@ def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             assert object_session(user)
             return HTTPFound(location=next_url, headers=headers)
 
-        request.messages.add('Login failed.', 'error')
+        request.messages.add(_('Login failed.'), 'error')
 
     return {'form': form}

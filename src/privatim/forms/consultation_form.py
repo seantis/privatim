@@ -106,7 +106,8 @@ class ConsultationForm(Form):
                 setattr(obj, name, list(all_tags))
             elif isinstance(field, SelectField) and field.data is not None:
                 value = dict(field.choices)[field.data]
-                if value and obj.status.name != value:
+                if (value and obj.status is not None and obj.status.name !=
+                        value):
                     setattr(obj, name, Status(name=value))
             else:
                 field.populate_obj(obj, name)
