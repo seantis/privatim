@@ -142,11 +142,11 @@ class SearchCollection:
         model. Headlines in this context are snippets of text from the
         fiel, with the matching search terms highlighted. They
         provide context around where the search term appears in each field.
-        ts_headlines requiresd the original document text, not tsvector.
+        ts_headlines requires the original document text, not tsvector.
 
 
         2. The actual search happens in the tsvector type searchable_text_{
-        locale}, which as been indexedin beforehand.
+        locale}, which as been indexed beforehand.
         """
 
         return (
@@ -161,7 +161,7 @@ class SearchCollection:
                     'MaxFragments=3, FragmentDelimiter=" ... "',
                 ).label('file_content_headline'),
                 SearchableFile,
-                cast(literal('SearchableFile'), String).label('type')
+                literal('SearchableFile').label('type')
             )
             .select_from(model)
             .join(SearchableFile, model.files)
@@ -186,7 +186,7 @@ class SearchCollection:
         select_fields = [
             model.id,
             *headline_expressions,
-            cast(literal(model.__name__), String).label('type'),  # noqa: MS001
+            literal(model.__name__).label('type'),  # noqa: MS001
         ]
 
         return select(*select_fields).filter(

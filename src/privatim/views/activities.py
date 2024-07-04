@@ -16,12 +16,12 @@ def activities_view(request: 'IRequest') -> 'RenderData':
     consultation_stmt = select(
         Consultation.id.label('id'),
         Consultation.created.label('timestamp'),
-        cast(literal("'consultation'"), String).label('type')
+        literal("'consultation'").label('type')
     )
     meeting_stmt = select(
         Meeting.id.label('id'),
         Meeting.time.label('timestamp'),
-        cast(literal("'meeting'"), String).label('type')
+        literal("'meeting'").label('type')
     )
     union_stmt = union_all(consultation_stmt, meeting_stmt)
 
