@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 # todo(mypy) should this class implement the HasSearchableFields?
-    #  Creates consequential errors...
+    #  However, this creates consequential errors with metaclass conflicts
 class SearchableMixin:
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
@@ -18,7 +18,7 @@ class SearchableMixin:
         )
 
 
-def searchable_models() -> tuple[type['HasSearchableFields'], ...]:
+def searchable_models() -> tuple[type['SearchableMixin'], ...]:
     """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():

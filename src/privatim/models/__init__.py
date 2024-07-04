@@ -107,7 +107,7 @@ def register_search_listeners(
     )
 
 
-def reindex_models_with_searchable_files():
+def reindex_models_with_searchable_files() -> None:
 
     seen = set()
     for _ in Base.metadata.tables.values():

@@ -57,33 +57,20 @@ table. The link between the two is established in the automatically created
 
 """
 
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
-from sqlalchemy import Table
+
+from typing import (Any, Literal, NamedTuple, TypeVar, overload)
+from typing import TYPE_CHECKING
+from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import joinedload
-from sqlalchemy.orm import backref
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import object_session
+from sqlalchemy.orm import (Mapped, relationship, joinedload,
+                            backref, object_session)
 
 from .utils import QueryChain
 
-
-from typing import (
-    overload,
-    Any,
-    ClassVar,
-    Literal,
-    NamedTuple,
-    TypeVar,
-)
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.orm.meta import Base
     from sqlalchemy.orm.query import Query
-    from sqlalchemy.orm import DeclarativeBase as Base
     Cardinality = Literal['one-to-many', 'one-to-one', 'many-to-many']
-    rel = relationship
-
 
 _M = TypeVar('_M', bound='Associable')
 
@@ -109,7 +96,7 @@ def associated(
         uselist: Literal['auto'] = ...,
         backref_suffix: str = ...,
         onupdate: str | None = ...
-) -> 'rel[list[_M]]': ...
+) -> Mapped[list[_M]]: ...
 
 
 @overload
@@ -121,7 +108,7 @@ def associated(
         uselist: Literal['auto'] = ...,
         backref_suffix: str = ...,
         onupdate: str | None = ...
-) -> 'rel[_M | None]': ...
+) -> Mapped[_M | None]: ...
 
 
 @overload
@@ -133,7 +120,7 @@ def associated(
         uselist: Literal[True],
         backref_suffix: str = ...,
         onupdate: str | None = ...
-) -> 'rel[list[_M]]': ...
+) -> Mapped[list[_M]]: ...
 
 
 @overload
@@ -145,7 +132,7 @@ def associated(
         uselist: Literal[False],
         backref_suffix: str = ...,
         onupdate: str | None = ...
-) -> 'rel[_M | None]': ...
+) -> Mapped[_M | None]: ...
 
 
 def associated(
@@ -155,7 +142,7 @@ def associated(
         uselist: Literal['auto'] | bool = 'auto',
         backref_suffix: str = '__tablename__',
         onupdate: str | None = None
-) -> 'rel[list[_M]] | rel[_M | None]':
+) -> Mapped[list[_M]] | Mapped[_M | None]:
     """ Creates an associated attribute. This attribute is supposed to be
     defined on the mixin class that will establish the generic association
     if inherited by a model.
@@ -209,7 +196,7 @@ def associated(
     if uselist == 'auto':
         uselist = not cardinality.endswith('to-one')
 
-    def descriptor(cls: type['Base']) -> 'rel[list[_M]] | rel[_M | None]':
+    def descriptor(cls: type['Base']) -> Mapped[list[_M]] | Mapped[_M | None]:
         # HACK: forms is one of the only tables which doesn't use id as
         #       its primary key, we probably should just use id everywhere
         #       consistently
@@ -314,14 +301,14 @@ class Associable:
 
     registered_links: dict[str, RegisteredLink] | None = None
 
-    if TYPE_CHECKING:
-        # FIXME: This should probably be abstract in some way so that
-        #        we can enforce that the class that is Associable has
-        #        an id column...
-        id: Column[Any]
-
-        # HACK: let mypy know that this will have a __tablename__ set
-        __tablename__: ClassVar[str]
+    # if TYPE_CHECKING:
+    #     # FIXME: This should probably be abstract in some way so that
+    #     #        we can enforce that the class that is Associable has
+    #     #        an id column...
+    #     id: Column[Any]
+    #
+    #     # HACK: let mypy know that this will have a __tablename__ set
+    #     __tablename__: ClassVar[str]
 
     @classmethod
     def association_base(cls) -> type['Associable']:

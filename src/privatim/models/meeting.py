@@ -5,8 +5,6 @@ from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-
-from privatim.models.commentable import Commentable
 from privatim.models import SearchableMixin
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
@@ -129,7 +127,7 @@ class AgendaItem(Base, SearchableMixin):
         return f'<AgendaItem {self.title} position {self.position}>'
 
 
-class Meeting(Base, Commentable, SearchableMixin):
+class Meeting(Base, SearchableMixin):
     """Sitzung"""
 
     __tablename__ = 'meetings'

@@ -12,8 +12,7 @@ from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
 
-from typing import (TYPE_CHECKING, NamedTuple, Optional,
-                    TypedDict)
+from typing import (TYPE_CHECKING, NamedTuple, Optional, TypedDict, Any, Union)
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
@@ -78,14 +77,19 @@ class SearchCollection:
 
     def do_search(self) -> None:
         for model in searchable_models():
+            assert issubclass(
+                model, (HasSearchableFields, SearchableAssociatedFiles)
+            ), (f"Model {model.__name__} must be a subclass of "
+                f"HasSearchableFields or SearchableAssociatedFiles")
             self.results.extend(self.search_model(model))
 
         self._add_comments_to_results()
 
     def search_model(
-        self, model: type['HasSearchableFields']
+        self, model: type['HasSearchableFields | SearchableAssociatedFiles']
     ) -> list[SearchResult]:
-        attribute_results = self.search_in_columns(model)
+        if issubclass(model, 'HasSearchableFields'):
+            attribute_results = self.search_in_columns(model)
 
         if issubclass(model, SearchableAssociatedFiles):
             file_results = self.search_in_model_files(model)
@@ -113,7 +117,7 @@ class SearchCollection:
         ]
 
     def search_in_model_files(
-        self, model: SearchableAssociatedFiles
+        self, model: type['SearchableAssociatedFiles']
     ) -> list[SearchResult]:
         query = self.build_file_query(model)
         results_list = []
@@ -183,10 +187,10 @@ class SearchCollection:
             for field in model.searchable_fields()
         ]
 
-        select_fields = [
+        select_fields: list[Any | str] = [
             model.id,
             *headline_expressions,
-            literal(model.__name__).label('type'),  # noqa: MS001
+            literal(model.__name__).label('type')
         ]
 
         return select(*select_fields).filter(

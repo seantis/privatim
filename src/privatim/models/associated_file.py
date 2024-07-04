@@ -4,6 +4,7 @@ from io import BytesIO
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
+from typing_extensions import TYPE_CHECKING
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -13,6 +14,7 @@ from privatim.orm.associable import associated
 
 from typing import ClassVar
 
+from privatim.orm.meta import UUIDStrPK
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 class AssociatedFiles:
     """ Use this mixin if uploaded files belong to a specific instance """
 
-    files = associated(
+    files: Mapped[list[GeneralFile]] = associated(
         GeneralFile, 'files', 'one-to-many'
     )
 
@@ -29,7 +31,10 @@ class SearchableAssociatedFiles:
     """ Same as AssociatedFiles but provides the toolkit to make a list of
     files searchable, if they are pdfs. """
 
-    __name__: ClassVar[str]
+    if TYPE_CHECKING:
+        id: Mapped[UUIDStrPK]
+        __name__: ClassVar[str]
+        __tablename__: ClassVar[str]
 
     files: Mapped[list[SearchableFile]] = associated(
         SearchableFile, 'files', 'one-to-many'
@@ -44,7 +49,7 @@ class SearchableAssociatedFiles:
 
     # fixme: tricky to get typing right here.
     @declared_attr
-    def __table_args__(cls):  # type: ignore
+    def __table_args__(cls) -> tuple[Index, ...]:
         return (
             Index(
                 f'idx_{cls.__tablename__.lower()}_searchable_text_de_CH',

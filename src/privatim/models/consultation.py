@@ -20,7 +20,8 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
-    from privatim.models.file import SearchableFile
+    from privatim.orm.associable import associated
+    from privatim.models.comment import Comment
 
 
 class Status(Base):
@@ -79,6 +80,15 @@ class Consultation(
     Frage)"""
 
     __tablename__ = 'consultations'
+
+    if TYPE_CHECKING:
+        from privatim.models.file import SearchableFile
+        files: Mapped[list[SearchableFile]] = associated(
+            SearchableFile, 'files', 'one-to-many'
+        )
+        comments: Mapped[list[Comment]] = associated(
+            Comment, 'comments', 'one-to-many'
+        )
 
     def __init__(
         self,
