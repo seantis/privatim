@@ -75,7 +75,7 @@ def includeme(config: 'Configurator') -> None:
 
 
 def update_fulltext_search_text(
-    mapper: 'Mapper[Incomplete]', connection: 'Connection', target: Incomplete
+    mapper: 'Mapper[SearchableAssociatedFiles]', connection: 'Connection', target: SearchableAssociatedFiles
 ) -> None:
     """
     Event listener for the 'files' relationship. Triggers a full reindex

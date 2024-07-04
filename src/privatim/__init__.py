@@ -132,13 +132,9 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             ),
         )
 
-    if not context.has_column(
-            'consultations', 'searchable_text_de_CH'
-    ):
-        for column in ('searchable_text_de_CH',):
-            if not context.has_column('consultations', column):
-                context.operations.add_column(
-                    'consultations', Column(column, TSVECTOR())
-                )
+    context.operations.add_column(
+        'consultations',
+        Column('searchable_text_de_CH', TSVECTOR())
+)
 
     context.commit()

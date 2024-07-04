@@ -61,7 +61,7 @@ class SearchCollection:
 
     | term | tsquery |
     |------|---------|
-    | the donkey |	|'donkey' |
+    | the donkey | 'donkey' |
     | "blue donkey" | 'blue' & 'donkey' |
 
     See also:
@@ -97,7 +97,7 @@ class SearchCollection:
         self, model: type['HasSearchableFields']
     ) -> list[SearchResult]:
         query = self.build_attribute_query(model)
-        raw_results = self.session.execute(query).all()
+        raw_results = self.session.execute(query)
         return [
             SearchResult(
                 id=result.id,
@@ -116,9 +116,8 @@ class SearchCollection:
         self, model: SearchableAssociatedFiles
     ) -> list[SearchResult]:
         query = self.build_file_query(model)
-        raw_results = self.session.execute(query).all()
         results_list = []
-        for result in raw_results:
+        for result in self.session.execute(query):
             search_result = SearchResult(
                 id=result.id,
                 headlines={
