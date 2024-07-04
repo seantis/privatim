@@ -1,10 +1,9 @@
 import logging
+from io import BytesIO
 
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
-from sqlalchemy.orm import Mapped, deferred, mapped_column, declared_attr
-from sqlalchemy_utils import observes
-from sqlalchemy_utils.observer import PropertyObserver
+from sqlalchemy.orm import Mapped, mapped_column, declared_attr
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -19,15 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 class AssociatedFiles:
-    """ Use this  mixin if uploaded files belong to a specific instance """
+    """ Use this mixin if uploaded files belong to a specific instance """
 
     # one-to-many
     files = associated(GeneralFile, 'files')
 
 
 class SearchableAssociatedFiles:
-    """ One-to-many files that belong to a specific instance that have their
-        text contents extracted and stored in a single TSVECTOR column."""
+    """ Same as AssociatedFiles but provides the toolkit to make a list of
+    files searchable, if they are pdfs. """
 
     __name__: ClassVar[str]
 
@@ -37,10 +36,10 @@ class SearchableAssociatedFiles:
 
     @declared_attr
     def searchable_text_de_CH(cls) -> Mapped[TSVECTOR]:
-        return deferred(mapped_column(
+        return mapped_column(
             TSVECTOR,
             nullable=True
-        ))
+        )
 
     # fixme: tricky to get typing right here.
     @declared_attr
@@ -56,6 +55,8 @@ class SearchableAssociatedFiles:
     def reindex_files(self) -> None:
         """Extract the text from the files and save it together with
         the language.
+
+        Note that for now only pdfs are supported.
         """
         files_by_locale: dict[str, list[SearchableFile]] = {
             locale: [] for locale in locales
@@ -69,13 +70,14 @@ class SearchableAssociatedFiles:
             text = ''
             for file in files_by_locale[locale]:
                 try:
-                    pages, extract = extract_pdf_info(file.file)
+                    pages, extract = extract_pdf_info(BytesIO(file.content))
                     file.extract = (extract or '').strip()
                     file.word_count = word_count(file.extract)
                     if file.extract:
                         text += '\n\n' + file.extract
                 except Exception as e:
-                    logger.error(f"Error processing file {file.id}: {str(e)}")
+                    logger.error(f"Error extracting text contents for file"
+                                 f" {file.id}: {str(e)}")
 
             setattr(
                 self,

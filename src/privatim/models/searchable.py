@@ -1,4 +1,3 @@
-from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.orm import Base
 
 

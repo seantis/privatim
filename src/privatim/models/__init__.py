@@ -1,6 +1,6 @@
 from sqlalchemy import event
 
-from sqlalchemy.orm import configure_mappers, Mapper
+from sqlalchemy.orm import configure_mappers
 
 
 from privatim.i18n import locales
@@ -38,8 +38,8 @@ GeneralFile
 SearchableMixin
 
 
-from typing import TYPE_CHECKING, Any  # noqa: E402
-from typing import Any as Incomplete
+from typing import TYPE_CHECKING  # noqa: E402
+from typing import Any as Incomplete  # noqa: E402
 if TYPE_CHECKING:
     from pyramid.config import Configurator
     from sqlalchemy.orm import Mapper
@@ -74,8 +74,8 @@ def includeme(config: 'Configurator') -> None:
     )
 
 
-def update_fulltext_search_text_for_files(
-        mapper: 'Mapper[Incomplete]', connection: 'Connection', target: Incomplete
+def update_fulltext_search_text(
+    mapper: 'Mapper[Incomplete]', connection: 'Connection', target: Incomplete
 ) -> None:
     """
     Event listener for the 'files' relationship. Triggers a full reindex
@@ -93,11 +93,16 @@ def update_fulltext_search_text_for_files(
 def register_search_listeners(
     model: 'type[SearchableAssociatedFiles]',
 ) -> None:
-    event.listen(model, 'after_insert',
-        update_fulltext_search_text_for_files
+    event.listen(model, 'after_insert', update_fulltext_search_text)
+    event.listen(
+        model,
+        'after_update',
+        update_fulltext_search_text,
     )
-    event.listen(model, 'after_update',
-        update_fulltext_search_text_for_files,
+    event.listen(
+        model,
+        'after_delete',  # for edit form as well as delete
+        update_fulltext_search_text,
     )
 
 

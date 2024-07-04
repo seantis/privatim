@@ -1,4 +1,3 @@
-from markupsafe import Markup
 from sqlalchemy import select, union_all, desc, cast, String, literal
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _

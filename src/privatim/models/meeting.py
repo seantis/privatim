@@ -47,7 +47,7 @@ meetings_users_association: Table = Table(
 )
 
 
-class AgendaItem(Base):
+class AgendaItem(Base, SearchableMixin):
     """ Traktanden """
 
     __tablename__ = 'agenda_items'
@@ -115,6 +115,11 @@ class AgendaItem(Base):
         order_by='AgendaItem.position'
     )
 
+    @classmethod
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
+        yield cls.title
+        yield cls.description
+
     def __acl__(self) -> list['ACL']:
         return [
             (Allow, Authenticated, ['view']),
@@ -177,7 +182,6 @@ class Meeting(Base, Commentable, SearchableMixin):
 
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
-        # todo: agenda item (seperately)
         yield cls.name
 
     def __acl__(self) -> list['ACL']:

@@ -1,11 +1,10 @@
+from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, ColumnElement, cast, literal, String)
-from sqlalchemy.orm import aliased
+from sqlalchemy import (func, select, cast, literal, String, Select)
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
-from privatim.i18n import locales, translate
+from privatim.i18n import locales
 from sqlalchemy import or_
-from sqlalchemy.orm import undefer
 
 from privatim.models import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
@@ -13,25 +12,31 @@ from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 
 
-from typing import (TYPE_CHECKING, List, NamedTuple, Any, Optional, Sequence,
+from typing import (TYPE_CHECKING, NamedTuple, Optional,
                     TypedDict)
 if TYPE_CHECKING:
-    from sqlalchemy.sql.selectable import Select
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
     from privatim.types import HasSearchableFields, RenderDataOrRedirect
-    from builtins import type as type_t
 
 
 class SearchResult(NamedTuple):
+    """ The id (UUIDStrPK) of the instance """
     id: str
+
     """ headlines are key value pairs of fields on various models that matched
     the search query."""
     headlines: dict[str, str]
+
+    """ The literal model.__name__ for distinction in search_results.pt. """
     type: str
-    model: 'Optional[type_t[HasSearchableFields]]'  # We only load this if it
-    # makes sense int he UI to display additional attributes from the model,
-    #  otherwise we can save ourselves a query.
+
+    """ The specific model instance where the search was found.
+    Nullable, because should not be fetched by default.
+    We only load this if it makes sense in he UI to display additional
+    attributes (as part of a search result element) otherwise we
+    can save ourselves a query. """
+    model_instance: 'Optional[HasSearchableFields | SearchableFile]' = None
 
 
 class SearchResultType(TypedDict):
@@ -40,9 +45,16 @@ class SearchResultType(TypedDict):
     type: str
 
 
+class FileSearchResultType(TypedDict):
+    id: str
+    headlines: dict[str, str]
+    type: str
+    model: SearchableFile
+
+
 class SearchCollection:
 
-    """A class for searching the database for a given term.
+    """ Provides PostgreSQL full text search ingegration.
 
     We use websearch_to_tsquery, which automatically converts the search term
     into a tsquery.
@@ -60,9 +72,9 @@ class SearchCollection:
     def __init__(self, term: str, session: 'Session', language: str = 'de_CH'):
         self.lang: str = locales[language]
         self.session = session
-        self.web_search: str = term
+        self.web_search = term
         self.ts_query = func.websearch_to_tsquery(self.lang, self.web_search)
-        self.results: List[SearchResult] = []
+        self.results: list[SearchResult] = []
 
     def do_search(self) -> None:
         for model in searchable_models():
@@ -70,56 +82,97 @@ class SearchCollection:
 
         self._add_comments_to_results()
 
-    def _add_comments_to_results(self) -> None:
-        """ Extends self.results with the complete query for Comment.
-
-        This is for displaying more information in the search results.
-         """
-        comment_ids = [
-            result.id for result in self.results if result.type == 'Comment'
-        ]
-        if comment_ids:
-            stmt = select(Comment).filter(Comment.id.in_(comment_ids))
-            comments = self.session.scalars(stmt).all()
-            comment_dict: dict[str, Comment] = {
-                comment.id: comment for comment in comments
-            }
-            self.results = [(result._replace(model=comment_dict.get(
-                result.id)) if result.type == 'Comment' else result) for result
-                in self.results]
-
     def search_model(
-        self,
-        model: type['HasSearchableFields'],
-    ) -> List[SearchResult]:
-        model_fulltext_query = self.build_query(model)
-        raw_results = self.session.execute(model_fulltext_query).all()
-        return self.process_results(raw_results, model)
+        self, model: type['HasSearchableFields']
+    ) -> list[SearchResult]:
+        attribute_results = self.search_in_columns(model)
 
-    def build_query(
-        self,
-        model: type['HasSearchableFields'],
-    ) -> 'Select[tuple[SearchResultType, ...]]':
+        if issubclass(model, SearchableAssociatedFiles):
+            file_results = self.search_in_model_files(model)
+            return attribute_results + file_results
 
-        """
-        Builds the actual query for full text search.
+        return attribute_results
 
-        1. Generate headline expressions for all searchable fields of the
+    def search_in_columns(
+        self, model: type['HasSearchableFields']
+    ) -> list[SearchResult]:
+        query = self.build_attribute_query(model)
+        raw_results = self.session.execute(query).all()
+        return [
+            SearchResult(
+                id=result.id,
+                headlines={
+                    field.name.capitalize(): getattr(result, field.name)
+                    for field in model.searchable_fields()
+                    if getattr(result, field.name) is not None
+                },
+                type=result.type,
+                model_instance=None,
+            )
+            for result in raw_results
+        ]
+
+    def search_in_model_files(
+        self, model: SearchableAssociatedFiles
+    ) -> list[SearchResult]:
+        query = self.build_file_query(model)
+        raw_results = self.session.execute(query).all()
+        results_list = []
+        for result in raw_results:
+            search_result = SearchResult(
+                id=result.id,
+                headlines={
+                    'file_content_headline': Markup(   # noqa: MS001
+                        result.file_content_headline
+                    )},
+                type='SearchableFile',
+                model_instance=result.SearchableFile
+            )
+
+            results_list.append(search_result)
+        return results_list
+
+    def build_file_query(
+            self, model: type[SearchableAssociatedFiles]
+    ) -> 'Select[FileSearchResultType]':
+        """ Search in the files.
+
+        Two distinct things are happening here:
+
+         1. Generate headline expressions for all searchable fields of the
         model. Headlines in this context are snippets of text from the
-        searchable fields, with the matching search terms highlighted. They
+        fiel, with the matching search terms highlighted. They
         provide context around where the search term appears in each field.
+        ts_headlines requiresd the original document text, not tsvector.
 
-        2. Perform the actual search in all searchable fields using
-        the filters of `create_fulltext_search_conditions`
 
-        Returns A list of SQLAlchemy column expressions, each
-            representing a headline for a searchable field.
-
-            See also https://www.postgresql.org/docs/current/textsearch
-            -controls.html#TEXTSEARCH-HEADLINE
-
+        2. The actual search happens in the tsvector type searchable_text_{
+        locale}, which as been indexedin beforehand.
         """
-        headline_expression = [
+
+        return (
+            select(
+                model.id,
+                func.ts_headline(
+                    self.lang,
+                    SearchableFile.extract,
+                    self.ts_query,
+                    'StartSel=<mark>, StopSel=</mark>, MaxWords=35, '
+                    'MinWords=15, ShortWord=3, HighlightAll=FALSE, '
+                    'MaxFragments=3, FragmentDelimiter=" ... "',
+                ).label('file_content_headline'),
+                SearchableFile,
+                cast(literal('SearchableFile'), String).label('type')
+            )
+            .select_from(model)
+            .join(SearchableFile, model.files)
+            .filter(model.searchable_text_de_CH.op('@@')(self.ts_query))
+        )
+
+    def build_attribute_query(
+        self, model: type['HasSearchableFields']
+    ) -> 'Select[SearchResultType]':
+        headline_expressions = [
             func.ts_headline(
                 self.lang,
                 field,
@@ -131,113 +184,51 @@ class SearchCollection:
             for field in model.searchable_fields()
         ]
 
-        full_text = (
-            True if issubclass(model, SearchableAssociatedFiles) else False
-        )
-        if full_text:
-            SearchableFileAlias = aliased(SearchableFile)
-            file_texts = (
-                select(func.array_to_string(func.array_agg(SearchableFileAlias.extract), ' '))
-                .where(SearchableFileAlias.id == model.id)
-                .correlate(model)
-                .as_scalar()
-            )
-            headline_expression.append(
-                func.ts_headline(
-                    self.lang,
-                    file_texts,
-                    self.ts_query,
-                    'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
-                    'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
-                    'FragmentDelimiter=" ... "',
-                ).label('searchable_text_headline')
-            )
-
-        select_fields: List[Any] = [
+        select_fields = [
             model.id,
-            *headline_expression,
+            *headline_expressions,
             cast(literal(model.__name__), String).label('type'),  # noqa: MS001
         ]
 
-        query = select(*select_fields).filter(or_(
-            *self.create_fulltext_search_conditions(model, full_text))
-        )
-        if full_text:
-            query = query.options(undefer(model.searchable_text_de_CH))
-            query = query.options(undefer(SearchableFileAlias.extract))
-        return query
-
-    def create_fulltext_search_conditions(
-        self, model: type['HasSearchableFields'], full_text: bool
-    ) -> List[ColumnElement[bool]]:
-        """
-        Returns a list of SqlAlchemy filter statements matching possible
-        fulltext attributes based on the term.
-
-        This is somewhat inspired from
-        `onegov.swissvotes.collections.votes.SwissVoteCollection`.
-
-        **Note:** We convert the searchable fields to `tsvector` at runtime.
-        This could be precomputed for example using SQLAlchemy's `observes` for
-        better performance. For simplicity, we're doing it during the search.
-        Given our relatively small dataset, this approach should not be a
-        problem.
-
-        """
-
-        def match(
-            column: ColumnElement[str],
-        ) -> ColumnElement[bool]:
-            return column.op('@@')(self.ts_query)
-
-        def match_convert(
-            column: ColumnElement[str], language: str
-        ) -> ColumnElement[bool]:
-            return match(func.to_tsvector(language, column))
-
-        matches_in_attributes = [
-            match_convert(field, self.lang)
-            for field in model.searchable_fields()
-        ]
-
-        if full_text:
-            assert issubclass(model, SearchableAssociatedFiles)
-            matches_in_files = [
-                match(model.searchable_text_de_CH),
-            ]
-        else:
-            matches_in_files = []
-        return matches_in_attributes + matches_in_files
-
-    def process_results(
-            self, raw_results: Sequence[Any], model: 'type[HasSearchableFields]'
-    ) -> List[SearchResult]:
-        processed_results: List[SearchResult] = []
-        for result in raw_results:
-            headlines: dict[str, str] = {
-                translate(field.name.capitalize()): value
-                for field in model.searchable_fields()
-                if (value := getattr(result, field.name, None)) is not None
-            }
-
-            if headline := getattr(result, 'searchable_text_headline', None):
-                headlines['File Content'] = headline
-
-            result_type = 'SearchableFile' if 'File Content' in headlines else result.type
-
-            processed_results.append(
-                SearchResult(
-                    id=result.id,
-                    headlines=headlines,
-                    type=result_type,
-                    model=None,
-                )
+        return select(*select_fields).filter(
+            or_(
+                *[
+                    func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
+                    for field in model.searchable_fields()
+                ]
             )
-        return processed_results
+        )
 
+    def _add_comments_to_results(self) -> None:
+        """Extends self.results with the complete query for Comment.
+
+        This is for displaying more information in the search results.
+        """
+        comment_ids = [
+            result.id for result in self.results if result.type == 'Comment'
+        ]
+        if comment_ids:
+            stmt = select(Comment).filter(Comment.id.in_(comment_ids))
+            comments = self.session.scalars(stmt).all()
+            comment_dict: dict[str, Comment] = {
+                comment.id: comment for comment in comments
+            }
+            self.results = [
+                (
+                    result._replace(model_instance=comment_dict.get(result.id))
+                    if result.type == 'Comment'
+                    else result
+                )
+                for result in self.results
+            ]
 
     def __repr__(self) -> str:
-        return f'<SearchResultCollection {self.results[:4]}>'
+        output = ''
+        for res in self.results:
+            output += f'type: {res.type}\n'
+            output += f'id: {res.id}\n'
+
+        return output
 
 
 def search(request: 'IRequest') -> 'RenderDataOrRedirect':
@@ -261,12 +252,25 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     query = request.GET.get('q')
     if query:
-        result_collection: SearchCollection = SearchCollection(
+        collection: SearchCollection = SearchCollection(
             term=query, session=session
         )
-        result_collection.do_search()
+        collection.do_search()
+        search_results = []
+        for result in collection.results:
+            if result.type == 'Comment':
+                result.headlines['Content'] = Markup(  # noqa: MS001
+                    result.headlines['Content']
+                )
+
+            if result.type in ['AgendaItem', 'Consultation', 'Meeting']:
+                first_item = next(iter(result.headlines.items()))
+                result.headlines['title'] = first_item[1]
+
+            search_results.append(result)
+
         return {
-            'search_results': result_collection.results,
+            'search_results': search_results,
             'query': query,
             'layout': Layout(None, request),
         }

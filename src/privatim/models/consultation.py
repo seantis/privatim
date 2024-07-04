@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
-    from privatim.models import User, GeneralFile
+    from privatim.models import User
     from privatim.models.file import SearchableFile
 
 
