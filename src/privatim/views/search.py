@@ -1,6 +1,6 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, cast, literal, String, Select)
+from sqlalchemy import (func, select, literal, Select)
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
@@ -133,7 +133,7 @@ class SearchCollection:
 
     def build_file_query(
             self, model: type[SearchableAssociatedFiles]
-    ) -> 'Select[FileSearchResultType]':
+    ) -> 'Select[tuple[FileSearchResultType, ...]]':
         """ Search in the files.
 
         Two distinct things are happening here:
@@ -170,7 +170,7 @@ class SearchCollection:
 
     def build_attribute_query(
         self, model: type['HasSearchableFields']
-    ) -> 'Select[SearchResultType]':
+    ) -> 'Select[tuple[SearchResultType, ...]]':
         headline_expressions = [
             func.ts_headline(
                 self.lang,

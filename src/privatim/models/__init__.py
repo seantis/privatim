@@ -39,7 +39,6 @@ SearchableMixin
 
 
 from typing import TYPE_CHECKING  # noqa: E402
-from typing import Any as Incomplete  # noqa: E402
 if TYPE_CHECKING:
     from pyramid.config import Configurator
     from sqlalchemy.orm import Mapper
@@ -75,7 +74,9 @@ def includeme(config: 'Configurator') -> None:
 
 
 def update_fulltext_search_text(
-    mapper: 'Mapper[SearchableAssociatedFiles]', connection: 'Connection', target: SearchableAssociatedFiles
+    mapper: 'Mapper[SearchableAssociatedFiles]',
+    connection: 'Connection',
+    target: SearchableAssociatedFiles,
 ) -> None:
     """
     Event listener for the 'files' relationship. Triggers a full reindex

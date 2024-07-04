@@ -1,63 +1,35 @@
-import uuid
-from pyramid.authorization import Allow
-from pyramid.authorization import Authenticated
 from sqlalchemy.orm import Mapped, mapped_column, deferred
-from sqlalchemy_file import File
-
-from privatim.orm.associable import Associable
-from privatim.orm.meta import UUIDStrPK, AttachedFile
+from privatim.orm.abstract import AbstractFile
+from privatim.orm.meta import UUIDStrPK
 from sqlalchemy import Text, ForeignKey, Integer
-from privatim.orm import Base
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from privatim.types import ACL
 
 
-class GeneralFile(Base, Associable):
-    """ A general file (image, document, pdf, etc), referenced in the database.
+class GeneralFile(AbstractFile):
+    """A general file (image, document, pdf, etc), referenced in the database.
 
     A thin wrapper around the `File` from sqlalchemy-file so that we can easily
     route to the file via the usual pathway i.e. create_uuid_factory.
 
     """
+
     __tablename__ = 'general_files'
 
-    def __init__(self, filename: str, content: bytes) -> None:
-        self.id = str(uuid.uuid4())
-        self.filename = filename
-        self.file = File(content=content, filename=filename)
-
-    id: Mapped[UUIDStrPK]
-
-    file: Mapped[AttachedFile] = mapped_column(nullable=False)
-
-    filename: Mapped[str] = mapped_column(nullable=False)
-
-    @property
-    def content(self) -> bytes:
-        return self.file.file.read()
-
-    @property
-    def content_type(self) -> str:
-        return self.file.content_type
-
-    def __acl__(self) -> list['ACL']:
-        return [
-            (Allow, Authenticated, ['view']),
-        ]
+    __mapper_args__ = {
+        'polymorphic_identity': 'general_file',
+    }
 
 
-class SearchableFile(GeneralFile):
+class SearchableFile(AbstractFile):
     """
     A file with the intention of being searchable. Should to be used with
     SearchableAssociatedFiles.
     """
+
     __tablename__ = 'searchable_files'
 
-    def __init__(self, filename: str, content: bytes) -> None:
-        super().__init__(filename, content)
-
+    __mapper_args__ = {
+        'polymorphic_identity': 'searchable_file',
+    }
     id: Mapped[UUIDStrPK] = mapped_column(
         ForeignKey('general_files.id'), primary_key=True
     )
@@ -70,12 +42,3 @@ class SearchableFile(GeneralFile):
     pages_count: Mapped[int] = mapped_column(Integer, nullable=True)
 
     word_count: Mapped[int] = mapped_column(Integer, nullable=True)
-
-    __mapper_args__ = {
-        'polymorphic_identity': 'searchable_file',
-    }
-
-    def __acl__(self) -> list['ACL']:
-        return [
-            (Allow, Authenticated, ['view']),
-        ]

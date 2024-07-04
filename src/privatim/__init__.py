@@ -135,6 +135,6 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     context.operations.add_column(
         'consultations',
         Column('searchable_text_de_CH', TSVECTOR())
-)
+    )
 
     context.commit()

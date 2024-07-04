@@ -20,8 +20,9 @@ logger = logging.getLogger(__name__)
 class AssociatedFiles:
     """ Use this mixin if uploaded files belong to a specific instance """
 
-    # one-to-many
-    files = associated(GeneralFile, 'files')
+    files = associated(
+        GeneralFile, 'files', 'one-to-many'
+    )
 
 
 class SearchableAssociatedFiles:
@@ -31,7 +32,7 @@ class SearchableAssociatedFiles:
     __name__: ClassVar[str]
 
     files: Mapped[list[SearchableFile]] = associated(
-        SearchableFile, 'files'
+        SearchableFile, 'files', 'one-to-many'
     )
 
     @declared_attr

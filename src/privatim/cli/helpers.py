@@ -76,6 +76,11 @@ def reindex(config_uri: str) -> None:
                 results = db.execute(stmt).scalars().fetchall()
                 for instance in results:
                     assert isinstance(instance, cls)
-                    click.echo(f"\nReindexing model: {cls.__name__} with "
-                               f"title: {instance.title[:30]}")
+                    name = getattr(instance, 'title', None)
+                    if name is not None:
+                        click.echo(f"\nReindexing model: {cls.__name__} with "
+                                   f"title: {name[:30]}")
+                    else:
+                        click.echo(f"\nReindexing model: {cls.__name__} with")
+
                     instance.reindex_files()
