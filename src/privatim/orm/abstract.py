@@ -4,7 +4,6 @@ from pyramid.authorization import Authenticated
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy_file import File
 
-from privatim.orm.associable import Associable
 from privatim.orm.meta import UUIDStrPK, AttachedFile
 from privatim.orm import Base
 
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
 
 
-class AbstractFile(Base, Associable):
+class AbstractFile(Base):
     __abstract__ = True
 
     id: Mapped[UUIDStrPK] = mapped_column(primary_key=True)

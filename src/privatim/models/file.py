@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Mapped, mapped_column, deferred
 from privatim.orm.abstract import AbstractFile
+from privatim.orm.associable import Associable
 from privatim.orm.meta import UUIDStrPK
 from sqlalchemy import Text, ForeignKey, Integer
 
 
-class GeneralFile(AbstractFile):
+class GeneralFile(AbstractFile, Associable):
     """A general file (image, document, pdf, etc), referenced in the database.
 
     A thin wrapper around the `File` from sqlalchemy-file so that we can easily
@@ -19,7 +20,7 @@ class GeneralFile(AbstractFile):
     }
 
 
-class SearchableFile(AbstractFile):
+class SearchableFile(AbstractFile, Associable):
     """
     A file with the intention of being searchable. Should to be used with
     SearchableAssociatedFiles.

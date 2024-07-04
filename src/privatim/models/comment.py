@@ -36,7 +36,7 @@ class Comment(Base, Associable, SearchableMixin):
     model = YourModel(name='stuff')
     model.comments.append(Comment('Interesting sqlalchemy design pattern'))
 
-   """
+       """
 
     __tablename__ = 'comments'
 
