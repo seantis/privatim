@@ -78,6 +78,18 @@
     url('/static/fonts/dm-serif-display-v5-latin-ext_latin-italic.woff') format('woff');
 }
 
+body {
+    font-family: "DM Sans", sans-serif;
+}
+
+h1 {
+    margin-top: 1.0rem;
+}
+
+.main-content {
+    /* Main container design. */
+    /*background-color: #f3f2ee;*/
+}
 
 .bg-light {
     background-color: #EDEDED !important;
