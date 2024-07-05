@@ -93,8 +93,8 @@ def test_view_add_working_group_with_meeting_and_leader(client):
     group = client.db.execute(stmt).scalars().first()
     assert group.leader.fullname == 'Alexa Troller'
 
-    member_names = {member.fullname for member in group.users}
-    assert member_names == {'Kurt Huber', 'Max Müller'}
+    member_names = sorted({member.fullname for member in group.users})
+    assert set(member_names) == {'Alexa Troller', 'Kurt Huber', 'Max Müller'}
 
     # test add_meeting
     page = client.get(f'/working_groups/{group.id}/add')
