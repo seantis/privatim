@@ -21,9 +21,13 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from typing import TypedDict
 
-    class FlattenedComment(TypedDict):
-        comment: Comment
-        children: list[Comment]
+    class ChildCommentDict(TypedDict):
+        comment: 'Comment'
+        picture: str
+
+    class FlattenedCommentDict(TypedDict):
+        comment: 'Comment'
+        children: list['ChildCommentDict']
         picture: str
 
 
@@ -151,7 +155,7 @@ def flatten_comments(
     top_level_comments: 'Iterable[Comment]',
     fallback_profile_pic: str,
     request: 'IRequest',
-) -> list['FlattenedComment']:
+) -> list['FlattenedCommentDict']:
     """
     Comments naturally contain arbitrary levels of nesting. (Each reply is a
     child.) This basically returns a list of comments with level of depth=1.
@@ -160,12 +164,21 @@ def flatten_comments(
     are not displayed with further indentation. Which is why this function
     does not need to do a full-blown tree traversal."""
 
-    flattened_comments: list['FlattenedComment'] = []
+    flattened_comments: list['FlattenedCommentDict'] = []
     for comment in top_level_comments:
         children = sorted(comment.children, key=lambda c: c.created)
         pic = handle_comment_picture(comment, fallback_profile_pic, request)
+
+        # Process children comments
+        _children: list['ChildCommentDict'] = []
+        for child in children:
+            child_pic = handle_comment_picture(
+                child, fallback_profile_pic, request
+            )
+            _children.append({'comment': child, 'picture': child_pic})
+
         flattened_comments.append(
-            {'comment': comment, 'children': children, 'picture': pic}
+            {'comment': comment, 'children': _children, 'picture': pic}
         )
     return flattened_comments
 

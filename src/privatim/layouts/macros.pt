@@ -103,27 +103,29 @@
         </div>
 
         <!-- Display children comments -->
-        <div class="indent-child-comments" tal:repeat="child flattened_comment['children']">
-            <div class="card border-0">
+        <div class="indent-child-comments"
+                tal:repeat="child_comment_dict flattened_comment['children']">
+            <div class="card border-0" tal:define="comment child_comment_dict['comment']; picture child_comment_dict['picture']">
                 <div class="card-body">
                     <div class="d-flex flex-start align-items-center">
                         <img class="rounded-circle shadow-1-strong me-3"
-                             src="${flattened_comment['picture']}"
+                             src="${picture}"
                              alt="avatar"
                              width="60"
                              height="60"
                         />
                         <div>
                             <h6 class="fw-bold text-primary mb-1">
-                                <a href="${request.route_url('person', id=child.user.id)}">${child.user.fullname or child.user.email}</a>
+                                <a href="${request.route_url('person', id=comment.user.id)}">
+                                        ${comment.user.fullname or comment.user.email}</a>
                             </h6>
                             <p class="text-muted small mb-0">
-                                    ${layout.format_date(child.created, 'relative')}
+                                    ${layout.format_date(comment.created, 'relative')}
                             </p>
                         </div>
                     </div>
                     <p class="comment-text mb-3 mt-1">
-                            ${child.content}
+                            ${comment.content}
                     </p>
                     <div class="answer-button small d-flex">
                         <a href="#!" class="d-flex align-items-center me-3 comment-answer-button">
@@ -142,10 +144,6 @@
                     </metal:block>
                 </div>
             </div>
-
-            <!--?
-            <hr class="hr" tal:condition="not repeat.child.end"/>
--->
 
         </div>
         <!-- Slightly more bold divider line-->
