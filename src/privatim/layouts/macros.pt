@@ -12,7 +12,7 @@
             <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
             <div class="d-flex">
                 <img class="rounded-circle shadow-1-strong me-3"
-                     src="${request.user_pic}"
+                     src="${request.profile_pic}"
                      alt="avatar"
                      height="40"
                      width="40"
@@ -39,7 +39,7 @@
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="ms-5 d-flex">
                     <img class="rounded-circle shadow-1-strong me-3"
-                         src="${request.user_pic}"
+                         src="${request.profile_pic}"
                          alt="avatar"
                          width="40"
                          height="40"
@@ -62,27 +62,27 @@
 
 <!-- Render all the comments. -->
 <metal:block define-macro="display_comments">
-    <div tal:condition="comments" tal:repeat="comment_dict comments" class="consultation-main-text">
+    <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment flattened_comments_tree" class="consultation-main-text">
         <div class="card border-0">
             <div class="card-body">
                 <div class="d-flex flex-start align-items-center">
                     <img class="rounded-circle shadow-1-strong me-3"
-                         src="${request.user_pic}"
+                         src="${flattened_comment['picture']}"
                          alt="avatar"
                          width="60"
                          height="60"
                     />
                     <div>
                         <h6 class="fw-bold text-primary mb-1">
-                            <a href="${request.route_url('person', id=comment_dict['comment'].user.id)}">${comment_dict['comment'].user.fullname or comment_dict['comment'].user.email}</a>
+                            <a href="${request.route_url('person', id=flattened_comment['comment'].user.id)}">${flattened_comment['comment'].user.fullname or flattened_comment['comment'].user.email}</a>
                         </h6>
                         <p class="text-muted small mb-0">
-                                ${layout.format_date(comment_dict['comment'].created, 'relative')}
+                                ${layout.format_date(flattened_comment['comment'].created, 'relative')}
                         </p>
                     </div>
                 </div>
                 <p class="comment-text mb-3 mt-1">
-                        ${comment_dict['comment'].content}
+                        ${flattened_comment['comment'].content}
                 </p>
                 <div class="answer-button small d-flex">
                     <a href="#!" class="d-flex align-items-center me-3 comment-answer-button">
@@ -96,21 +96,19 @@
                 <metal:block use-macro="layout.macros['answer_comment_form']"
                          tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
                                 _query={'target_url': 'consultation',
-                                        'parent_id': comment_dict['comment'].id});
+                                        'parent_id': flattened_comment['comment'].id});
                                 form nested_comment_form">
                 </metal:block>
             </div>
         </div>
 
         <!-- Display children comments -->
-        <!--?        <hr tal:condition="comment_dict['children']"/>-->
-
-        <div class="indent-child-comments" tal:repeat="child comment_dict['children']">
+        <div class="indent-child-comments" tal:repeat="child flattened_comment['children']">
             <div class="card border-0">
                 <div class="card-body">
                     <div class="d-flex flex-start align-items-center">
                         <img class="rounded-circle shadow-1-strong me-3"
-                             src="${request.user_pic}"
+                             src="${flattened_comment['picture']}"
                              alt="avatar"
                              width="60"
                              height="60"
@@ -139,7 +137,7 @@
                     <metal:block use-macro="layout.macros['answer_comment_form']"
                              tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
                                     _query={'target_url': 'consultation',
-                                            'parent_id': comment_dict['comment'].id});
+                                            'parent_id': flattened_comment['comment'].id});
                                     form nested_comment_form">
                     </metal:block>
                 </div>

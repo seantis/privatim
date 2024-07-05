@@ -32,7 +32,7 @@
                 <div class="row">
                     <div class=mt-5></div>
                     <metal:block use-macro="layout.macros['display_comments']"
-                             tal:define="comments flattened_comments_tree">
+                             tal:define="flattened_comments_tree flattened_comments_tree">
                     </metal:block>
                 </div>
                 <h2 i18n:translate="" class="m-4">Add Comment</h2>

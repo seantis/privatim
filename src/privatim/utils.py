@@ -4,6 +4,7 @@ from functools import lru_cache
 from PIL import Image
 import magic
 from io import BytesIO
+
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
@@ -17,6 +18,13 @@ if TYPE_CHECKING:
     from typing import Iterable
     from datetime import datetime
     from privatim.models.commentable import Comment
+    from pyramid.interfaces import IRequest
+    from typing import TypedDict
+
+    class FlattenedComment(TypedDict):
+        comment: Comment
+        children: list[Comment]
+        picture: str
 
 
 def datetime_format(
@@ -141,18 +149,44 @@ def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
 
 def flatten_comments(
     top_level_comments: 'Iterable[Comment]',
-) -> list[dict[str, Any]]:
-    """Displays all top-level comments and their direct replies.
+    fallback_profile_pic: str,
+    request: 'IRequest',
+) -> list['FlattenedComment']:
+    """
+    Comments naturally contain arbitrary levels of nesting. (Each reply is a
+    child.) This basically returns a list of comments with level of depth=1.
+
     The UI only shows one level of nesting, so deeply nested comments
     are not displayed with further indentation. Which is why this function
-    does not need to do a proper tree traversal."""
+    does not need to do a full-blown tree traversal."""
 
-    flattened_comments = []
+    flattened_comments: list['FlattenedComment'] = []
     for comment in top_level_comments:
         children = sorted(comment.children, key=lambda c: c.created)
-        flattened_comments.append({'comment': comment, 'children': children})
-
+        pic = handle_comment_picture(comment, fallback_profile_pic, request)
+        flattened_comments.append(
+            {'comment': comment, 'children': children, 'picture': pic}
+        )
     return flattened_comments
+
+
+def handle_comment_picture(
+    comment: 'Comment', fallback_profile_pic_link: str, request: 'IRequest'
+) -> str:
+    if comment.user is None:
+        pic = fallback_profile_pic_link
+    else:
+        if comment.user.id == request.user.id:
+            pic = request.profile_pic
+        else:
+            pic = (
+                request.route_url(
+                    'download_general_file', id=comment.user.profile_pic.id
+                )
+                if comment.user.profile_pic is not None
+                else fallback_profile_pic_link
+            )
+    return pic
 
 
 def maybe_escape(value: str | None) -> str:

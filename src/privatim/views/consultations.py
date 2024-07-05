@@ -7,6 +7,8 @@ from privatim.models import Consultation, GeneralFile
 from privatim.models.consultation import Status, Tag
 from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
+
+from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.utils import dictionary_to_binary, flatten_comments
 
 
@@ -33,6 +35,10 @@ def consultation_view(
         ]
     )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
+    fallback_pic = request.route_url(
+        'download_general_file', id=get_or_create_default_profile_pic(
+            request.dbsession).id
+    )
     return {
         'consultation': context,
         'documents': [
@@ -47,7 +53,8 @@ def consultation_view(
         ],
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
-        'flattened_comments_tree': flatten_comments(top_level_comments)
+        'flattened_comments_tree': flatten_comments(top_level_comments,
+                                                    fallback_pic, request)
     }
 
 
