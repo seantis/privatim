@@ -18,7 +18,7 @@
 
         <!-- Main Content -->
         <div class="row mt-4 mb-4">
-            <div class="col-lg-8 card mb-4">
+            <div class="col-lg-8 card mb-4 border-0">
                 <div class="row">
                     <p tal:condition="consultation.description">
                         <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
