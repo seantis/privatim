@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-30 17:43+0200\n"
+"POT-Creation-Date: 2024-07-05 16:02+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -162,6 +162,10 @@ msgid "Edit Consultation"
 msgstr "Vernehmlassung bearbeiten"
 
 #: src/privatim/views/consultations.py
+msgid "Delete Consultation"
+msgstr "Vernehmlassung löschen"
+
+#: src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
@@ -174,6 +178,10 @@ msgstr "Vernehmlassung erfolgreich bearbeitet."
 #: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung Erfassen"
+
+#: src/privatim/views/consultations.py
+msgid "Successfully deleted consultation."
+msgstr "Vernehmlassung erfolgreich gelöscht."
 
 #: src/privatim/views/password_change.py
 msgid "Email"
@@ -324,6 +332,11 @@ msgid "Recommendation:"
 msgstr "Empfehlung:"
 
 #: src/privatim/views/templates/consultation.pt
+#: src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
+
+#: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
 msgid "Documents"
 msgstr "Dokumente"
@@ -332,10 +345,6 @@ msgstr "Dokumente"
 #: src/privatim/forms/consultation_form.py
 msgid "Status"
 msgstr "Status"
-
-#: src/privatim/views/templates/consultation.pt
-msgid "Add Comment"
-msgstr "Kommentar hinzufügen"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
@@ -550,10 +559,6 @@ msgstr "Empfehlung"
 #: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Kantone"
-
-#: src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr "Kommentar erfassen"
 
 #: src/privatim/forms/add_comment.py
 msgid "Comment"

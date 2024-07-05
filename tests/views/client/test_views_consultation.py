@@ -1,8 +1,9 @@
 from lxml.etree import tostring
 
 from privatim.models import User
+from privatim.models.comment import Comment
 from privatim.models.consultation import Status, Consultation
-from sqlalchemy import select
+from sqlalchemy import select, exists
 from webtest.forms import Upload
 
 
@@ -88,6 +89,24 @@ def test_view_add_consultation(client):
 
     status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
     assert status_text_badge == 'Erstellt'
+    # add comment
+    page = client.get(f'/consultation/{str(consultation_id)}')
+    page.form['content'] = 'Comment goes here'
+    page = page.form.submit().follow()
+    assert 'Comment goes here' in page
+
+    # Delete consultation
+    client.get(f'/consultations/{str(consultation_id)}/delete')
+    comment_exists_stmt = select(exists().where(Comment.id == consultation_id))
+    comment_exists = session.scalar(comment_exists_stmt)
+    assert not comment_exists
+
+    # Check if the consultation still exists
+    consultation_stmt = select(Consultation).where(
+        Consultation.id == consultation_id
+    )
+    consultation = session.scalar(consultation_stmt)
+    assert consultation is None
 
 
 def test_view_edit_consultation(client):

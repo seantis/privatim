@@ -3,15 +3,17 @@ from datetime import datetime
 from sedate import utcnow
 from privatim.orm import Base
 from privatim.orm.associable import Associable
-from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, remote
+from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, \
+    remote, object_session
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
 
-
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, TypeVar
 
 if TYPE_CHECKING:
     from privatim.models import User
+    T = TypeVar('T', bound='Base')
+    # Define a TypeVar for the commentable entity
 
 
 class Comment(Base, Associable):
@@ -82,6 +84,24 @@ class Comment(Base, Associable):
         uselist=True,
         viewonly=True
     )
+
+    def get_commentable(self) -> 'T | None':
+        """
+        Get the commentable entity associated with this comment.
+        This method works for any commentable entity.
+        For example:
+
+        consultation = comment.get_commentable()
+
+        """
+        session = object_session(self)
+        if session is None:
+            raise ValueError("Comment is not attached to a session")
+
+        for linked_item in self.links:
+            return linked_item
+
+        return None
 
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'

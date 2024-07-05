@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-06-30 17:43+0200\n"
+"POT-Creation-Date: 2024-07-05 16:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,6 +160,10 @@ msgid "Edit Consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
+msgid "Delete Consultation"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr ""
@@ -171,6 +175,10 @@ msgstr ""
 #: ./src/privatim/views/consultations.py
 #: ./src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
+msgid "Successfully deleted consultation."
 msgstr ""
 
 #: ./src/privatim/views/password_change.py
@@ -314,6 +322,11 @@ msgid "Recommendation:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
+#: ./src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
 #: ./src/privatim/forms/consultation_form.py
 msgid "Documents"
 msgstr ""
@@ -321,10 +334,6 @@ msgstr ""
 #: ./src/privatim/views/templates/consultation.pt
 #: ./src/privatim/forms/consultation_form.py
 msgid "Status"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultation.pt
-msgid "Your Comment"
 msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
@@ -539,10 +548,6 @@ msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
 msgid "Cantons"
-msgstr ""
-
-#: ./src/privatim/forms/add_comment.py
-msgid "Add Comment"
 msgstr ""
 
 #: ./src/privatim/forms/add_comment.py

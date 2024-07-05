@@ -20,9 +20,17 @@ def consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
 
-    request.add_action_menu_entry(
-        translate(_('Edit Consultation')),
-        request.route_url('edit_consultation', id=context.id),
+    request.add_action_menu_entries(
+        [
+            (
+                translate(_('Edit Consultation')),
+                request.route_url('edit_consultation', id=context.id),
+            ),
+            (
+                translate(_('Delete Consultation')),
+                request.route_url('delete_consultation', id=context.id),
+            ),
+        ]
     )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     return {
@@ -164,3 +172,15 @@ def add_or_edit_consultation_view(
             else _('Edit Consultation')
         ),
     }
+
+
+def delete_consultation_view(
+    context: Consultation, request: 'IRequest'
+) -> 'RenderDataOrRedirect':
+    session = request.dbsession
+    session.delete(context)
+    target_url = request.route_url('activities')
+    message = _('Successfully deleted consultation.')
+    if not request.is_xhr:
+        request.messages.add(message, 'success')
+    return HTTPFound(location=target_url)

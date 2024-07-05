@@ -19,7 +19,7 @@ from privatim.security_policy import SessionSecurityPolicy
 __version__ = '0.0.0'
 
 
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Iterable
 
 from privatim.views.profile import user_pic_url
 
@@ -87,6 +87,19 @@ def includeme(config: Configurator) -> None:
         'add_action_menu_entry',
         reify=True
     )
+
+    def add_action_menu_entries(
+        request: 'IRequest',
+        entries: Iterable[tuple[str, str]],
+    ) -> None:
+        if not hasattr(request, 'action_menu_entries'):
+            request.action_menu_entries = []
+        for title, url in entries:
+            request.action_menu_entries.append(ActionMenuEntry(title, url))
+
+    config.add_request_method(
+        lambda request: partial(add_action_menu_entries, request),
+        'add_action_menu_entries', reify=True)
 
 
 def main(
