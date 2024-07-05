@@ -29,7 +29,6 @@
                 </div>
 
 
-                <!--? Controls the width of the comments section-->
                 <div class="row">
                     <div class=mt-5></div>
                     <metal:block use-macro="layout.macros['display_comments']"

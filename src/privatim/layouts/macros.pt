@@ -62,7 +62,7 @@
 
 <!-- Render all the comments. -->
 <metal:block define-macro="display_comments">
-    <div tal:condition="comments" tal:repeat="comment_dict comments">
+    <div tal:condition="comments" tal:repeat="comment_dict comments" class="consultation-main-text">
         <div class="card border-0">
             <div class="card-body">
                 <div class="d-flex flex-start align-items-center">
