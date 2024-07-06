@@ -1,10 +1,9 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, cast, literal, String, Select)
+from sqlalchemy import (func, select, literal, Select)
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
-from sqlalchemy import or_
 
 from privatim.models import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
@@ -169,8 +168,9 @@ class SearchCollection:
         )
 
     def build_attribute_query(
-        self, model: type['HasSearchableFields']
+            self, model: type['HasSearchableFields']
     ) -> 'Select[SearchResultType]':
+
         headline_expressions = [
             func.ts_headline(
                 self.lang,
@@ -179,24 +179,66 @@ class SearchCollection:
                 'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
                 'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
                 'FragmentDelimiter=" ... "',
-            ).label(field.name)
+            ).label(field.key)
             for field in model.searchable_fields()
         ]
 
+        combined_vector = self._create_rank_expression(model)
+        rank_expression = func.ts_rank(combined_vector, self.ts_query)
         select_fields = [
             model.id,
             *headline_expressions,
             literal(model.__name__).label('type'),  # noqa: MS001
+            rank_expression.label('rank')
         ]
 
-        return select(*select_fields).filter(
-            or_(
-                *[
-                    func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
-                    for field in model.searchable_fields()
-                ]
-            )
+        return (
+            select(*select_fields)
+            .filter(combined_vector.op('@@')(self.ts_query))
+            .order_by(rank_expression.desc())
         )
+
+    def _create_rank_expression(self, model):
+        """ Weight the search results based on the importance of the field.
+
+        - 1.0 for primary fields (A)
+        - 0.4 for high importance fields (B)
+        - 0.2 for medium importance fields (C)
+        - 0.1 for low importance fields (D)
+
+        See also:
+        https://www.postgresql.org/docs/current/textsearch-controls.html
+        #TEXTSEARCH-RANKING
+
+        Not all search matches hold equal importance. I assume matches in
+        model.title should rank higher in the search results. To achieve
+        this, we'll mark columns decorated with @prioritize_search_field as
+        'A', and all other columns as 'B'. (And we use this decorator approach
+        because the field name is not always literally 'title'.)
+
+        """
+
+        weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
+        # Create weighted vectors using list comprehension
+        weighted_vectors = [
+            func.setweight(
+                func.to_tsvector(self.lang, field),
+                (
+                    weights['primary']
+                    if getattr(field, 'is_primary_search_field', False)
+                    else weights['high']
+                ),
+            )
+            for field in model.searchable_fields()
+        ]
+        # Combine all weighted vectors
+        if weighted_vectors:
+            combined_vector = weighted_vectors[0]
+            for vector in weighted_vectors[1:]:
+                combined_vector = combined_vector.op('||')(vector)
+        else:
+            combined_vector = func.to_tsvector('')
+        return combined_vector,
 
     def _add_comments_to_results(self) -> None:
         """Extends self.results with the complete query for Comment.

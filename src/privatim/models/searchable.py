@@ -1,3 +1,5 @@
+from functools import wraps
+
 from privatim.orm import Base
 
 
@@ -27,3 +29,39 @@ def searchable_models() -> tuple[type['HasSearchableFields'], ...]:
             if issubclass(cls, SearchableMixin):
                 model_classes.add(cls)
     return tuple(model_classes)
+
+
+def prioritize_search_field(f):
+    """
+    Mark as primary search fiel. This priorizites search matches for this
+    column in `SearchCollection.build_attribute_query`.
+
+    This decorator is used to annotate the `searchable_fields` method of a
+    model (typically on it's title), indicating which field should be
+    considered a more important field in search compared to other searchable
+    fields.
+
+    Usage:
+        class YourModel(Base):
+
+            @primary_search_field
+            title: Mapped[str] = mapped_column(nullable=False)
+
+            description: Mapped[str]
+
+            def searchable_fields(self):
+                yield 'title'
+                yield 'description'
+
+    Note:
+        The decorated method ('searchable_fields') should yield
+        all searchable fields, including the primary field. The primary
+        field is weighted more in the search.
+    """
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        column = f(*args, **kwargs)
+        column.is_primary_search_field = True
+        return column
+    return wrapper
