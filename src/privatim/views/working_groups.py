@@ -7,6 +7,8 @@ from privatim.i18n import _, translate
 
 from typing import TYPE_CHECKING
 
+from privatim.utils import maybe_escape
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import (RenderData, RenderDataOrRedirect,
@@ -50,9 +52,10 @@ def add_or_edit_working_group(
                 users.append(leader)
 
             group = WorkingGroup(
-                name=form.name.data or '',
+                name=maybe_escape(form.name.data),
                 leader=leader,
-                users=users
+                users=users,
+                chairman_contact=maybe_escape(form.chairman_contact.data)
             )
             session.add(group)
             message = _(

@@ -27,6 +27,7 @@ def test_view_add_working_group(client):
     assert page.status_code == 200
 
     page.form['name'] = 'Test Group'
+    page.form['chairman_contact'] = 'contact info'
     page.form['members'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
     page = page.form.submit().follow()
     page = page.click("Test Group")

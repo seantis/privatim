@@ -73,13 +73,15 @@ class WorkingGroup(Group):
             name: str,
             leader: 'User | None' = None,
             meetings: list['Meeting'] | None = None,
-            users: list['User'] | None = None
+            users: list['User'] | None = None,
+            chairman_contact: str | None = None
     ):
         self.id = str(uuid.uuid4())
         self.name = name
         self.leader = leader
         self.meetings = meetings if meetings is not None else []
         self.users = users if users is not None else []
+        self.chairman_contact = chairman_contact
 
     __mapper_args__ = {
         'polymorphic_identity': 'working_group',
@@ -100,6 +102,9 @@ class WorkingGroup(Group):
     meetings: Mapped[list['Meeting']] = relationship(
         'Meeting', back_populates='working_group'
     )
+
+    # Kontakt Vorstand
+    chairman_contact: Mapped[str | None] = mapped_column(nullable=True)
 
     def __acl__(self) -> list['ACL']:
         return [
