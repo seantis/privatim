@@ -52,12 +52,21 @@ class ConsultationForm(Form):
         ]
         self.status.choices = translated_choices
 
-    title = StringField(
+    title = TextAreaField(
         _('Title'),
         validators=[DataRequired()],
     )
-    description = TextAreaField(_('Description'))
-    recommendation = StringField(_('Recommendation'))
+
+    description = TextAreaField(
+        _('Description'),
+        render_kw={'rows': 8},
+    )
+
+    recommendation = TextAreaField(
+        _('Recommendation'),
+        render_kw={'rows': 5},
+    )
+
     status = SelectField(
         _('Status'),
         choices=[]
