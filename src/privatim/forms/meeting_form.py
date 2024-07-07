@@ -51,7 +51,7 @@ class MeetingForm(Form):
     )
 
     attendees = SearchableSelectField(
-        _('Attendees'),
+        _('Members'),
         validators=[InputRequired()],
     )
 
