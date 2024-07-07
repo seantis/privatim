@@ -8,11 +8,13 @@ from io import BytesIO
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
+from sqlalchemy.orm import DeclarativeBase
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload
+from typing import Any, TYPE_CHECKING, overload, TypeVar
+
 if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
@@ -29,6 +31,8 @@ if TYPE_CHECKING:
         comment: 'Comment'
         children: list['ChildCommentDict']
         picture: str
+
+    T = TypeVar('T', bound=DeclarativeBase)
 
 
 def datetime_format(

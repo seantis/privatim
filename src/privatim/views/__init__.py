@@ -13,10 +13,9 @@ from privatim.views.activities import activities_view
 from privatim.views.agenda_items import add_agenda_item_view
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
-from privatim.views.consultations import (
-    add_or_edit_consultation_view,
-    delete_consultation_view,
-)
+from privatim.views.consultations import (delete_consultation_view,
+                                          add_consultation_view,
+                                          edit_consultation_view)
 from privatim.views.consultations import consultation_view
 from privatim.views.consultations import consultations_view
 from privatim.views.general_file import (
@@ -91,13 +90,13 @@ def includeme(config: 'Configurator') -> None:
         factory=consultation_factory
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        add_consultation_view,
         route_name='add_consultation',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        add_consultation_view,
         route_name='add_consultation',
         renderer='json',
         request_method='POST',
@@ -110,13 +109,13 @@ def includeme(config: 'Configurator') -> None:
         factory=consultation_factory
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        edit_consultation_view,
         route_name='edit_consultation',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        edit_consultation_view,
         route_name='edit_consultation',
         renderer='json',
         request_method='POST',

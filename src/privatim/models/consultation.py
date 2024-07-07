@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from sedate import utcnow
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -80,21 +80,32 @@ class Consultation(Base, Commentable, AssociatedFiles):
         description: str,
         recommendation: str,
         creator: 'User',
+        editor: 'User | None' = None,
         status: Status | None = None,
         secondary_tags: list[Tag] | None = None,
-        files: list['GeneralFile'] | None = None
+        files: list['GeneralFile'] | None = None,
+        replaced_by: 'Consultation | None' = None,
+        previous_version: 'Consultation | None' = None,
+        is_latest_version: int = 1
     ):
         self.id = str(uuid.uuid4())
         self.title = title
         self.description = description
         self.recommendation = recommendation
+        self.creator = creator
+
+        assert is_latest_version in (0, 1)
         if status is not None:
             self.status = status
         if secondary_tags is not None:
             self.secondary_tags = secondary_tags
-        self.creator = creator
         if files is not None:
             self.files = files
+
+        self.editor = editor
+        self.replaced_by = replaced_by
+        self.previous_version = previous_version
+        self.is_latest_version = is_latest_version
 
     id: Mapped[UUIDStrPK]
 
@@ -109,19 +120,49 @@ class Consultation(Base, Commentable, AssociatedFiles):
     )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
+    updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     secondary_tags: Mapped[list[Tag]] = relationship(
         'Tag', back_populates='consultation',
     )
 
-    creator: Mapped['User | None'] = relationship(
-        'User',
-        back_populates='consultations',
-    )
     # in theory this could be nullable=False, but let's avoid problems with
     # user deletion
     creator_id: Mapped[UUIDStrType] = mapped_column(
         ForeignKey('users.id'), nullable=True
+    )
+    creator: Mapped['User | None'] = relationship(
+        'User',
+        back_populates='consultations',
+        foreign_keys=[creator_id]
+    )
+
+    editor: Mapped['User | None'] = relationship(
+        'User',
+        foreign_keys='Consultation.editor_id'
+    )
+    editor_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('users.id'), nullable=True
+    )
+
+    replaced_by: Mapped['Consultation | None'] = relationship(
+        'Consultation',
+        back_populates='previous_version',
+        foreign_keys='Consultation.replaced_consultation_id',
+        remote_side='Consultation.id'
+    )
+    replaced_consultation_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('consultations.id'), nullable=True
+    )
+    previous_version: Mapped['Consultation | None'] = relationship(
+        'Consultation',
+        back_populates='replaced_by',
+        foreign_keys=[replaced_consultation_id]
+    )
+
+    # 0 indicates it's not the latest.
+    is_latest_version: Mapped[int] = mapped_column(
+        Integer, default=1, index=True,
     )
 
     def __acl__(self) -> list['ACL']:
