@@ -2,7 +2,6 @@ from sqlalchemy import select
 
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
-from wtforms import StringField
 from wtforms.fields.choices import SelectField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
@@ -57,14 +56,28 @@ class ConsultationForm(Form):
         validators=[DataRequired()],
     )
 
+    # Beschreibung
     description = TextAreaField(
         _('Description'),
-        render_kw={'rows': 8},
+        render_kw={'rows': 6},
     )
-
+    # Empfehlung
     recommendation = TextAreaField(
         _('Recommendation'),
-        render_kw={'rows': 5},
+        render_kw={'rows': 6},
+    )
+
+    # new Prüfergebnis
+    evaluation_result = TextAreaField(
+        _('Evaluation Result'),
+        render_kw={'rows': 6},
+    )
+
+    # todo: finish field mapping
+    # new: Beschluss
+    decision = TextAreaField(
+        _('Decision'),
+        render_kw={'rows': 6},
     )
 
     status = SelectField(

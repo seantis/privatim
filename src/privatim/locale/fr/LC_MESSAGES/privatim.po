@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-05 16:02+0200\n"
+"POT-Creation-Date: 2024-07-08 10:51+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -104,28 +104,29 @@ msgid "Successfully deleted file \"${title}\""
 msgstr "Fichier supprimé avec succès \"${titre}\""
 
 #: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Imprimer le protocole"
+msgid "Edit Meeting"
+msgstr "Modifier la réunion"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
 msgstr "Supprimer la réunion"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Imprimer le protocole"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traiter un point de l'ordre du jour"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Participants"
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Membres"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
 msgstr "Des détails"
-
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Modifier la réunion"
 
 #: src/privatim/views/meetings.py
 msgid "Delete"
@@ -168,13 +169,13 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
-msgid "Successfully edited consultation."
-msgstr "Consultation modifiée avec succès."
-
-#: src/privatim/views/consultations.py
 #: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
+
+#: src/privatim/views/consultations.py
+msgid "Successfully edited consultation."
+msgstr "Consultation modifiée avec succès."
 
 #: src/privatim/views/consultations.py
 msgid "Successfully deleted consultation."
@@ -556,6 +557,14 @@ msgid "Recommendation"
 msgstr "Recommandation"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Evaluation Result"
+msgstr "Résultat de l'évaluation"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Decision"
+msgstr "Décision"
+
+#: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Les cantons"
 
@@ -605,8 +614,8 @@ msgid "No Leader"
 msgstr "Pas de chef"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Membres"
+msgid "Contact Chairman"
+msgstr "Contact conseil d'administration"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

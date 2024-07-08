@@ -80,18 +80,22 @@ class Consultation(Base, Commentable, AssociatedFiles):
         description: str,
         recommendation: str,
         creator: 'User',
+        evaluation_result: str,
+        decision: str,
         editor: 'User | None' = None,
         status: Status | None = None,
         secondary_tags: list[Tag] | None = None,
         files: list['GeneralFile'] | None = None,
         replaced_by: 'Consultation | None' = None,
         previous_version: 'Consultation | None' = None,
-        is_latest_version: int = 1
+        is_latest_version: int = 1,
     ):
         self.id = str(uuid.uuid4())
         self.title = title
         self.description = description
         self.recommendation = recommendation
+        self.evaluation_result = evaluation_result
+        self.decision = decision
         self.creator = creator
 
         assert is_latest_version in (0, 1)
@@ -108,12 +112,11 @@ class Consultation(Base, Commentable, AssociatedFiles):
         self.is_latest_version = is_latest_version
 
     id: Mapped[UUIDStrPK]
-
     title: Mapped[str] = mapped_column(nullable=False)
-
-    description: Mapped[str]
-
-    recommendation: Mapped[str]
+    description: Mapped[str | None] = mapped_column(nullable=True)
+    recommendation: Mapped[str | None] = mapped_column(nullable=True)
+    evaluation_result: Mapped[str | None] = mapped_column(nullable=True)
+    decision: Mapped[str | None] = mapped_column(nullable=True)
 
     status: Mapped[Status | None] = relationship(
         'Status', back_populates='consultations',
@@ -160,7 +163,9 @@ class Consultation(Base, Commentable, AssociatedFiles):
         foreign_keys=[replaced_consultation_id]
     )
 
-    # 0 indicates it's not the latest.
+    # Querying the latest version is undoubtedly a common operation.
+    # So let's make it fast for the small price of a bit redundancy.
+    # '1' means latest / '0' means not the latest
     is_latest_version: Mapped[int] = mapped_column(
         Integer, default=1, index=True,
     )

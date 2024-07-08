@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-05 16:02+0200\n"
+"POT-Creation-Date: 2024-07-08 10:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,11 +104,15 @@ msgid "Successfully deleted file \"${title}\""
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
-msgid "Export meeting protocol"
+msgid "Edit Meeting"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete Meeting"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Export meeting protocol"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
@@ -116,15 +120,12 @@ msgid "Edit Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
-msgid "Attendees"
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Members"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Details"
-msgstr ""
-
-#: ./src/privatim/views/meetings.py
-msgid "Edit Meeting"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -169,12 +170,12 @@ msgid "Successfully added consultation \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-msgid "Successfully edited consultation."
+#: ./src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#: ./src/privatim/views/templates/activities.pt
-msgid "Add Consultation"
+msgid "Successfully edited consultation."
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -547,6 +548,14 @@ msgid "Recommendation"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
+msgid "Evaluation Result"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
+msgid "Decision"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr ""
 
@@ -596,7 +605,7 @@ msgid "No Leader"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
-msgid "Members"
+msgid "Contact Chairman"
 msgstr ""
 
 #: ./src/privatim/forms/widgets/widgets.py

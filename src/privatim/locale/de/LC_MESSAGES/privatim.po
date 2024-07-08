@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-05 16:02+0200\n"
+"POT-Creation-Date: 2024-07-08 10:51+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -107,28 +107,29 @@ msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
 #: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Protokoll drucken"
+msgid "Edit Meeting"
+msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
 msgstr "Sitzung löschen"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Protokoll drucken"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traktandum bearbeiten"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Teilnehmende"
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
 msgstr "Details"
-
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete"
@@ -171,13 +172,13 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
 
 #: src/privatim/views/consultations.py
-msgid "Successfully edited consultation."
-msgstr "Vernehmlassung erfolgreich bearbeitet."
-
-#: src/privatim/views/consultations.py
 #: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung Erfassen"
+
+#: src/privatim/views/consultations.py
+msgid "Successfully edited consultation."
+msgstr "Vernehmlassung erfolgreich bearbeitet."
 
 #: src/privatim/views/consultations.py
 msgid "Successfully deleted consultation."
@@ -557,6 +558,14 @@ msgid "Recommendation"
 msgstr "Empfehlung"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Evaluation Result"
+msgstr "Prüfergebnis"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Decision"
+msgstr "Beschluss"
+
+#: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Kantone"
 
@@ -608,8 +617,8 @@ msgid "No Leader"
 msgstr "Kein Leiter"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Mitglieder"
+msgid "Contact Chairman"
+msgstr ""
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
@@ -643,6 +652,3 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "Do you really wish to delete \"${item_title}\"?"
-#~ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"

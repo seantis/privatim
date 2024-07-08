@@ -108,9 +108,11 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
         # Create a new Consultation instance
         new_consultation = Consultation(
-            title=form.title.data,
-            description=form.description.data,
-            recommendation=form.recommendation.data,
+            title=maybe_escape(form.title.data),
+            description=maybe_escape(form.description.data),
+            recommendation=maybe_escape(form.recommendation.data),
+            evaluation_result=maybe_escape(form.evaluation_result.data),
+            decision=maybe_escape(form.decision.data),
             status=status,
             secondary_tags=tags,
             creator=user,
@@ -128,10 +130,6 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         session.add(new_consultation)
         session.flush()
 
-        # target_url = request.route_url(
-        #     'consultation',
-        #     id=str(new_consultation.id),
-        # )
         message = _(
             'Successfully added consultation "${name}"',
             mapping={'name': form.title.data}

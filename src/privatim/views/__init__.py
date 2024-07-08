@@ -248,7 +248,7 @@ def includeme(config: 'Configurator') -> None:
     # Add meeting per working_group
     config.add_route(
         'edit_meeting',
-        '/meetings/{meeting_id}/edit',
+        '/meetings/{id}/edit',
         factory=meeting_factory
     )
     config.add_view(
