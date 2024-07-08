@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 10:51+0200\n"
+"POT-Creation-Date: 2024-07-08 16:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,8 +146,7 @@ msgid "Successfully added meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
-#, python-format
-msgid "Successfully edited meeting \"${name}\""
+msgid "Successfully edited meeting."
 msgstr ""
 
 #: ./src/privatim/views/meetings.py

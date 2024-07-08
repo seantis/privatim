@@ -56,13 +56,14 @@ class MeetingForm(Form):
     )
 
     def validate_name(self, field: 'Field') -> None:
-        session = self.meta.dbsession
-        stmt = select(Meeting).where(Meeting.name == field.data)
-        meeting = session.execute(stmt).scalar()
-        if meeting:
-            raise validators.ValidationError(_(
-                'A meeting with this name already exists.'
-            ))
+        if self._title == _('Add Meeting'):
+            session = self.meta.dbsession
+            stmt = select(Meeting).where(Meeting.name == field.data)
+            meeting = session.execute(stmt).scalar()
+            if meeting:
+                raise validators.ValidationError(_(
+                    'A meeting with this name already exists.'
+                ))
 
     def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
         for name, field in self._fields.items():

@@ -8,7 +8,7 @@ from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
 from wtforms.fields import FieldList
-from wtforms.fields.choices import SelectField
+from wtforms.fields.choices import SelectMultipleField
 from wtforms.fields.simple import FileField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
@@ -157,17 +157,51 @@ class TimezoneDateTimeField(DateTimeLocalField):
             self.data = sedate.replace_timezone(self.data, self.timezone)
 
 
-class SearchableSelectField(SelectField):
-    """A multiple select field with tom-select.js support.
+class SearchableSelectField(SelectMultipleField):
 
-    Note: you need to call form.raw_data() to actually get the choices as list
-    """
+    """A multiple select field with tom-select.js support. """
+
+    widget = ChosenSelectWidget(multiple=True)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         init_tom_select.need()
         return super().__call__(*args, **kwargs)
 
-    widget = ChosenSelectWidget(multiple=True)
+    def process_data(self, value: list[object]) -> None:
+        if value:
+            self.data = [
+                str(v.id) if hasattr(v, 'id') else str(v) for v in value
+            ]
+
+
+# class SearchableSelectField(SelectMultipleField):
+#
+#     Note: you need to call form.raw_data() to actually get the choices as list
+#     """
+#
+#     def __call__(self, *args: Any, **kwargs: Any) -> Any:
+#         init_tom_select.need()
+#         return super().__call__(*args, **kwargs)
+#
+#     def process_formdata(self, valuelist: list[str]) -> None:
+#         if valuelist:
+#             breakpoint()
+#             self.data = valuelist
+#
+#     def process_data(self, value: list[Any]) -> None:
+#         breakpoint()
+#         if value:
+#             self.data = [str(v.id) if hasattr(v, 'id') else str(v) for v in value]
+#
+#     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+#         super().process_formdata(valuelist)
+#         if valuelist:
+#             self.data = valuelist
+#             # uuids_of_users = valuelist
+#             # stmt = select(User).where(User.id.in_(uuids_of_users))
+#             # users = self.meta.dbsession.execute(stmt)
+#
+#     widget = ChosenSelectWidget(multiple=True)
 
 
 class UploadField(FileField):

@@ -217,7 +217,6 @@ def edit_consultation_view(
 
         session.add(new_consultation)
         session.flush()
-
         message = _('Successfully edited consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')

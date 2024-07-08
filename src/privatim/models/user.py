@@ -148,3 +148,6 @@ class User(Base):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+    def __repr__(self) -> str:
+        return f'<User {self.fullname}>'

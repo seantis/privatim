@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 10:51+0200\n"
+"POT-Creation-Date: 2024-07-08 16:36+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -146,9 +146,8 @@ msgid "Successfully added meeting \"${name}\""
 msgstr "Ajout réussi de la réunion \"${nom}\""
 
 #: src/privatim/views/meetings.py
-#, python-format
-msgid "Successfully edited meeting \"${name}\""
-msgstr "Réunion modifiée avec succès \"${nom}\""
+msgid "Successfully edited meeting."
+msgstr ""
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -649,3 +648,7 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#, python-format
+#~ msgid "Successfully edited meeting \"${name}\""
+#~ msgstr "Réunion modifiée avec succès \"${nom}\""

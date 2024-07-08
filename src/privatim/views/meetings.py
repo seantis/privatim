@@ -41,13 +41,21 @@ def meeting_view(
     assert isinstance(context, Meeting)
     formatted_time = datetime_format(context.time)
 
-    request.add_action_menu_entry(
-        translate(_('Export meeting protocol')),
-        request.route_url('export_meeting_as_pdf_view', id=context.id),
-    )
-    request.add_action_menu_entry(
-        translate(_('Delete Meeting')),
-        request.route_url('delete_meeting', id=context.id),
+    request.add_action_menu_entries(
+        [
+            (
+                translate(_('Edit Meeting')),
+                request.route_url('edit_meeting', id=context.id),
+            ),
+            (
+                translate(_('Delete Meeting')),
+                request.route_url('delete_meeting', id=context.id),
+            ),
+            (
+                translate(_('Export meeting protocol')),
+                request.route_url('export_meeting_as_pdf_view', id=context.id),
+            ),
+        ]
     )
 
     # should already be sorted, (by 'order_by')
@@ -226,7 +234,7 @@ def add_meeting_view(
         assert form.time.data is not None
         time = fix_utc_to_local_time(form.time.data)
         meeting = Meeting(
-            name=form.name.data,
+            name=maybe_escape(form.name.data),
             time=time,
             attendees=attendees,
             working_group=context
@@ -258,43 +266,40 @@ def add_meeting_view(
 
 
 def edit_meeting_view(
-        context: Meeting,
+        meeting: Meeting,
         request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
 
-    target_url = request.route_url('meetings', id=context.id)
-    form = MeetingForm(context, request)
+    assert isinstance(meeting, Meeting)
+
+    target_url = request.route_url('meeting', id=meeting.id)
+    form = MeetingForm(meeting, request)
     session = request.dbsession
-    meeting = context
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(meeting)
-        if request.is_xhr:
-            data = {
-                'name': maybe_escape(meeting.name),
-                # 'time': maybe_escape(meeting.time),
-            }
-            session.flush()
-            session.refresh(meeting)
-            data['DT_RowId'] = f'row-{meeting.id}'
+        form.populate_obj(meeting)  # called automatically?
+        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
+        attendees = list(session.execute(stmt).scalars().all())
+        assert form.time.data is not None
+        meeting.name = maybe_escape(meeting.name)
+        meeting.attendees = attendees
+        meeting.time = fix_utc_to_local_time(form.time.data)
 
-            data['buttons'] = Markup(' ').join(
-                meeting_buttons(meeting, request)
-            )
+        session.add(meeting)
+        session.flush()
+        message = _('Successfully edited meeting.')
+        if not request.is_xhr:
+            request.messages.add(message, 'success')
+        return HTTPFound(location=target_url)
 
-            message = _('Successfully edited meeting "${name}"',
-                        mapping={'name': form.name.data})
-            data['message'] = translate(message, request.locale_name)
-            return data
-        else:
-            return HTTPFound(location=target_url)
-    if request.is_xhr:
-        return {'errors': form.errors}
-    else:
-        return {
-            'form': form,
-            'target_url': target_url,
-            'csrf_token': request.session.get_csrf_token()}
+    elif not request.POST:
+        form.process(obj=meeting)
+
+    return {
+        'form': form,
+        'target_url': target_url,
+        'title': form._title,
+    }
 
 
 def delete_meeting_view(
