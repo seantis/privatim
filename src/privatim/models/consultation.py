@@ -67,6 +67,9 @@ class Tag(Base):
         nullable=True
     )
 
+    def __repr__(self) -> str:
+        return f'<Tag {self.name}>'
+
 
 class Consultation(Base, Commentable, AssociatedFiles):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen

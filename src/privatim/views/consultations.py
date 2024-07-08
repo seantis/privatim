@@ -99,8 +99,8 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         else:
             status = None
 
-        if form.cantons.data:
-            tags = [Tag(name=n) for n in form.cantons.raw_data]
+        if form.secondary_tags.data:
+            tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
             session.add_all(tags)
             session.flush()
         else:
@@ -161,7 +161,7 @@ def create_consultation_from_form(
     session.flush()
     session.refresh(status)
 
-    tags = [Tag(name=n) for n in form.cantons.raw_data]
+    tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
     session.add_all(tags)
     session.flush()
 
@@ -201,13 +201,14 @@ def create_consultation_from_form(
 
 
 def edit_consultation_view(
-    context: Consultation, request: 'IRequest'
+    previous_consultation: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
-    previous_consultation = context
+
     form = ConsultationForm(previous_consultation, request)
 
     target_url = request.route_url('activities')  # fallback
     if request.method == 'POST' and form.validate():
+        form.populate_obj(previous_consultation)
         session = request.dbsession
         new_consultation = create_consultation_from_form(
             form, request, previous_consultation
@@ -226,7 +227,7 @@ def edit_consultation_view(
             )
         )
     elif not request.POST:
-        form.process(obj=context)
+        form.process(obj=previous_consultation)
 
     return {
         'form': form,

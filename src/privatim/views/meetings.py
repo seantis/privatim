@@ -277,12 +277,11 @@ def edit_meeting_view(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(meeting)  # called automatically?
-        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
-        attendees = list(session.execute(stmt).scalars().all())
+        form.populate_obj(meeting)
         assert form.time.data is not None
         meeting.name = maybe_escape(meeting.name)
-        meeting.attendees = attendees
+        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
+        meeting.attendees = list(session.execute(stmt).scalars().all())
         meeting.time = fix_utc_to_local_time(form.time.data)
 
         session.add(meeting)

@@ -66,7 +66,7 @@ def test_view_add_consultation(client):
     page.form['evaluation_result'] = 'the evaluation result'
     page.form['decision'] = 'the decision'
     page.form['status'] = '1'
-    page.form['cantons'] = ['AG', 'ZH']
+    page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
@@ -125,7 +125,7 @@ def test_view_edit_consultation(client):
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
-    page.form['cantons'] = ['AG', 'ZH']
+    page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
@@ -144,7 +144,7 @@ def test_view_edit_consultation(client):
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
     page.form['status'] = '2'
-    page.form['cantons'] = ['BE', 'LU']
+    page.form['secondary_tags'] = ['BE', 'LU']
 
     # this is the 'Weitere Dokumente hochladen form'
     # which does not work as intended
