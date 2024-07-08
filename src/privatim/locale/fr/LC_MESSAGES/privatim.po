@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 16:36+0200\n"
+"POT-Creation-Date: 2024-07-08 20:31+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -112,6 +112,10 @@ msgid "Delete Meeting"
 msgstr "Supprimer la réunion"
 
 #: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Copier les éléments de l'ordre du jour"
+
+#: src/privatim/views/meetings.py
 msgid "Export meeting protocol"
 msgstr "Imprimer le protocole"
 
@@ -147,7 +151,7 @@ msgstr "Ajout réussi de la réunion \"${nom}\""
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
-msgstr ""
+msgstr "Réunion modifiée avec succès."
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -255,6 +259,11 @@ msgstr "Élément de l'ordre du jour modifié avec succès \"${titre}\""
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr "Élément de l'ordre du jour supprimé avec succès \"${titre}\""
+
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr "Élément de l'ordre du jour copié avec succès \"${nom}\""
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -604,6 +613,18 @@ msgstr "Date / heure"
 msgid "A meeting with this name already exists."
 msgstr "Une réunion avec ce nom existe déjà."
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr "Sélectionnez la destination pour l'élément de l'ordre du jour"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr "Aucune réunion de destination valide disponible."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr "Copier vers"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Groupe de travail sur l'édition"
@@ -648,7 +669,3 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#, python-format
-#~ msgid "Successfully edited meeting \"${name}\""
-#~ msgstr "Réunion modifiée avec succès \"${nom}\""

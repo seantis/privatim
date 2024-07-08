@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 16:36+0200\n"
+"POT-Creation-Date: 2024-07-08 20:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,6 +109,10 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete Meeting"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -247,6 +251,11 @@ msgstr ""
 #: ./src/privatim/views/agenda_items.py
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
+msgstr ""
+
+#: ./src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/password_retrieval.py
@@ -593,6 +602,18 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py

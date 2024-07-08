@@ -52,6 +52,10 @@ def meeting_view(
                 request.route_url('delete_meeting', id=context.id),
             ),
             (
+                translate(_('Copy Agenda Items')),
+                request.route_url('copy_agenda_item', id=context.id),
+            ),
+            (
                 translate(_('Export meeting protocol')),
                 request.route_url('export_meeting_as_pdf_view', id=context.id),
             ),

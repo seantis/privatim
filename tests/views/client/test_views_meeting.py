@@ -8,7 +8,11 @@ from privatim.utils import fix_utc_to_local_time
 def test_view_edit_meeting(client):
     users = [
         User(email='max@example.org', first_name='Max', last_name='Müller'),
-        User(email='alexa@example.org', first_name='Alexa', last_name='Troller'),
+        User(
+            email='alexa@example.org',
+            first_name='Alexa',
+            last_name='Troller',
+        ),
         User(email='kurt@example.org', first_name='Kurt', last_name='Huber'),
     ]
     for user in users:
@@ -64,3 +68,24 @@ def test_view_edit_meeting(client):
     assert 'Updated Meeting' in page
     assert 'Kurt Huber' in page
     assert 'Max Müller' in page
+
+    # copy Agenda Items
+    # need to first create another meeting to copy to
+    meeting_time = fix_utc_to_local_time(utcnow())
+    dest_meeting = Meeting(
+        name='Destination Meeting',
+        time=meeting_time,
+        attendees=users[:2],
+        working_group=working_group,
+    )
+    client.db.add(dest_meeting)
+    client.db.flush()
+
+    page = client.get(f'/meetings/{meeting.id}/add')
+    page.form['title'] = 'my title'
+    page.form['description'] = 'description'
+    page = page.form.submit().follow()
+
+    page = client.get(f'/meetings/{meeting.id}/copy_agenda_item')
+    page.form['copy_to'] = page.form['copy_to'].options[0][0]
+    page.form.submit().follow()

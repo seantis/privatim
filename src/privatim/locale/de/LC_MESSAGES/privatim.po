@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 16:36+0200\n"
+"POT-Creation-Date: 2024-07-08 20:31+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -115,6 +115,10 @@ msgid "Delete Meeting"
 msgstr "Sitzung löschen"
 
 #: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Traktanden kopieren"
+
+#: src/privatim/views/meetings.py
 msgid "Export meeting protocol"
 msgstr "Protokoll drucken"
 
@@ -150,7 +154,7 @@ msgstr "Sitzung \"${name}\" hinzugefügt"
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
-msgstr ""
+msgstr "Sitzung erfolgreich bearbeitet."
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -256,6 +260,11 @@ msgstr "Traktandum \"${title}\" erfolgreich bearbeitet"
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr "Traktandum \"${title}\" erfolgreich gelöscht"
+
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr "Traktandum \"${name}\" erfolgreich kopiert"
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -607,6 +616,18 @@ msgstr "Datum / Uhrzeit"
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr "Ziel für Traktanden auswählen"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr "Es sind keine weiteren Sitzungen verfügbar, in die das Traktandum kopiert werden kann."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr "Kopieren nach"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Gremium bearbeiten"
@@ -617,7 +638,7 @@ msgstr "Kein Leiter"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
-msgstr ""
+msgstr "Kontakt Vorstand"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

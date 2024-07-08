@@ -10,7 +10,8 @@ from privatim.route_factories import meeting_factory
 from privatim.route_factories import person_factory
 from privatim.route_factories import working_group_factory
 from privatim.views.activities import activities_view
-from privatim.views.agenda_items import add_agenda_item_view
+from privatim.views.agenda_items import add_agenda_item_view, \
+    copy_agenda_item_view
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
 from privatim.views.consultations import (delete_consultation_view,
@@ -349,6 +350,25 @@ def includeme(config: 'Configurator') -> None:
         route_name='delete_agenda_item',
         renderer='json',
         request_method='DELETE',
+        xhr=True
+    )
+
+    config.add_route(
+        'copy_agenda_item',
+        '/meetings/{id}/copy_agenda_item',
+        factory=meeting_factory
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='json',
+        request_method='POST',
         xhr=True
     )
 
