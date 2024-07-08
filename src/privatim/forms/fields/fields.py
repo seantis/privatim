@@ -174,36 +174,6 @@ class SearchableSelectField(SelectMultipleField):
             ]
 
 
-# class SearchableSelectField(SelectMultipleField):
-#
-#     Note: you need to call form.raw_data() to actually get the choices as list
-#     """
-#
-#     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-#         init_tom_select.need()
-#         return super().__call__(*args, **kwargs)
-#
-#     def process_formdata(self, valuelist: list[str]) -> None:
-#         if valuelist:
-#             breakpoint()
-#             self.data = valuelist
-#
-#     def process_data(self, value: list[Any]) -> None:
-#         breakpoint()
-#         if value:
-#             self.data = [str(v.id) if hasattr(v, 'id') else str(v) for v in value]
-#
-#     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
-#         super().process_formdata(valuelist)
-#         if valuelist:
-#             self.data = valuelist
-#             # uuids_of_users = valuelist
-#             # stmt = select(User).where(User.id.in_(uuids_of_users))
-#             # users = self.meta.dbsession.execute(stmt)
-#
-#     widget = ChosenSelectWidget(multiple=True)
-
-
 class UploadField(FileField):
     """A custom file field that turns the uploaded file into a compressed
     base64 string together with the filename, size and mimetype.
