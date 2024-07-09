@@ -80,17 +80,3 @@ if TYPE_CHECKING:
 
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
-
-    class SearchableAssociatedFiles(Protocol):
-        # files: Mapped[list[SearchableFile]]
-
-        @declared_attr
-        def searchable_text_de_CH(cls) -> Mapped[TSVECTOR]:
-            ...
-
-        @declared_attr
-        def __table_args__(cls) -> tuple[Index, ...]:
-            ...
-
-        def reindex_files(self) -> None:
-            ...

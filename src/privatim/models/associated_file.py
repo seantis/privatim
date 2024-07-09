@@ -47,8 +47,7 @@ class SearchableAssociatedFiles:
             nullable=True
         )
 
-    # fixme: tricky to get typing right here.
-    @declared_attr
+    @declared_attr  # type: ignore[misc]
     def __table_args__(cls) -> tuple[Index, ...]:
         return (
             Index(

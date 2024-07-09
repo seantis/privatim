@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 
 class SearchableMixin:
-    if TYPE_CHECKING:
-        id: UUIDStrPK
+    # if TYPE_CHECKING:
+    #     id: UUIDStrPK
 
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
