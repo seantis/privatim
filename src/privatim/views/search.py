@@ -1,10 +1,10 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, literal, Select)
+from sqlalchemy import (func, select, literal, Select, or_, Function,
+                        BinaryExpression)
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
-from sqlalchemy import or_
 
 from privatim.models import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
@@ -13,11 +13,15 @@ from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 
 
-from typing import (TYPE_CHECKING, NamedTuple, TypedDict)
+from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, cast, TypeVar,
+                    Union)
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
     from privatim.types import RenderDataOrRedirect
+
+
+T = TypeVar('T', bound=Union[BinaryExpression[Any], Function[Any]])
 
 
 class SearchResult(NamedTuple):
@@ -54,9 +58,18 @@ class FileSearchResultType(TypedDict):
 
 class SearchCollection:
 
-    """ Provides PostgreSQL full text search ingegration.
+    """Integrates PostgreSQL full-text search. Models can derive from
+    `SearchableMixin` and implement `searchable_fields` for column searches.
+    Additionally, models may use `SearchableAssociatedFiles` to search in
+    their files.
 
-    We use websearch_to_tsquery, which automatically converts the search term
+
+    Key features:
+    - Supports searching in both model attributes and associated files
+    - Generates highlighted snippets (headlines) of matching text
+    - Implements a weighted ranking system for search result relevance.
+    However, by default all model attributes are of equal weight.
+    - We use websearch_to_tsquery, which automatically converts the search term
     into a tsquery.
 
     | term | tsquery |
@@ -64,7 +77,11 @@ class SearchCollection:
     | the donkey | 'donkey' |
     | "blue donkey" | 'blue' & 'donkey' |
 
-    See also:
+    This supports common, well-known search syntax used by many popular
+    search engines. For instance, you can use double quotes to search for an
+    exact phrase. Or negate a term with a minus sign.
+
+    See also this blog:
     https://adamj.eu/tech/2024/01/03/postgresql-full-text-search-websearch/
 
     """
@@ -181,22 +198,65 @@ class SearchCollection:
                 'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
                 'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
                 'FragmentDelimiter=" ... "',
-            ).label(field.name)
+            ).label(field.key)
             for field in model.searchable_fields()
         )
 
-        return select(
-            model.id,
-            *headline_expressions,
-            literal(model.__name__).label('type')  # noqa: MS001
-        ).filter(
-            or_(
-                *(
-                    func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
-                    for field in model.searchable_fields()
-                )
+        combined_vector: Any = self._create_rank_expression(model)
+        rank_expression = func.ts_rank(combined_vector, self.ts_query)
+
+        return (
+            select(
+                model.id,
+                *headline_expressions,
+                literal(model.__name__).label('type'),  # noqa: MS001
+                rank_expression.label('rank')
+            ).filter(
+                combined_vector.op('@@')(self.ts_query)
             )
+            .order_by(rank_expression.desc())
         )
+
+    def _create_rank_expression(
+        self, model: type[SearchableMixin]
+    ) -> Union[BinaryExpression[T], Function[T]]:
+        """Weight the search results based on the importance of the field.
+
+        - 1.0 for primary fields (A)
+        - 0.4 for high importance fields (B)
+        - 0.2 for medium importance fields (C)
+        - 0.1 for low importance fields (D)
+
+        Higher weights make matching terms in those fields contribute more to
+        the overall rank. By default, all fields are treated equally as high
+        importance (B).
+
+        See also:
+        https://www.postgresql.org/docs/current/textsearch-controls.html
+        #TEXTSEARCH-RANKING
+
+        """
+        weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
+        weighted_vectors: list[Function[Any]] = [
+            func.setweight(
+                func.to_tsvector(self.lang, field),
+                (
+                    weights['primary']
+                    if model.is_primary_search_field(field)
+                    else weights['high']
+                ),
+            )
+            for field in model.searchable_fields()
+        ]
+        if weighted_vectors:
+            _combined_vector: Union[BinaryExpression[T], Function[T]] = (
+                weighted_vectors[0]
+            )
+            for vector in weighted_vectors[1:]:
+                _combined_vector = _combined_vector.op('||')(vector)
+            return _combined_vector
+        else:
+            return func.to_tsvector('')
 
     def _add_comments_to_results(self) -> None:
         """Extends self.results with the complete query for Comment.
@@ -226,7 +286,6 @@ class SearchCollection:
         for res in self.results:
             output += f'type: {res.type}\n'
             output += f'id: {res.id}\n'
-
         return output
 
 

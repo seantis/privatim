@@ -4,6 +4,7 @@ from io import BytesIO
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
+from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -89,3 +90,14 @@ class SearchableAssociatedFiles:
                 f'searchable_text_{locale}',
                 func.to_tsvector(locales[locale], text),
             )
+
+    @observes('files')
+    def files_observer(self) -> None:
+        """
+        Observer method for the 'files' relationship.
+        While potentially inefficient for large collections, it's typically
+        fine as the number of files is expected to be small (1-5). Consider
+        optimizing if performance issues arise.
+        """
+
+        self.reindex_files()

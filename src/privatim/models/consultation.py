@@ -8,7 +8,7 @@ from pyramid.authorization import Authenticated
 
 from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
-from privatim.models.searchable import SearchableMixin
+from privatim.models.searchable import SearchableMixin, prioritize_search_field
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
@@ -130,6 +130,7 @@ class Consultation(
     )
 
     @classmethod
+    @prioritize_search_field('title')
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.title
         yield cls.description
