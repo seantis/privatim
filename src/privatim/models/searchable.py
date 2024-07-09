@@ -6,12 +6,12 @@ from typing import Iterator, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from privatim.orm.meta import UUIDStrPK
-    from sqlalchemy.orm import InstrumentedAttribute
+    from sqlalchemy.orm import InstrumentedAttribute, Mapped
 
 
 class SearchableMixin:
-    # if TYPE_CHECKING:
-    #     id: UUIDStrPK
+    if TYPE_CHECKING:
+        id: Mapped[UUIDStrPK]
 
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:

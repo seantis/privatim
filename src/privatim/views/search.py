@@ -185,7 +185,7 @@ class SearchCollection:
             for field in model.searchable_fields()
         )
 
-        return select(  # type: ignore[call-overload]
+        return select(
             model.id,
             *headline_expressions,
             literal(model.__name__).label('type')  # noqa: MS001

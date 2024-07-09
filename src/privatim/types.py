@@ -2,11 +2,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
-    from sqlalchemy.orm import declared_attr, Mapped
     from decimal import Decimal
     from fractions import Fraction
-    from sqlalchemy import Index
-    from sqlalchemy.dialects.postgresql import TSVECTOR
     from pyramid.httpexceptions import (
         HTTPFound,
         HTTPForbidden,

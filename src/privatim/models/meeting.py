@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 from privatim.models import SearchableMixin
-from privatim.models.commentable import Commentable
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz

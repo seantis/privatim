@@ -11,7 +11,8 @@ from privatim.models.utils import extract_pdf_info, word_count
 from privatim.orm.associable import associated
 
 
-from typing import ClassVar, TYPE_CHECKING
+from typing import ClassVar, TYPE_CHECKING, Any
+
 if TYPE_CHECKING:
     from privatim.orm.meta import UUIDStrPK
 
@@ -33,8 +34,7 @@ class SearchableAssociatedFiles:
 
     if TYPE_CHECKING:
         id: Mapped[UUIDStrPK]
-        __name__: ClassVar[str]
-        __tablename__: ClassVar[str]
+        __tablename__: Any
 
     files: Mapped[list[SearchableFile]] = associated(
         SearchableFile, 'files',
@@ -47,7 +47,7 @@ class SearchableAssociatedFiles:
             nullable=True
         )
 
-    @declared_attr  # type: ignore[misc]
+    @declared_attr  # type: ignore[arg-type]
     def __table_args__(cls) -> tuple[Index, ...]:
         return (
             Index(
