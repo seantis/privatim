@@ -71,7 +71,7 @@ class Tag(Base):
     )
 
 
-class Consultation(
+class Consultation(  # type: ignore[misc]
     Base, Commentable, SearchableAssociatedFiles, SearchableMixin
 ):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen

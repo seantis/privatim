@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-03 17:07+0200\n"
+"POT-Creation-Date: 2024-07-10 01:22+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -344,6 +344,14 @@ msgstr "Aucun résultat ne contient tous les termes de votre recherche."
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
 msgstr "Afficher les détails"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Match"
+msgstr "Correspondance de fichier"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Content"
+msgstr "Contenu du fichier"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"

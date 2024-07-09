@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-03 17:07+0200\n"
+"POT-Creation-Date: 2024-07-10 01:22+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -346,6 +346,14 @@ msgstr ""
 #: src/privatim/views/templates/activities.pt
 msgid "Show Details"
 msgstr "Details anzeigen"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Match"
+msgstr "Dateiinhalt"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Content"
+msgstr "Dateiinhalt"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"

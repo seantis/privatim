@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-03 17:07+0200\n"
+"POT-Creation-Date: 2024-07-10 01:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -334,6 +334,14 @@ msgstr ""
 #: ./src/privatim/views/templates/search_results.pt
 #: ./src/privatim/views/templates/activities.pt
 msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "File Match"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "File Content"
 msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt

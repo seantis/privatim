@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, deferred
 from privatim.orm.abstract import AbstractFile
 from privatim.orm.associable import Associable
-from privatim.orm.meta import UUIDStrPK
-from sqlalchemy import Text, ForeignKey, Integer
+from sqlalchemy import Text, Integer
 
 
 class GeneralFile(AbstractFile, Associable):
@@ -31,9 +30,6 @@ class SearchableFile(AbstractFile, Associable):
     __mapper_args__ = {
         'polymorphic_identity': 'searchable_file',
     }
-    id: Mapped[UUIDStrPK] = mapped_column(
-        ForeignKey('general_files.id'), primary_key=True
-    )
 
     # the content of the given file as text.
     # (it is important that this column be loaded deferred by default, lest
