@@ -622,7 +622,9 @@ msgstr "Ziel für Traktanden auswählen"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "No valid destination meetings available."
-msgstr "Es sind keine weiteren Sitzungen verfügbar, in die das Traktandum kopiert werden kann."
+msgstr ""
+"Es sind keine weiteren Sitzungen verfügbar, in die das Traktandum kopiert "
+"werden kann."
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy to"
