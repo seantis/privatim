@@ -209,7 +209,6 @@ def associated(
             secondary=association_table,
             single_parent=True,
             cascade='all, delete-orphan',
-            uselist=True,
             backref=file_backref,
             back_populates=back_populates,
             passive_deletes=False

@@ -2,14 +2,18 @@ from privatim.orm import Base
 
 
 from typing import Iterator, TYPE_CHECKING
+
+from privatim.orm.meta import UUIDStrPK
+
 if TYPE_CHECKING:
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.types import HasSearchableFields
 
 
-# todo(mypy) should this class implement the HasSearchableFields?
-    #  However, this creates consequential errors with metaclass conflicts
 class SearchableMixin:
+    if TYPE_CHECKING:
+        id: UUIDStrPK
+
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         # Override this method in each model to specify searchable fields

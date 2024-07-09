@@ -10,13 +10,14 @@ from privatim.models import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
+from privatim.models.searchable import SearchableMixin
 
 
 from typing import (TYPE_CHECKING, NamedTuple, Optional, TypedDict, Any, Union)
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
-    from privatim.types import HasSearchableFields, RenderDataOrRedirect
+    from privatim.types import RenderDataOrRedirect
 
 
 class SearchResult(NamedTuple):
@@ -35,7 +36,7 @@ class SearchResult(NamedTuple):
     We only load this if it makes sense in he UI to display additional
     attributes (as part of a search result element) otherwise we
     can save ourselves a query. """
-    model_instance: 'Optional[HasSearchableFields | SearchableFile]' = None
+    model_instance: 'SearchableMixin | SearchableFile | None' = None
 
 
 class SearchResultType(TypedDict):
@@ -77,18 +78,15 @@ class SearchCollection:
 
     def do_search(self) -> None:
         for model in searchable_models():
-            assert issubclass(
-                model, (HasSearchableFields, SearchableAssociatedFiles)
-            ), (f"Model {model.__name__} must be a subclass of "
-                f"HasSearchableFields or SearchableAssociatedFiles")
             self.results.extend(self.search_model(model))
 
         self._add_comments_to_results()
 
     def search_model(
-        self, model: type['HasSearchableFields | SearchableAssociatedFiles']
+        self, model: type['SearchableMixin | SearchableAssociatedFiles']
     ) -> list[SearchResult]:
-        if issubclass(model, 'HasSearchableFields'):
+        attribute_results = []
+        if issubclass(model, SearchableMixin):
             attribute_results = self.search_in_columns(model)
 
         if issubclass(model, SearchableAssociatedFiles):
@@ -98,7 +96,7 @@ class SearchCollection:
         return attribute_results
 
     def search_in_columns(
-        self, model: type['HasSearchableFields']
+        self, model: type['SearchableMixin']
     ) -> list[SearchResult]:
         query = self.build_attribute_query(model)
         raw_results = self.session.execute(query)
@@ -173,7 +171,7 @@ class SearchCollection:
         )
 
     def build_attribute_query(
-        self, model: type['HasSearchableFields']
+        self, model: type['SearchableMixin']
     ) -> 'Select[tuple[SearchResultType, ...]]':
         headline_expressions = [
             func.ts_headline(
@@ -195,10 +193,10 @@ class SearchCollection:
 
         return select(*select_fields).filter(
             or_(
-                *[
+                *(
                     func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
                     for field in model.searchable_fields()
-                ]
+                )
             )
         )
 

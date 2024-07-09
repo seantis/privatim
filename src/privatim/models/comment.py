@@ -3,7 +3,6 @@ from datetime import datetime
 from sedate import utcnow
 from privatim.orm import Base
 from privatim.orm.associable import Associable
-from privatim.models import SearchableMixin
 from sqlalchemy.orm import (
     relationship,
     Mapped,
@@ -18,7 +17,7 @@ from sqlalchemy import Text, ForeignKey, Index, and_
 from typing import Iterator
 from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
-    from privatim.models import User
+    from privatim.models import User, SearchableMixin
     from sqlalchemy.orm import InstrumentedAttribute
 
 
