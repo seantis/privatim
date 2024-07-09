@@ -173,7 +173,7 @@ class SearchCollection:
     def build_attribute_query(
         self, model: type['SearchableMixin']
     ) -> 'Select[tuple[SearchResultType, ...]]':
-        headline_expressions = [
+        headline_expressions = (
             func.ts_headline(
                 self.lang,
                 field,
@@ -183,15 +183,13 @@ class SearchCollection:
                 'FragmentDelimiter=" ... "',
             ).label(field.name)
             for field in model.searchable_fields()
-        ]
+        )
 
-        select_fields: list[Any | str] = [
+        return select(  # type: ignore[call-overload]
             model.id,
             *headline_expressions,
             literal(model.__name__).label('type')
-        ]
-
-        return select(*select_fields).filter(
+        ).filter(
             or_(
                 *(
                     func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
