@@ -160,6 +160,9 @@ class Meeting(Base, Commentable):
         cascade="all, delete-orphan"
     )
 
+    # created: Mapped[datetime] = mapped_column(default=utcnow)
+    # updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
     # allfällige Beschlüsse
     decisions: Mapped[str | None] = mapped_column()
 

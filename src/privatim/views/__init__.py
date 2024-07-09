@@ -10,8 +10,10 @@ from privatim.route_factories import meeting_factory
 from privatim.route_factories import person_factory
 from privatim.route_factories import working_group_factory
 from privatim.views.activities import activities_view
-from privatim.views.agenda_items import add_agenda_item_view, \
-    copy_agenda_item_view
+from privatim.views.agenda_items import (
+    add_agenda_item_view,
+    copy_agenda_item_view,
+)
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
 from privatim.views.consultations import (delete_consultation_view,
@@ -82,6 +84,7 @@ def includeme(config: 'Configurator') -> None:
         activities_view,
         route_name='activities',
         renderer='templates/activities.pt',
+        request_method=['GET', 'POST']
     )
 
     # Adding a new consultation
@@ -135,8 +138,8 @@ def includeme(config: 'Configurator') -> None:
     )
     config.add_view(
         delete_consultation_view,
-        route_name='delete_consultation',
         renderer='json',
+        route_name='delete_consultation',
         request_method='DELETE',
         xhr=True
     )

@@ -53,7 +53,7 @@ def consultation_view(
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
-                                                    fallback_pic, request)
+                                                    fallback_pic, request),
     }
 
 
@@ -81,6 +81,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         'title': _('Consultations'),
         'activities': consultations,
         'show_add_button': True,
+        'show_filter': False,
     }
 
 
