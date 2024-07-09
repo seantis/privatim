@@ -17,7 +17,7 @@ ${panel('navbar')}
 
 
 <!-- Begin page content -->
-<main class="flex-shrink-0">
+<main class="flex-shrink-0 main-content">
 
 ${panel('flash')}
 
