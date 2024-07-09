@@ -23,7 +23,7 @@ class AssociatedFiles:
     """ Use this mixin if uploaded files belong to a specific instance """
 
     files: Mapped[list[GeneralFile]] = associated(
-        GeneralFile, 'files', 'one-to-many'
+        GeneralFile, 'files',
     )
 
 
@@ -37,7 +37,7 @@ class SearchableAssociatedFiles:
         __tablename__: ClassVar[str]
 
     files: Mapped[list[SearchableFile]] = associated(
-        SearchableFile, 'files', 'one-to-many'
+        SearchableFile, 'files',
     )
 
     @declared_attr

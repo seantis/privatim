@@ -81,15 +81,6 @@ class Consultation(
 
     __tablename__ = 'consultations'
 
-    if TYPE_CHECKING:
-        from privatim.models.file import SearchableFile
-        files: Mapped[list[SearchableFile]] = associated(
-            SearchableFile, 'files', 'one-to-many'
-        )
-        comments: Mapped[list[Comment]] = associated(
-            Comment, 'comments', 'one-to-many'
-        )
-
     def __init__(
         self,
         title: str,
