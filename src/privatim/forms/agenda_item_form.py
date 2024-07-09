@@ -6,6 +6,7 @@ from privatim.forms.core import Form
 from privatim.i18n import _
 from privatim.models import Meeting
 
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest

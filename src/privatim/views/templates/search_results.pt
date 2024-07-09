@@ -44,7 +44,7 @@
                             </div>
                         </tal:block>
 
-
+                        <!-- More specific search result rendering for Comment-->
                         <tal:block tal:condition="python: result.type == 'Comment'" tal:define="comment result.model_instance">
                             <div class="card border-0">
                                 <div class="card-body">
@@ -62,11 +62,13 @@
                                             <p class="text-muted small mb-0">${layout.format_date(comment.created, 'relative')}</p>
                                         </div>
                                     </div>
-                                    <p class="comment-text mb-3 mt-1"><span>${result.headlines.get('Content')}</span></p>
+                                    <p class="comment-text mb-3 mt-1"><span>${result.headlines.get('Content')}</span>
+                                    </p>
                                 </div>
                             </div>
                         </tal:block>
 
+                        <!-- More specific search result rendering for SearchableFile-->
                         <tal:block tal:condition="python: result.type == 'SearchableFile'">
                             <div class="card d-flex flex-row activity-card-wrapper">
                                 <div class="card-body col-md-8 d-flex flex-column">
@@ -81,13 +83,7 @@
                                 </div>
                             </div>
                         </tal:block>
-
-                    </div>   <!-- End tal repeat-->
-                </div>
-                <!-- Sidebar (1/3 width) -->
-                <!-- Note: hidden until we decide to implement it -->
-                <div class="col-md-4 order-md-2 mt-5" style="display: none;">
-                    <!-- ... (sidebar content remains unchanged) ... -->
+                    </div>
                 </div>
             </div>
         </div>

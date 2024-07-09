@@ -15,8 +15,6 @@ from privatim.orm.meta import UUIDStrPK
 
 
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from privatim.models import User, Meeting
     from privatim.types import ACL

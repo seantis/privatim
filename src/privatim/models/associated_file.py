@@ -4,7 +4,6 @@ from io import BytesIO
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
-from typing_extensions import TYPE_CHECKING
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -12,9 +11,10 @@ from privatim.models.utils import extract_pdf_info, word_count
 from privatim.orm.associable import associated
 
 
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
+if TYPE_CHECKING:
+    from privatim.orm.meta import UUIDStrPK
 
-from privatim.orm.meta import UUIDStrPK
 
 logger = logging.getLogger(__name__)
 

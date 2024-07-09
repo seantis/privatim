@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING
-
 from pyramid.interfaces import ILocaleNegotiator
 from zope.interface import implementer
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 

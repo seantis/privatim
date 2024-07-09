@@ -4,9 +4,8 @@ from privatim.models import AgendaItem, GeneralFile
 from privatim.models.commentable import Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 
+
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.root import Root

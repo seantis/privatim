@@ -15,14 +15,11 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 
 
 from typing import TYPE_CHECKING, Iterator
-
 if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
     from privatim.models.file import SearchableFile
-    from privatim.orm.associable import associated
-    from privatim.models.comment import Comment
 
 
 class Status(Base):

@@ -1,14 +1,12 @@
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
-    from sqlalchemy.orm import InstrumentedAttribute, declared_attr, Mapped
-    from privatim.orm.meta import UUIDStrPK
+    from sqlalchemy.orm import declared_attr, Mapped
     from decimal import Decimal
     from fractions import Fraction
     from sqlalchemy import Index
     from sqlalchemy.dialects.postgresql import TSVECTOR
-    from privatim.models.file import SearchableFile
     from pyramid.httpexceptions import (
         HTTPFound,
         HTTPForbidden,
@@ -18,8 +16,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IResponse, IRequest
 
     from typing import Any, Literal, TypeVar, Protocol
-    from typing_extensions import NotRequired, TypedDict, TypeAlias, \
-    runtime_checkable
+    from typing_extensions import NotRequired, TypedDict, TypeAlias
 
     _Tco = TypeVar('_Tco', covariant=True)
 
@@ -84,15 +81,6 @@ if TYPE_CHECKING:
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
 
-    @runtime_checkable
-    class HasSearchableFields(Protocol):
-        # id: UUIDStrPK
-
-        @classmethod
-        def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
-            ...
-
-    @runtime_checkable
     class SearchableAssociatedFiles(Protocol):
         # files: Mapped[list[SearchableFile]]
 

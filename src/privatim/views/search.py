@@ -13,7 +13,7 @@ from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 
 
-from typing import (TYPE_CHECKING, NamedTuple, Optional, TypedDict, Any, Union)
+from typing import (TYPE_CHECKING, NamedTuple, TypedDict)
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
@@ -36,7 +36,7 @@ class SearchResult(NamedTuple):
     We only load this if it makes sense in he UI to display additional
     attributes (as part of a search result element) otherwise we
     can save ourselves a query. """
-    model_instance: 'SearchableMixin | SearchableFile | None' = None
+    model_instance: SearchableMixin | SearchableFile | None = None
 
 
 class SearchResultType(TypedDict):
@@ -83,7 +83,7 @@ class SearchCollection:
         self._add_comments_to_results()
 
     def search_model(
-        self, model: type['SearchableMixin | SearchableAssociatedFiles']
+        self, model: type[SearchableMixin | SearchableAssociatedFiles]
     ) -> list[SearchResult]:
         attribute_results = []
         if issubclass(model, SearchableMixin):
@@ -96,7 +96,7 @@ class SearchCollection:
         return attribute_results
 
     def search_in_columns(
-        self, model: type['SearchableMixin']
+        self, model: type[SearchableMixin]
     ) -> list[SearchResult]:
         query = self.build_attribute_query(model)
         raw_results = self.session.execute(query)
@@ -115,7 +115,7 @@ class SearchCollection:
         ]
 
     def search_in_model_files(
-        self, model: type['SearchableAssociatedFiles']
+        self, model: type[SearchableAssociatedFiles]
     ) -> list[SearchResult]:
         query = self.build_file_query(model)
         results_list = []
@@ -171,7 +171,7 @@ class SearchCollection:
         )
 
     def build_attribute_query(
-        self, model: type['SearchableMixin']
+        self, model: type[SearchableMixin]
     ) -> 'Select[tuple[SearchResultType, ...]]':
         headline_expressions = (
             func.ts_headline(
@@ -188,7 +188,7 @@ class SearchCollection:
         return select(  # type: ignore[call-overload]
             model.id,
             *headline_expressions,
-            literal(model.__name__).label('type')
+            literal(model.__name__).label('type')  # noqa: MS001
         ).filter(
             or_(
                 *(

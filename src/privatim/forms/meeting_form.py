@@ -10,6 +10,7 @@ from privatim.models import User, Meeting
 from privatim.models import WorkingGroup
 from privatim.i18n import _
 
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest

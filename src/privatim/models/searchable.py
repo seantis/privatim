@@ -3,11 +3,10 @@ from privatim.orm import Base
 
 from typing import Iterator, TYPE_CHECKING
 
-from privatim.orm.meta import UUIDStrPK
 
 if TYPE_CHECKING:
+    from privatim.orm.meta import UUIDStrPK
     from sqlalchemy.orm import InstrumentedAttribute
-    from privatim.types import HasSearchableFields
 
 
 class SearchableMixin:
@@ -22,7 +21,7 @@ class SearchableMixin:
         )
 
 
-def searchable_models() -> tuple[type['SearchableMixin'], ...]:
+def searchable_models() -> tuple[type[SearchableMixin], ...]:
     """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():

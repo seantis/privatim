@@ -6,15 +6,14 @@ from sqlalchemy.orm import relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 from privatim.models import SearchableMixin
+from privatim.models.commentable import Commentable
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
+from privatim.utils import maybe_escape
 
 
 from typing import TYPE_CHECKING, Iterator
-
-from privatim.utils import maybe_escape
-
 if TYPE_CHECKING:
     from privatim.models import User, WorkingGroup
     from datetime import datetime
