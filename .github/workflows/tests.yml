@@ -78,6 +78,9 @@ jobs:
           libpq-dev \
           make  \
           postgresql \
+          libpoppler-cpp-dev  \
+          pkg-config  \
+          python3-dev \
           --fix-missing
 
         export LC_ALL="C.UTF-8"
