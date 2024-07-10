@@ -29,14 +29,17 @@
                             <div class="card d-flex flex-row activity-card-wrapper">
                                 <div class="card-body col-md-8 d-flex flex-column">
                                     <tal:block tal:condition="result.headlines['title']" >
-                                        <h5 class="card-title fw-bold">
+                                        <h4 class="card-title fw-bold m-2">
                                             <span>${result.headlines['title']}</span>
-                                        </h5>
+                                        </h4>
                                     </tal:block>
                                     <div tal:repeat="item python:list(result.headlines.items())[1:]"
-                                            class="search-result-headline">
-                                        <strong><span i18n:translate="" tal:content="item[0]"></span>:</strong>
-                                        <span>${item[1]}</span>
+                                            class="search-result-headline m-2">
+
+                                        <tal:block tal:condition="item[0] != 'title'" >
+                                            <strong><span i18n:translate="" tal:content="item[0]"></span>:</strong>
+                                            <span>${item[1]}</span>
+                                        </tal:block>
                                     </div>
                                     <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
                                        class="details-link">Show Details</a>
