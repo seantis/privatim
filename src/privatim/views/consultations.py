@@ -1,5 +1,5 @@
 import os
-
+import logging
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
@@ -16,6 +16,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
+
+log = logging.getLogger(__name__)
 
 
 def consultation_view(
@@ -247,7 +249,11 @@ def delete_consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-    session.delete(context)
+    try:
+        session.delete(context)
+    except Exception as e:
+        log.error(f'Error deleting consultation: {e}')
+
     target_url = request.route_url('activities')
     message = _('Successfully deleted consultation.')
     if not request.is_xhr:
