@@ -150,10 +150,7 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
         for comment in comments:
             consultation.comments.append(comment)
 
-        privatim_document_20201223 = get_file()
-        consultation.files.append(privatim_document_20201223)
         db.add(status)
-        db.add(privatim_document_20201223)
         db.flush()
 
 
