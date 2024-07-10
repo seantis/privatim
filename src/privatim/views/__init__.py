@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
-                                      general_file_factory)
+                                      general_file_factory, file_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -520,13 +520,13 @@ def includeme(config: 'Configurator') -> None:
 
     # General file
     config.add_route(
-        'download_general_file',
+        'download_file',
         '/download/file/{id}',
-        general_file_factory,
+        file_factory,
     )
     config.add_view(
         download_general_file_view,
-        route_name='download_general_file',
+        route_name='download_file',
         request_method='GET',
     )
 

@@ -181,12 +181,8 @@ def client(app, engine):
 
     yield client
 
-    # Remove user, if not already done within a test.
-    if user := client.db.get(User, user.id):
-        client.db.delete(user)
-        client.db.commit()
-
-    client.reset()
+    # Teardown
+    client.db.close()
     Base.metadata.drop_all(bind=engine)
 
 

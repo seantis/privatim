@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-10 01:22+0200\n"
+"POT-Creation-Date: 2024-07-10 10:22+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -336,6 +336,11 @@ msgid "Recommendation:"
 msgstr "Empfehlung:"
 
 #: src/privatim/views/templates/consultation.pt
+#: src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
+
+#: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
 msgid "Documents"
 msgstr "Dokumente"
@@ -344,11 +349,6 @@ msgstr "Dokumente"
 #: src/privatim/forms/consultation_form.py
 msgid "Status"
 msgstr "Status"
-
-#: src/privatim/views/templates/consultation.pt
-#: src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr "Kommentar hinzufügen"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"
@@ -392,17 +392,21 @@ msgstr "Gremium:"
 msgid "Show Meeting"
 msgstr "Sitzung anzeigen"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Meeting"
 msgstr "Sitzung"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Vernehmlassung"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Choose..."
-msgstr "Auswählen..."
+msgid "Type"
+msgstr "Art"
+
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr "Filter"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -590,7 +594,7 @@ msgstr "Beschluss"
 msgid "Cantons"
 msgstr "Kantone"
 
-#: src/privatim/forms/add_comment.py
+#: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -616,6 +620,22 @@ msgstr "Dieses Feld ist deaktiviert."
 #: src/privatim/forms/validators.py
 msgid "This field is read only."
 msgstr "Dieses Feld ist schreibgeschützt."
+
+#: src/privatim/forms/filter_form.py
+msgid "Canton"
+msgstr "Kanton"
+
+#: src/privatim/forms/filter_form.py
+msgid "all"
+msgstr "Alle"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date from"
+msgstr "Datum von"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date to"
+msgstr "Datum bis"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
@@ -691,3 +711,6 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Kanton"
+#~ msgstr "Canton"

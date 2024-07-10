@@ -1,7 +1,6 @@
 from datetime import timedelta
 from sedate import utcnow
 from privatim.models import User, WorkingGroup, Meeting
-from sqlalchemy import select
 from privatim.utils import fix_utc_to_local_time
 
 
@@ -18,12 +17,12 @@ def test_view_edit_meeting(client):
     for user in users:
         user.set_password('test')
         client.db.add(user)
-    client.db.flush()
+    client.db.commit()
 
     working_group = WorkingGroup(name='Test Group', leader=users[0])
     working_group.users.extend(users)
     client.db.add(working_group)
-    client.db.flush()
+    client.db.commit()
 
     meeting_time = fix_utc_to_local_time(utcnow())
     # Create a meeting iwth Max and Alexa
@@ -34,13 +33,12 @@ def test_view_edit_meeting(client):
         working_group=working_group,
     )
     client.db.add(meeting)
-    client.db.flush()
+    client.db.commit()
     client.db.refresh(meeting)
 
     client.login_admin()
 
     page = client.get(f'/meetings/{meeting.id}/edit')
-
     assert page.status_code == 200
 
     def get_attendees(page, field='attendees'):
@@ -79,7 +77,7 @@ def test_view_edit_meeting(client):
         working_group=working_group,
     )
     client.db.add(dest_meeting)
-    client.db.flush()
+    client.db.commit()
 
     page = client.get(f'/meetings/{meeting.id}/add')
     page.form['title'] = 'my title'

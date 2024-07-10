@@ -21,7 +21,8 @@ def test_view_add_working_group(client):
         user.set_password('test')
         client.db.add(user)
 
-    client.db.flush()
+    client.db.commit()
+
     client.login_admin()
     page = client.get('/working_groups/add')
     assert page.status_code == 200
@@ -38,7 +39,7 @@ def test_view_add_working_group(client):
 
     u = User(email='a@vivaldi.org', first_name='Vintonio', last_name='Avaldi')
     client.db.add(u)
-    client.db.flush()
+    client.db.commit()
 
     page = client.get('/working_groups/add')
     page.form['name'] = 'Test Group2'
@@ -76,7 +77,7 @@ def test_view_add_working_group_with_meeting_and_leader(client):
     for user in users:
         user.set_password('test')
         client.db.add(user)
-    client.db.flush()
+    client.db.commit()
     client.login_admin()
 
     page = client.get('/working_groups/add')
@@ -135,7 +136,7 @@ def test_view_delete_working_group_with_meetings(client):
     for user in users:
         user.set_password('test')
         client.db.add(user)
-    client.db.flush()
+    client.db.commit()
     client.login_admin()
 
     page = client.get('/working_groups/add')

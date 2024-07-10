@@ -7,7 +7,7 @@ def test_add_comment(client):
 
     client.login_admin()
     session.add(consultation)
-    session.flush()
+    session.commit()
     session.refresh(consultation)
     page = client.get(f'/consultation/{consultation.id}')
     assert page.status_code == 200

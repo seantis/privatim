@@ -58,10 +58,11 @@ class FileSearchResultType(TypedDict):
 
 class SearchCollection:
 
-    """Integrates PostgreSQL full-text search. Models can derive from
+    """
+     Integrates PostgreSQL full-text search. Models can derive from
     `SearchableMixin` and implement `searchable_fields` for column searches.
-    Additionally, models may use `SearchableAssociatedFiles` to search in
-    their files.
+     Additionally, models may use `SearchableAssociatedFiles` to search in
+     their files.
 
 
     Key features:
@@ -159,9 +160,9 @@ class SearchCollection:
 
          1. Generate headline expressions for all searchable fields of the
         model. Headlines in this context are snippets of text from the
-        fiel, with the matching search terms highlighted. They
+        file, with the matching search terms highlighted. They
         provide context around where the search term appears in each field.
-        ts_headlines requires the original document text, not tsvector.
+        Note: ts_headlines requires the original document text, not tsvector.
 
 
         2. The actual search happens in the tsvector type searchable_text_{

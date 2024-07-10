@@ -71,7 +71,7 @@ def includeme(config: Configurator) -> None:
         user = request.user
         if not user:
             return ''
-        return request.route_url('download_general_file', id=user.picture.id)
+        return request.route_url('download_file', id=user.picture.id)
 
     config.add_request_method(profile_pic, 'profile_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)

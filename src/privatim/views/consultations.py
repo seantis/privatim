@@ -36,7 +36,7 @@ def consultation_view(
     )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     fallback_pic = request.route_url(
-        'download_general_file', id=get_or_create_default_profile_pic(
+        'download_file', id=get_or_create_default_profile_pic(
             request.dbsession).id
     )
     return {
@@ -46,7 +46,7 @@ def consultation_view(
                 'display_filename': trim_filename(doc.filename),
                 'doc_content_type': doc.content_type,
                 'download_url': request.route_url(
-                    'download_general_file', id=doc.id
+                    'download_file', id=doc.id
                 ),
             }
             for doc in context.files

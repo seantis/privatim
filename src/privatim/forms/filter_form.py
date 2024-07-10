@@ -37,7 +37,7 @@ class FilterForm(Form):
         return [('datumVon', self.start_date), ('datumBis', self.end_date)]
 
     canton: SelectField = SelectField(
-        _('Kanton'),
+        _('Canton'),
         choices=[('all', _('all'))] + cantons_named,
         validators=[Optional()],
         render_kw={'class': 'form-select', 'id': 'kanton'},

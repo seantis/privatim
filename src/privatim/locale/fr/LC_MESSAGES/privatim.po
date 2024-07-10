@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-10 01:22+0200\n"
+"POT-Creation-Date: 2024-07-10 10:22+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -349,11 +349,6 @@ msgstr "Documents"
 msgid "Status"
 msgstr "Statut"
 
-#: src/privatim/views/templates/consultation.pt
-#: src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr "Ajouter un commentaire"
-
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"
 msgstr "Résultats de la recherche"
@@ -375,7 +370,6 @@ msgstr "Correspondance de fichier"
 msgid "File Content"
 msgstr "Contenu du fichier"
 
-
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
@@ -396,17 +390,21 @@ msgstr "Comité:"
 msgid "Show Meeting"
 msgstr "Afficher la réunion"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Meeting"
 msgstr "Réunion"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Consultation"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Choose..."
-msgstr "Choisir..."
+msgid "Type"
+msgstr "Variété"
+
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr "Filtre"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -594,7 +592,7 @@ msgstr "Décision"
 msgid "Cantons"
 msgstr "Les cantons"
 
-#: src/privatim/forms/add_comment.py
+#: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -618,6 +616,22 @@ msgstr "Ce champ est désactivé."
 #: src/privatim/forms/validators.py
 msgid "This field is read only."
 msgstr "Ce champ est en lecture seule."
+
+#: src/privatim/forms/filter_form.py
+msgid "Canton"
+msgstr "Canton"
+
+#: src/privatim/forms/filter_form.py
+msgid "all"
+msgstr "tous"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date from"
+msgstr "Date de"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date to"
+msgstr "Date à"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
@@ -691,9 +705,3 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#~ msgid "Unbekannter Ersteller"
-#~ msgstr "Créateur inconnu"
-
-#~ msgid "Search..."
-#~ msgstr "Recherche"

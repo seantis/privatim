@@ -169,9 +169,12 @@ class SearchableSelectField(SelectMultipleField):
     Note: you need to call form.raw_data() to actually get the choices as list
     """
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    widget = ChosenSelectWidget(multiple=True)
+
+    def __call__(self, **kwargs: Any) -> Any:
         init_tom_select.need()
-        return super().__call__(*args, **kwargs)
+        self.data: list[str] = []
+        return super().__call__(**kwargs)
 
     def process_data(self, value: list[object]) -> None:
         if value:
