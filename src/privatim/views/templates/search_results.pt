@@ -36,7 +36,7 @@
                                     <div tal:repeat="item python:list(result.headlines.items())[1:]"
                                             class="search-result-headline">
                                         <strong><span i18n:translate="" tal:content="item[0]"></span>:</strong>
-                                        <span tal:content="structure item[1]"></span>
+                                        <span>${item[1]}</span>
                                     </div>
                                     <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
                                        class="details-link">Show Details</a>
