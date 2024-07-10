@@ -47,6 +47,11 @@ def extract_pdf_info(
             text = text.replace(character, '')
         return ' '.join(text.split())
 
+    # XXX
+    # Rollback the file handle to the beginning
+    # This is sort of because of `reindex_files`, because that happens
+    # before the file is **actually** saved.
+    content.seek(0)  # type:ignore[attr-defined]
     return len(pages), ' '.join(clean(page) for page in pages).strip()
 
 

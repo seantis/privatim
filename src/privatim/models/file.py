@@ -1,3 +1,5 @@
+import uuid
+from sqlalchemy_file import File
 from sqlalchemy.orm import Mapped, mapped_column, deferred
 from privatim.orm.abstract import AbstractFile
 from privatim.orm.associable import Associable
@@ -30,6 +32,11 @@ class SearchableFile(AbstractFile, Associable):
     __mapper_args__ = {
         'polymorphic_identity': 'searchable_file',
     }
+
+    def __init__(self, filename: str, content: bytes) -> None:
+        self.id = str(uuid.uuid4())
+        self.filename = filename
+        self.file = File(content=content, filename=filename)
 
     # the content of the given file as text.
     # (it is important that this column be loaded deferred by default, lest

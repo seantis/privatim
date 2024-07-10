@@ -57,6 +57,7 @@ class SearchableAssociatedFiles:
         )
 
     def reindex_files(self) -> None:
+
         """Extract the text from the files and save it together with
         the language.
 
@@ -79,13 +80,13 @@ class SearchableAssociatedFiles:
                         _file_handle = inner.file
                     else:
                         if inner.original_content is not None:
-                            _file_handle = (
-                                inner.original_content)  # type: ignore
+                            _file_handle = inner.original_content
                         else:
-                            raise ValueError('No file content available')
+                            raise ValueError('No file content available.')
 
                     pages, extract = extract_pdf_info(_file_handle)
-                    logger.info(f'Suceessfully extracted text from pdf '
+
+                    logger.info(f'Successfully extracted text from pdf '
                                 f'{file.filename}')
 
                     file.extract = (extract or '').strip()
