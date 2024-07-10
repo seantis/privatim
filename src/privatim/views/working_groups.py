@@ -4,6 +4,7 @@ from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
 from privatim.models import WorkingGroup, User, Meeting
 from privatim.i18n import _, translate
+from privatim.utils import maybe_escape
 
 
 from typing import TYPE_CHECKING
@@ -50,9 +51,10 @@ def add_or_edit_working_group(
                 users.append(leader)
 
             group = WorkingGroup(
-                name=form.name.data or '',
+                name=maybe_escape(form.name.data),
                 leader=leader,
-                users=users
+                users=users,
+                chairman_contact=maybe_escape(form.chairman_contact.data)
             )
             session.add(group)
             message = _(

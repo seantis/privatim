@@ -21,10 +21,7 @@ from privatim.security_policy import SessionSecurityPolicy
 __version__ = '0.0.0'
 
 
-from typing import Any, TYPE_CHECKING
-
-from privatim.views.profile import user_pic_url
-
+from typing import Any, TYPE_CHECKING, Iterable
 if TYPE_CHECKING:
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
@@ -69,7 +66,14 @@ def includeme(config: Configurator) -> None:
     config.set_default_csrf_options(require_csrf=True)
 
     config.add_request_method(authenticated_user, 'user', property=True)
-    config.add_request_method(user_pic_url, 'user_pic', property=True)
+
+    def profile_pic(request: 'IRequest') -> str:
+        user = request.user
+        if not user:
+            return ''
+        return request.route_url('download_general_file', id=user.picture.id)
+
+    config.add_request_method(profile_pic, 'profile_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
     def add_action_menu_entry(
@@ -89,6 +93,19 @@ def includeme(config: Configurator) -> None:
         'add_action_menu_entry',
         reify=True
     )
+
+    def add_action_menu_entries(
+        request: 'IRequest',
+        entries: Iterable[tuple[str, str]],
+    ) -> None:
+        if not hasattr(request, 'action_menu_entries'):
+            request.action_menu_entries = []
+        for title, url in entries:
+            request.action_menu_entries.append(ActionMenuEntry(title, url))
+
+    config.add_request_method(
+        lambda request: partial(add_action_menu_entries, request),
+        'add_action_menu_entries', reify=True)
 
 
 def main(

@@ -46,3 +46,5 @@ class WorkingGroupForm(Form):
     leader: SelectField = SelectField(_('Leader'))
 
     members: SearchableSelectField = SearchableSelectField(_('Members'))
+
+    chairman_contact: StringField = StringField(_('Contact Chairman'))

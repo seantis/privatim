@@ -10,10 +10,15 @@ from privatim.route_factories import meeting_factory
 from privatim.route_factories import person_factory
 from privatim.route_factories import working_group_factory
 from privatim.views.activities import activities_view
-from privatim.views.agenda_items import add_agenda_item_view
+from privatim.views.agenda_items import (
+    add_agenda_item_view,
+    copy_agenda_item_view,
+)
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
-from privatim.views.consultations import add_or_edit_consultation_view
+from privatim.views.consultations import (delete_consultation_view,
+                                          add_consultation_view,
+                                          edit_consultation_view)
 from privatim.views.consultations import consultation_view
 from privatim.views.consultations import consultations_view
 from privatim.views.general_file import (
@@ -80,6 +85,7 @@ def includeme(config: 'Configurator') -> None:
         activities_view,
         route_name='activities',
         renderer='templates/activities.pt',
+        request_method=('GET', 'POST')
     )
 
     # Adding a new consultation
@@ -89,13 +95,13 @@ def includeme(config: 'Configurator') -> None:
         factory=consultation_factory
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        add_consultation_view,
         route_name='add_consultation',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        add_consultation_view,
         route_name='add_consultation',
         renderer='json',
         request_method='POST',
@@ -108,16 +114,34 @@ def includeme(config: 'Configurator') -> None:
         factory=consultation_factory
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        edit_consultation_view,
         route_name='edit_consultation',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_consultation_view,
+        edit_consultation_view,
         route_name='edit_consultation',
         renderer='json',
         request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'delete_consultation',
+        '/consultations/{id}/delete',
+        factory=consultation_factory
+    )
+    config.add_view(
+        delete_consultation_view,
+        route_name='delete_consultation',
+        xhr=False
+    )
+    config.add_view(
+        delete_consultation_view,
+        renderer='json',
+        route_name='delete_consultation',
+        request_method='DELETE',
         xhr=True
     )
 
@@ -229,7 +253,7 @@ def includeme(config: 'Configurator') -> None:
     # Add meeting per working_group
     config.add_route(
         'edit_meeting',
-        '/meetings/{meeting_id}/edit',
+        '/meetings/{id}/edit',
         factory=meeting_factory
     )
     config.add_view(
@@ -330,6 +354,25 @@ def includeme(config: 'Configurator') -> None:
         route_name='delete_agenda_item',
         renderer='json',
         request_method='DELETE',
+        xhr=True
+    )
+
+    config.add_route(
+        'copy_agenda_item',
+        '/meetings/{id}/copy_agenda_item',
+        factory=meeting_factory
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='json',
+        request_method='POST',
         xhr=True
     )
 

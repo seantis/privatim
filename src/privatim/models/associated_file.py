@@ -12,7 +12,7 @@ from privatim.models.utils import extract_pdf_info, word_count
 from privatim.orm.associable import associated
 
 
-from typing import ClassVar, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from privatim.orm.meta import UUIDStrPK

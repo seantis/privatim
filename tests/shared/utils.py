@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models import (
@@ -16,6 +16,53 @@ from privatim.testing import DummyRequest
 
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
+
+
+class Bunch:
+    """ A simple but handy "collector of a bunch of named stuff" class.
+
+    See `<https://code.activestate.com/recipes/\
+    52308-the-simple-but-handy-collector-of-a-bunch-of-named/>`_.
+
+    For example::
+
+        point = Bunch(x=1, y=2)
+        assert point.x == 1
+        assert point.y == 2
+
+        point.z = 3
+        assert point.z == 3
+
+    Allows the creation of simple nested bunches, for example::
+
+        request = Bunch(**{'app.settings.org.my_setting': True})
+        assert request.app.settings.org.my_setting is True
+
+    """
+    def __init__(self, **kwargs: Any):
+        self.__dict__.update(
+            (key, value)
+            for key, value in kwargs.items()
+            if '.' not in key
+        )
+        for key, value in kwargs.items():
+            if '.' in key:
+                name, _, key = key.partition('.')
+                setattr(self, name, Bunch(**{key: value}))
+
+    if TYPE_CHECKING:
+        # let mypy know that any attribute access could be valid
+        def __getattr__(self, name: str) -> Any: ...
+        def __setattr__(self, name: str, value: Any) -> None: ...
+        def __delattr__(self, name: str) -> None: ...
+
+    def __eq__(self, other: object) -> bool:
+        if type(other) is type(self):
+            return self.__dict__ == other.__dict__
+        return False
+
+    def __ne__(self, other: object) -> bool:
+        return not self.__eq__(other)
 
 
 def find_login_form(resp_forms):

@@ -78,6 +78,23 @@
     url('/static/fonts/dm-serif-display-v5-latin-ext_latin-italic.woff') format('woff');
 }
 
+body {
+    font-family: "DM Sans", sans-serif;
+}
+
+/* Removes all focus shadows */
+*:focus {
+    box-shadow: none !important;
+}
+
+h1 {
+    margin-top: 1.0rem;
+}
+
+.main-content {
+    /* Set container background color to a pleasant light brown. */
+    /*background-color: hsl(49, 27%, 92.0%);*/
+}
 
 body {
     font-family: "DM Sans", sans-serif;
@@ -309,4 +326,46 @@ mark {
     border-radius: 3px;
 }
 
+/* consultation*/
+.consultation-main-text {
+    line-height: 1.6;
+    font-size: 1.3rem;
+}
+
+.consultation-text-paragraph {
+    margin-bottom: 2.4rem;
+}
+
+.filter-form {
+    max-width: 100%;
+    padding: 1.5rem;
+    padding-right: 0.0rem;
+}
+.filter-form .form-control,
+.filter-form .form-select,
+.filter-form .btn-submit {
+    margin-bottom: 10px;
+}
+.filter-form .btn-submit {
+    display: block;
+    width: 100%;
+}
+
+/* Custom checkbox styling */
+.form-check-input:checked {
+    background-color: var(--primary-color); /* Matches the checkbox color */
+    border-color: var(--primary-color); /* Matches the checkbox color */
+}
+
+
+.form-check-input:focus {
+    box-shadow: none;
+}
+
+.main-activities-content {
+    width: 75%;
+}
+
+.sidebar-filter {
+    width: 25%;
 }

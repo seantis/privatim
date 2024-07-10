@@ -45,7 +45,8 @@
                     <div class="dropdown text-d">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="${request.user_pic}" alt="mdo" width="40" height="40" class="rounded-circle">
+                            <img src="${request.profile_pic}" alt="mdo" width="40" height="40"
+                                 class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
                             <li><a class="dropdown-item" href="${request.route_url('profile')}" i18n:translate=""><i

@@ -99,28 +99,33 @@ msgid "Successfully deleted file \"${title}\""
 msgstr "Fichier supprimé avec succès \"${titre}\""
 
 #: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Imprimer le protocole"
+msgid "Edit Meeting"
+msgstr "Modifier la réunion"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
 msgstr "Supprimer la réunion"
+
+#: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Copier les éléments de l'ordre du jour"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Imprimer le protocole"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traiter un point de l'ordre du jour"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Participants"
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Membres"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
 msgstr "Des détails"
-
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Modifier la réunion"
 
 #: src/privatim/views/meetings.py
 msgid "Delete"
@@ -140,9 +145,8 @@ msgid "Successfully added meeting \"${name}\""
 msgstr "Ajout réussi de la réunion \"${nom}\""
 
 #: src/privatim/views/meetings.py
-#, python-format
-msgid "Successfully edited meeting \"${name}\""
-msgstr "Réunion modifiée avec succès \"${nom}\""
+msgid "Successfully edited meeting."
+msgstr "Réunion modifiée avec succès."
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -154,18 +158,26 @@ msgid "Edit Consultation"
 msgstr "Modifier la consultation"
 
 #: src/privatim/views/consultations.py
+msgid "Delete Consultation"
+msgstr "Supprimer la consultation"
+
+#: src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
+
+#: src/privatim/views/consultations.py
+#: src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr "Ajouter une consultation"
 
 #: src/privatim/views/consultations.py
 msgid "Successfully edited consultation."
 msgstr "Consultation modifiée avec succès."
 
 #: src/privatim/views/consultations.py
-#: src/privatim/views/templates/activities.pt
-msgid "Add Consultation"
-msgstr "Ajouter une consultation"
+msgid "Successfully deleted consultation."
+msgstr "Consultation supprimée avec succès."
 
 #: src/privatim/views/password_change.py
 msgid "Email"
@@ -243,6 +255,11 @@ msgstr "Élément de l'ordre du jour modifié avec succès \"${titre}\""
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr "Élément de l'ordre du jour supprimé avec succès \"${titre}\""
 
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr "Élément de l'ordre du jour copié avec succès \"${nom}\""
+
 #: src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
@@ -318,6 +335,11 @@ msgid "Recommendation:"
 msgstr "Recommandation"
 
 #: src/privatim/views/templates/consultation.pt
+#: src/privatim/forms/add_comment.py
+msgid "Add Comment"
+msgstr "Ajouter un commentaire"
+
+#: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/consultation_form.py
 msgid "Documents"
 msgstr "Documents"
@@ -352,6 +374,7 @@ msgstr "Correspondance de fichier"
 #: src/privatim/views/templates/search_results.pt
 msgid "File Content"
 msgstr "Contenu du fichier"
+
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
@@ -560,6 +583,14 @@ msgid "Recommendation"
 msgstr "Recommandation"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Evaluation Result"
+msgstr "Résultat de l'évaluation"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Decision"
+msgstr "Décision"
+
+#: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Les cantons"
 
@@ -600,6 +631,18 @@ msgstr "Date / heure"
 msgid "A meeting with this name already exists."
 msgstr "Une réunion avec ce nom existe déjà."
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr "Sélectionnez la destination pour l'élément de l'ordre du jour"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr "Aucune réunion de destination valide disponible."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr "Copier vers"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Groupe de travail sur l'édition"
@@ -609,8 +652,8 @@ msgid "No Leader"
 msgstr "Pas de chef"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Membres"
+msgid "Contact Chairman"
+msgstr "Contact conseil d'administration"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"

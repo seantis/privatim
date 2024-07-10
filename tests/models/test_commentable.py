@@ -443,3 +443,33 @@ def test_user_comments_relationship(session):
             'Comment'
         ) and comment.content.endswith('by User 2'):
             assert comment.user == user2
+
+
+def test_get_commentable_from_comment(session):
+    # Create a consultation (or any commentable entity)
+    commentable = create_consultation()  # or create_meeting(), etc.
+
+    # Create a user
+    user = User(email='test@example.com')
+
+    # Create a comment and add it to the commentable entity
+    comment = Comment(content='Test comment', user=user)
+    commentable.comments.append(comment)
+
+    # Add all objects to the session at once
+    session.add_all([commentable, user, comment])
+    session.flush()
+
+    # Retrieve the commentable entity using the get_commentable method
+    retrieved_commentable = comment.get_commentable()
+
+    # Assert that the retrieved commentable is the same as the original
+    assert retrieved_commentable is not None
+    assert retrieved_commentable.id == commentable.id
+
+    # Try to get commentable from a comment not associated with any entity
+    unassociated_comment = Comment(content='Unassociated comment', user=user)
+    session.add(unassociated_comment)
+    session.flush()
+
+    assert unassociated_comment.get_commentable() is None

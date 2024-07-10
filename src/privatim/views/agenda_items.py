@@ -1,7 +1,8 @@
 from pyramid.httpexceptions import HTTPFound
+from sqlalchemy import select
 
 from privatim.utils import maybe_escape
-from privatim.forms.agenda_item_form import AgendaItemForm
+from privatim.forms.agenda_item_form import AgendaItemForm, AgendaItemCopyForm
 from privatim.i18n import _
 from privatim.i18n import translate
 from privatim.models import AgendaItem
@@ -124,3 +125,36 @@ def delete_agenda_item_view(
     return HTTPFound(
         location=request.route_url('meeting', id=meeting.id),
     )
+
+
+def copy_agenda_item_view(
+        context: Meeting,
+        request: 'IRequest'
+) -> 'XHRDataOrRedirect':
+
+    form = AgendaItemCopyForm(context, request)
+    assert isinstance(context, Meeting)
+
+    target_url = request.route_url('meeting', id=context.id)
+    if request.method == 'POST' and form.validate():
+        destination_str_id = form.copy_to.data
+        stmt = select(Meeting).where(Meeting.id == destination_str_id)
+        dest_meeting = request.dbsession.execute(stmt).scalar_one()
+        dest_meeting.agenda_items = context.agenda_items
+
+        message = _(
+            'Successfully copied agenda item "${name}"',
+            mapping={'name': dest_meeting.name}
+        )
+        if request.is_xhr:
+            return {'success': translate(message, request.locale_name)}
+        request.messages.add(message, 'success')
+        return HTTPFound(
+            location=request.route_url('meeting', id=dest_meeting.id),
+        )
+
+    return {
+        'form': form,
+        'title': form._title,
+        'target_url': target_url,
+    }

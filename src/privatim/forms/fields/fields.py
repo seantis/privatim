@@ -10,7 +10,7 @@ from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
 from wtforms.fields import FieldList
-from wtforms.fields.choices import SelectField
+from wtforms.fields.choices import SelectMultipleField
 from wtforms.fields.simple import FileField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
@@ -159,8 +159,10 @@ class TimezoneDateTimeField(DateTimeLocalField):
             self.data = sedate.replace_timezone(self.data, self.timezone)
 
 
-class SearchableSelectField(SelectField):
-    """A multiple select field with tom-select.js support.
+class SearchableSelectField(SelectMultipleField):
+
+    """
+    A multiple select field with tom-select.js support.
 
     Note: This is unrelated to PostgreSQL full-text search, which also uses
     the term 'searchable'.
@@ -171,7 +173,11 @@ class SearchableSelectField(SelectField):
         init_tom_select.need()
         return super().__call__(*args, **kwargs)
 
-    widget = ChosenSelectWidget(multiple=True)
+    def process_data(self, value: list[object]) -> None:
+        if value:
+            self.data = [
+                str(v.id) if hasattr(v, 'id') else str(v) for v in value
+            ]
 
 
 class UploadField(FileField):

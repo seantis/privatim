@@ -102,28 +102,33 @@ msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
 #: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Protokoll drucken"
+msgid "Edit Meeting"
+msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
 msgstr "Sitzung löschen"
+
+#: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Traktanden kopieren"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Protokoll drucken"
 
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traktandum bearbeiten"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attendees"
-msgstr "Teilnehmende"
+#: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
 msgid "Details"
 msgstr "Details"
-
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete"
@@ -143,9 +148,8 @@ msgid "Successfully added meeting \"${name}\""
 msgstr "Sitzung \"${name}\" hinzugefügt"
 
 #: src/privatim/views/meetings.py
-#, python-format
-msgid "Successfully edited meeting \"${name}\""
-msgstr "Sitzung \"${name}\" erfolgreich bearbeitet"
+msgid "Successfully edited meeting."
+msgstr "Sitzung erfolgreich bearbeitet."
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -157,18 +161,26 @@ msgid "Edit Consultation"
 msgstr "Vernehmlassung bearbeiten"
 
 #: src/privatim/views/consultations.py
+msgid "Delete Consultation"
+msgstr "Vernehmlassung löschen"
+
+#: src/privatim/views/consultations.py
 #, python-format
 msgid "Successfully added consultation \"${name}\""
 msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
+
+#: src/privatim/views/consultations.py
+#: src/privatim/views/templates/activities.pt
+msgid "Add Consultation"
+msgstr "Vernehmlassung Erfassen"
 
 #: src/privatim/views/consultations.py
 msgid "Successfully edited consultation."
 msgstr "Vernehmlassung erfolgreich bearbeitet."
 
 #: src/privatim/views/consultations.py
-#: src/privatim/views/templates/activities.pt
-msgid "Add Consultation"
-msgstr "Vernehmlassung Erfassen"
+msgid "Successfully deleted consultation."
+msgstr "Vernehmlassung erfolgreich gelöscht."
 
 #: src/privatim/views/password_change.py
 msgid "Email"
@@ -243,6 +255,11 @@ msgstr "Traktandum \"${title}\" erfolgreich bearbeitet"
 #, python-format
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr "Traktandum \"${title}\" erfolgreich gelöscht"
+
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr "Traktandum \"${name}\" erfolgreich kopiert"
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -562,6 +579,14 @@ msgid "Recommendation"
 msgstr "Empfehlung"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Evaluation Result"
+msgstr "Prüfergebnis"
+
+#: src/privatim/forms/consultation_form.py
+msgid "Decision"
+msgstr "Beschluss"
+
+#: src/privatim/forms/consultation_form.py
 msgid "Cantons"
 msgstr "Kantone"
 
@@ -604,6 +629,20 @@ msgstr "Datum / Uhrzeit"
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr "Ziel für Traktanden auswählen"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr ""
+"Es sind keine weiteren Sitzungen verfügbar, in die das Traktandum kopiert "
+"werden kann."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr "Kopieren nach"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Gremium bearbeiten"
@@ -613,8 +652,8 @@ msgid "No Leader"
 msgstr "Kein Leiter"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Mitglieder"
+msgid "Contact Chairman"
+msgstr "Kontakt Vorstand"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"
@@ -652,9 +691,3 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "Search..."
-#~ msgstr "Suchen..."
-
-#~ msgid "Kein Leiter"
-#~ msgstr "Kein Leiter"

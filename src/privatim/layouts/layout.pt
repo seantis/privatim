@@ -13,11 +13,10 @@
 <body class="d-flex flex-column h-100">
 
 <!-- Header -->
-${panel('navbar')}
-
+        ${panel('navbar')}
 <div class="main-content flex-grow-1">
     <!-- Begin page content -->
-    <main class="flex-shrink-0">
+    <main class="flex-shrink-0 main-content">
 
     ${panel('flash')}
 
@@ -31,7 +30,7 @@ ${panel('navbar')}
 </div>
 
 <!-- footer -->
-${panel('footer')}
+        ${panel('footer')}
 
 </body>
 </html>

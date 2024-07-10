@@ -1,6 +1,6 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, literal, Select, or_, Function,
+from sqlalchemy import (func, select, literal, Select, Function,
                         BinaryExpression)
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
@@ -13,7 +13,7 @@ from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 
 
-from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, cast, TypeVar,
+from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar,
                     Union)
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest

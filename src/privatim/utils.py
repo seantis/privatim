@@ -4,19 +4,35 @@ from functools import lru_cache
 from PIL import Image
 import magic
 from io import BytesIO
+
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
+from sqlalchemy.orm import DeclarativeBase
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload
+from typing import Any, TYPE_CHECKING, overload, TypeVar
+
 if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
     from privatim.models.commentable import Comment
+    from pyramid.interfaces import IRequest
+    from typing import TypedDict
+
+    class ChildCommentDict(TypedDict):
+        comment: 'Comment'
+        picture: str
+
+    class FlattenedCommentDict(TypedDict):
+        comment: 'Comment'
+        children: list['ChildCommentDict']
+        picture: str
+
+    T = TypeVar('T', bound=DeclarativeBase)
 
 
 def datetime_format(
@@ -141,18 +157,53 @@ def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
 
 def flatten_comments(
     top_level_comments: 'Iterable[Comment]',
-) -> list[dict[str, Any]]:
-    """Displays all top-level comments and their direct replies.
+    fallback_profile_pic: str,
+    request: 'IRequest',
+) -> list['FlattenedCommentDict']:
+    """
+    Comments naturally contain arbitrary levels of nesting. (Each reply is a
+    child.) This basically returns a list of comments with level of depth=1.
+
     The UI only shows one level of nesting, so deeply nested comments
     are not displayed with further indentation. Which is why this function
-    does not need to do a proper tree traversal."""
+    does not need to do a full-blown tree traversal."""
 
-    flattened_comments = []
+    flattened_comments: list['FlattenedCommentDict'] = []
     for comment in top_level_comments:
         children = sorted(comment.children, key=lambda c: c.created)
-        flattened_comments.append({'comment': comment, 'children': children})
+        pic = handle_comment_picture(comment, fallback_profile_pic, request)
 
+        # Process children comments
+        _children: list['ChildCommentDict'] = []
+        for child in children:
+            child_pic = handle_comment_picture(
+                child, fallback_profile_pic, request
+            )
+            _children.append({'comment': child, 'picture': child_pic})
+
+        flattened_comments.append(
+            {'comment': comment, 'children': _children, 'picture': pic}
+        )
     return flattened_comments
+
+
+def handle_comment_picture(
+    comment: 'Comment', fallback_profile_pic_link: str, request: 'IRequest'
+) -> str:
+    if comment.user is None:
+        pic = fallback_profile_pic_link
+    else:
+        if comment.user.id == request.user.id:
+            pic = request.profile_pic
+        else:
+            pic = (
+                request.route_url(
+                    'download_general_file', id=comment.user.profile_pic.id
+                )
+                if comment.user.profile_pic is not None
+                else fallback_profile_pic_link
+            )
+    return pic
 
 
 def maybe_escape(value: str | None) -> str:

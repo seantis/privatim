@@ -2,11 +2,11 @@ from functools import wraps
 
 from privatim.orm import Base
 
-from sqlalchemy.orm import InstrumentedAttribute
 
 from typing import Iterator, TYPE_CHECKING, TypeVar, Callable, Any
 
 if TYPE_CHECKING:
+    from sqlalchemy.orm import InstrumentedAttribute
     from privatim.orm.meta import UUIDStrPK
     from sqlalchemy.orm import Mapped
 
@@ -21,7 +21,7 @@ class SearchableMixin:
 
     @classmethod
     def is_primary_search_field(
-        cls: type[F], field: InstrumentedAttribute[Any]
+        cls: type[F], field: 'InstrumentedAttribute'[Any]
     ) -> bool:
         return field.key == _primary_search_fields.get(cls)
 
@@ -50,8 +50,8 @@ T = TypeVar('T')
 def prioritize_search_field(
     primary_field: str,
 ) -> Callable[
-    [Callable[[type[T]], Iterator[InstrumentedAttribute[Any]]]],
-    Callable[[type[T]], Iterator[InstrumentedAttribute[Any]]],
+    [Callable[[type[T]], Iterator['InstrumentedAttribute'[Any]]]],
+    Callable[[type[T]], Iterator['InstrumentedAttribute'[Any]]],
 ]:
     """ Annotate the `searchable_fields` method of a model (typically on it's
     title), indicating which field should be considered a more important field
@@ -77,12 +77,12 @@ def prioritize_search_field(
     """
 
     def decorator(
-        func: Callable[[type[T]], Iterator[InstrumentedAttribute[Any]]]
-    ) -> Callable[[type[T]], Iterator[InstrumentedAttribute[Any]]]:
+        func: Callable[[type[T]], Iterator['InstrumentedAttribute'[Any]]]
+    ) -> Callable[[type[T]], Iterator['InstrumentedAttribute'[Any]]]:
         @wraps(func)
         def wrapper(
             cls: type[T], *args: Any, **kwargs: Any
-        ) -> Iterator[InstrumentedAttribute[Any]]:
+        ) -> Iterator['InstrumentedAttribute'[Any]]:
             _primary_search_fields[cls] = primary_field
             return func(cls, *args, **kwargs)
 

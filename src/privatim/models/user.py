@@ -101,7 +101,9 @@ class User(Base):
     )
 
     consultations: Mapped[list['Consultation']] = relationship(
-        'Consultation', back_populates='creator'
+        'Consultation',
+        back_populates='creator',
+        foreign_keys='Consultation.creator_id',
     )
 
     def set_password(self, password: str) -> None:
@@ -146,3 +148,6 @@ class User(Base):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+    def __repr__(self) -> str:
+        return f'<User {self.fullname}>'
