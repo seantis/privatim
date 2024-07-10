@@ -47,7 +47,7 @@ def test_view_consultation(client):
     # page = client.get(f'/consultations/{str(consultation.id)}')
 
 
-def test_view_add_consultation(client):
+def test_view_add_and_delete_consultation(client):
 
     session = client.db
     client.login_admin()

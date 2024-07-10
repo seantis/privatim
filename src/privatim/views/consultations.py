@@ -249,20 +249,20 @@ def delete_consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-    from sqlalchemy_file.storage import StorageManager
-    for file in context.files:
-        try:
-            # be extra cautious and delete the file first
-            path = file.file.path
-            StorageManager.delete_file(path)
-        except Exception as e:
-            log.error(f'StorageManager deleting file: {path}; {e}')
 
-    try:
-        session.delete(context)
-        session.flush()
-    except Exception as e:
-        log.error(f'Error deleting consultation: {e}')
+    # from sqlalchemy_file.storage import StorageManager
+    # for file in context.files:
+    #     try:
+    #         # be extra cautious and delete the file first
+    #         path = file.file.path
+    #         StorageManager.delete_file(path)
+    #     except Exception as e:
+    #         log.error(f'StorageManager deleting file: {path}; {e}')
+
+    session.delete(context)
+
+    # with contextlib.suppress(ObjectDoesNotExistError):
+    #     request.tm.commit()
 
     target_url = request.route_url('activities')
     message = _('Successfully deleted consultation.')

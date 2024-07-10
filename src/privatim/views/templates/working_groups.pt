@@ -32,10 +32,17 @@
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <img src="${layout.static_url('privatim:static/default_profile_icon.png')}" tal:repeat="user group.users"
-                                 style="width: 45px; height: 45px"
-                                 class="rounded-circle me-2"
-                                 title="${user.first_name}"/>
+
+
+                            <tal:b tal:repeat="user group.users">
+                                <a href="${request.route_url('person', id=user.id)}">
+                                    <img style="width: 45px; height: 45px"
+                                         src="${user.picture.id and request.route_url('download_file', id=user.picture.id) or layout.static_url('privatim:static/default_profile_icon.png')}"
+                                         class="rounded-circle me-2"
+                                         title="${user.fullname}">
+                                </a>
+                            </tal:b>
+
                         </div>
                     </td>
                 </tr>
