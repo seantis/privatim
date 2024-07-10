@@ -369,7 +369,3 @@ mark {
 .sidebar-filter {
     width: 30%;
 }
-
-.upload-widget.without-data {
-    display: none;
-}

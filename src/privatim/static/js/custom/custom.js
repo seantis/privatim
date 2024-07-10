@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
+
+    if (window.location.href.includes('consultations/edit')) {
+        document.querySelectorAll('.upload-widget.without-data').forEach(el => {
+            el.style.display = 'none';
+        });
+    }
 });
 
 function handleProfilePicFormSubmission() {
