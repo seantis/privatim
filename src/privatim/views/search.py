@@ -1,7 +1,15 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (func, select, literal, Select, Function,
-                        BinaryExpression)
+from sqlalchemy import (
+    func,
+    select,
+    literal,
+    Select,
+    Function,
+    BinaryExpression,
+    type_coerce
+)
+
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
@@ -15,6 +23,9 @@ from privatim.models.searchable import SearchableMixin
 
 from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar,
                     Union)
+
+from privatim.orm.markup_text_type import MarkupText
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
@@ -192,14 +203,14 @@ class SearchCollection:
         self, model: type[SearchableMixin]
     ) -> 'Select[tuple[SearchResultType, ...]]':
         headline_expressions = (
-            func.ts_headline(
+            type_coerce(func.ts_headline(
                 self.lang,
                 field,
                 self.ts_query,
                 'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
                 'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
                 'FragmentDelimiter=" ... "',
-            ).label(field.key)
+            ), MarkupText).label(field.key)
             for field in model.searchable_fields()
         )
 

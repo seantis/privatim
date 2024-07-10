@@ -4,7 +4,6 @@ from io import BytesIO
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, declared_attr
-from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
 from privatim.i18n import locales
 from privatim.models.file import GeneralFile, SearchableFile
@@ -25,13 +24,14 @@ class AssociatedFiles:
     """ Use this mixin if uploaded files belong to a specific instance """
 
     files: Mapped[list[GeneralFile]] = associated(
-        GeneralFile, 'files',
+        GeneralFile, 'files'
     )
 
 
 class SearchableAssociatedFiles:
     """ Same as AssociatedFiles but provides the toolkit to make a list of
     files searchable, if they are pdfs. """
+
 
     if TYPE_CHECKING:
         id: Mapped[UUIDStrPK]
@@ -76,12 +76,21 @@ class SearchableAssociatedFiles:
             text = ''
             for file in files_by_locale[locale]:
                 try:
-                    pages, extract = extract_pdf_info(BytesIO(file.content))
+                    if file.file.get('saved', False):
+                        _file_handle = file.file.file
+                    else:
+                        _file_handle = file.file.original_content
+
+                    pages, extract = extract_pdf_info(_file_handle)
+
                     file.extract = (extract or '').strip()
                     file.word_count = word_count(file.extract)
                     if file.extract:
                         text += '\n\n' + file.extract
                 except Exception as e:
+                    if 'poppler error creating document' in str(e):
+                        logger.error(f'Possible malformed pdf: '
+                                     f'{file.filename}')
                     logger.error(f"Error extracting text contents for file"
                                  f" {file.id}: {str(e)}")
 
@@ -90,14 +99,3 @@ class SearchableAssociatedFiles:
                 f'searchable_text_{locale}',
                 func.to_tsvector(locales[locale], text),
             )
-
-    @observes('files')
-    def files_observer(self) -> None:
-        """
-        Observer method for the 'files' relationship.
-        While potentially inefficient for large collections, it's typically
-        fine as the number of files is expected to be small (1-5). Consider
-        optimizing if performance issues arise.
-        """
-
-        self.reindex_files()

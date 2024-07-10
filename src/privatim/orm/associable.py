@@ -1,17 +1,17 @@
+from .utils import QueryChain
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship, joinedload, Mapped, backref
 from typing import TypeVar
 from sqlalchemy.orm import object_session
 
-from .utils import QueryChain
-
 
 from typing import Any, Literal, NamedTuple, TYPE_CHECKING
+
+
 if TYPE_CHECKING:
     from sqlalchemy.orm.query import Query
     from sqlalchemy.orm import DeclarativeBase as Base
-    rel = relationship
     from .meta import UUIDStrPK
 
     Cardinality = Literal['one-to-many', 'one-to-one', 'many-to-many']
@@ -123,28 +123,77 @@ class Associable:
 def associated(
         associated_cls: type[_M],
         attribute_name: str,
-        *,
+        cardinality: 'Cardinality' = 'one-to-many',
+        uselist: Literal['auto'] | bool = 'auto',
         backref_suffix: str = '__tablename__',
+        onupdate: str | None = None
 ) -> Mapped[list[_M]]:
 
     """ Creates an associated attribute. This attribute is supposed to be
     defined on the mixin class that will establish the generic association
     if inherited by a model.
 
-    Currently supports one-to-many relationships as that is the most common
-    use case and the only one we need at the moment.
-    Simplified version of onegov.core.orm.abstract.associable
+    :param associated_cls:
+        The class which the model will be associated with.
+
+    :param attribute_name:
+        The name of the attribute used on the mixin class.
+
+    :param cardinality:
+        May be 'one-to-one', 'one-to-many' or 'many-to-many'. Cascades are
+        used automatically, unless 'many-to-many' is used, in which case
+        cascades are disabled.
+
+    :param uselist:
+        True if the attribute on the inheriting model is a list. Use 'auto'
+        if this should be automatically decided depending on the cardinality.
+
+    :param backref_suffix:
+        Individual suffix used for the backref.
+
+    :param onupdate:
+        The 'onupdate' constraint of the foreign key column.
+
+    Example::
+
+        class Adress(Base, Associable):
+            pass
+
+        class Addressable:
+            address = associated(Address, 'address', 'one-to-one')
+
+        class Company(Base, Addressable):
+            pass
+
     """
 
-    def descriptor(cls: type['Base']) -> Mapped[list[_M]]:
+    assert cardinality in ('one-to-one', 'one-to-many', 'many-to-many')
+
+    cascade: str | bool
+    if cardinality in ('one-to-one', 'one-to-many'):
+        cascade = 'all, delete-orphan'
+        single_parent = True
+        passive_deletes = False
+    else:
+        cascade = False
+        single_parent = False
+        passive_deletes = True
+
+    if uselist == 'auto':
+        uselist = not cardinality.endswith('to-one')
+
+    def descriptor(cls: type['Base']) -> 'Mapped[list[_M]]':
+        # All models should use id as primary key. If they don't, we need to
+        # branch here.
+        pk_name = 'id'
 
         name = '{}_for_{}_{}'.format(
             associated_cls.__tablename__,
             cls.__tablename__,
             attribute_name
         )
-        key = f'{cls.__tablename__}_id'
-        target = f'{cls.__tablename__}.id'
+        key = f'{cls.__tablename__}_{pk_name}'
+        target = f'{cls.__tablename__}.{pk_name}'
 
         if backref_suffix == '__tablename__':
             backref_name = f'linked_{cls.__tablename__}'
@@ -154,6 +203,14 @@ def associated(
         association_key = associated_cls.__name__.lower() + '_id'
         association_id = associated_cls.id
 
+        # to be more flexible about polymorphism and where the mixin
+        # has to get inserted we only create a new instance for the
+        # association table, if we haven't already created it, we
+        # also only need to create the backref once, since we punt
+        # on polymorphism anyways, but in the case were we don't create
+        # a backref we need to set back_populates so introspection
+        # is aware that the two relationships are inverses of one
+        # another, otherwise things like @observes won't work.
         association_table = cls.metadata.tables.get(name)
         if association_table is None:
             association_table = Table(
@@ -161,7 +218,7 @@ def associated(
                 cls.metadata,
                 Column(
                     key,
-                    ForeignKey(target),
+                    ForeignKey(target, onupdate=onupdate),
                     nullable=False
                 ),
                 Column(
@@ -201,17 +258,29 @@ def associated(
             association_table,
             key,
             attribute_name,
-            cardinality='one-to-many'
+            cardinality
         )
 
-        return relationship(
-            argument=associated_cls,
-            secondary=association_table,
-            single_parent=True,
-            cascade='all, delete-orphan',
-            backref=file_backref,
-            back_populates=back_populates,
-            passive_deletes=False
-        )
+        if not isinstance(cascade, bool):
+            return relationship(
+                argument=associated_cls,
+                secondary=association_table,
+                backref=file_backref,
+                back_populates=back_populates,
+                single_parent=single_parent,
+                cascade=cascade,
+                uselist=uselist,
+                passive_deletes=passive_deletes
+            )
+        else:
+            return relationship(
+                argument=associated_cls,
+                secondary=association_table,
+                backref=file_backref,
+                back_populates=back_populates,
+                single_parent=single_parent,
+                uselist=uselist,
+                passive_deletes=passive_deletes
+            )
 
     return declared_attr(descriptor)  # type:ignore[return-value]

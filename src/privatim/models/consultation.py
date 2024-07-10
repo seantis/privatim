@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
+from sqlalchemy_utils import observes
 
 from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
@@ -187,6 +188,16 @@ class Consultation(  # type: ignore[misc]
         for field in [cls.description, cls.recommendation]:
             if field is not None:
                 yield field
+
+    @observes('files')
+    def files_observer(self, files: list['SearchableFile']) -> None:
+        """
+        Observer method for the 'files' relationship.
+        While potentially inefficient for large collections, it's typically
+        fine as the number of files is expected to be small (1-5). Consider
+        optimizing if performance issues arise.
+        """
+        self.reindex_files()
 
     def __repr__(self) -> str:
         return (
