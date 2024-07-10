@@ -78,13 +78,15 @@ class SearchableAssociatedFiles:
                     if inner.get('saved', False):
                         _file_handle = inner.file
                     else:
-                        if inner.original_content is None:
+                        if inner.original_content is not None:
                             _file_handle = (
                                 inner.original_content)  # type: ignore
                         else:
                             raise ValueError('No file content available')
 
                     pages, extract = extract_pdf_info(_file_handle)
+                    logger.info(f'Suceessfully extracted text from pdf '
+                                f'{file.filename}')
 
                     file.extract = (extract or '').strip()
                     file.word_count = word_count(file.extract)
