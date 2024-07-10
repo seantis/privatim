@@ -2,7 +2,8 @@ import warnings
 import pytest
 import transaction
 from pyramid import testing
-from sqlalchemy import engine_from_config
+from pathlib import Path
+from sqlalchemy import engine_from_config, text
 from privatim import main
 from privatim.file.setup import setup_filestorage
 from privatim.models import User, WorkingGroup
@@ -221,3 +222,11 @@ def consultation(session) -> Consultation:
     session.add(status)
     session.flush()
     return consultation
+
+
+@pytest.fixture()
+def pdf_vemz():
+    filename = 'search_test_privatim_Vernehmlassung_VEMZ.pdf'
+    path = Path(__file__).parent / 'views/test_files' / filename
+    with open(path, 'rb') as f:
+        yield filename, f.read()

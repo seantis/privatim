@@ -249,6 +249,7 @@ class SearchCollection:
 
         """
         weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
+        breakpoint()
         weighted_vectors: list[Function[Any]] = [
             func.setweight(
                 func.to_tsvector(self.lang, field),
