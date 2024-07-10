@@ -232,7 +232,7 @@ def add_content_mili(db: 'Session') -> None:
 
 def get_file() -> SearchableFile:
     here = Path(__file__).parent
-    pdfname = 'privatim_Vernehmlassung_VEMZ.pdf'
+    pdfname = '20201223_privatim_Vernehmlassung Änderung MG.pdf'
     pdf = here / 'sample-pdf-for-initialize-db' / pdfname
     return SearchableFile(pdfname, pdf.read_bytes())
 
