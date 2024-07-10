@@ -5,7 +5,7 @@ from privatim.reporting.report import (MeetingReport, ReportOptions,
 from tests.shared.utils import create_meeting, CustomDummyRequest
 
 
-def test_generate_meeting_report(config):
+def test_generate_meeting_report(pg_config):
     meeting = create_meeting()
 
     renderer = HTMLReportRenderer()

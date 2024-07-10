@@ -7,7 +7,7 @@ from privatim.testing import DummyRequest
 from privatim.views.password_change import password_change_view
 
 
-def test_password_change_view(config):
+def test_password_change_view(pg_config):
     request = DummyRequest()
     result = password_change_view(request)
     assert 'form' in result
@@ -16,9 +16,9 @@ def test_password_change_view(config):
     assert 'Password must have minimal length of 8' in msg['message']
 
 
-def test_password_change_view_password_strength(config, user):
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_password_strength(pg_config, user):
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -35,7 +35,7 @@ def test_password_change_view_password_strength(config, user):
     assert 'Password must have minimal length' in messages[0]['message']
 
 
-def test_password_change_view_invalid(config):
+def test_password_change_view_invalid(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -48,7 +48,7 @@ def test_password_change_view_invalid(config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_confirmation(config):
+def test_password_change_view_invalid_confirmation(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -61,7 +61,7 @@ def test_password_change_view_invalid_confirmation(config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_min_length(config):
+def test_password_change_view_invalid_min_length(pg_config):
     request = DummyRequest()
     request.params['token'] = '1234567'
     request.POST['email'] = 'username'
@@ -74,9 +74,9 @@ def test_password_change_view_invalid_min_length(config):
     assert 'There was a problem with your submission.' in message['message']
 
 
-def test_password_change_view_invalid_username(config, user):
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_invalid_username(pg_config, user):
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -96,7 +96,7 @@ def test_password_change_view_invalid_username(config, user):
     assert 'form' in result
 
 
-def test_password_change_view_invalid_token(config):
+def test_password_change_view_invalid_token(pg_config):
     request = DummyRequest()
     request.params['token'] = '123456'
     request.POST['email'] = 'username'
@@ -109,10 +109,10 @@ def test_password_change_view_invalid_token(config):
     assert 'form' in result
 
 
-def test_password_change_view_expired_token(config, user):
-    config.add_route('login', '/login')
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_expired_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     dt = datetime.utcnow() - timedelta(days=30)
@@ -134,10 +134,10 @@ def test_password_change_view_expired_token(config, user):
     assert 'This password reset link has expired.' in text
 
 
-def test_password_change_view_consumed_token(config, user):
-    config.add_route('login', '/login')
-    config.add_route('password_retrieval', '/password_retrieval')
-    session = config.dbsession
+def test_password_change_view_consumed_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    pg_config.add_route('password_retrieval', '/password_retrieval')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')
@@ -157,9 +157,9 @@ def test_password_change_view_consumed_token(config, user):
     assert 'This password reset link has expired.' in text
 
 
-def test_password_change_view_token(config, user):
-    config.add_route('login', '/login')
-    session = config.dbsession
+def test_password_change_view_token(pg_config, user):
+    pg_config.add_route('login', '/login')
+    session = pg_config.dbsession
 
     user.email = 'buck@seantis.ch'
     token_obj = PasswordChangeToken(user, '127.0.0.1')

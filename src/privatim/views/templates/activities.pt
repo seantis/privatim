@@ -13,16 +13,17 @@
 
                 <tal:b  tal:condition="show_add_button">
                     <div class="col-md-6 text-end">
-                        <a i18n:translate="" href="${request.route_url('add_consultation')}"
-                                             class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
+                         <a i18n:translate="" href="${request.route_url('add_consultation')}"
+                            class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
                     </div>
-               </tal:b>
+                </tal:b>
 
             </div>
 
-            <div class="row">
+            <!-- Separates the main content form the Navbar-->
+            <div class="row gx-5 mt-4">
                 <!-- Main content area (2/3 width) -->
-                <div class="col-md-8 order-md-1">
+                <div class="main-activities-content order-md-1">
 
                     <div tal:repeat="activity activities" class="mt-4">
 
@@ -42,13 +43,14 @@
                                             <tal:condition condition="not:has_creator">
                                                 <p class="profile-name"
                                                    style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Unbekannter Ersteller</p>
+                                                    Unknown Creator</p>
                                             </tal:condition>
                                         </tal:define>
                                         <p class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
                                     </div>
                                     <div tal:case="'Meeting'">
-                                        <tal:define define="has_leader python: activity.working_group.leader is not None">
+                                        <tal:define
+                                                define="has_leader python: activity.working_group.leader is not None">
                                             <tal:condition condition="has_leader">
                                                 <a tal:attributes="href request.route_url('person', id=activity.working_group.leader.id)">
                                                     <p class="profile-name" i18n:translate="">${activity.working_group.leader.fullname}</p>
@@ -92,7 +94,9 @@
                                 </div>
                             </tal:b>
 
-                            <div class="col-md-3 d-flex flex-column">
+                            <!-- Tags section - visible only on large screens, because it f's up the layout
+                            if the main content contracts horizontally .-->
+                            <div class="col-md-3 d-none d-lg-flex flex-column">
                                 <div class="primary-tags d-flex flex-row justify-content-start flex-wrap mt-3">
                                     <tal:b tal:condition="activity.__class__.__name__ == 'Meeting'">
                                         <span class="badge rounded-pill mb-4 tag-button text-light fs-6 px-3 py-2" i18n:translate="">Meeting</span>
@@ -110,35 +114,37 @@
                                     </tal:b>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- Sidebar (1/3 width) -->
-                <!-- Note: hidden until we decide to implement it -->
-                <div class="col-md-4 order-md-2 mt-5" style="display: none;">
-                    <div class="mb-5 p-3">
-                        <label for="kantonDropdown" class="form-label">Kanton</label>
-                        <select class="form-select" id="kantonDropdown" disabled>
-                            <option selected i18n:translate="">Choose...</option>
-                            <option value="1">Zürich</option>
-                            <option value="2">Genf</option>
-                        </select>
-                    </div>
-                    <div class="mb-3 p-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" disabled>
-                            <label class="form-check-label" for="beratungCheck">
-                                Vernehmlassungen
-                            </label>
+                <!-- Filter Sidebar (1/3 width) -->
+                <div class="sidebar-filter order-md-2 flex-grow-1" tal:condition="show_filter">
+                    <form class="filter-form" method="POST" enctype="multipart/form-data"
+                          action="${request.route_url('activities')}">
+                        <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
+                        <div class="mb-3">
+                            <label for="canton" class="form-label">${filter_form.canton.label.text}</label>
+                                ${render_filter_field(filter_form.canton)}
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" disabled>
-                            <label class="form-check-label" for="vorabkontrollenCheck">
-                                Sitzungen
-                            </label>
+
+                        <div class="mb-3">
+                            <label class="form-label" i18n:translate="">Type</label>
+                            <div tal:repeat="field filter_form.get_type_fields()" class="form-check">
+                            ${render_filter_field(field)}
+                                <label class="form-check-label"
+                                       for="${field.id}" i18n:translate="">${field.label.text}</label>
+                            </div>
                         </div>
-                    </div>
+
+                        <div tal:repeat="(field_id, field) filter_form.get_date_fields()" class="mb-3">
+                            <label for="${field_id}" class="form-label" i18n:translate="">${field.label.text}</label>
+                                ${render_filter_field(field)}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Filter</button>
+                    </form>
+
                 </div>
 
             </div>

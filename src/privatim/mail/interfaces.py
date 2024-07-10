@@ -1,8 +1,8 @@
 from zope.interface import Interface
 from typing import Any, Optional, Union
+
+
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from email.headerregistry import Address
 

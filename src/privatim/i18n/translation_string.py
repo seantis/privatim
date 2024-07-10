@@ -1,7 +1,6 @@
 from functools import update_wrapper
 from typing import Any
 from typing import Literal
-from typing import TYPE_CHECKING
 from typing import overload
 
 import translationstring
@@ -10,6 +9,8 @@ from markupsafe import escape
 
 from .core import translate
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from markupsafe import HasHTML
     from typing import Protocol

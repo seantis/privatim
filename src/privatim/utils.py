@@ -198,7 +198,7 @@ def handle_comment_picture(
         else:
             pic = (
                 request.route_url(
-                    'download_general_file', id=comment.user.profile_pic.id
+                    'download_file', id=comment.user.profile_pic.id
                 )
                 if comment.user.profile_pic is not None
                 else fallback_profile_pic_link

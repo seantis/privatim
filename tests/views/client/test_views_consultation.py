@@ -35,7 +35,7 @@ def test_view_consultation(client):
     )
     db.add(consultation)
     db.add(status)
-    db.flush()
+    db.commit()
     db.refresh(consultation)
 
     page = client.get('/consultations')
@@ -66,7 +66,7 @@ def test_view_add_consultation(client):
     page.form['evaluation_result'] = 'the evaluation result'
     page.form['decision'] = 'the decision'
     page.form['status'] = '1'
-    page.form['cantons'] = ['AG', 'ZH']
+    page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
@@ -125,7 +125,7 @@ def test_view_edit_consultation(client):
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
-    page.form['cantons'] = ['AG', 'ZH']
+    page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
@@ -144,13 +144,12 @@ def test_view_edit_consultation(client):
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
     page.form['status'] = '2'
-    page.form['cantons'] = ['BE', 'LU']
+    page.form['secondary_tags'] = ['BE', 'LU']
 
     # this is the 'Weitere Dokumente hochladen form'
     # which does not work as intended
     # todo: thi needs to select the other form for file updload and use the
     # find the right field by checking where the value is 'keep':
-
 
     # def find_replace_file_checkbox(page, radio_btn_value='replace',
     #                                add_additional_files=False):
@@ -167,7 +166,6 @@ def test_view_edit_consultation(client):
     #     form_index = 1 if add_additional_files else 0
     #     if add_additional_files is False:
     #         radio_options = list(expected_file_form_in_page[form_index])
-    #         print(f"Available radio options: {[radio.value for radio in radio_options]}")
     #         breakpoint()
     #
     #         checkbox = next(
@@ -192,14 +190,15 @@ def test_view_edit_consultation(client):
     def find_replace_file_checkbox(page):
         correct_file_form = page.form.fields['files-1']
         checkbox_replace_file = next(
-            radio for radio in correct_file_form if radio.value == 'replace')
+            radio for radio in correct_file_form if radio.value == 'replace'
+        )
         return checkbox_replace_file
 
-    breakpoint()
+    # breakpoint()
     # checkbox_replace_file = next(radio for radio in correct_file_form if
     #                              radio.value == 'replace')
 
-    breakpoint()
+    # breakpoint()
     page.form['files'] = Upload(
         'UpdatedTest.txt',
         b'Updated file ' b'content.'

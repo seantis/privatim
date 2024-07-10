@@ -3,11 +3,12 @@ from .uuid_factory import create_uuid_factory
 from privatim.models import AgendaItem, GeneralFile
 from privatim.models.commentable import Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
+from privatim.models.file import SearchableFile
+
 
 from typing import TYPE_CHECKING
-
-
 if TYPE_CHECKING:
+    from privatim.orm.abstract import AbstractFile
     from pyramid.interfaces import IRequest
     from privatim.models.root import Root
 
@@ -54,6 +55,24 @@ def person_factory(request: 'IRequest') -> 'User | Root':
         return root_factory(request)
 
     return _person_factory(request)
+
+
+def file_factory(request: 'IRequest') -> 'AbstractFile | None':
+    file_id = request.matchdict['id']
+    dbsession = request.dbsession
+
+    general_file = (
+        dbsession.query(GeneralFile).filter(GeneralFile.id == file_id).first()
+    )
+    if general_file is not None:
+        return general_file
+
+    searchable_file = (
+        dbsession.query(SearchableFile)
+        .filter(SearchableFile.id == file_id)
+        .first()
+    )
+    return searchable_file
 
 
 def general_file_factory(request: 'IRequest') -> GeneralFile:

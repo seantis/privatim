@@ -2,9 +2,16 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
-from privatim.models import (Meeting, WorkingGroup, User, Tag, Consultation,
-                             GeneralFile, AgendaItem, )
+from privatim.models import (
+    Meeting,
+    WorkingGroup,
+    User,
+    Tag,
+    Consultation,
+    AgendaItem,
+)
 from privatim.models.consultation import Status
+from privatim.models.file import SearchableFile
 from privatim.testing import DummyRequest
 
 if TYPE_CHECKING:
@@ -106,11 +113,11 @@ def create_meeting_with_agenda_items(
 def create_consultation(documents=None, tags=None, user=None):
 
     documents = documents or [
-        GeneralFile(
+        SearchableFile(
             filename='document1.pdf',
             content=b'Content of Document 1',
         ),
-        GeneralFile(
+        SearchableFile(
             filename='document2.pdf',
             content=b'Content of Document 2',
         ),

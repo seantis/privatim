@@ -3,11 +3,12 @@ import os
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
-from privatim.models import Consultation, GeneralFile
+from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
 from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
 
+from privatim.models.file import SearchableFile
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.utils import dictionary_to_binary, flatten_comments, maybe_escape
 
@@ -35,7 +36,7 @@ def consultation_view(
     )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     fallback_pic = request.route_url(
-        'download_general_file', id=get_or_create_default_profile_pic(
+        'download_file', id=get_or_create_default_profile_pic(
             request.dbsession).id
     )
     return {
@@ -45,7 +46,7 @@ def consultation_view(
                 'display_filename': trim_filename(doc.filename),
                 'doc_content_type': doc.content_type,
                 'download_url': request.route_url(
-                    'download_general_file', id=doc.id
+                    'download_file', id=doc.id
                 ),
             }
             for doc in context.files
@@ -53,7 +54,7 @@ def consultation_view(
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
-                                                    fallback_pic, request)
+                                                    fallback_pic, request),
     }
 
 
@@ -81,6 +82,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         'title': _('Consultations'),
         'activities': consultations,
         'show_add_button': True,
+        'show_filter': False,
     }
 
 
@@ -99,8 +101,8 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         else:
             status = None
 
-        if form.cantons.data:
-            tags = [Tag(name=n) for n in form.cantons.raw_data]
+        if form.secondary_tags.data:
+            tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
             session.add_all(tags)
             session.flush()
         else:
@@ -124,7 +126,10 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         if form.files.data:
             for file in form.files.data:
                 new_consultation.files.append(
-                    GeneralFile(file['filename'], dictionary_to_binary(file))
+                    SearchableFile(
+                        file['filename'],
+                        dictionary_to_binary(file)
+                    )
                 )
 
         session.add(new_consultation)
@@ -161,7 +166,7 @@ def create_consultation_from_form(
     session.flush()
     session.refresh(status)
 
-    tags = [Tag(name=n) for n in form.cantons.raw_data]
+    tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
     session.add_all(tags)
     session.flush()
 
@@ -173,8 +178,10 @@ def create_consultation_from_form(
     if form.files.data is not None:
         for file in form.files.data:
             if file.get('data', None) is not None:
-                files.append(
-                    GeneralFile(file['filename'], dictionary_to_binary(file))
+                files.append(SearchableFile(
+                    file['filename'],
+                    dictionary_to_binary(file)
+                    )
                 )
     else:
         files = prev.files
@@ -201,13 +208,14 @@ def create_consultation_from_form(
 
 
 def edit_consultation_view(
-    context: Consultation, request: 'IRequest'
+    previous_consultation: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
-    previous_consultation = context
+
     form = ConsultationForm(previous_consultation, request)
 
     target_url = request.route_url('activities')  # fallback
     if request.method == 'POST' and form.validate():
+        form.populate_obj(previous_consultation)
         session = request.dbsession
         new_consultation = create_consultation_from_form(
             form, request, previous_consultation
@@ -226,7 +234,7 @@ def edit_consultation_view(
             )
         )
     elif not request.POST:
-        form.process(obj=context)
+        form.process(obj=previous_consultation)
 
     return {
         'form': form,

@@ -8,11 +8,10 @@ from tests.shared.utils import create_meeting, CustomDummyRequest, \
     create_meeting_with_agenda_items
 
 
-def test_export_meeting_without_agenda_items(config):
-    config.add_route('export_meeting_as_pdf_view',
-                     '/meetings/{id}/export')
+def test_export_meeting_without_agenda_items(pg_config):
+    pg_config.add_route('export_meeting_as_pdf_view', '/meetings/{id}/export')
 
-    db = config.dbsession
+    db = pg_config.dbsession
     meeting = create_meeting()
     db.add(meeting)
     db.flush()
@@ -30,17 +29,17 @@ def test_export_meeting_without_agenda_items(config):
     assert 'Logo' in all_text
 
 
-def test_sortable_agenda_items_view(config):
+def test_sortable_agenda_items_view(pg_config):
 
     # Add route
-    config.add_route(
+    pg_config.add_route(
         'sortable_agenda_items',
         '/meetings/agenda_items/{id}/move/{subject_id}/{direction}/{'
         'target_id}',
     )
 
     # Create a meeting with agenda items
-    db = config.dbsession
+    db = pg_config.dbsession
 
     agenda_items = [
         {'title': 'Introduction', 'description': 'Welcome and introductions.'},

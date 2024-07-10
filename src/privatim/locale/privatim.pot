@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 16:36+0200\n"
+"POT-Creation-Date: 2024-07-10 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,8 +50,7 @@ msgstr ""
 msgid "Answer"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt ./src/privatim/layouts/navbar.py
-#: ./src/privatim/views/activities.py
+#: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py
 msgid "Activities"
 msgstr ""
 
@@ -68,10 +67,6 @@ msgstr ""
 #: ./src/privatim/layouts/navbar.pt
 #: ./src/privatim/views/templates/working_groups.pt
 msgid "People"
-msgstr ""
-
-#: ./src/privatim/layouts/navbar.pt
-msgid "Search..."
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
@@ -109,6 +104,10 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete Meeting"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -249,6 +248,11 @@ msgstr ""
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr ""
 
+#: ./src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr ""
+
 #: ./src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
@@ -336,20 +340,37 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Search Results"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "No results containing all your search terms were found."
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+#: ./src/privatim/views/templates/activities.pt
+msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "File Match"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "File Content"
+msgstr ""
+
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "Unbekannter Ersteller"
+msgid "Unknown Creator"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
 msgid "No leader"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -361,15 +382,22 @@ msgid "Show Meeting"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
+#: ./src/privatim/forms/filter_form.py
 msgid "Meeting"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
+#: ./src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "Choose..."
+msgid "Type"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+#: ./src/privatim/forms/filter_form.py
+msgid "Filter"
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
@@ -558,7 +586,7 @@ msgstr ""
 msgid "Cantons"
 msgstr ""
 
-#: ./src/privatim/forms/add_comment.py
+#: ./src/privatim/forms/add_comment.py ./src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr ""
 
@@ -583,6 +611,22 @@ msgstr ""
 msgid "This field is read only."
 msgstr ""
 
+#: ./src/privatim/forms/filter_form.py
+msgid "Canton"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "all"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Date from"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Date to"
+msgstr ""
+
 #: ./src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
 msgstr ""
@@ -595,6 +639,18 @@ msgstr ""
 msgid "A meeting with this name already exists."
 msgstr ""
 
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr ""
+
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr ""
@@ -605,6 +661,10 @@ msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
+msgstr ""
+
+#: ./src/privatim/forms/search_form.py
+msgid "Search"
 msgstr ""
 
 #: ./src/privatim/forms/widgets/widgets.py

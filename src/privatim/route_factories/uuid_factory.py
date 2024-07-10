@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING
 from typing import TypeVar
 from uuid import UUID
-
 from pyramid.httpexceptions import HTTPNotFound
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pyramid.interfaces import IRequest

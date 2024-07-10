@@ -13,24 +13,24 @@
 <body class="d-flex flex-column h-100">
 
 <!-- Header -->
-${panel('navbar')}
+        ${panel('navbar')}
+<div class="main-content flex-grow-1">
+    <!-- Begin page content -->
+    <main class="flex-shrink-0 main-content">
 
+    ${panel('flash')}
 
-<!-- Begin page content -->
-<main class="flex-shrink-0">
+        <div class="container">
+            <tal:block metal:define-slot="content" />
+        </div>
 
-${panel('flash')}
+        <tal:block metal:define-slot="modals" />
 
-    <div class="container">
-        <tal:block metal:define-slot="content" />
-    </div>
-
-    <tal:block metal:define-slot="modals" />
-
-</main>
+    </main>
+</div>
 
 <!-- footer -->
-${panel('footer')}
+        ${panel('footer')}
 
 </body>
 </html>

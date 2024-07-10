@@ -1,8 +1,6 @@
 import warnings
 import pytest
-import sqlalchemy
 import transaction
-from libcloud.storage.drivers.local import LocalStorageDriver
 from pyramid import testing
 from sqlalchemy import engine_from_config
 from privatim import main
@@ -11,74 +9,39 @@ from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest, DummyMailer, MockRequests
-from sqlalchemy_file.storage import StorageManager
-
 from tests.shared.client import Client
 
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from pyramid.config import Configurator
-
-
-@pytest.fixture
-def base_config():
+@pytest.fixture(scope='function')
+def base_config(postgresql):
     msg = '.*SQLAlchemy must convert from floating point.*'
     warnings.filterwarnings('ignore', message=msg)
 
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'sqlite:///:memory:',
+        'sqlalchemy.url': (
+            f'postgresql+psycopg://{postgresql.info.user}:@'
+            f'{postgresql.info.host}:{postgresql.info.port}'
+            f'/{postgresql.info.dbname}'
+        ),
     })
     yield config
     testing.tearDown()
     transaction.abort()
 
 
-@pytest.fixture
-def config(base_config, monkeypatch, tmpdir) -> 'Configurator':
-    """ Returns the config used in tests. Note that this has side effects
-    on `DummyRequest` in that the session becomes available. """
+@pytest.fixture(scope='function', autouse=True)
+def run_around_tests(engine):
+    # todo: check if this is actually needed?
 
-    base_config.include('privatim.models')
-    base_config.include('pyramid_chameleon')
-    base_config.include('pyramid_layout')
-    settings = base_config.get_settings()
-
-    engine = get_engine(settings)
-    # enable foreign key constraints in sqlite, so we can rely on them
-    # working during testing.
-    sqlalchemy.event.listen(
-        engine,
-        'connect',
-        lambda c, r: c.execute('pragma foreign_keys=ON')
-    )
-
-    Base.metadata.create_all(engine)
-    session_factory = get_session_factory(engine)
-
-    dbsession = get_tm_session(session_factory, transaction.manager)
-    base_config.dbsession = dbsession
-
-    orig_init = DummyRequest.__init__
-
-    def init_with_dbsession(self, *args, dbsession=dbsession, **kwargs):
-        orig_init(self, *args, dbsession=dbsession, **kwargs)
-
-    monkeypatch.setattr(DummyRequest, '__init__', init_with_dbsession)
-
-    # Store static files in a temporary directory
-    if not StorageManager._storages:
-        # NOTE: StorageManager does not expose any method to check if some
-        # storage has already been added. However, if you attempt to add a
-        # storage that already exists, StorageManager raises a RuntimeError.
-        tmpdir.mkdir('assets')
-        container = LocalStorageDriver(tmpdir).get_container('assets')
-        StorageManager.add_storage("default", container)
-
-    return base_config
+    # This fixture will run before and after each test
+    # Thanks to the autouse=True parameter
+    yield
+    # After the test, we ensure all tables are dropped
+    Base.metadata.drop_all(bind=engine)
 
 
-@pytest.fixture
+# requires pytest-postgresql:
+@pytest.fixture(scope='function')
 def pg_config(postgresql, monkeypatch):
     config = testing.setUp(settings={
         'sqlalchemy.url': (
@@ -116,13 +79,13 @@ def pg_config(postgresql, monkeypatch):
         transaction.abort()
 
 
-@pytest.fixture
-def session(config):
+@pytest.fixture(scope='function')
+def session(pg_config):
     # convenience fixture
-    return config.dbsession
+    return pg_config.dbsession
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def user(session):
     user = User(
         email='admin@example.org',
@@ -160,13 +123,13 @@ def user_with_working_group(session):
 
 
 @pytest.fixture
-def mailer(config):
+def mailer(pg_config):
     mailer = DummyMailer()
-    config.registry.registerUtility(mailer)
+    pg_config.registry.registerUtility(mailer)
     return mailer
 
 
-@pytest.fixture()
+@pytest.fixture(scope='function')
 def engine(app_settings):
     engine = engine_from_config(app_settings)
     Base.metadata.create_all(engine)
@@ -177,25 +140,29 @@ def engine(app_settings):
     return engine
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def connection(engine):
     connection = engine.connect()
     yield connection
     connection.close()
 
 
-@pytest.fixture(scope="session")
-def app_settings():
-    yield {"sqlalchemy.url": "sqlite://"}
+@pytest.fixture(scope='function')
+def app_settings(postgresql):
+    yield {'sqlalchemy.url': (
+        f'postgresql+psycopg://{postgresql.info.user}:@'
+        f'{postgresql.info.host}:{postgresql.info.port}'
+        f'/{postgresql.info.dbname}'
+    )}
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='function')
 def app_inner(app_settings):
     app = main({}, **app_settings)
     yield app
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def app(app_inner, connection):
     app_inner.app.app.registry["dbsession_factory"].kw["bind"] = connection
     yield app_inner
@@ -214,12 +181,8 @@ def client(app, engine):
 
     yield client
 
-    # Remove user, if not already done within a test.
-    if user := client.db.get(User, user.id):
-        client.db.delete(user)
-        client.db.commit()
-
-    client.reset()
+    # Teardown
+    client.db.close()
     Base.metadata.drop_all(bind=engine)
 
 

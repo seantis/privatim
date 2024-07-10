@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING
-
+import logging
 from sqlalchemy.orm import configure_mappers
 
 # XXX import or define all models here to ensure they are attached to the
@@ -8,12 +7,13 @@ from sqlalchemy.orm import configure_mappers
 
 from privatim.models.group import Group
 from privatim.models.group import WorkingGroup
+from privatim.models.searchable import SearchableMixin
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.meeting import Meeting, AgendaItem
-from privatim.models.file import GeneralFile
-from privatim.models.consultation import Tag
+from privatim.models.file import GeneralFile, SearchableFile
 from privatim.models.statement import Statement
+from privatim.models.consultation import Tag
 from privatim.models.password_change_token import PasswordChangeToken
 from privatim.orm import get_engine
 from privatim.orm import get_session_factory
@@ -31,15 +31,16 @@ AgendaItem
 Statement
 PasswordChangeToken
 GeneralFile
+SearchableFile
+SearchableMixin
 
 
+from typing import TYPE_CHECKING  # noqa: E402
 if TYPE_CHECKING:
     from pyramid.config import Configurator
 
 
-# Run ``configure_mappers`` after defining all of the models to ensure
-# all relationships can be setup.
-configure_mappers()
+logger = logging.getLogger(__name__)
 
 
 def includeme(config: 'Configurator') -> None:
@@ -68,3 +69,6 @@ def includeme(config: 'Configurator') -> None:
         'dbsession',
         reify=True
     )
+
+
+configure_mappers()

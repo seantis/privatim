@@ -2,8 +2,8 @@ from privatim.models import User, WorkingGroup, Group, GeneralFile
 from sqlalchemy import select
 
 
-def test_set_password(config):
-    session = config.dbsession
+def test_set_password(pg_config):
+    session = pg_config.dbsession
 
     user = User(email='admin@example.org')
     session.add(user)
@@ -13,8 +13,8 @@ def test_set_password(config):
     assert user.check_password('Test123!') is True
 
 
-def test_user_password_failure(config):
-    session = config.dbsession
+def test_user_password_failure(pg_config):
+    session = pg_config.dbsession
     user = User(email='admin@example.org')
     session.add(user)
     session.flush()
@@ -24,16 +24,16 @@ def test_user_password_failure(config):
     assert user.check_password('Test123!') is True
 
 
-def test_user_groups_empty(config):
-    session = config.dbsession
+def test_user_groups_empty(pg_config):
+    session = pg_config.dbsession
     user = User(email='admin@example.org')
     session.add(user)
     session.flush()
     assert user.groups == []  # No groups associated initially
 
 
-def test_user_groups_association(config):
-    session = config.dbsession
+def test_user_groups_association(pg_config):
+    session = pg_config.dbsession
     user = User(email='admin@example.org')
     group = Group(name='Test Group')
 
@@ -45,8 +45,8 @@ def test_user_groups_association(config):
     assert user.groups == [group]
 
 
-def test_user_leading_group_relationship(config):
-    session = config.dbsession
+def test_user_leading_group_relationship(pg_config):
+    session = pg_config.dbsession
     user = User(email='admin@example.org')
     group = WorkingGroup(name='Leadership Group')
 
@@ -62,8 +62,8 @@ def test_user_leading_group_relationship(config):
     assert group.leader.email == 'admin@example.org'
 
 
-def test_group_type_polymorphism(config):
-    session = config.dbsession
+def test_group_type_polymorphism(pg_config):
+    session = pg_config.dbsession
     group = Group(name='General Group')
     working_group = WorkingGroup(name='Specific Working Group')
     session.add(group)

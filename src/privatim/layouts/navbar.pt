@@ -1,4 +1,4 @@
-<header i18n:domain="privatim" class="p-3 mb-3 border-bottom">
+<header i18n:domain="privatim" class="p-3 border-bottom">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between">
             <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
@@ -37,31 +37,30 @@
                     </li>
                 </ul>
 
-                <div class="d-flex">
-                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                        <input type="search" disabled="disabled" class="form-control" placeholder="Search..."
-                               aria-label="Search" i18n:attributes="placeholder">
-                    </form>
-                    <div class="dropdown text-end">
+                <div class="d-flex align-items-center">
+                    <metal:block use-macro="layout.macros['search_form']"
+                            tal:define="title 'title'; action search; layout layout; form form">
+
+                    </metal:block>
+                    <div class="dropdown text-d">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="${request.profile_pic}" alt="mdo" width="40" height="40"
                                  class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item"
-                                   href="${request.route_url('profile')}" i18n:translate=""><i
+                            <li><a class="dropdown-item" href="${request.route_url('profile')}" i18n:translate=""><i
                                     class="far fa-user-circle"></i> Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item"
-                                   href="${request.route_url('logout')}" i18n:translate=""><i
+                            <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate=""><i
                                     class="fas fa-sign-out-alt"></i> Sign out</a></li>
                         </ul>
                     </div>
                 </div>
+
             </tal:block>
-        </div>
+    </div>
     </div>
 </header>

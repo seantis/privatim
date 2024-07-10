@@ -52,6 +52,10 @@ def meeting_view(
                 request.route_url('delete_meeting', id=context.id),
             ),
             (
+                translate(_('Copy Agenda Items')),
+                request.route_url('copy_agenda_item', id=context.id),
+            ),
+            (
                 translate(_('Export meeting protocol')),
                 request.route_url('export_meeting_as_pdf_view', id=context.id),
             ),
@@ -277,12 +281,11 @@ def edit_meeting_view(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(meeting)  # called automatically?
-        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
-        attendees = list(session.execute(stmt).scalars().all())
+        form.populate_obj(meeting)
         assert form.time.data is not None
         meeting.name = maybe_escape(meeting.name)
-        meeting.attendees = attendees
+        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
+        meeting.attendees = list(session.execute(stmt).scalars().all())
         meeting.time = fix_utc_to_local_time(form.time.data)
 
         session.add(meeting)

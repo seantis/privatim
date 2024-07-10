@@ -7,16 +7,18 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, \
     remote, object_session
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
+from privatim.models import SearchableMixin
 
-from typing import TYPE_CHECKING, Optional, TypeVar
 
+from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
 if TYPE_CHECKING:
     from privatim.models import User
+    from sqlalchemy.orm import InstrumentedAttribute
     T = TypeVar('T', bound='Base')
     # Define a TypeVar for the commentable entity
 
 
-class Comment(Base, Associable):
+class Comment(Base, Associable, SearchableMixin):
     """A generic comment that shall be attachable to any model.
     Meant to be used in conjunction with `Commentable`.
 
@@ -30,7 +32,7 @@ class Comment(Base, Associable):
     model = YourModel(name='stuff')
     model.comments.append(Comment('Interesting sqlalchemy design pattern'))
 
-   """
+       """
 
     __tablename__ = 'comments'
 
@@ -105,6 +107,10 @@ class Comment(Base, Associable):
 
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'
+
+    @classmethod
+    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
+        yield cls.content
 
     __table_args__ = (
         Index('ix_comments_parent_id', 'parent_id'),

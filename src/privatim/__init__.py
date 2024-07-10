@@ -1,5 +1,7 @@
 from functools import partial
 from fanstatic import Fanstatic
+from sqlalchemy.dialects.postgresql import TSVECTOR
+
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
@@ -69,7 +71,7 @@ def includeme(config: Configurator) -> None:
         user = request.user
         if not user:
             return ''
-        return request.route_url('download_general_file', id=user.picture.id)
+        return request.route_url('download_file', id=user.picture.id)
 
     config.add_request_method(profile_pic, 'profile_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)
@@ -146,5 +148,10 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
                 nullable=True,
             ),
         )
+
+    context.operations.add_column(
+        'consultations',
+        Column('searchable_text_de_CH', TSVECTOR())
+    )
 
     context.commit()

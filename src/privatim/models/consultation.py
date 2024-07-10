@@ -5,18 +5,22 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
+from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
-from privatim.models.associated_file import AssociatedFiles
+from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
+from privatim.models.searchable import SearchableMixin, prioritize_search_field
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
 
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
-    from privatim.models import User, GeneralFile
+    from sqlalchemy.orm import InstrumentedAttribute
+    from privatim.models import User
+    from privatim.models.file import SearchableFile
 
 
 class Status(Base):
@@ -67,8 +71,13 @@ class Tag(Base):
         nullable=True
     )
 
+    def __repr__(self) -> str:
+        return f'<Tag {self.name}>'
 
-class Consultation(Base, Commentable, AssociatedFiles):
+
+class Consultation(  # type: ignore[misc]
+    Base, Commentable, SearchableAssociatedFiles, SearchableMixin
+):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -84,9 +93,9 @@ class Consultation(Base, Commentable, AssociatedFiles):
         decision: str | None = None,
         editor: 'User | None' = None,
         status: Status | None = None,
-        secondary_tags: list[Tag] | None = None,
-        files: list['GeneralFile'] | None = None,
+        files: list['SearchableFile'] | None = None,
         replaced_by: 'Consultation | None' = None,
+        secondary_tags: list[Tag] | None = None,
         previous_version: 'Consultation | None' = None,
         is_latest_version: int = 1,
     ):
@@ -169,6 +178,32 @@ class Consultation(Base, Commentable, AssociatedFiles):
     is_latest_version: Mapped[int] = mapped_column(
         Integer, default=1, index=True,
     )
+
+    @classmethod
+    @prioritize_search_field('title')
+    def searchable_fields(
+        cls,
+    ) -> Iterator[('InstrumentedAttribute[str | ' 'None]')]:
+        yield cls.title
+        for field in [cls.description, cls.recommendation]:
+            if field is not None:
+                yield field
+
+    @observes('files')
+    def files_observer(self, files: list['SearchableFile']) -> None:
+        """
+        Observer method for the 'files' relationship.
+        While potentially inefficient for large collections, it's typically
+        fine as the number of files is expected to be small (1-5). Consider
+        optimizing if performance issues arise.
+        """
+        self.reindex_files()
+
+    def __repr__(self) -> str:
+        return (
+            f'<Consultation {self.title}, searchable_text_de_CH: '
+            f'{self.searchable_text_de_CH}>'
+        )
 
     def __acl__(self) -> list['ACL']:
         return [

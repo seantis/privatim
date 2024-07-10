@@ -151,4 +151,17 @@
 
     </div> <!--?  tal repeat end -->
 </metal:block>
+
+
+<tal:block metal:define-macro="search_form">
+    <div class="container">
+        <form enctype="multipart/form-data" method="POST" action="${action}" novalidate
+              class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex align-items-center" id="search">
+            <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
+            <input type="text" name="term" autocomplete="off" class="form-control" placeholder="Search..."/>
+            <button type="submit" class="btn btn-secondary" id="search-button"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
+</tal:block>
+
 </html>

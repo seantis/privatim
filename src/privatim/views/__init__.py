@@ -3,14 +3,17 @@ from typing import TYPE_CHECKING
 from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
-                                      general_file_factory)
+                                      general_file_factory, file_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
 from privatim.route_factories import person_factory
 from privatim.route_factories import working_group_factory
 from privatim.views.activities import activities_view
-from privatim.views.agenda_items import add_agenda_item_view
+from privatim.views.agenda_items import (
+    add_agenda_item_view,
+    copy_agenda_item_view,
+)
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
 from privatim.views.consultations import (delete_consultation_view,
@@ -40,6 +43,7 @@ from privatim.views.password_retrieval import (  # type: ignore
 from privatim.views.people import people_view, person_view
 from privatim.views.profile import profile_view, add_profile_image_view
 from privatim.views.comment import add_comment_view
+from privatim.views.search import search
 from privatim.views.working_groups import (
     add_or_edit_working_group,
     delete_working_group_view,
@@ -81,6 +85,7 @@ def includeme(config: 'Configurator') -> None:
         activities_view,
         route_name='activities',
         renderer='templates/activities.pt',
+        request_method=('GET', 'POST')
     )
 
     # Adding a new consultation
@@ -134,8 +139,8 @@ def includeme(config: 'Configurator') -> None:
     )
     config.add_view(
         delete_consultation_view,
-        route_name='delete_consultation',
         renderer='json',
+        route_name='delete_consultation',
         request_method='DELETE',
         xhr=True
     )
@@ -353,6 +358,25 @@ def includeme(config: 'Configurator') -> None:
     )
 
     config.add_route(
+        'copy_agenda_item',
+        '/meetings/{id}/copy_agenda_item',
+        factory=meeting_factory
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        copy_agenda_item_view,
+        route_name='copy_agenda_item',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
         'sortable_agenda_items',
         '/meetings/agenda_items/{id}/move/{subject_id}/{direction}/{'
         'target_id}',
@@ -496,13 +520,13 @@ def includeme(config: 'Configurator') -> None:
 
     # General file
     config.add_route(
-        'download_general_file',
+        'download_file',
         '/download/file/{id}',
-        general_file_factory,
+        file_factory,
     )
     config.add_view(
         download_general_file_view,
-        route_name='download_general_file',
+        route_name='download_file',
         request_method='GET',
     )
 
@@ -523,4 +547,11 @@ def includeme(config: 'Configurator') -> None:
         request_method='DELETE',
         xhr=True,
         request_param='target_url'
+    )
+
+    config.add_route('search', '/search')
+    config.add_view(
+        search,
+        route_name='search',
+        renderer='templates/search_results.pt',
     )

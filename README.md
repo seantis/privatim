@@ -5,6 +5,19 @@ Getting Started
 ---------------
 
 ```
+sudo apt install postgresql libpq-dev python3-dev build-essential weasyprint
+```
+
+Create the PostgreSQL database:
+```
+sudo -u postgres bash -c "psql <<EOF
+CREATE USER dev WITH PASSWORD 'postgres' LOGIN NOINHERIT;
+ALTER USER dev WITH SUPERUSER;
+CREATE DATABASE privatim;
+GRANT ALL PRIVILEGES ON DATABASE privatim TO dev;
+EOF"
+
+
 git clone git@github.com:seantis/privatim.git
 cd privatim
 python3 -m venv venv
@@ -35,7 +48,7 @@ make run
 ## Run the project's tests
 
 ```
-pytest -n 3
+pytest -n auto
 ```
 
 

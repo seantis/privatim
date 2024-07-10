@@ -6,17 +6,20 @@ from privatim.i18n import translate
 
 
 from typing import TYPE_CHECKING
+
+from privatim.orm.abstract import AbstractFile
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import XHRDataOrRedirect
 
 
 def download_general_file_view(
-    file: GeneralFile, request: 'IRequest'
+    file: AbstractFile, request: 'IRequest'
 ) -> Response:
     """ Downloads any file. Anyone who knows the link can download the file."""
 
-    assert isinstance(file, GeneralFile)
+    assert isinstance(file, AbstractFile)
     response = Response(body=file.content, request=request)
     response.headers['Content-Disposition'] = (
         f"inline; filename={file.filename}"

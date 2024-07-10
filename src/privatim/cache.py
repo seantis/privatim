@@ -5,6 +5,7 @@ from typing import cast
 
 from pyramid.threadlocal import get_current_request
 
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable

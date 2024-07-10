@@ -51,6 +51,10 @@ class ConsultationForm(Form):
         ]
         self.status.choices = translated_choices
 
+        # If editing, populate the secondary_tags field
+        # if context and context.secondary_tags:
+        #     self.secondary_tags.process_data(context.secondary_tags)
+
     title = TextAreaField(
         _('Title'),
         validators=[DataRequired()],
@@ -73,7 +77,6 @@ class ConsultationForm(Form):
         render_kw={'rows': 6},
     )
 
-    # todo: finish field mapping
     # new: Beschluss
     decision = TextAreaField(
         _('Decision'),
@@ -84,7 +87,7 @@ class ConsultationForm(Form):
         _('Status'),
         choices=[]
     )
-    cantons = SearchableSelectField(
+    secondary_tags = SearchableSelectField(
         _('Cantons'),
         choices=[('', '')] + CANTONS_SHORT,
         validators=[

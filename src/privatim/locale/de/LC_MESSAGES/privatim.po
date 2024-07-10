@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-08 16:36+0200\n"
+"POT-Creation-Date: 2024-07-10 10:22+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -53,8 +53,7 @@ msgstr "Nachricht"
 msgid "Answer"
 msgstr "Antworten"
 
-#: src/privatim/layouts/navbar.pt src/privatim/layouts/navbar.py
-#: src/privatim/views/activities.py
+#: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
 msgstr "Aktivitäten"
 
@@ -72,10 +71,6 @@ msgstr "Gremien"
 #: src/privatim/views/templates/working_groups.pt
 msgid "People"
 msgstr "Personen"
-
-#: src/privatim/layouts/navbar.pt
-msgid "Search..."
-msgstr "Suchen..."
 
 #: src/privatim/layouts/navbar.pt
 msgid "<dynamic element> Profile"
@@ -115,6 +110,10 @@ msgid "Delete Meeting"
 msgstr "Sitzung löschen"
 
 #: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Traktanden kopieren"
+
+#: src/privatim/views/meetings.py
 msgid "Export meeting protocol"
 msgstr "Protokoll drucken"
 
@@ -150,7 +149,7 @@ msgstr "Sitzung \"${name}\" hinzugefügt"
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
-msgstr ""
+msgstr "Sitzung erfolgreich bearbeitet."
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -257,6 +256,11 @@ msgstr "Traktandum \"${title}\" erfolgreich bearbeitet"
 msgid "Successfully deleted agena_item \"${title}\""
 msgstr "Traktandum \"${title}\" erfolgreich gelöscht"
 
+#: src/privatim/views/agenda_items.py
+#, python-format
+msgid "Successfully copied agenda item \"${name}\""
+msgstr "Traktandum \"${name}\" erfolgreich kopiert"
+
 #: src/privatim/views/password_retrieval.py
 msgid ""
 "An email has been sent to the requested account with further information. If "
@@ -346,21 +350,39 @@ msgstr "Dokumente"
 msgid "Status"
 msgstr "Status"
 
+#: src/privatim/views/templates/search_results.pt
+msgid "Search Results"
+msgstr "Suchergebnisse"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "No results containing all your search terms were found."
+msgstr ""
+"Es wurden keine Ergebnisse gefunden, die alle Ihre Suchbegriffe enthalten."
+
+#: src/privatim/views/templates/search_results.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Show Details"
+msgstr "Details anzeigen"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Match"
+msgstr "Dateiinhalt"
+
+#: src/privatim/views/templates/search_results.pt
+msgid "File Content"
+msgstr "Dateiinhalt"
+
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Unbekannter Ersteller"
-msgstr "Unknown Creator"
+msgid "Unknown Creator"
+msgstr "Unbekannter Ersteller"
 
 #: src/privatim/views/templates/activities.pt
 msgid "No leader"
 msgstr "Kein Leiter"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Show Details"
-msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Working Group:"
@@ -370,17 +392,21 @@ msgstr "Gremium:"
 msgid "Show Meeting"
 msgstr "Sitzung anzeigen"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Meeting"
 msgstr "Sitzung"
 
-#: src/privatim/views/templates/activities.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Vernehmlassung"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Choose..."
-msgstr "Auswählen..."
+msgid "Type"
+msgstr "Art"
+
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr "Filter"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -568,7 +594,7 @@ msgstr "Beschluss"
 msgid "Cantons"
 msgstr "Kantone"
 
-#: src/privatim/forms/add_comment.py
+#: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -595,6 +621,22 @@ msgstr "Dieses Feld ist deaktiviert."
 msgid "This field is read only."
 msgstr "Dieses Feld ist schreibgeschützt."
 
+#: src/privatim/forms/filter_form.py
+msgid "Canton"
+msgstr "Kanton"
+
+#: src/privatim/forms/filter_form.py
+msgid "all"
+msgstr "Alle"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date from"
+msgstr "Datum von"
+
+#: src/privatim/forms/filter_form.py
+msgid "Date to"
+msgstr "Datum bis"
+
 #: src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
 msgstr "Sitzung bearbeiten"
@@ -607,6 +649,20 @@ msgstr "Datum / Uhrzeit"
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
+#: src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr "Ziel für Traktanden auswählen"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr ""
+"Es sind keine weiteren Sitzungen verfügbar, in die das Traktandum kopiert "
+"werden kann."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr "Kopieren nach"
+
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
 msgstr "Gremium bearbeiten"
@@ -617,7 +673,11 @@ msgstr "Kein Leiter"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
-msgstr ""
+msgstr "Kontakt Vorstand"
+
+#: src/privatim/forms/search_form.py
+msgid "Search"
+msgstr "Volltextsuche"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
@@ -652,6 +712,5 @@ msgstr "Protokoll der Sitzung ${title}"
 msgid "Attendees:"
 msgstr "Teilnehmende:"
 
-#, python-format
-#~ msgid "Successfully edited meeting \"${name}\""
-#~ msgstr "Sitzung \"${name}\" erfolgreich bearbeitet"
+#~ msgid "Kanton"
+#~ msgstr "Canton"

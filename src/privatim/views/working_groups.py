@@ -4,11 +4,10 @@ from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
 from privatim.models import WorkingGroup, User, Meeting
 from privatim.i18n import _, translate
-
-from typing import TYPE_CHECKING
-
 from privatim.utils import maybe_escape
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import (RenderData, RenderDataOrRedirect,
