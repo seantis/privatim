@@ -12,14 +12,14 @@ def setup_filestorage(settings: Any) -> None:
     """
     Configure storage of static assets
     """
-    uploads_dir = Path(settings.get('documents_dir', 'uploads'))
-    asset_dir = uploads_dir / 'assets'
+    documents_dir = Path(settings.get('documents_dir', 'uploads'))
+    asset_dir = documents_dir / 'assets'
     asset_dir.mkdir(exist_ok=True, parents=True)
 
     if 'default' not in StorageManager._storages:
 
         container = (
-            LocalStorageDriver(uploads_dir)
+            LocalStorageDriver(documents_dir)
             .get_container(asset_dir.name)
         )
         StorageManager.add_storage("default", container)
