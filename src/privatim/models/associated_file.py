@@ -1,5 +1,4 @@
 import logging
-from io import BytesIO
 
 from sqlalchemy import func, Index
 from sqlalchemy.dialects.postgresql import TSVECTOR
@@ -31,7 +30,6 @@ class AssociatedFiles:
 class SearchableAssociatedFiles:
     """ Same as AssociatedFiles but provides the toolkit to make a list of
     files searchable, if they are pdfs. """
-
 
     if TYPE_CHECKING:
         id: Mapped[UUIDStrPK]
@@ -76,10 +74,15 @@ class SearchableAssociatedFiles:
             text = ''
             for file in files_by_locale[locale]:
                 try:
-                    if file.file.get('saved', False):
-                        _file_handle = file.file.file
+                    inner = file.file
+                    if inner.get('saved', False):
+                        _file_handle = inner.file
                     else:
-                        _file_handle = file.file.original_content
+                        if inner.original_content is None:
+                            _file_handle = (
+                                inner.original_content)  # type: ignore
+                        else:
+                            raise ValueError('No file content available')
 
                     pages, extract = extract_pdf_info(_file_handle)
 
@@ -89,10 +92,13 @@ class SearchableAssociatedFiles:
                         text += '\n\n' + file.extract
                 except Exception as e:
                     if 'poppler error creating document' in str(e):
-                        logger.error(f'Possible malformed pdf: '
-                                     f'{file.filename}')
-                    logger.error(f"Error extracting text contents for file"
-                                 f" {file.id}: {str(e)}")
+                        logger.error(
+                            f'Possible malformed pdf: ' f'{file.filename}'
+                        )
+                    logger.error(
+                        f'Error extracting text contents for file'
+                        f' {file.id}: {str(e)}'
+                    )
 
             setattr(
                 self,

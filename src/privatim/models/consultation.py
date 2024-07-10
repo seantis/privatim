@@ -5,7 +5,7 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-from sqlalchemy_utils import observes
+from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
 from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable

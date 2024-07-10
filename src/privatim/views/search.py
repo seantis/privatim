@@ -13,8 +13,8 @@ from sqlalchemy import (
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
+from privatim.models.associated_file import SearchableAssociatedFiles
 
-from privatim.models import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment

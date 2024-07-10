@@ -2,7 +2,7 @@ import click
 from pyramid.paster import bootstrap
 from sqlalchemy import select, func
 
-from privatim.models import SearchableAssociatedFiles
+from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.file import SearchableFile
 from privatim.orm import Base
 

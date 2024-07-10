@@ -12,9 +12,7 @@ else:
 
 class MarkupText(_Base):
     """ Text column that contains HTML/XML markup. """
-
     impl = TEXT
-
     cache_ok = True
 
     def process_bind_param(
@@ -22,16 +20,17 @@ class MarkupText(_Base):
             value: str | None,
             dialect: 'Dialect'
     ) -> Markup | None:
-
         return None if value is None else escape(value)
 
-    def process_literal_param(
+    def process_literal_param(  # type: ignore[override]
             self,
             value: str | None,
             dialect: 'Dialect'
-    ) -> Markup | None:
-
-        return None if value is None else escape(value)
+    ) -> str | None:
+        if value is None:
+            return None
+        escaped = escape(value)
+        return str(escaped)  # Convert Markup to str
 
     def process_result_value(
             self,
