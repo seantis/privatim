@@ -43,16 +43,18 @@ class MeetingForm(Form):
         users = session.execute(select(User)).scalars().all()
         self.attendees.choices = [(str(u.id), u.fullname) for u in users]
 
-    name = StringField(label=_('Name'), validators=[InputRequired()])
+    name: StringField = StringField(
+        label=_('Name'), validators=[InputRequired()]
+    )
 
-    time = TimezoneDateTimeField(
-        _('Time'),
+    time: TimezoneDateTimeField = TimezoneDateTimeField(
+        label=_('Time'),
         timezone='Europe/Zurich',
         validators=[InputRequired()],
     )
 
-    attendees = SearchableSelectField(
-        _('Members'),
+    attendees: SearchableSelectField = SearchableSelectField(
+        label=_('Members'),
         validators=[InputRequired()],
     )
 
