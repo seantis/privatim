@@ -55,7 +55,10 @@ def person_view(context: User, request: 'IRequest') -> 'RenderData':
         return [(item, request.route_url(name, id=item.id)) for item in items]
 
     meeting_urls = generate_urls(user.meetings, 'meeting')
-    consultation_urls = generate_urls(user.consultations, 'consultation')
+    consultation_urls = generate_urls(
+        [c for c in user.consultations if c.is_latest_version == 1],
+        'consultation'
+    )
 
     return {
         'user': user,
