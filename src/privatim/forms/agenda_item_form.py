@@ -1,5 +1,4 @@
 from sqlalchemy import select
-from wtforms import StringField
 from wtforms import validators
 from wtforms.fields.choices import RadioField
 from wtforms.fields.simple import TextAreaField
