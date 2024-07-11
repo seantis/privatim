@@ -13,6 +13,7 @@ from sqlalchemy import (
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
+from privatim.models import AgendaItem
 from privatim.models.associated_file import SearchableAssociatedFiles
 
 from privatim.models.file import SearchableFile
@@ -110,6 +111,8 @@ class SearchCollection:
             self.results.extend(self.search_model(model))
 
         self._add_comments_to_results()
+        self._add_agenda_items_to_results()
+    
 
     def search_model(
         self, model: type[SearchableMixin | SearchableAssociatedFiles]
@@ -288,6 +291,26 @@ class SearchCollection:
                 (
                     result._replace(model_instance=comment_dict.get(result.id))
                     if result.type == 'Comment'
+                    else result
+                )
+                for result in self.results
+            ]
+
+    def _add_agenda_items_to_results(self) -> None:
+        agenda_item_ids = [
+            result.id for result in self.results if result.type.lower() == 
+                                                    'agendaitem'
+        ]
+        if agenda_item_ids:
+            stmt = select(AgendaItem).filter(AgendaItem.id.in_(agenda_item_ids))
+            AgendaItems = self.session.scalars(stmt).all()
+            AgendaItem_dict: dict[str, 'AgendaItem'] = {
+                AgendaItem.id: AgendaItem for AgendaItem in AgendaItems
+            }
+            self.results = [
+                (
+                    result._replace(model_instance=AgendaItem_dict.get(result.id))
+                    if result.type.lower() == 'agendaitem'
                     else result
                 )
                 for result in self.results
