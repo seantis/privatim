@@ -112,7 +112,7 @@ class SearchCollection:
 
         self._add_comments_to_results()
         self._add_agenda_items_to_results()
-    
+
 
     def search_model(
         self, model: type[SearchableMixin | SearchableAssociatedFiles]
@@ -298,7 +298,7 @@ class SearchCollection:
 
     def _add_agenda_items_to_results(self) -> None:
         agenda_item_ids = [
-            result.id for result in self.results if result.type.lower() == 
+            result.id for result in self.results if result.type.lower() ==
                                                     'agendaitem'
         ]
         if agenda_item_ids:

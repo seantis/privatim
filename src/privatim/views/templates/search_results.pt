@@ -60,7 +60,7 @@
                                 <div class="card-body">
                                     <div class="d-flex flex-start align-items-center">
                                         <img class="rounded-circle shadow-1-strong me-3"
-                                             src="${request.user_pic}"
+                                             src="${request.profile_pic}"
                                              alt="avatar"
                                              width="60"
                                              height="60"
