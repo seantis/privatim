@@ -102,13 +102,12 @@ def test_search_client(client, pdf_vemz):
     logger.debug('Performed search')
 
 
-
 def test_search(session, pdf_vemz):
-
 
     documents = [SearchableFile(*pdf_vemz)]
     consultation = create_consultation(documents=documents)
     session.add(consultation)
+    session.flush()
 
     query = 'grundsätzlichen Fragen:'
     collection: SearchCollection = SearchCollection(term=query, session=session)

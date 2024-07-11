@@ -1,39 +1,40 @@
 #!/bin/bash
 
-# Start PostgreSQL container for database tests
+# Define container name
+CONTAINER_NAME="postgres12-background"
 
-# Stop and remove any existing containers with the same name
-docker stop postgres12-pytest 2>/dev/null || true
-docker rm postgres12-pytest 2>/dev/null || true
+# Check if the container already exists
+if [ ! "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+    if [ "$(docker ps -aq -f status=exited -f name=$CONTAINER_NAME)" ]; then
+        # Cleanup
+        echo "Removing old container..."
+        docker rm $CONTAINER_NAME
+    fi
 
-docker run --name postgres12-pytest \
-  -e POSTGRES_DB=test_db_1 \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=password \
-  -p 5433:5432 \
-  --rm -d postgres:12 \
-#  -c fsync=off \
-#  -c full_page_writes=off \
-#  -c synchronous_commit=off
+    # Run new container
+    echo "Starting new PostgreSQL container..."
+    docker run --network=host --name $CONTAINER_NAME \
+      -e POSTGRES_DB=test_db_1 \
+      -e POSTGRES_USER=postgres \
+      -e POSTGRES_PASSWORD=password \
+      -p 5433:5433 \
+      -d postgres:14
 
+    echo "Waiting for PostgreSQL to initialize..."
+    sleep 7
+else
+    echo "PostgreSQL container is already running."
+fi
 
-# Wait for PostgreSQL to be ready
-echo "Waiting for PostgreSQL to initialize..."
-sleep 10  # Increased from 5 to 10 seconds
+# Get container IP
+DOCKER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_NAME)
 
-DOCKER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres12-pytest)
+echo "PostgreSQL container is ready at $DOCKER_IP:5433"
 
-# Run pytest
-# -s to redirect stdout
-
+# Your test command (adjust as needed)
 echo "Running pytest..."
-PYTHONUNBUFFERED=1 pytest -o log_cli=true -o log_cli_level=DEBUG -k 'test_search_client' \
-  --postgresql-host=$DOCKER_IP \
-  --postgresql-port=5433 \
-  --postgresql-user=postgres \
-  --postgresql-password=password \
+PYTHONUNBUFFERED=1 pytest -o log_cli=true -o log_cli_level=DEBUG -k 'test_search' \
 
+echo "Tests completed. The PostgreSQL container remains running in the background."
 
-
-# Stop the container
-docker stop postgres12-pytest
+# docker logs postgres12-background  # Check for any startup errors

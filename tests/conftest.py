@@ -1,38 +1,36 @@
 import logging
-import warnings
 import pytest
 import transaction
-from psycopg import pq
-from pytest_postgresql import factories
 from pyramid import testing
 from pathlib import Path
 from sqlalchemy import engine_from_config, text
-from privatim import main
+from privatim import main, types
 from privatim.file.setup import setup_filestorage
 from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import DummyRequest, DummyMailer, MockRequests
+from tests.shared.utils import Bunch
 from tests.shared.client import Client
 
 
 docker_config = {
-    'host': 'localhost',  # or the IP of your Docker host
+    'host': '172.17.0.2',  # or the IP of your Docker host
     'port': 5433,  # the port you mapped in your Docker run command
     'user': 'postgres',
     'password': 'password',
-    'dbname': 'test_db'
+    'dbname': 'test_db_1'
 }
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
 
-postgresql_in_docker = factories.postgresql_noproc(**docker_config)
-# it's important that this variable name is exactly 'postgresql'
-# Because the name is shadowed
-postgresql = factories.postgresql("postgresql_in_docker", load=[])
-# requires pytest-postgresql:
+
+bunch_docker_config = Bunch(**{'info': Bunch(**docker_config)})
+
+
 @pytest.fixture(scope='function')
-def pg_config(postgresql, monkeypatch):
+def pg_config(monkeypatch):
+    postgresql = bunch_docker_config
 
     logger = logging.getLogger(__name__)
     logger.debug('Setting up pg_config fixture')
@@ -43,6 +41,7 @@ def pg_config(postgresql, monkeypatch):
             f'{postgresql.info.host}:{postgresql.info.port}'
             f'/{postgresql.info.dbname}'
         ),
+        
     })
     config.include('privatim.models')
     config.include('pyramid_chameleon')
@@ -142,7 +141,9 @@ def connection(engine):
 
 
 @pytest.fixture(scope='function')
-def app_settings(postgresql):
+def app_settings():
+    postgresql = bunch_docker_config
+
     yield {
         'sqlalchemy.url': (
             f'postgresql+psycopg://{postgresql.info.user}:{postgresql.info.password}@'
