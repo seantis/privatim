@@ -44,7 +44,7 @@
                                         <img tal:condition="activity.working_group.leader.profile_pic"
                                                 src="${request.route_url( 'download_file', id=activity.working_group.leader.picture.id)}"
                                                 class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                        <img tal:condition="activity.working_group.leader and activity.working_group.leader.profile_pic"
+                                        <img tal:condition="activity.working_group.leader and not activity.working_group.leader.profile_pic"
                                                 src="${layout.static_url('privatim:static/default_profile_icon.png')}"
                                                 class="rounded-circle m-3 profile-icon" alt="Profile Icon">
                                     </div>
