@@ -68,10 +68,12 @@ def meeting_view(
     ), "Agenda items are not sorted"
 
     agenda_items = []
-    for item in context.agenda_items:
+    for indx, item in enumerate(context.agenda_items, start=1):
         agenda_items.append(
             {
-                'title': item.title,
+                'title': Markup(  # noqa: MS001
+                    '<strong>{}.</strong> {}'.format(indx, item.title)
+                ),
                 'description': item.description,
                 'id': item.id,
                 'position': item.position,

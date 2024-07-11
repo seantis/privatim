@@ -303,16 +303,16 @@ span.accordion-text-9 {
 }
 
 
-.accordion {
-    counter-reset: section; /* Reset the section counter */
-}
+/*.accordion {*/
+/*    counter-reset: section; !* Reset the section counter *!*/
+/*}*/
 
-.accordion-text-9::before {
-    counter-increment: section; /* Increment the section counter */
-    content: counter(section) ". "; /* Display the counter */
-    font-weight: bold;
-    margin-right: 10px;
-}
+/*.accordion-text-9::before {*/
+/*    counter-increment: section; !* Increment the section counter *!*/
+/*    content: counter(section) ". "; !* Display the counter *!*/
+/*    font-weight: bold;*/
+/*    margin-right: 10px;*/
+/*}*/
 
 
 /* Start search results */

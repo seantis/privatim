@@ -49,6 +49,7 @@ var on_move_element = function(container, element, new_index, old_index) {
     })
         .done(function () {
             $(element).addClass('flash').addClass('success');
+            updateIndexes(container);
         })
         .fail(function () {
             undo_move_element(container, element, new_index, old_index);
@@ -63,6 +64,12 @@ var on_move_element = function(container, element, new_index, old_index) {
             }, 1000);
         });
 };
+
+function updateIndexes(container) {
+    // We could use a sophisticated way to update the indexes in-place, but I mean, why?
+    // Keep it simple
+    window.location.reload();
+}
 
 var undo_move_element = function(container, element, new_index, old_index) {
     var siblings = $(container).children();
