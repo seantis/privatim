@@ -54,6 +54,7 @@
 
 .comment-text {
     margin-left: 75px;
+    white-space: pre-line;
 }
 
 /* Animation start: make 'Add Comment' relveal itself */

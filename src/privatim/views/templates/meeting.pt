@@ -41,7 +41,7 @@
                         </h2>
                         <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">
                             <div class="accordion-body">
-                                    ${item.description}
+                                <p class="make-line-breaks-in-p">${item.description}</p>
                             </div>
                         </div>
                     </div>
