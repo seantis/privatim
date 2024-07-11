@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from sqlalchemy.orm import joinedload
 
 from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
@@ -16,8 +17,17 @@ if TYPE_CHECKING:
 
 def working_groups_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
-    stmt = select(WorkingGroup).order_by(WorkingGroup.name)
+    stmt = (
+        select(WorkingGroup)
+        .options(joinedload(WorkingGroup.users))
+        .order_by(WorkingGroup.name)
+    )
     working_groups = session.scalars(stmt).unique().all()
+
+    # Sort users for each working group
+    for group in working_groups:
+        group.users.sort(key=lambda user: user.fullname.lower())
+
     return {'working_groups': working_groups}
 
 

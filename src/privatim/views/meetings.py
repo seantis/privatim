@@ -1,4 +1,4 @@
-from markupsafe import Markup, escape
+from markupsafe import Markup
 from pyramid.response import Response
 from privatim.reporting.report import (
     MeetingReport,
@@ -155,9 +155,9 @@ def user_list(
         ).format(
             Icon('user', IconStyle.solid),
             request.route_url("person", id=user.id),
-            escape(user.fullname)
+            user.fullname
         )
-        for user in users
+        for user in sorted(users, key=lambda user: user.fullname)
     )
     return Markup(
         '''
