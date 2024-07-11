@@ -35,10 +35,11 @@ class AgendaItemForm(Form):
             meta={'context': context, 'request': request},
         )
 
-    title = StringField(
-        label=_('Title'), validators=[validators.DataRequired()]
+    title = TextAreaField(
+        label=_('Title'), validators=[validators.DataRequired()],
+        render_kw={'rows': 3}
     )
-    description = TextAreaField(_('Description'))
+    description = TextAreaField(_('Description'), render_kw={'rows': 5})
 
     def populate_obj(self, obj: 'AgendaItem') -> None:  # type:ignore[override]
         super().populate_obj(obj)
