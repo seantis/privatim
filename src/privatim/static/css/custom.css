@@ -285,8 +285,8 @@ span.accordion-text-9 {
 /* 'resource-collection' means this cluster of lists of _stuff_, like
 "documents", "attendees", "links".  */
 .resource-collection * {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .generic-user-list-container {

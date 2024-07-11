@@ -17,7 +17,7 @@
 
             <!-- Main Content -->
             <div class="col-lg-9 mb-4">
-                <div class="text-start">
+                <div class="text-start resource-collection">
                     <p>
                         <span class="fw-bold" i18n:translate="">Date / Time:</span> ${time}
                     </p>
