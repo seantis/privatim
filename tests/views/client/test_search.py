@@ -1,15 +1,18 @@
+import logging
+
 import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Mapped, mapped_column
 from webtest import Upload
-from psycopg import pq
 
 from privatim.models import SearchableFile
 from privatim.models.searchable import SearchableMixin
 from privatim.models.searchable import prioritize_search_field
 from privatim.orm import Base
 from privatim.views.search import SearchCollection
-from shared.utils import create_consultation
+from tests.shared.utils import create_consultation
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
 
 
 @pytest.fixture(scope='function')
@@ -52,25 +55,33 @@ def test_model_definition(session, create_model):
     ] == ['primary', 'secondary']
 
 
-def test_search(client, pdf_vemz, postgresql):
+def test_search_client(client, pdf_vemz):
+    # breakpoint()
+    # cur = client.db.cursor()
 
-    cur = postgresql.cursor()
-    res = cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
-    assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
-    res = cur.execute("CREATE EXTENSION IF NOT EXISTS btree_gin;")
-    assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
+    # cur = postgresql.cursor()
+    # res = cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
+    # assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
+    # res = cur.execute("CREATE EXTENSION IF NOT EXISTS btree_gin;")
+    # assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
+    #
+    # postgresql.commit()
+    # cur.close()
 
-    postgresql.commit()
-    cur.close()
+    logger = logging.getLogger(__name__)
+    logger.debug('Starting test_search')
 
     client.login_admin()
-    # test without document upload
+    logger.debug('Logged in as admin')
+
     page = client.get('/consultations')
+    logger.debug('Accessed /consultations')
+
     page = page.click('Vernehmlassung Erfassen')
     page.form['title'] = 'test'
     page.form.submit()
+    logger.debug('Submitted form without document')
 
-    # now with all fields
     page = client.get('/consultations')
     page = page.click('Vernehmlassung Erfassen')
     page.form['title'] = 'test'
@@ -82,28 +93,24 @@ def test_search(client, pdf_vemz, postgresql):
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload(*pdf_vemz)
     page = page.form.submit().follow()
+    logger.debug('Submitted form with all fields')
 
     client.skip_n_forms = 0
-    # search for file content
     search_form = page.forms[0]
     search_form['term'] = 'Sehr geehrte Damen und Herren'
     search_result = search_form.submit().follow()
+    logger.debug('Performed search')
 
 
-def test_search(session, pdf_vemz, postgresql):
 
-    cur = postgresql.cursor()
-    res = cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
-    assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
-    res = cur.execute("CREATE EXTENSION IF NOT EXISTS btree_gin;")
-    assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
+def test_search(session, pdf_vemz):
+
 
     documents = [SearchableFile(*pdf_vemz)]
     consultation = create_consultation(documents=documents)
     session.add(consultation)
 
     query = 'grundsätzlichen Fragen:'
-
     collection: SearchCollection = SearchCollection(term=query, session=session)
     collection.do_search()
     return

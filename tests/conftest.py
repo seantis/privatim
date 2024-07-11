@@ -1,6 +1,9 @@
+import logging
 import warnings
 import pytest
 import transaction
+from psycopg import pq
+from pytest_postgresql import factories
 from pyramid import testing
 from pathlib import Path
 from sqlalchemy import engine_from_config, text
@@ -13,40 +16,30 @@ from privatim.testing import DummyRequest, DummyMailer, MockRequests
 from tests.shared.client import Client
 
 
-@pytest.fixture(scope='function')
-def base_config(postgresql):
-    msg = '.*SQLAlchemy must convert from floating point.*'
-    warnings.filterwarnings('ignore', message=msg)
+docker_config = {
+    'host': 'localhost',  # or the IP of your Docker host
+    'port': 5433,  # the port you mapped in your Docker run command
+    'user': 'postgres',
+    'password': 'password',
+    'dbname': 'test_db'
+}
 
-    config = testing.setUp(settings={
-        'sqlalchemy.url': (
-            f'postgresql+psycopg://{postgresql.info.user}:@'
-            f'{postgresql.info.host}:{postgresql.info.port}'
-            f'/{postgresql.info.dbname}'
-        ),
-    })
-    yield config
-    testing.tearDown()
-    transaction.abort()
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
 
-
-@pytest.fixture(scope='function', autouse=True)
-def run_around_tests(engine):
-    # todo: check if this is actually needed?
-
-    # This fixture will run before and after each test
-    # Thanks to the autouse=True parameter
-    yield
-    # After the test, we ensure all tables are dropped
-    Base.metadata.drop_all(bind=engine)
-
-
+postgresql_in_docker = factories.postgresql_noproc(**docker_config)
+# it's important that this variable name is exactly 'postgresql'
+# Because the name is shadowed
+postgresql = factories.postgresql("postgresql_in_docker", load=[])
 # requires pytest-postgresql:
 @pytest.fixture(scope='function')
 def pg_config(postgresql, monkeypatch):
+
+    logger = logging.getLogger(__name__)
+    logger.debug('Setting up pg_config fixture')
+
     config = testing.setUp(settings={
         'sqlalchemy.url': (
-            f'postgresql+psycopg://{postgresql.info.user}:@'
+            f'postgresql+psycopg://{postgresql.info.user}:{postgresql.info.password}@'
             f'{postgresql.info.host}:{postgresql.info.port}'
             f'/{postgresql.info.dbname}'
         ),
@@ -150,11 +143,13 @@ def connection(engine):
 
 @pytest.fixture(scope='function')
 def app_settings(postgresql):
-    yield {'sqlalchemy.url': (
-        f'postgresql+psycopg://{postgresql.info.user}:@'
-        f'{postgresql.info.host}:{postgresql.info.port}'
-        f'/{postgresql.info.dbname}'
-    )}
+    yield {
+        'sqlalchemy.url': (
+            f'postgresql+psycopg://{postgresql.info.user}:{postgresql.info.password}@'
+            f'{postgresql.info.host}:{postgresql.info.port}'
+            f'/{postgresql.info.dbname}'
+        ),
+    }
 
 
 @pytest.fixture(scope='function')
