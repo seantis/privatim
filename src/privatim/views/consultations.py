@@ -176,7 +176,7 @@ def create_consultation_from_form(
     if not user:
         return None
 
-    files = []
+    files = prev.files
     if form.files.data is not None:
         for file in form.files.data:
             if file.get('data', None) is not None:
@@ -185,8 +185,6 @@ def create_consultation_from_form(
                     dictionary_to_binary(file)
                     )
                 )
-    else:
-        files = prev.files
 
     assert prev.creator is not None
     new_consultation = Consultation(
@@ -227,6 +225,8 @@ def edit_consultation_view(
 
         session.add(new_consultation)
         session.flush()
+        session.refresh(new_consultation)
+
         message = _('Successfully edited consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')

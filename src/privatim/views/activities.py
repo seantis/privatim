@@ -30,7 +30,7 @@ def activities_view(request: 'IRequest') -> 'RenderData':
     consultation_query = select(Consultation).options(
         joinedload(Consultation.creator),
         joinedload(Consultation.secondary_tags)
-    )
+    ).where(Consultation.is_latest_version == 1)
     meeting_query = select(Meeting).options(
         joinedload(Meeting.attendees)
     )
