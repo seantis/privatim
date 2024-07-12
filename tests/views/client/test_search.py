@@ -1,7 +1,8 @@
 import logging
 
 import pytest
-from sqlalchemy import select
+import transaction
+from sqlalchemy import select, text
 from sqlalchemy.orm import Mapped, mapped_column
 from webtest import Upload
 
@@ -13,6 +14,7 @@ from privatim.views.search import SearchCollection
 from tests.shared.utils import create_consultation
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
@@ -68,7 +70,6 @@ def test_search_client(client, pdf_vemz):
     # postgresql.commit()
     # cur.close()
 
-    logger = logging.getLogger(__name__)
     logger.debug('Starting test_search')
 
     client.login_admin()
@@ -102,12 +103,14 @@ def test_search_client(client, pdf_vemz):
     logger.debug('Performed search')
 
 
-def test_search(session, pdf_vemz):
+def test_session_only_search(session, pdf_vemz):
+    logger.info('test_search start')
 
     documents = [SearchableFile(*pdf_vemz)]
     consultation = create_consultation(documents=documents)
     session.add(consultation)
     session.flush()
+    logger.info('Consultation created')
 
     query = 'grundsätzlichen Fragen:'
     collection: SearchCollection = SearchCollection(term=query, session=session)
@@ -125,3 +128,27 @@ def test_search(session, pdf_vemz):
     #         result.headlines['title'] = first_item[1]
     #
     #     search_results.append(result)
+
+
+def test_setweight(session):
+    transaction.begin()
+
+    session.execute(text("""
+        CREATE TABLE IF NOT EXISTS test_table (
+            id SERIAL PRIMARY KEY,
+            content TEXT
+        )
+    """))
+
+    session.execute(text("INSERT INTO test_table (content) VALUES ('test content')"))
+
+    result = session.execute(text(
+        "SELECT setweight(to_tsvector('english', content), 'A') FROM test_table"
+    )).scalar_one()
+
+    print(f"Setweight result: {result}")
+
+    transaction.commit()
+
+    session.execute(text("DROP TABLE IF EXISTS test_table"))
+    transaction.commit()

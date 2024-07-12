@@ -14,18 +14,18 @@ from tests.shared.utils import Bunch
 from tests.shared.client import Client
 
 
-docker_config = {
-    'host': '172.17.0.2',  # or the IP of your Docker host
-    'port': 5433,  # the port you mapped in your Docker run command
-    'user': 'postgres',
-    'password': 'password',
-    'dbname': 'test_db_1'
+connection_config = {
+    'host': 'localhost',
+    'port': 5432,
+    'user': 'dev',
+    'password': 'postgres',
+    'dbname': 'privatim'
 }
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
 
 
-bunch_docker_config = Bunch(**{'info': Bunch(**docker_config)})
+bunch_docker_config = Bunch(**{'info': Bunch(**connection_config)})
 
 
 @pytest.fixture(scope='function')
@@ -33,7 +33,7 @@ def pg_config(monkeypatch):
     postgresql = bunch_docker_config
 
     logger = logging.getLogger(__name__)
-    logger.debug('Setting up pg_config fixture')
+    logger.info('Setting up pg_config fixture')
 
     config = testing.setUp(settings={
         'sqlalchemy.url': (
@@ -41,7 +41,7 @@ def pg_config(monkeypatch):
             f'{postgresql.info.host}:{postgresql.info.port}'
             f'/{postgresql.info.dbname}'
         ),
-        
+
     })
     config.include('privatim.models')
     config.include('pyramid_chameleon')
@@ -54,6 +54,9 @@ def pg_config(monkeypatch):
 
     dbsession = get_tm_session(session_factory, transaction.manager)
     config.dbsession = dbsession
+
+    # initialize file storage
+    setup_filestorage(settings)
 
     orig_init = DummyRequest.__init__
 

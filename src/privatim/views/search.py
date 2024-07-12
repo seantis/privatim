@@ -13,6 +13,7 @@ from sqlalchemy import (
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
+from privatim.models import Consultation
 from privatim.models.associated_file import SearchableAssociatedFiles
 
 from privatim.models.file import SearchableFile
@@ -249,6 +250,12 @@ class SearchCollection:
 
         """
         weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
+
+        consultation_id = self.session.execute(
+            select(Consultation)
+        ).scalar_one_or_none()
+        breakpoint()
+        # query
         weighted_vectors: list[Function[Any]] = [
             func.setweight(
                 func.to_tsvector(self.lang, field),
