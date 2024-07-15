@@ -258,18 +258,11 @@ class SearchCollection:
         weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
 
         self.debug_field_contents(model, model.searchable_fields())
-        fields = [f for f in model.searchable_fields()]
+
         # query
         weighted_vectors: list[Function[Any]] = [
             func.setweight(
-                func.to_tsvector(self.lang, field),
-                cast(
-                    weights['primary']
-                    if model.is_primary_search_field(field)
-                    else weights['high'],
-                    CHAR
-                ),
-            )
+                func.to_tsvector(self.lang, field),'A::"char"')
             for field in model.searchable_fields()
         ]
         if weighted_vectors:

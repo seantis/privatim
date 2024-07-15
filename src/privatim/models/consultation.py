@@ -180,14 +180,14 @@ class Consultation(  # type: ignore[misc]
     )
 
     @classmethod
-    @prioritize_search_field('title')
+    # @prioritize_search_field('title')
     def searchable_fields(
         cls,
     ) -> Iterator[('InstrumentedAttribute[str | ' 'None]')]:
         yield cls.title
-        for field in [cls.description, cls.recommendation]:
-            if field is not None:
-                yield field
+        # for field in [cls.description, cls.recommendation]:
+        #     if field is not None:
+        #         yield field
 
     @observes('files')
     def files_observer(self, files: list['SearchableFile']) -> None:
