@@ -58,17 +58,7 @@ def test_model_definition(session, create_model):
 
 
 def test_search_client(client, pdf_vemz):
-    # breakpoint()
-    # cur = client.db.cursor()
 
-    # cur = postgresql.cursor()
-    # res = cur.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
-    # assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
-    # res = cur.execute("CREATE EXTENSION IF NOT EXISTS btree_gin;")
-    # assert res.pgresult.status == pq.ExecStatus.COMMAND_OK
-    #
-    # postgresql.commit()
-    # cur.close()
 
     logger.debug('Starting test_search')
 
@@ -95,6 +85,7 @@ def test_search_client(client, pdf_vemz):
     page.form['files'] = Upload(*pdf_vemz)
     page = page.form.submit().follow()
     logger.debug('Submitted form with all fields')
+    client.get('/')
 
     client.skip_n_forms = 0
     search_form = page.forms[0]
@@ -128,27 +119,3 @@ def test_session_only_search(session, pdf_vemz):
     #         result.headlines['title'] = first_item[1]
     #
     #     search_results.append(result)
-
-
-def test_setweight(session):
-    transaction.begin()
-
-    session.execute(text("""
-        CREATE TABLE IF NOT EXISTS test_table (
-            id SERIAL PRIMARY KEY,
-            content TEXT
-        )
-    """))
-
-    session.execute(text("INSERT INTO test_table (content) VALUES ('test content')"))
-
-    result = session.execute(text(
-        "SELECT setweight(to_tsvector('english', content), 'A') FROM test_table"
-    )).scalar_one()
-
-    print(f"Setweight result: {result}")
-
-    transaction.commit()
-
-    session.execute(text("DROP TABLE IF EXISTS test_table"))
-    transaction.commit()

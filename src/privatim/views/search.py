@@ -1,15 +1,9 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (
-    func,
-    select,
-    literal,
-    Select,
-    Function,
-    BinaryExpression,
-    type_coerce
-)
+from sqlalchemy import (func, select, literal, Select, Function,
+                        BinaryExpression, type_coerce, cast, CHAR)
 
+import logging
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
@@ -32,6 +26,8 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import Session
     from privatim.types import RenderDataOrRedirect
 
+
+log = logging.getLogger(__name__)
 
 T = TypeVar('T', bound=Union[BinaryExpression[Any], Function[Any]])
 
@@ -230,6 +226,16 @@ class SearchCollection:
             .order_by(rank_expression.desc())
         )
 
+    def debug_field_contents(self, model,  fields):
+        for field in fields:
+            query = select(getattr(model, field.key)).limit(5)
+            result = self.session.execute(query).fetchall()
+
+            log.warning(f"Content for field '{field.key}':")
+            for row in result:
+                log.warning(f'{field.key}: {row[0]}')
+            log.warning("---")
+
     def _create_rank_expression(
         self, model: type[SearchableMixin]
     ) -> Union[BinaryExpression[T], Function[T]]:
@@ -251,18 +257,17 @@ class SearchCollection:
         """
         weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
 
-        consultation_id = self.session.execute(
-            select(Consultation)
-        ).scalar_one_or_none()
-        breakpoint()
+        self.debug_field_contents(model, model.searchable_fields())
+        fields = [f for f in model.searchable_fields()]
         # query
         weighted_vectors: list[Function[Any]] = [
             func.setweight(
                 func.to_tsvector(self.lang, field),
-                (
+                cast(
                     weights['primary']
                     if model.is_primary_search_field(field)
-                    else weights['high']
+                    else weights['high'],
+                    CHAR
                 ),
             )
             for field in model.searchable_fields()
