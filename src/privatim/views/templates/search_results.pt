@@ -44,7 +44,7 @@
 
                                     <tal:block tal:condition="python: result.type.lower() not in ['agendaitem']">
                                     <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
-                                       class="details-link">Show Details</a>
+                                       class="detailas-link">Show Details</a>
                                     </tal:block>
                                     <tal:block tal:condition="result.type.lower() == 'agendaitem'">
                                         <a href="${request.route_url('meeting', id=str(result.model_instance.meeting.id))}" i18n:translate=""
@@ -60,7 +60,7 @@
                                 <div class="card-body">
                                     <div class="d-flex flex-start align-items-center">
                                         <img class="rounded-circle shadow-1-strong me-3"
-                                             src="${request.profile_pic}"
+                                             src="${result.picture}"
                                              alt="avatar"
                                              width="60"
                                              height="60"

@@ -10,7 +10,6 @@ def test_empty_comments():
     assert (
         flatten_comments(
             comments,
-            'some-url-whatever',
             request,
         )
         == []

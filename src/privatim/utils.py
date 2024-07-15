@@ -15,6 +15,8 @@ from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 from typing import Any, TYPE_CHECKING, overload, TypeVar
 
+from privatim.models.profile_pic import get_or_create_default_profile_pic
+
 if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
@@ -157,7 +159,6 @@ def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
 
 def flatten_comments(
     top_level_comments: 'Iterable[Comment]',
-    fallback_profile_pic: str,
     request: 'IRequest',
 ) -> list['FlattenedCommentDict']:
     """
@@ -171,14 +172,12 @@ def flatten_comments(
     flattened_comments: list['FlattenedCommentDict'] = []
     for comment in top_level_comments:
         children = sorted(comment.children, key=lambda c: c.created)
-        pic = handle_comment_picture(comment, fallback_profile_pic, request)
+        pic = get_correct_comment_picture_for_comment(comment, request)
 
         # Process children comments
         _children: list['ChildCommentDict'] = []
         for child in children:
-            child_pic = handle_comment_picture(
-                child, fallback_profile_pic, request
-            )
+            child_pic = get_correct_comment_picture_for_comment(child, request)
             _children.append({'comment': child, 'picture': child_pic})
 
         flattened_comments.append(
@@ -187,9 +186,16 @@ def flatten_comments(
     return flattened_comments
 
 
-def handle_comment_picture(
-    comment: 'Comment', fallback_profile_pic_link: str, request: 'IRequest'
+def get_correct_comment_picture_for_comment(
+    comment: 'Comment', request: 'IRequest'
 ) -> str:
+
+    fallback_profile_pic_link = request.route_url(
+        'download_file', id=get_or_create_default_profile_pic(
+            request.dbsession
+        ).id
+    )
+
     if comment.user is None:
         pic = fallback_profile_pic_link
     else:

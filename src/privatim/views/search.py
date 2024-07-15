@@ -26,6 +26,7 @@ from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar,
                     Union)
 
 from privatim.orm.markup_text_type import MarkupText
+from privatim.utils import get_correct_comment_picture_for_comment
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
@@ -112,7 +113,6 @@ class SearchCollection:
 
         self._add_comments_to_results()
         self._add_agenda_items_to_results()
-
 
     def search_model(
         self, model: type[SearchableMixin | SearchableAssociatedFiles]
@@ -274,7 +274,8 @@ class SearchCollection:
             return func.to_tsvector('')
 
     def _add_comments_to_results(self) -> None:
-        """Extends self.results with the complete query for Comment.
+        """Extends self.results with the complete model for Comment (not
+        just id)
 
         This is for displaying more information in the search results.
         """
@@ -297,19 +298,29 @@ class SearchCollection:
             ]
 
     def _add_agenda_items_to_results(self) -> None:
+        """Extends self.results with the complete model for Comment (not
+        just id)
+
+        """
+
         agenda_item_ids = [
-            result.id for result in self.results if result.type.lower() ==
-                                                    'agendaitem'
+            result.id
+            for result in self.results
+            if result.type.lower() == 'agendaitem'
         ]
         if agenda_item_ids:
-            stmt = select(AgendaItem).filter(AgendaItem.id.in_(agenda_item_ids))
-            AgendaItems = self.session.scalars(stmt).all()
-            AgendaItem_dict: dict[str, 'AgendaItem'] = {
-                AgendaItem.id: AgendaItem for AgendaItem in AgendaItems
+            stmt = select(AgendaItem).filter(
+                AgendaItem.id.in_(agenda_item_ids)
+            )
+            agenda_item_dict: dict[str, AgendaItem] = {
+                agenda_item.id: agenda_item
+                for agenda_item in self.session.scalars(stmt).all()
             }
             self.results = [
                 (
-                    result._replace(model_instance=AgendaItem_dict.get(result.id))
+                    result._replace(
+                        model_instance=agenda_item_dict.get(result.id)
+                    )
                     if result.type.lower() == 'agendaitem'
                     else result
                 )
@@ -351,17 +362,23 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
         collection.do_search()
         search_results = []
         for result in collection.results:
+            result_dict = result._asdict()  # Convert NamedTuple to dict
+
             if result.type == 'Comment':
-                result.headlines['Content'] = Markup(  # noqa: MS001
-                    result.headlines['Content']
+                result_dict['headlines']['Content'] = Markup(  # noqa: MS001
+                    result_dict['headlines']['Content']
+                )
+                comment = result.model_instance
+                assert isinstance(comment, Comment)
+                result_dict['picture'] = (
+                    get_correct_comment_picture_for_comment(comment, request)
                 )
 
             if result.type in ['AgendaItem', 'Consultation', 'Meeting']:
-                first_item = next(iter(result.headlines.items()))
-                result.headlines['title'] = first_item[1]
+                first_item = next(iter(result_dict['headlines'].items()))
+                result_dict['headlines']['title'] = first_item[1]
 
-            search_results.append(result)
-
+            search_results.append(result_dict)
         return {
             'search_results': search_results,
             'query': query,
