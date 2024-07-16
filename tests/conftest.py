@@ -1,4 +1,6 @@
-import warnings
+import logging
+from pathlib import Path
+
 import pytest
 import transaction
 from pyramid import testing
@@ -12,37 +14,18 @@ from privatim.testing import DummyRequest, DummyMailer, MockRequests
 from tests.shared.client import Client
 
 
-@pytest.fixture(scope='function')
-def base_config(postgresql):
-    msg = '.*SQLAlchemy must convert from floating point.*'
-    warnings.filterwarnings('ignore', message=msg)
-
-    config = testing.setUp(settings={
-        'sqlalchemy.url': (
-            f'postgresql+psycopg://{postgresql.info.user}:@'
-            f'{postgresql.info.host}:{postgresql.info.port}'
-            f'/{postgresql.info.dbname}'
-        ),
-    })
-    yield config
-    testing.tearDown()
-    transaction.abort()
-
-
-@pytest.fixture(scope='function', autouse=True)
-def run_around_tests(engine):
-    # todo: check if this is actually needed?
-
-    # This fixture will run before and after each test
-    # Thanks to the autouse=True parameter
-    yield
-    # After the test, we ensure all tables are dropped
-    Base.metadata.drop_all(bind=engine)
+logging.basicConfig(
+    level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s'
+)
 
 
 # requires pytest-postgresql:
 @pytest.fixture(scope='function')
 def pg_config(postgresql, monkeypatch):
+
+    logger = logging.getLogger(__name__)
+    logger.debug('Setting up pg_config fixture')
+
     config = testing.setUp(settings={
         'sqlalchemy.url': (
             f'postgresql+psycopg://{postgresql.info.user}:@'
@@ -61,6 +44,8 @@ def pg_config(postgresql, monkeypatch):
 
     dbsession = get_tm_session(session_factory, transaction.manager)
     config.dbsession = dbsession
+
+    setup_filestorage(settings)
 
     orig_init = DummyRequest.__init__
 
@@ -221,3 +206,11 @@ def consultation(session) -> Consultation:
     session.add(status)
     session.flush()
     return consultation
+
+
+@pytest.fixture()
+def pdf_vemz():
+    filename = 'search_test_privatim_Vernehmlassung_VEMZ.pdf'
+    path = Path(__file__).parent / 'views/client/test_files' / filename
+    with open(path, 'rb') as f:
+        yield filename, f.read()
