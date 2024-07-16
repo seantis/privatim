@@ -1,14 +1,7 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy import (
-    func,
-    select,
-    literal,
-    Select,
-    Function,
-    BinaryExpression,
-    type_coerce
-)
+from sqlalchemy import (func, select, literal, Select, Function,
+                        BinaryExpression, type_coerce, or_)
 
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
@@ -205,6 +198,7 @@ class SearchCollection:
     def build_attribute_query(
         self, model: type[SearchableMixin]
     ) -> 'Select[tuple[SearchResultType, ...]]':
+
         headline_expressions = (
             type_coerce(func.ts_headline(
                 self.lang,
@@ -217,61 +211,20 @@ class SearchCollection:
             for field in model.searchable_fields()
         )
 
-        combined_vector: Any = self._create_rank_expression(model)
-        rank_expression = func.ts_rank(combined_vector, self.ts_query)
-
-        return (
-            select(
-                model.id,
-                *headline_expressions,
-                literal(model.__name__).label('type'),  # noqa: MS001
-                rank_expression.label('rank')
-            ).filter(
-                combined_vector.op('@@')(self.ts_query)
-            )
-            .order_by(rank_expression.desc())
-        )
-
-    def _create_rank_expression(
-        self, model: type[SearchableMixin]
-    ) -> Union[BinaryExpression[T], Function[T]]:
-        """Weight the search results based on the importance of the field.
-
-        - 1.0 for primary fields (A)
-        - 0.4 for high importance fields (B)
-        - 0.2 for medium importance fields (C)
-        - 0.1 for low importance fields (D)
-
-        Higher weights make matching terms in those fields contribute more to
-        the overall rank. By default, all fields are treated equally as high
-        importance (B).
-
-        See also:
-        https://www.postgresql.org/docs/current/textsearch-controls.html
-        #TEXTSEARCH-RANKING
-
-        """
-        weights = {'primary': 'A', 'high': 'B', 'medium': 'C', 'low': 'D'}
-        weighted_vectors: list[Function[Any]] = [
-            func.setweight(
-                func.to_tsvector(self.lang, field),
-                (
-                    weights['primary']
-                    if model.is_primary_search_field(field)
-                    else weights['high']
-                ),
-            )
-            for field in model.searchable_fields()
+        select_fields = [
+            model.id,
+            *headline_expressions,
+            literal(model.__name__).label('type'),  # noqa: MS001
         ]
-        if weighted_vectors:
-            _combined_vector: Union[BinaryExpression[T], Function[T]] = (
-                weighted_vectors[0]
+
+        return select(*select_fields).filter(
+            or_(
+                *[
+                    func.to_tsvector(self.lang, field).op('@@')(self.ts_query)
+                    for field in model.searchable_fields()
+                ]
             )
-            for vector in weighted_vectors[1:]:
-                _combined_vector = _combined_vector.op('||')(vector)
-            return _combined_vector
-        else:
-            return func.to_tsvector('')
+        )
 
     def _add_comments_to_results(self) -> None:
         """Extends self.results with the complete model for Comment (not

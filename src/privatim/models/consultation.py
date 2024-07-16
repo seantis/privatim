@@ -9,7 +9,7 @@ from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
 from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
-from privatim.models.searchable import SearchableMixin, prioritize_search_field
+from privatim.models.searchable import SearchableMixin
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
@@ -180,12 +180,10 @@ class Consultation(  # type: ignore[misc]
     )
 
     @classmethod
-    @prioritize_search_field('title')
     def searchable_fields(
         cls,
-    ) -> Iterator[('InstrumentedAttribute[str | ' 'None]')]:
-        yield cls.title
-        for field in [cls.description, cls.recommendation]:
+    ) -> 'Iterator[InstrumentedAttribute[str | None]]':
+        for field in [cls.title, cls.description, cls.recommendation]:
             if field is not None:
                 yield field
 
