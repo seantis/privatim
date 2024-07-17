@@ -1,10 +1,11 @@
+from datetime import datetime
 from functools import partial
 from fanstatic import Fanstatic
 
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, TIMESTAMP, func
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -148,9 +149,20 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             ),
         )
 
-    # context.operations.add_column(
-    #     'consultations',
-    #     Column('searchable_text_de_CH', TSVECTOR())
-    # )
-
+    context.operations.add_column(
+        'meetings',
+        Column(
+            'created',
+            TIMESTAMP(timezone=False),
+            server_default=func.now()
+        )
+    )
+    context.operations.add_column(
+        'meetings',
+        Column(
+            'updated',
+            TIMESTAMP(timezone=False),
+            server_default=func.now()
+        )
+    )
     context.commit()

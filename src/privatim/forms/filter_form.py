@@ -45,13 +45,17 @@ class FilterForm(Form):
 
     consultation: BooleanField = BooleanField(
         _('Consultation'),
+        default=True,
         render_kw={'class': 'form-check-input', 'id': 'vernehmlassung'},
     )
     meeting: BooleanField = BooleanField(
-        _('Meeting'), render_kw={'class': 'form-check-input', 'id': 'sitzung'}
+        _('Meeting'),
+        default=True,
+        render_kw={'class': 'form-check-input', 'id': 'sitzung'},
     )
     comment: BooleanField = BooleanField(
         _('Comment'),
+        default=True,
         render_kw={'class': 'form-check-input', 'id': 'kommentar'},
     )
 

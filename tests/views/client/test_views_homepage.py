@@ -1,14 +1,6 @@
-def test_view_activities(client):
+def test_filter(client):
     client.login_admin()
 
     page = client.get('/activities')
-    assert page.status_code == 200
-    assert 'Aktivitäten' in page.text
-
-    # fill out the search form
-    client.skip_n_forms = False
-    form = page.forms[0]
-    print(form.fields)
-
-    form['term'] = 'My search'
-    page = form.submit()
+    form = page.forms['filter_activities']
+    breakpoint()

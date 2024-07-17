@@ -1,4 +1,6 @@
 import uuid
+
+from sedate import utcnow
 from sqlalchemy import Text, Integer, select, func
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Table, Column, ForeignKey
@@ -11,12 +13,12 @@ from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.utils import maybe_escape
+from datetime import datetime
 
 
 from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.models import User, WorkingGroup
-    from datetime import datetime
     from privatim.types import ACL
     from sqlalchemy.orm import Session
     from sqlalchemy.orm import InstrumentedAttribute
@@ -167,9 +169,8 @@ class Meeting(Base, SearchableMixin, Commentable):
         cascade="all, delete-orphan"
     )
 
-    # created: Mapped[datetime] = mapped_column(default=utcnow)
-    # updated: Mapped[datetime] = mapped_column(default=utcnow,
-    #                                           onupdate=utcnow)
+    created: Mapped[datetime] = mapped_column(default=utcnow)
+    updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     # allfällige Beschlüsse
     decisions: Mapped[str | None] = mapped_column()

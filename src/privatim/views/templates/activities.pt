@@ -137,9 +137,9 @@
                 </div>
 
                 <!-- Filter Sidebar (1/3 width) -->
-                <div class="sidebar-filter order-md-2 flex-grow-1" tal:condition="show_filter" style="display: none;">
+                <div class="sidebar-filter order-md-2 flex-grow-1" tal:condition="show_filter">
                     <form class="filter-form" method="POST" enctype="multipart/form-data"
-                          action="${request.route_url('activities')}">
+                          action="${request.route_url('activities')}" id="filter_activities">
                         <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                         <div class="mb-3">
                             <label for="canton" class="form-label">${filter_form.canton.label.text}</label>
