@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-18 15:05+0200\n"
+"POT-Creation-Date: 2024-07-18 15:32+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -73,13 +73,13 @@ msgstr "Comités"
 msgid "People"
 msgstr "Les personnes"
 
-#: src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Profile"
-msgstr " Profil"
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/profile.pt
+msgid "Profile"
+msgstr "Profil"
 
 #: src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Sign out"
-msgstr " Déconnecter"
+msgid "Sign out"
+msgstr "Se déconnecter"
 
 #: src/privatim/views/profile.py
 msgid "Upload a photo..."
@@ -419,10 +419,6 @@ msgid "→ Forgot your password / Activate account"
 msgstr "→ Mot de passe oublié / Activer le compte"
 
 #: src/privatim/views/templates/profile.pt
-msgid "Profile"
-msgstr "Profil"
-
-#: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Photo de profil"
 
@@ -709,3 +705,9 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "<dynamic element> Profile"
+#~ msgstr " Profil"
+
+#~ msgid "<dynamic element> Sign out"
+#~ msgstr " Déconnecter"

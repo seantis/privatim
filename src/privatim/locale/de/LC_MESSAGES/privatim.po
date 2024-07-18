@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-18 15:05+0200\n"
+"POT-Creation-Date: 2024-07-18 15:32+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -76,13 +76,13 @@ msgstr "Gremien"
 msgid "People"
 msgstr "Personen"
 
-#: src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Profile"
-msgstr " Profil"
+#: src/privatim/layouts/navbar.pt src/privatim/views/templates/profile.pt
+msgid "Profile"
+msgstr "Profil"
 
 #: src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Sign out"
-msgstr " Abmelden"
+msgid "Sign out"
+msgstr "Abmelden"
 
 #: src/privatim/views/profile.py
 msgid "Upload a photo..."
@@ -421,10 +421,6 @@ msgid "→ Forgot your password / Activate account"
 msgstr "→ Passwort vergessen / Account aktivieren "
 
 #: src/privatim/views/templates/profile.pt
-msgid "Profile"
-msgstr "Profil"
-
-#: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Profilbild"
 
@@ -715,6 +711,12 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid " Profile"
+#~ msgstr " Profil"
+
+#~ msgid " Sign out"
+#~ msgstr " Abmelden"
 
 #~ msgid "Kanton"
 #~ msgstr "Canton"

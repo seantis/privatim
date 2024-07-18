@@ -49,13 +49,13 @@
                                  class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item" href="${request.route_url('profile')}" i18n:translate=""><i
-                                    class="far fa-user-circle"></i> Profile</a></li>
+                            <li><a class="dropdown-item" href="${request.route_url('profile')}"><i
+                                    class="fas fa-user-circle"></i><span i18n:translate=""> Profile</span></a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="${request.route_url('logout')}" i18n:translate=""><i
-                                    class="fas fa-sign-out-alt"></i> Sign out</a></li>
+                            <li><a class="dropdown-item" href="${request.route_url('logout')}" ><i
+                                    class="fas fa-sign-out-alt"></i><span i18n:translate=""> Sign out</span></a></li>
                         </ul>
                     </div>
                 </div>

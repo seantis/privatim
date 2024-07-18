@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-18 15:05+0200\n"
+"POT-Creation-Date: 2024-07-18 15:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,12 +73,12 @@ msgstr ""
 msgid "People"
 msgstr ""
 
-#: ./src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Profile"
+#: ./src/privatim/layouts/navbar.pt ./src/privatim/views/templates/profile.pt
+msgid "Profile"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
-msgid "<dynamic element> Sign out"
+msgid "Sign out"
 msgstr ""
 
 #: ./src/privatim/views/profile.py
@@ -410,10 +410,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
 msgid "→ Forgot your password / Activate account"
-msgstr ""
-
-#: ./src/privatim/views/templates/profile.pt
-msgid "Profile"
 msgstr ""
 
 #: ./src/privatim/views/templates/profile.pt
