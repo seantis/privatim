@@ -169,7 +169,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         consultations_view,
         route_name='consultations',
-        renderer='templates/activities.pt'
+        renderer='templates/consultations.pt'
     )
 
     # working groups overview
