@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-18 15:32+0200\n"
+"POT-Creation-Date: 2024-07-19 00:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,6 +172,7 @@ msgid "Successfully added consultation \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/consultations.pt
 #: ./src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr ""
@@ -272,6 +273,48 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Unknown Creator"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "No leader"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Working Group:"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Show Meeting"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/forms/filter_form.py
+msgid "Meeting"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/forms/filter_form.py
+msgid "Consultation"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
+msgid "Type"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+#: ./src/privatim/views/templates/activities.pt
+#: ./src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr ""
+
 #: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
@@ -353,11 +396,6 @@ msgid "No results containing all your search terms were found."
 msgstr ""
 
 #: ./src/privatim/views/templates/search_results.pt
-#: ./src/privatim/views/templates/activities.pt
-msgid "Show Details"
-msgstr ""
-
-#: ./src/privatim/views/templates/search_results.pt
 msgid "File Match"
 msgstr ""
 
@@ -370,38 +408,23 @@ msgid "Change Password"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "Unknown Creator"
+msgid "Consultation Added"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "No leader"
+msgid "Meeting Scheduled"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "Working Group:"
+msgid "Comment Added"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-msgid "Show Meeting"
+msgid "by"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
-#: ./src/privatim/forms/filter_form.py
-msgid "Meeting"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-#: ./src/privatim/forms/filter_form.py
-msgid "Consultation"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-#: ./src/privatim/forms/filter_form.py
-msgid "Filter"
+msgid "Date:"
 msgstr ""
 
 #: ./src/privatim/views/templates/login.pt
@@ -525,7 +548,7 @@ msgid "Thurgau"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
-msgid "Ticino"
+msgid "Tessin"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
@@ -545,7 +568,7 @@ msgid "Zug"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
-msgid "Zurich"
+msgid "Zürich"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py

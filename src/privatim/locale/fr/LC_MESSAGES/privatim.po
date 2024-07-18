@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-18 15:32+0200\n"
+"POT-Creation-Date: 2024-07-19 00:03+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -171,6 +171,7 @@ msgid "Successfully added consultation \"${name}\""
 msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
+#: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
@@ -282,6 +283,47 @@ msgstr "Annuler"
 msgid "Save"
 msgstr "Sauver"
 
+#: src/privatim/views/templates/consultations.pt
+msgid "Unknown Creator"
+msgstr "Créateur inconnu"
+
+#: src/privatim/views/templates/consultations.pt
+msgid "No leader"
+msgstr "Pas de chef"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/search_results.pt
+msgid "Show Details"
+msgstr "Afficher les détails"
+
+#: src/privatim/views/templates/consultations.pt
+msgid "Working Group:"
+msgstr "Comité:"
+
+#: src/privatim/views/templates/consultations.pt
+msgid "Show Meeting"
+msgstr "Afficher la réunion"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/forms/filter_form.py
+msgid "Meeting"
+msgstr "Réunion"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/forms/filter_form.py
+msgid "Consultation"
+msgstr "Consultation"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt
+msgid "Type"
+msgstr "Variété"
+
+#: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr "Filtre"
+
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
@@ -362,11 +404,6 @@ msgid "No results containing all your search terms were found."
 msgstr "Aucun résultat ne contient tous les termes de votre recherche."
 
 #: src/privatim/views/templates/search_results.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Show Details"
-msgstr "Afficher les détails"
-
-#: src/privatim/views/templates/search_results.pt
 msgid "File Match"
 msgstr "Correspondance de fichier"
 
@@ -379,36 +416,24 @@ msgid "Change Password"
 msgstr "Changer le mot de passe"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Unknown Creator"
-msgstr "Créateur inconnu"
+msgid "Consultation Added"
+msgstr "Consultation ajoutée"
 
 #: src/privatim/views/templates/activities.pt
-msgid "No leader"
-msgstr "Pas de chef"
+msgid "Meeting Scheduled"
+msgstr "Réunion prévue"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Working Group:"
-msgstr "Comité:"
+msgid "Comment Added"
+msgstr "Commentaire ajouté"
 
 #: src/privatim/views/templates/activities.pt
-msgid "Show Meeting"
-msgstr "Afficher la réunion"
-
-#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
-msgid "Meeting"
-msgstr "Réunion"
-
-#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
-msgid "Consultation"
-msgstr "Consultation"
+msgid "by"
+msgstr ""
 
 #: src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr "Variété"
-
-#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
-msgid "Filter"
-msgstr "Filtre"
+msgid "Date:"
+msgstr "Date:"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -531,7 +556,7 @@ msgid "Thurgau"
 msgstr "Thurgovie"
 
 #: src/privatim/forms/constants.py
-msgid "Ticino"
+msgid "Tessin"
 msgstr "Tessin"
 
 #: src/privatim/forms/constants.py
@@ -551,7 +576,7 @@ msgid "Zug"
 msgstr "Zoug"
 
 #: src/privatim/forms/constants.py
-msgid "Zurich"
+msgid "Zürich"
 msgstr "Zurich"
 
 #: src/privatim/forms/consultation_form.py
@@ -705,6 +730,21 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "by ${activity.creator.fullname}"
+#~ msgstr "de ${activity.creator.fullname}"
+
+#~ msgid "by ${activity.working_group.leader.fullname}"
+#~ msgstr "de ${activity.working_group.leader.fullname}"
+
+#~ msgid "by ${activity.user.fullname}"
+#~ msgstr "de ${activity.user.fullname}"
+
+#~ msgid "Ticino"
+#~ msgstr "Tessin"
+
+#~ msgid "Zurich"
+#~ msgstr "Zurich"
 
 #~ msgid "<dynamic element> Profile"
 #~ msgstr " Profil"

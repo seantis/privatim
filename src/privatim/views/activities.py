@@ -39,15 +39,39 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     session = request.dbsession
     form = FilterForm(request)
 
+    # Populate form with GET parameters
+    has_query_params = any(request.GET)
+
+    # Populate form with GET parameters or set defaults
+    if request.method == 'GET':
+        if has_query_params:
+            form.consultation.data = request.GET.get('consultation') == 'True'
+            form.meeting.data = request.GET.get('meeting') == 'True'
+            form.comment.data = request.GET.get('comment') == 'True'
+            form.start_date.data = (
+                datetime.fromisoformat(request.GET['start_date'])
+                if request.GET.get('start_date')
+                else None
+            )
+            form.end_date.data = (
+                datetime.fromisoformat(request.GET['end_date'])
+                if request.GET.get('end_date')
+                else None
+            )
+            form.canton.data = request.GET.get('canton', 'all')
+        else:
+            # Set all activity types to True if no query parameters
+            form.consultation.data = True
+            form.meeting.data = True
+            form.comment.data = True
+
     if request.method == 'POST' and form.validate():
         query_params = {
             'consultation': str(form.consultation.data),
             'meeting': str(form.meeting.data),
             'comment': str(form.comment.data),
             'start_date': (
-                form.start_date.data.isoformat()
-                if form.start_date.data
-                else ''
+                form.start_date.data.isoformat() if form.start_date.data else ''
             ),
             'end_date': (
                 form.end_date.data.isoformat() if form.end_date.data else ''
@@ -58,34 +82,23 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             location=request.route_url('activities', _query=query_params)
         )
 
-    include_consultations = (
-        False if request.GET.get('consultation') is None else True
+    include_consultations = form.consultation.data
+    include_meetings = form.meeting.data
+    include_comments = form.comment.data
+    start_date = form.start_date.data
+    end_date = form.end_date.data
+    canton = form.canton.data
+
+    start_datetime = (
+        datetime.combine(start_date, time.min, tzinfo=ZoneInfo("UTC"))
+        if start_date
+        else None
     )
-    include_meetings = False if request.GET.get('meeting') is None else True
-    include_comments = False if request.GET.get('comment') is None else True
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    canton = request.GET.get('canton', 'all')
-
-    if len(request.GET) == 0:
-        # default case, no filter. We show meeting and consultations by default
-        include_consultations = True
-        include_meetings = True
-
-    start_datetime = None
-    end_datetime = None
-    if start_date:
-        start_datetime = datetime.combine(
-            datetime.fromisoformat(start_date).date(),
-            time.min,
-            tzinfo=ZoneInfo("UTC"),
-        )
-    if end_date:
-        end_datetime = datetime.combine(
-            datetime.fromisoformat(end_date).date(),
-            time.max,
-            tzinfo=ZoneInfo("UTC"),
-        )
+    end_datetime = (
+        datetime.combine(end_date, time.max, tzinfo=ZoneInfo("UTC"))
+        if end_date
+        else None
+    )
 
     items: list[Consultation | Meeting | Comment] = []
 

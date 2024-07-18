@@ -51,10 +51,10 @@
         </div>
         <!-- Sidebar for documents and status, starts below the title -->
         <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-body">
+            <div class="card mb-4" tal:condition="documents">
+                <div class="card-body claude-element">
                     <h5 i18n:translate="" class="card-title">Documents</h5>
-                    <ul class="list-group list-group-flush" tal:condition="documents">
+                    <ul class="list-group list-group-flush">
                         <li tal:repeat="item documents" class="list-group-item">
                             <a href="${item.download_url}"
                                class="text-decoration-none document-link" target="_blank">
@@ -71,7 +71,7 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body claude-element">
                     <h5 i18n:translate="" class="card-title">Status</h5>
                     <p class="card-text" tal:condition="consultation.status">
                         <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
