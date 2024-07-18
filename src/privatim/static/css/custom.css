@@ -82,6 +82,28 @@ body {
     font-family: "DM Sans", sans-serif;
 }
 
+:root {
+    --primary-color: #FF545F; /* privatim's primary color used globally*/
+    --hover-color: rgba(149, 43, 50, 0.8); /* hover = primary but darker */
+    --secondary-hover-color: #e9ecef;
+    --icon-size: 40px;
+    --icon-font-size: calc(var(--icon-size) * 0.5);
+    --timeline-padding-left: calc(var(--icon-size) * 2);
+    --timeline-line-left: calc(var(--icon-size) * 0.75);
+    --timeline-icon-left: calc(var(--icon-size) * 0.25);
+    --background-color: hsl(49, 27%, 92.0%);
+    --tw-gradient-stops: hsl(49 26.8% 92% / 1), hsl(50 23.1% 94.9% / 1);
+    --brown-border-color: hsl(48, 12.5%, 39.2%);
+    --text-box-color: hsl(60, 6.7%, 97.1%);
+    --border-radius: 16px;
+     /* ======== Overwrite bootstrap global variables ======= */
+    /* See also https://www.getbootstrap.cn/docs/5.3/customize/css-variables/ */
+    --bs-emphasis-color: var(--primary-color);
+    --bs-border-radius: 16px;
+    --bs-body-font-family: "DM Sans", sans-serif;
+}
+
+
 /* Removes all focus shadows */
 *:focus {
     box-shadow: none !important;
@@ -93,7 +115,7 @@ h1 {
 
 .main-content {
     /* Set container background color to a pleasant light brown. */
-    /*background-color: hsl(49, 27%, 92.0%);*/
+    background-color: var(--background-color)
 }
 
 body {
@@ -104,24 +126,16 @@ h1 {
     margin-top: 1.0rem;
 }
 
-.main-content {
-    /* Main container design. */
-    /*background-color: #f3f2ee;*/
-}
-
 .bg-light {
     background-color: #EDEDED !important;
 }
 
-:root {
-    --primary-color: #FF545F; /* privatim's primary color used globally*/
-    --hover-color: #e64c56; /* hover = 10% darker */
-    --secondary-hover-color: #e9ecef;
-    --icon-size: 60px;
-    --icon-font-size: calc(var(--icon-size) * 0.5);
-    --timeline-padding-left: calc(var(--icon-size) * 2);
-    --timeline-line-left: calc(var(--icon-size) * 0.75);
-    --timeline-icon-left: calc(var(--icon-size) * 0.25);
+textarea {
+
+}
+
+.dimmed-white-background {
+    background-color: var(--text-box-color)!important;
 }
 
 .btn-primary {
@@ -165,9 +179,21 @@ a:hover {
 }
 
 .nav-link {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
     font-size: 1.2rem;
+    transition: all 0.3s ease; /* Smooth transition for all changes */
 }
+
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--hover-color) !important; /* Change color on hover/focus */
+}
+
+.nav-link:active {
+    color: var(--hover-color) !important; /* Change color when clicked */
+    transform: scale(0.98); /* Slight scale down effect when clicked */
+}
+
 
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
@@ -193,6 +219,8 @@ a:hover {
     display: flex;
     align-items: center;
     margin: 1rem 0;
+
+    background-color: var(--text-box-color)!important;
 }
 
 .rounded-circle {
@@ -259,8 +287,8 @@ main {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    width: 30px;
-    height: 30px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     display: inline-block;
 }
 
@@ -270,8 +298,8 @@ main {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    width: 30px;
-    height: 30px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     display: inline-block;
 }
 
@@ -332,10 +360,17 @@ mark {
 
 /* consultation*/
 .consultation-main-text {
+    background: #F6F5F2;
     line-height: 1.6;
     font-size: 1.3rem;
     min-height: 8.1rem;
 }
+
+.claude-element {
+    /*background: #F5F4EF;*/
+    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
 
 .consultation-text-paragraph {
     margin-bottom: 2.4rem;
@@ -396,7 +431,6 @@ mark {
     left: var(--timeline-line-left);
     width: 2px;
     background: #ddd;
-    /* background: var(--primary-color); */
 }
 
 /* remove the line above the first item */
@@ -407,7 +441,7 @@ mark {
     bottom: 50%;
     left: var(--timeline-line-left);
     width: 2px;
-    background: #fff; /* Same color as the background to hide the line */
+    background: var(--background-color); /* Same color as the background to hide the line */
     z-index: 0;
 }
 
@@ -419,7 +453,7 @@ mark {
     bottom: 0;
     left: var(--timeline-line-left);
     width: 2px;
-    background: #fff; /* Same color as the background to hide the line */
+    background: var(--background-color); /* Same color as the background to hide the line */
     z-index: 0;
 }
 
@@ -430,17 +464,15 @@ mark {
     padding-left: var(--timeline-padding-left);
 }
 
-.timeline-icon i {
-    font-size: var(--icon-font-size);
-    /*color: var(--primary-color);*/
-}
-
 .timeline-content {
-    background: #f8f9fa;
+
+    background-color:
+            rgb(248, 248, 247);
     padding: 15px;
-    border-radius: 5px;
-    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    transition: all 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
 }
 
 .timeline-icon {
@@ -448,10 +480,9 @@ mark {
     left: var(--timeline-icon-left);
     top: 50%;
     transform: translateY(-50%);
-    width: var(--icon-size);
-    height: var(--icon-size);
-    border-radius: 50%;
-    background: #fff;
+    width: var(--icon-size) + 30px;
+    height: var(--icon-size) + 30px;
+    background: var(--background-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -460,7 +491,7 @@ mark {
 
 /* New hover effect styles */
 .timeline-item:hover .timeline-content {
-    transform: scale(1.03);
+    transform: scale(1.01);
     border-color: var(--primary-color);
 }
 
@@ -468,7 +499,6 @@ mark {
     display: block;
     color: inherit;
     text-decoration: none;
-    transition: background-color 0.2s ease;
 }
 
 .timeline-content-link:hover {
