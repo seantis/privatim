@@ -19,7 +19,7 @@
             </div>
 
             <div class="row mt-4">
-                <div class="col-md-9 order-md-1">
+                <div class="col-md-9 order-md-1 mt-4">
                     <div class="timeline">
                         <tal:b tal:repeat="activity activities">
                             <div class="timeline-item">
@@ -27,7 +27,7 @@
                                     <tal:b tal:switch="activity.__class__.__name__">
                                         <i tal:case="'Meeting'" class="meeting-icon"></i>
                                         <i tal:case="'Consultation'" class="consultation-icon"></i>
-                                        <i tal:case="'Comment'" class="comment-icon"></i>
+                                        <i tal:case="'Comment'" class="far fa-comment"></i>
                                     </tal:b>
                                 </div>
                                 <div class="timeline-content">
@@ -61,7 +61,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Consultation</a>
+                                                <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Consultation</a>
                                             </div>
                                             <div tal:case="'Meeting'">
                                                 <h4 i18n:translate="">${activity.name}</h4>
@@ -76,11 +76,11 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Meeting</a>
+                                                <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Meeting</a>
                                             </div>
                                             <div tal:case="'Comment'">
                                                 <p tal:content="activity.content[:100] + '...' if len(activity.content) > 100 else activity.content"></p>
-<!--?                                                <a href="${request.route_url('comment', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Comment</a>-->
+<!--?                                                <a href="${request.route_url('comment', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Comment</a>-->
                                             </div>
                                         </tal:b>
                                     </div>

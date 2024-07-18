@@ -99,9 +99,11 @@ h1 {
 body {
     font-family: "DM Sans", sans-serif;
 }
+
 h1 {
     margin-top: 1.0rem;
 }
+
 .main-content {
     /* Main container design. */
     /*background-color: #f3f2ee;*/
@@ -115,6 +117,11 @@ h1 {
     --primary-color: #FF545F; /* privatim's primary color used globally*/
     --hover-color: #e64c56; /* hover = 10% darker */
     --secondary-hover-color: #e9ecef;
+    --icon-size: 60px;
+    --icon-font-size: calc(var(--icon-size) * 0.5);
+    --timeline-padding-left: calc(var(--icon-size) * 2);
+    --timeline-line-left: calc(var(--icon-size) * 0.75);
+    --timeline-icon-left: calc(var(--icon-size) * 0.25);
 }
 
 .btn-primary {
@@ -314,18 +321,6 @@ span.accordion-text-9 {
 }
 
 
-/*.accordion {*/
-/*    counter-reset: section; !* Reset the section counter *!*/
-/*}*/
-
-/*.accordion-text-9::before {*/
-/*    counter-increment: section; !* Increment the section counter *!*/
-/*    content: counter(section) ". "; !* Display the counter *!*/
-/*    font-weight: bold;*/
-/*    margin-right: 10px;*/
-/*}*/
-
-
 /* Start search results */
 mark {
     background-color: yellow;
@@ -339,22 +334,24 @@ mark {
 .consultation-main-text {
     line-height: 1.6;
     font-size: 1.3rem;
-    min-height:  8.1rem;
+    min-height: 8.1rem;
 }
 
 .consultation-text-paragraph {
     margin-bottom: 2.4rem;
- }
+}
 
 .filter-form {
     max-width: 100%;
     padding: 1.5rem 0.0rem 1.5rem 1.5rem;
 }
+
 .filter-form .form-control,
 .filter-form .form-select,
 .filter-form .btn-submit {
     margin-bottom: 10px;
 }
+
 .filter-form .btn-submit {
     display: block;
     width: 100%;
@@ -380,58 +377,98 @@ mark {
 }
 
 .make-line-breaks-in-p {
-     white-space: pre-line;
+    white-space: pre-line;
 }
-
 
 
 .timeline {
     position: relative;
-    padding: 20px 0;
 }
+
 .timeline::before {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 30px;
+    left: var(--timeline-line-left);
     width: 2px;
     background: #ddd;
+    /* background: var(--primary-color); */
 }
+
+/* remove the line above the first item */
+.timeline-item:first-child::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 50%;
+    left: var(--timeline-line-left);
+    width: 2px;
+    background: #fff; /* Same color as the background to hide the line */
+    z-index: 0;
+}
+
+/* Remove the line below the last item */
+.timeline-item:last-child::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    bottom: 0;
+    left: var(--timeline-line-left);
+    width: 2px;
+    background: #fff; /* Same color as the background to hide the line */
+    z-index: 0;
+}
+
+
 .timeline-item {
     position: relative;
     margin-bottom: 30px;
-    padding-left: 80px;
+    padding-left: var(--timeline-padding-left);
 }
+
 .timeline-icon {
     position: absolute;
-    left: 15px;
+    left: var(--timeline-icon-left);
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     border-radius: 50%;
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1; /* make sure the line doesn't create a 'hole' in the icon */
 }
+
 .timeline-icon i {
-    font-size: 20px;
-    color: #007bff;
+    font-size: var(--icon-font-size);
+    /*color: var(--primary-color);*/
 }
+
 .timeline-content {
     background: #f8f9fa;
     padding: 15px;
     border-radius: 5px;
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    border: 2px solid transparent;
 }
+
+.timeline-content:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.03);
+}
+
 .timeline-title {
     margin-top: 0;
 }
+
 .timeline-info {
     font-size: 0.9em;
     color: #6c757d;
 }
+
 .timeline-body {
     margin-top: 10px;
 }
