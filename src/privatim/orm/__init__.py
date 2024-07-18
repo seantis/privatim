@@ -1,14 +1,17 @@
-from sqlalchemy import engine_from_config
-from sqlalchemy.orm import sessionmaker
+from contextlib import contextmanager
+
+from sqlalchemy import engine_from_config, event, Select
 import zope.sqlalchemy
+from sqlalchemy.orm import sessionmaker, Session as BaseSession
 
 from .meta import Base
 
 
 from typing import Any, TYPE_CHECKING
+
+
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
-    from sqlalchemy.orm import Session
 
 
 def get_engine(
@@ -23,16 +26,77 @@ def get_engine(
     )
 
 
-def get_session_factory(engine: 'Engine') -> sessionmaker['Session']:
-    factory = sessionmaker()
+class FilteredSession(BaseSession):
+    """
+    A custom SQLAlchemy Session class that automatically filters Consultation
+    queries. This session class applies a filter to all queries involving the
+    Consultation model, ensuring that only records with is_latest_version == 1
+    are returned by default.
+
+    This is done so we don't have to worry about accidentally fetching older
+    versions of Consultations. In most cases, we only want the latest version.
+
+    In the rare case where we actually do want the older versions, we can
+    disable the filter as follows:
+
+        with session.no_consultation_filter():
+            all_consultations = session.query(Consultation).all()
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._disable_consultation_filter = False
+
+        @event.listens_for(self, "do_orm_execute")
+        def _add_filtering_criteria(orm_execute_state):
+            if (
+                orm_execute_state.is_select
+                and not self._disable_consultation_filter
+            ):
+                orm_execute_state.statement = self._apply_consultation_filter(
+                    orm_execute_state.statement
+                )
+
+    def _apply_consultation_filter(self, stmt):
+        from privatim.models import Consultation
+
+        if isinstance(stmt, Select):
+            for ent in stmt.column_descriptions:
+                if (entity := ent.get('entity')) is not None:
+                    if entity is Consultation:
+                        return stmt.filter(Consultation.is_latest_version == 1)
+        return stmt
+
+    @contextmanager
+    def no_consultation_filter(self):
+        original_value = self._disable_consultation_filter
+        self._disable_consultation_filter = True
+        try:
+            yield
+        finally:
+            self._disable_consultation_filter = original_value
+
+    def execute(self, statement, *args, **kwargs):
+        if not self._disable_consultation_filter:
+            statement = self._apply_consultation_filter(statement)
+        return super().execute(statement, *args, **kwargs)
+
+    def scalar(self, statement, *args, **kwargs):
+        if not self._disable_consultation_filter:
+            statement = self._apply_consultation_filter(statement)
+        return super().scalar(statement, *args, **kwargs)
+
+
+def get_session_factory(engine: 'Engine') -> sessionmaker[FilteredSession]:
+    factory = sessionmaker(class_=FilteredSession)
     factory.configure(bind=engine)
     return factory
 
 
 def get_tm_session(
-        session_factory: sessionmaker['Session'],
+        session_factory: sessionmaker[FilteredSession],
         transaction_manager: Any
-) -> 'Session':
+) -> FilteredSession:
     """
     Get a ``sqlalchemy.orm.Session`` instance backed by a transaction.
 

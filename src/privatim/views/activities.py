@@ -1,4 +1,4 @@
-from sqlalchemy import select, union_all, literal
+from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _
@@ -13,24 +13,15 @@ if TYPE_CHECKING:
 
 def activities_view(request: 'IRequest') -> 'RenderData':
     """ Display all activities in the system. (It's the landing page.)"""
+
     session = request.dbsession
-    consultation_stmt = select(
-        Consultation.id.label('id'),
-        Consultation.created.label('timestamp'),
-        literal("'consultation'").label('type')
-    )
-    meeting_stmt = select(
-        Meeting.id.label('id'),
-        Meeting.time.label('timestamp'),
-        literal("'meeting'").label('type')
-    )
-    union_stmt = union_all(consultation_stmt, meeting_stmt)
     filter_form = FilterForm(request)
 
     consultation_query = select(Consultation).options(
         joinedload(Consultation.creator),
         joinedload(Consultation.secondary_tags)
     ).where(Consultation.is_latest_version == 1)
+
     meeting_query = select(Meeting).options(
         joinedload(Meeting.attendees)
     )
@@ -81,6 +72,5 @@ def activities_view(request: 'IRequest') -> 'RenderData':
         'show_add_button': False,
         'filter_form': filter_form,
         'show_filter': True,
-        'union_stmt': session.execute(union_stmt),
         'render_filter_field': render_filter_field,
     }

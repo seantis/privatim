@@ -113,7 +113,7 @@ def test_view_add_and_delete_consultation(client):
 
 
 @pytest.mark.skip
-def test_view_edit_consultation(client):
+def test_edit_consultation(client):
 
     session = client.db
     client.login_admin()
@@ -227,3 +227,50 @@ def test_view_edit_consultation(client):
 
     assert not resp.status_code == 404
     assert resp.status_code == 200
+
+
+def test_edit_consultation_without_files(client):
+
+    session = client.db
+    client.login_admin()
+
+    # Create a new consultation
+    page = client.get('/consultations')
+    page = page.click('Vernehmlassung Erfassen')
+    page.form['title'] = 'test'
+    page.form['description'] = 'the description'
+    page.form['recommendation'] = 'the recommendation'
+    page.form['status'] = '1'
+    page.form['secondary_tags'] = ['AG', 'ZH']
+    page.form.submit().follow()
+
+    consultation_id = session.execute(
+        select(Consultation.id).filter_by(is_latest_version=1)
+    ).scalar_one()
+    page = client.get(f'/consultations/{str(consultation_id)}/edit')
+
+    # edit the consultation
+    page.form['title'] = 'updated title'
+    page.form['description'] = 'updated description'
+    page.form['recommendation'] = 'updated recommendation'
+    page.form['status'] = '2'
+    page.form['secondary_tags'] = ['BE', 'LU']
+    page = page.form.submit().follow()
+    assert page.status_code == 200
+
+    stmt = select(Consultation).where(Consultation.is_latest_version == 1)
+    assert len(session.scalars(stmt).all()) == 1
+
+    with session.no_consultation_filter():
+        stmt_not_latest = select(Consultation).where(
+            Consultation.is_latest_version == 0)
+        assert len(session.scalars(stmt_not_latest).all()) == 1
+
+    consultation_id = session.execute(
+        select(Consultation.id).filter_by(is_latest_version=1)
+    ).scalar_one()
+    assert f'consultation/{str(consultation_id)}' in page.request.url
+
+    # navigate with id to verify the edits
+    client.get(f'/consultation/{str(consultation_id)}')
+    assert 'updated title' in page

@@ -14,9 +14,9 @@ from privatim.testing import DummyRequest, DummyMailer, MockRequests
 from tests.shared.client import Client
 
 
-logging.basicConfig(
-    level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s'
-)
+# logging.basicConfig(
+#     level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s'
+# )
 
 
 # requires pytest-postgresql:

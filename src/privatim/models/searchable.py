@@ -1,6 +1,5 @@
 from privatim.orm import Base
 
-
 from typing import Iterator, TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
     from sqlalchemy.orm import InstrumentedAttribute

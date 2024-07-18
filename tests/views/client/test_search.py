@@ -5,10 +5,10 @@ from privatim.models import SearchableFile
 from privatim.views.search import SearchCollection
 from tests.shared.utils import create_consultation
 
-logging.basicConfig(
-    level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s'
-)
-logger = logging.getLogger(__name__)
+# logging.basicConfig(
+#     level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s'
+# )
+# logger = logging.getLogger(__name__)
 
 
 def test_search_client(client, pdf_vemz):
