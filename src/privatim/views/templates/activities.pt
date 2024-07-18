@@ -10,137 +10,83 @@
                 <div class="col-md-6">
                     <h1 i18n:translate="">${title}</h1>
                 </div>
-
-                <tal:b  tal:condition="show_add_button">
+                <tal:b tal:condition="show_add_button">
                     <div class="col-md-6 text-end">
-                         <a i18n:translate="" href="${request.route_url('add_consultation')}"
-                            class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
+                        <a i18n:translate="" href="${request.route_url('add_consultation')}"
+                                             class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
                     </div>
                 </tal:b>
-
             </div>
 
-            <!-- Separates the main content form the Navbar-->
-            <div class="row gx-5 mt-4">
-                <!-- Main content area (2/3 width) -->
-                <div class="main-activities-content order-md-1">
-
-                    <div tal:repeat="activity activities" class="mt-4">
-
-                        <div class="card d-flex flex-row activity-card-wrapper">
-                            <div class="profile-section m-3">
-
-                                <tal:b tal:switch="activity.__class__.__name__">
-                                    <div tal:case="'Consultation'">
-                                        <img tal:condition="activity.creator.profile_pic"
-                                                src="${request.route_url( 'download_file', id=activity.creator.picture.id)}"
-                                                class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                        <img tal:condition="not activity.creator.profile_pic"
-                                                src="${layout.static_url('privatim:static/default_profile_icon.png')}"
-                                                class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                    </div>
-
-                                    <div tal:case="'Meeting'">
-                                        <img tal:condition="activity.working_group.leader and activity.working_group.leader.profile_pic"
-                                                src="${request.route_url( 'download_file', id=activity.working_group.leader.picture.id)}"
-                                                class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                        <img tal:condition="not activity.working_group.leader"
-                                                src="${layout.static_url('privatim:static/default_profile_icon.png')}"
-                                                class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                    </div>
-                                    <div tal:case="'Comment'">
-
-                                    </div>
-                                </tal:b>
-                                <tal:b tal:switch="activity.__class__.__name__">
-                                    <div tal:case="'Consultation'">
-                                        <tal:define define="has_creator python: activity.creator is not None">
-                                            <tal:condition condition="has_creator">
-                                                <a tal:attributes="href request.route_url('person', id=activity.creator.id)">
-                                                    <p class="profile-name" i18n:translate="">${activity.creator.fullname}</p>
-                                                </a>
-                                            </tal:condition>
-                                            <tal:condition condition="not:has_creator">
-                                                <p class="profile-name"
-                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Unknown Creator</p>
-                                            </tal:condition>
-                                        </tal:define>
-                                        <p class="text-secondary">${layout.format_date(activity.created, 'date')}  ${layout.format_date(activity.created, 'time')}</p>
-                                    </div>
-                                    <div tal:case="'Meeting'">
-                                        <tal:define
-                                                define="has_leader python: activity.working_group.leader is not None">
-                                            <tal:condition condition="has_leader">
-                                                <a tal:attributes="href request.route_url('person', id=activity.working_group.leader.id)">
-                                                    <p class="profile-name" i18n:translate="">${activity.working_group.leader.fullname}</p>
-                                                </a>
-                                            </tal:condition>
-                                            <tal:condition condition="not:has_leader">
-                                                <p class="profile-name"
-                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    No leader</p>
-                                            </tal:condition>
-                                        </tal:define>
-                                    </div>
-                                </tal:b>
-                            </div>
-
-                            <tal:b tal:switch="activity.__class__.__name__">
-                                <div tal:case="'Consultation'" class="card-body col-md-8 d-flex flex-column">
-                                    <h5 class="card-title fw-bold" i18n:translate="">${activity.title}</h5>
-                                    <!-- Note: We could use a .text-truncate class to truncate the text with an ellipsis.
-                                    However, by using a fixed length, this approach minimizes variables and creates a more manageable and predictable layout.
-                                    -->
-                                    <p class="card-text" tal:condition="activity.recommendation" tal:content="activity.description if len(activity.description) < 100 else activity.description[:100] + '...'"></p>
-                                    <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate=""
-                                       class="details-link">Show Details</a>
-                                </div>
-                                <div tal:case="'Meeting'" class="card-body col-md-8 d-flex flex-column">
-                                    <h5 class="card-title fw-bold" i18n:translate="">${activity.name}</h5>
-                                    <p>
-                                        <span class="fw-bold" i18n:translate="">Working Group:</span> ${activity.working_group.name}
+            <div class="row mt-4">
+                <!-- Timeline content area -->
+                <div class="col-md-9 order-md-1">
+                    <div class="timeline">
+                        <tal:b tal:repeat="activity activities">
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h3 class="timeline-title">
+                                        <tal:b tal:switch="activity.__class__.__name__">
+                                            <span tal:case="'Consultation'" i18n:translate="">Consultation Updated</span>
+                                            <span tal:case="'Meeting'" i18n:translate="">Meeting Scheduled</span>
+                                            <span tal:case="'Comment'" i18n:translate="">Comment Added</span>
+                                        </tal:b>
+                                    </h3>
+                                    <p class="timeline-info">
+                                        <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
+                                        <span class="timeline-user">
+                                            <tal:b tal:switch="activity.__class__.__name__">
+                                                <span tal:case="'Consultation'" tal:condition="activity.creator" i18n:translate="">by ${activity.creator.fullname}</span>
+                                                <span tal:case="'Meeting'" tal:condition="activity.working_group.leader" i18n:translate="">by ${activity.working_group.leader.fullname}</span>
+                                                <span tal:case="'Comment'" tal:condition="activity.user" i18n:translate="">by ${activity.user.fullname}</span>
+                                            </tal:b>
+                                        </span>
                                     </p>
-                                    <tal:b tal:condition="activity.attendees">
-                                        <ul>
-                                            <li tal:repeat="user activity.attendees">
-                                                <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
-                                                <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
-                                            </li>
-                                        </ul>
-                                    </tal:b>
-                                    <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate=""
-                                       class="details-link justify-content-end">Show Meeting</a>
-                                </div>
-                            </tal:b>
-
-                            <!-- Tags section - visible only on large screens, because it f's up the layout
-                            if the main content contracts horizontally .-->
-                            <div class="col-md-3 d-none d-lg-flex flex-column">
-                                <div class="primary-tags d-flex flex-row justify-content-start flex-wrap mt-3">
-                                    <tal:b tal:condition="activity.__class__.__name__ == 'Meeting'">
-                                        <span class="badge rounded-pill mb-4 tag-button text-light fs-6 px-3 py-2" i18n:translate="">Meeting</span>
-                                    </tal:b>
-
-                                    <tal:b tal:condition="activity.__class__.__name__ == 'Consultation'">
-                                        <span class="badge rounded-pill mb-4 tag-button text-light fs-6 px-3 py-2" i18n:translate="">Consultation</span>
-                                    </tal:b>
-                                </div>
-
-                                <div tal:condition="activity.__class__.__name__ == 'Consultation'"
-                                        class="secondary-tags d-flex flex-row justify-content-start flex-xl-wrap">
-                                    <tal:b tal:repeat="tag activity.secondary_tags">
-                                        <span class="badge rounded-pill mb-4 bg-light text-dark fs-6 px-3 py-2 mx-1">${tag.name}</span>
-                                    </tal:b>
+                                    <div class="timeline-body">
+                                        <tal:b tal:switch="activity.__class__.__name__">
+                                            <div tal:case="'Consultation'">
+                                                <h4 i18n:translate="">${activity.title}</h4>
+                                                <p tal:condition="activity.description" tal:content="activity.description[:100] + '...' if len(activity.description) > 100 else activity.description"></p>
+                                                <div class="changes" tal:condition="hasattr(activity, 'changes')">
+                                                    <h5 i18n:translate="">Changes:</h5>
+                                                    <ul>
+                                                        <li tal:repeat="change activity.changes">
+                                                            <strong>${change.field}</strong>: ${change.old_value} → ${change.new_value}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Consultation</a>
+                                            </div>
+                                            <div tal:case="'Meeting'">
+                                                <h4 i18n:translate="">${activity.name}</h4>
+                                                <p><strong i18n:translate="">Working Group:</strong> ${activity.working_group.name}</p>
+                                                <p><strong i18n:translate="">Date:</strong> ${layout.format_date(activity.time, 'date')} ${layout.format_date(activity.time, 'time')}</p>
+                                                <div class="attendees" tal:condition="activity.attendees">
+                                                    <h5 i18n:translate="">Attendees:</h5>
+                                                    <ul>
+                                                        <li tal:repeat="user activity.attendees">
+                                                            <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
+                                                            <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Meeting</a>
+                                            </div>
+                                            <div tal:case="'Comment'">
+                                                <p tal:content="activity.content[:100] + '...' if len(activity.content) > 100 else activity.content"></p>
+<!--?                                                <a href="${request.route_url('comment', id=activity.id)}" i18n:translate="" class="btn btn-sm btn-outline-primary mt-2">View Comment</a>-->
+                                            </div>
+                                        </tal:b>
+                                    </div>
                                 </div>
                             </div>
-
-                        </div>
+                        </tal:b>
                     </div>
                 </div>
 
-                <!-- Filter Sidebar (1/3 width) -->
-                <div class="sidebar-filter order-md-2 flex-grow-1" tal:condition="show_filter">
+                <!-- Filter Sidebar -->
+                <div class="col-md-3 order-md-2" tal:condition="show_filter">
                     <form class="filter-form" method="POST" enctype="multipart/form-data"
                           action="${request.route_url('activities')}" id="filter_activities">
                         <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
@@ -153,8 +99,7 @@
                             <label class="form-label" i18n:translate="">Type</label>
                             <div tal:repeat="field filter_form.get_type_fields()" class="form-check">
                             ${render_filter_field(field)}
-                                <label class="form-check-label"
-                                       for="${field.id}" i18n:translate="">${field.label.text}</label>
+                                <label class="form-check-label" for="${field.id}" i18n:translate="">${field.label.text}</label>
                             </div>
                         </div>
 
@@ -163,12 +108,8 @@
                                 ${render_filter_field(field)}
                         </div>
                         <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Filter</button>
-<!--?                        <a href="${request.route_url('activities')}" class="btn btn-secondary" i18n:translate="">Reset-->
-<!--?                            Filters</a>-->
                     </form>
-
                 </div>
-
             </div>
         </div>
     </tal:block>

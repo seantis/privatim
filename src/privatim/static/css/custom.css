@@ -371,3 +371,52 @@ mark {
 .make-line-breaks-in-p {
      white-space: pre-line;
 }
+
+
+
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background: #ddd;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-marker {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 2px solid #fff;
+}
+
+.timeline-content {
+    margin-left: 40px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.timeline-title {
+    margin-top: 0;
+}
+
+.timeline-info {
+    font-size: 0.9em;
+    color: #6c757d;
+}
