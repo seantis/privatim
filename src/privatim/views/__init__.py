@@ -3,7 +3,9 @@ from typing import TYPE_CHECKING
 from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
-                                      general_file_factory, file_factory)
+                                      general_file_factory, file_factory,
+                                      comment_factory,
+                                      consultation_from_comment_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -397,6 +399,20 @@ def includeme(config: 'Configurator') -> None:
     )
 
     # Consultation Comments
+
+    # Linking to a comment directly is not what is intended. We instead link to
+    # the consultation it appears in.
+    config.add_route(
+        'comment',
+        '/comment/{id}/',
+        factory=consultation_from_comment_factory
+    )
+    config.add_view(
+        consultation_view,
+        route_name='comment',
+        renderer='templates/consultation.pt',
+    )
+
     config.add_route(
         'add_comment',
         '/comments/{id}/add',

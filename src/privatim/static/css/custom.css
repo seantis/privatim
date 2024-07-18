@@ -381,9 +381,12 @@ mark {
 }
 
 
+
+
 .timeline {
     position: relative;
 }
+
 
 .timeline::before {
     content: '';
@@ -427,21 +430,6 @@ mark {
     padding-left: var(--timeline-padding-left);
 }
 
-.timeline-icon {
-    position: absolute;
-    left: var(--timeline-icon-left);
-    top: 50%;
-    transform: translateY(-50%);
-    width: var(--icon-size);
-    height: var(--icon-size);
-    border-radius: 50%;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1; /* make sure the line doesn't create a 'hole' in the icon */
-}
-
 .timeline-icon i {
     font-size: var(--icon-font-size);
     /*color: var(--primary-color);*/
@@ -455,9 +443,40 @@ mark {
     border: 2px solid transparent;
 }
 
-.timeline-content:hover {
-    border-color: var(--primary-color);
+.timeline-icon {
+    position: absolute;
+    left: var(--timeline-icon-left);
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+/* New hover effect styles */
+.timeline-item:hover .timeline-content {
     transform: scale(1.03);
+    border-color: var(--primary-color);
+}
+
+.timeline-content-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.timeline-content-link:hover {
+    text-decoration: none;
+    color: inherit!important;
+}
+.timeline-content-link:hover .timeline-content {
+    /*background-color: rgba(0, 0, 0, 0.05);*/
 }
 
 .timeline-title {

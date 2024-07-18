@@ -30,92 +30,97 @@
                                         <i tal:case="'Comment'" class="far fa-comment"></i>
                                     </tal:b>
                                 </div>
-                                <div class="timeline-content">
-                                    <h3 class="timeline-title">
-                                        <tal:b tal:switch="activity.__class__.__name__">
-                                            <span tal:case="'Consultation'" i18n:translate="">Consultation Updated</span>
-                                            <span tal:case="'Meeting'" i18n:translate="">Meeting Scheduled</span>
-                                            <span tal:case="'Comment'" i18n:translate="">Comment Added</span>
-                                        </tal:b>
-                                    </h3>
-                                    <p class="timeline-info">
-                                        <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
-                                        <span class="timeline-user">
-                                        <tal:b tal:switch="activity.__class__.__name__">
-                                            <span tal:case="'Consultation'" tal:condition="activity.creator" i18n:translate="">by ${activity.creator.fullname}</span>
-                                            <span tal:case="'Meeting'" tal:condition="activity.working_group.leader" i18n:translate="">by ${activity.working_group.leader.fullname}</span>
-                                            <span tal:case="'Comment'" tal:condition="activity.user" i18n:translate="">by ${activity.user.fullname}</span>
-                                        </tal:b>
-                                    </span>
-                                    </p>
-                                    <div class="timeline-body">
-                                        <tal:b tal:switch="activity.__class__.__name__">
-                                            <div tal:case="'Consultation'">
-                                                <h4 i18n:translate="">${activity.title}</h4>
-                                                <p tal:condition="activity.description" tal:content="activity.description[:100] + '...' if len(activity.description) > 100 else activity.description"></p>
-                                                <div class="changes" tal:condition="hasattr(activity, 'changes')">
-                                                    <h5 i18n:translate="">Changes:</h5>
-                                                    <ul>
-                                                        <li tal:repeat="change activity.changes">
-                                                            <strong>${change.field}</strong>: ${change.old_value} → ${change.new_value}
-                                                        </li>
-                                                    </ul>
+                                <a tal:attributes="href string:${request.route_url(activity.__class__.__name__.lower(), id=activity.id)}"
+                                        class="timeline-content-link">
+                                    <div class="timeline-content">
+                                        <h3 class="timeline-title">
+                                            <tal:b tal:switch="activity.__class__.__name__">
+                                                <span tal:case="'Consultation'" i18n:translate="">Consultation Updated</span>
+                                                <span tal:case="'Meeting'" i18n:translate="">Meeting Scheduled</span>
+                                                <span tal:case="'Comment'" i18n:translate="">Comment Added</span>
+                                            </tal:b>
+                                        </h3>
+                                        <p class="timeline-info">
+                                            <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
+                                            <span class="timeline-user">
+                                <tal:b tal:switch="activity.__class__.__name__">
+                                    <span tal:case="'Consultation'" tal:condition="activity.creator" i18n:translate="">by ${activity.creator.fullname}</span>
+                                    <span tal:case="'Meeting'" tal:condition="activity.working_group.leader" i18n:translate="">by ${activity.working_group.leader.fullname}</span>
+                                    <span tal:case="'Comment'" tal:condition="activity.user" i18n:translate="">by ${activity.user.fullname}</span>
+                                </tal:b>
+                            </span>
+                                        </p>
+                                        <div class="timeline-body">
+                                            <tal:b tal:switch="activity.__class__.__name__">
+                                                <div tal:case="'Consultation'">
+                                                    <h4 i18n:translate="">${activity.title}</h4>
+                                                    <p tal:condition="activity.description" tal:content="activity.description[:100] + '...' if len(activity.description) > 100 else activity.description"></p>
+                                                    <div class="changes" tal:condition="hasattr(activity, 'changes')">
+                                                        <h5 i18n:translate="">Changes:</h5>
+                                                        <ul>
+                                                            <li tal:repeat="change activity.changes">
+                                                                <strong>${change.field}</strong>: ${change.old_value}
+                                                                → ${change.new_value}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <a href="${request.route_url('consultation', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Consultation</a>
-                                            </div>
-                                            <div tal:case="'Meeting'">
-                                                <h4 i18n:translate="">${activity.name}</h4>
-                                                <p><strong i18n:translate="">Working Group:</strong> ${activity.working_group.name}</p>
-                                                <p><strong i18n:translate="">Date:</strong> ${layout.format_date(activity.time, 'date')} ${layout.format_date(activity.time, 'time')}</p>
-                                                <div class="attendees" tal:condition="activity.attendees">
-                                                    <h5 i18n:translate="">Attendees:</h5>
-                                                    <ul>
-                                                        <li tal:repeat="user activity.attendees">
-                                                            <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
-                                                            <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
-                                                        </li>
-                                                    </ul>
+                                                <div tal:case="'Meeting'">
+                                                    <h4 i18n:translate="">${activity.name}</h4>
+                                                    <p><strong i18n:translate="">Working
+                                                        Group:</strong> ${activity.working_group.name}</p>
+                                                    <p>
+                                                        <strong i18n:translate="">Date:</strong> ${layout.format_date(activity.time, 'date')} ${layout.format_date(activity.time, 'time')}
+                                                    </p>
+                                                    <div class="attendees" tal:condition="activity.attendees">
+                                                        <h5 i18n:translate="">Attendees:</h5>
+                                                        <ul>
+                                                            <li tal:repeat="user activity.attendees">
+                                                                <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
+                                                                <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <a href="${request.route_url('meeting', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Meeting</a>
-                                            </div>
-                                            <div tal:case="'Comment'">
-                                                <p tal:content="activity.content[:100] + '...' if len(activity.content) > 100 else activity.content"></p>
-<!--?                                                <a href="${request.route_url('comment', id=activity.id)}" i18n:translate="" class="btn btn-secondary btn-outline-primary mt-2">View Comment</a>-->
-                                            </div>
-                                        </tal:b>
+                                                <div tal:case="'Comment'">
+                                                    <p tal:content="activity.content[:100] + '...' if len(activity.content) > 100 else activity.content"></p>
+                                                </div>
+                                            </tal:b>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </tal:b>
                     </div>
-                </div>
-
-                <!-- Filter Sidebar -->
-                <div class="col-md-3 order-md-2" tal:condition="show_filter">
-                    <form class="filter-form" method="POST" enctype="multipart/form-data"
-                          action="${request.route_url('activities')}" id="filter_activities">
-                        <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-                        <div class="mb-3">
-                            <label for="canton" class="form-label">${filter_form.canton.label.text}</label>
-                                ${render_filter_field(filter_form.canton)}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label" i18n:translate="">Type</label>
-                            <div tal:repeat="field filter_form.get_type_fields()" class="form-check">
-                            ${render_filter_field(field)}
-                                <label class="form-check-label" for="${field.id}" i18n:translate="">${field.label.text}</label>
-                            </div>
-                        </div>
-
-                        <div tal:repeat="(field_id, field) filter_form.get_date_fields()" class="mb-3">
-                            <label for="${field_id}" class="form-label" i18n:translate="">${field.label.text}</label>
-                                ${render_filter_field(field)}
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Filter</button>
-                    </form>
-                </div>
             </div>
+
+            <!-- Filter Sidebar -->
+            <div class="col-md-3 order-md-2" tal:condition="show_filter">
+                <form class="filter-form" method="POST" enctype="multipart/form-data"
+                      action="${request.route_url('activities')}" id="filter_activities">
+                    <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
+                    <div class="mb-3">
+                        <label for="canton" class="form-label">${filter_form.canton.label.text}</label>
+                            ${render_filter_field(filter_form.canton)}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" i18n:translate="">Type</label>
+                        <div tal:repeat="field filter_form.get_type_fields()" class="form-check">
+                        ${render_filter_field(field)}
+                            <label class="form-check-label"
+                                   for="${field.id}" i18n:translate="">${field.label.text}</label>
+                        </div>
+                    </div>
+
+                    <div tal:repeat="(field_id, field) filter_form.get_date_fields()" class="mb-3">
+                        <label for="${field_id}" class="form-label" i18n:translate="">${field.label.text}</label>
+                            ${render_filter_field(field)}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Filter</button>
+                </form>
+            </div>
+        </div>
         </div>
     </tal:block>
 </metal:block>
