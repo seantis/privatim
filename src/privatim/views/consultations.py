@@ -79,7 +79,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
     return {
         'title': _('Consultations'),
-        'activities': consultations,
+        'consultations': consultations,
         'show_add_button': True,
         'show_filter': False,
     }
