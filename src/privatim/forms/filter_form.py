@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 
 def render_filter_field(field: 'Field') -> str:
     if isinstance(field, BooleanField):
+        if field.name == 'consultation' or field.name == 'meeting':
+            return field(class_="form-check-input", checked=True)
         return field(class_="form-check-input")
     else:
         return field(class_="form-control")
@@ -45,17 +47,14 @@ class FilterForm(Form):
 
     consultation: BooleanField = BooleanField(
         _('Consultation'),
-        default=True,
         render_kw={'class': 'form-check-input', 'id': 'vernehmlassung'},
     )
     meeting: BooleanField = BooleanField(
         _('Meeting'),
-        default=True,
         render_kw={'class': 'form-check-input', 'id': 'sitzung'},
     )
     comment: BooleanField = BooleanField(
         _('Comment'),
-        default=True,
         render_kw={'class': 'form-check-input', 'id': 'kommentar'},
     )
 

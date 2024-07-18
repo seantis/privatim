@@ -2,7 +2,7 @@ from datetime import datetime, time
 from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
-from privatim.models import Consultation, Meeting
+from privatim.models import Consultation, Meeting, Tag
 from privatim.models.comment import Comment
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm, render_filter_field
@@ -55,9 +55,9 @@ def activities_view(request: 'IRequest') -> 'RenderData':
                 Consultation.updated <= end_datetime
             )
         if form.canton.data and form.canton.data != 'all':
-            breakpoint()
             consultation_query = consultation_query.filter(
-                Consultation.secondary_tags== form.canton.data)
+                Consultation.secondary_tags.any(Tag.name == form.canton.data)
+            )
 
         items.extend(
             session.execute(consultation_query).unique().scalars().all()
@@ -87,7 +87,6 @@ def activities_view(request: 'IRequest') -> 'RenderData':
             )
         items.extend(session.execute(comment_query).unique().scalars().all())
 
-    # Sort the combined results in Python
     items.sort(key=lambda x: x.updated)
 
     return {

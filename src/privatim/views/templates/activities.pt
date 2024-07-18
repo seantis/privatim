@@ -163,6 +163,8 @@
                                 ${render_filter_field(field)}
                         </div>
                         <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Filter</button>
+<!--?                        <a href="${request.route_url('activities')}" class="btn btn-secondary" i18n:translate="">Reset-->
+<!--?                            Filters</a>-->
                     </form>
 
                 </div>

@@ -21,12 +21,12 @@ cantons_named = [
     ('SO', _('Solothurn')),
     ('SZ', _('Schwyz')),
     ('TG', _('Thurgau')),
-    ('TI', _('Ticino')),
+    ('TI', _('Tessin')),
     ('UR', _('Uri')),
     ('VD', _('Waadt')),
     ('VS', _('Valais')),
     ('ZG', _('Zug')),
-    ('ZH', _('Zurich')),
+    ('ZH', _('Zürich')),
 ]
 
 CANTONS_SHORT = [
