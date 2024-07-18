@@ -1,17 +1,15 @@
 from contextlib import contextmanager
 
-from sqlalchemy import engine_from_config, event, Select
+from sqlalchemy import engine_from_config, event, Select, Result
 import zope.sqlalchemy
 from sqlalchemy.orm import sessionmaker, Session as BaseSession
-
 from .meta import Base
 
 
 from typing import Any, TYPE_CHECKING
-
-
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
+    from sqlalchemy.orm import ORMExecuteState
 
 
 def get_engine(
@@ -43,12 +41,12 @@ class FilteredSession(BaseSession):
             all_consultations = session.query(Consultation).all()
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._disable_consultation_filter = False
 
         @event.listens_for(self, "do_orm_execute")
-        def _add_filtering_criteria(orm_execute_state):
+        def _add_filtering_criteria(orm_execute_state: 'ORMExecuteState') -> None:
             if (
                 orm_execute_state.is_select
                 and not self._disable_consultation_filter
@@ -57,9 +55,8 @@ class FilteredSession(BaseSession):
                     orm_execute_state.statement
                 )
 
-    def _apply_consultation_filter(self, stmt):
+    def _apply_consultation_filter(self, stmt: Any) -> Any:
         from privatim.models import Consultation
-
         if isinstance(stmt, Select):
             for ent in stmt.column_descriptions:
                 if (entity := ent.get('entity')) is not None:
@@ -68,7 +65,7 @@ class FilteredSession(BaseSession):
         return stmt
 
     @contextmanager
-    def no_consultation_filter(self):
+    def no_consultation_filter(self):  # type:ignore
         original_value = self._disable_consultation_filter
         self._disable_consultation_filter = True
         try:
@@ -76,12 +73,12 @@ class FilteredSession(BaseSession):
         finally:
             self._disable_consultation_filter = original_value
 
-    def execute(self, statement, *args, **kwargs):
+    def execute(self, statement, *args, **kwargs):  # type:ignore
         if not self._disable_consultation_filter:
             statement = self._apply_consultation_filter(statement)
         return super().execute(statement, *args, **kwargs)
 
-    def scalar(self, statement, *args, **kwargs):
+    def scalar(self, statement, *args: Any, **kwargs: Any) -> Any:  # type:ignore  # noqa
         if not self._disable_consultation_filter:
             statement = self._apply_consultation_filter(statement)
         return super().scalar(statement, *args, **kwargs)

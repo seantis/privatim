@@ -51,7 +51,7 @@ class Comment(Base, Associable, SearchableMixin):
 
     content: Mapped[str] = mapped_column(Text, nullable=False)
     created: Mapped[datetime] = mapped_column(default=utcnow)
-    modified: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     # Author of the comment. Nullable because the user might be deleted.
     user_id: Mapped[UUIDStr] = mapped_column(

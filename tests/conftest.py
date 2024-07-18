@@ -162,6 +162,7 @@ def client(app, engine):
     user = User(email='admin@example.org')
     user.set_password('test')
     client.db.add(user)
+    client.user = user
     client.db.commit()
 
     yield client

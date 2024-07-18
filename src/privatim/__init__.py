@@ -149,7 +149,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             ),
         )
 
-    context.operations.add_column(
+    context.add_column(
         'meetings',
         Column(
             'created',
@@ -157,12 +157,17 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             server_default=func.now()
         )
     )
-    context.operations.add_column(
+    context.add_column(
         'meetings',
         Column(
             'updated',
             TIMESTAMP(timezone=False),
             server_default=func.now()
         )
+    )
+    context.operations.alter_column(
+        'comments',
+        'modified',
+        new_column_name='updated'
     )
     context.commit()

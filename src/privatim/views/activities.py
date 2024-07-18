@@ -1,6 +1,9 @@
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting
+from privatim.models.comment import Comment
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm, render_filter_field
 
@@ -12,65 +15,86 @@ if TYPE_CHECKING:
 
 
 def activities_view(request: 'IRequest') -> 'RenderData':
-    """ Display all activities in the system. (It's the landing page.)"""
-
+    """Display all activities in the system. (It's the landing page.)"""
     session = request.dbsession
-    filter_form = FilterForm(request)
+    form = FilterForm(request)
+    items: list[Consultation | Meeting | Comment] = []
+    include_consultations = True
+    include_meetings = True
+    include_comments = True
 
-    consultation_query = select(Consultation).options(
-        joinedload(Consultation.creator),
-        joinedload(Consultation.secondary_tags)
-    ).where(Consultation.is_latest_version == 1)
+    if request.method == 'POST' and form.validate():
+        include_consultations = form.consultation.data
+        include_meetings = form.meeting.data
+        include_comments = form.comment.data
 
-    meeting_query = select(Meeting).options(
-        joinedload(Meeting.attendees)
-    )
+    start_datetime = None
+    end_datetime = None
 
-    if request.method == 'POST' and filter_form.validate():
+    if form.start_date.data:
+        start_datetime = datetime.combine(
+            form.start_date.data, time.min, tzinfo=ZoneInfo("UTC")
+        )
 
-        if filter_form.start_date.data is not None:
+    if form.end_date.data:
+        end_datetime = datetime.combine(
+            form.end_date.data, time.max, tzinfo=ZoneInfo("UTC")
+        )
+
+    if include_consultations:
+        consultation_query = select(Consultation).options(
+            joinedload(Consultation.creator),
+            joinedload(Consultation.secondary_tags),
+        )
+        if start_datetime:
             consultation_query = consultation_query.filter(
-                Consultation.created >= filter_form.start_date.data
+                Consultation.updated >= start_datetime
             )
-            meeting_query = meeting_query.filter(
-                Meeting.time >= filter_form.start_date.data
-            )
-        if filter_form.end_date.data is not None:
+        if end_datetime:
             consultation_query = consultation_query.filter(
-                Consultation.created <= filter_form.end_date.data
+                Consultation.updated <= end_datetime
             )
+        if form.canton.data and form.canton.data != 'all':
+            breakpoint()
+            consultation_query = consultation_query.filter(
+                Consultation.secondary_tags== form.canton.data)
+
+        items.extend(
+            session.execute(consultation_query).unique().scalars().all()
+        )
+
+    if include_meetings:
+        meeting_query = select(Meeting).options(joinedload(Meeting.attendees))
+        if start_datetime:
             meeting_query = meeting_query.filter(
-                Meeting.time <= filter_form.end_date.data
+                Meeting.updated >= start_datetime
             )
-        # if filter_form.canton.data:
-        #     consultation_query = consultation_query.filter(
-        #         Consultation.secondary_tags.any(
-        #         Tag.name == filter_form.canton.data
-        #         )
-        #     )
+        if end_datetime:
+            meeting_query = meeting_query.filter(
+                Meeting.updated <= end_datetime
+            )
+        items.extend(session.execute(meeting_query).unique().scalars().all())
 
-    consultations = (
-        session.execute(consultation_query).unique().scalars().all()
-        if filter_form.consultation.data or not filter_form.meeting.data
-        else []
-    )
-    meetings = (
-        session.execute(meeting_query).unique().scalars().all()
-        if filter_form.meeting.data or not filter_form.consultation.data
-        else []
-    )
+    if include_comments:
+        comment_query = select(Comment)
+        if start_datetime:
+            comment_query = comment_query.filter(
+                Comment.updated >= start_datetime
+            )
+        if end_datetime:
+            comment_query = comment_query.filter(
+                Comment.updated <= end_datetime
+            )
+        items.extend(session.execute(comment_query).unique().scalars().all())
 
-    activities = sorted(
-        list(consultations) + list(meetings),
-        key=lambda x: x.created if isinstance(x, Consultation) else x.time,
-        reverse=True
-    )
+    # Sort the combined results in Python
+    items.sort(key=lambda x: x.updated)
 
     return {
-        'activities': activities,
+        'activities': items,
         'title': _('Activities'),
         'show_add_button': False,
-        'filter_form': filter_form,
+        'filter_form': form,
         'show_filter': True,
         'render_filter_field': render_filter_field,
     }

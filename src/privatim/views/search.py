@@ -6,7 +6,7 @@ from sqlalchemy import (func, select, literal, Select, Function,
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
-from privatim.models import AgendaItem, Consultation
+from privatim.models import AgendaItem
 from privatim.models.associated_file import SearchableAssociatedFiles
 
 from privatim.models.file import SearchableFile

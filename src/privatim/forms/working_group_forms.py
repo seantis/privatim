@@ -45,6 +45,8 @@ class WorkingGroupForm(Form):
 
     leader: SelectField = SelectField(_('Leader'))
 
-    members: SearchableSelectField = SearchableSelectField(_('Members'))
+    members: SearchableSelectField = SearchableSelectField(
+        _('Members'), validators=[DataRequired()]
+    )
 
     chairman_contact: StringField = StringField(_('Contact Chairman'))
