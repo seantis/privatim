@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-10 10:22+0200\n"
+"POT-Creation-Date: 2024-07-18 15:05+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -49,6 +49,10 @@ msgstr "Message"
 #: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
 msgid "Answer"
 msgstr "Répondre"
+
+#: src/privatim/layouts/macros.pt
+msgid "Search..."
+msgstr "Rechercher..."
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
