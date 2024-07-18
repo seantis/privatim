@@ -73,7 +73,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     stmt = (
         select(Consultation)
         .where(Consultation.is_latest_version == 1)
-        .order_by(Consultation.created)
+        .order_by(Consultation.updated)
     )
     consultations = session.scalars(stmt).unique().all()
 

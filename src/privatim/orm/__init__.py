@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from sqlalchemy import engine_from_config, event, Select, Result
+from sqlalchemy import engine_from_config, event, Select
 import zope.sqlalchemy
 from sqlalchemy.orm import sessionmaker, Session as BaseSession
 from .meta import Base
@@ -46,7 +46,9 @@ class FilteredSession(BaseSession):
         self._disable_consultation_filter = False
 
         @event.listens_for(self, "do_orm_execute")
-        def _add_filtering_criteria(orm_execute_state: 'ORMExecuteState') -> None:
+        def _add_filtering_criteria(
+                orm_execute_state: 'ORMExecuteState'
+        ) -> None:
             if (
                 orm_execute_state.is_select
                 and not self._disable_consultation_filter
@@ -78,7 +80,7 @@ class FilteredSession(BaseSession):
             statement = self._apply_consultation_filter(statement)
         return super().execute(statement, *args, **kwargs)
 
-    def scalar(self, statement, *args: Any, **kwargs: Any) -> Any:  # type:ignore  # noqa
+    def scalar(self, statement, *args: Any, **kwargs: Any) -> Any:  # type:ignore  # noqa: E501
         if not self._disable_consultation_filter:
             statement = self._apply_consultation_filter(statement)
         return super().scalar(statement, *args, **kwargs)

@@ -1,4 +1,3 @@
-from datetime import datetime
 from functools import partial
 from fanstatic import Fanstatic
 

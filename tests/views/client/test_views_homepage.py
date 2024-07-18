@@ -1,7 +1,5 @@
 from privatim.models import Tag, Consultation
 from tests.shared.utils import create_consultation, create_meeting
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 
 
 def test_filter(client):
@@ -35,7 +33,7 @@ def test_filter(client):
     form['consultation'] = True
     form['meeting'] = False
     form['comment'] = False
-    page = form.submit()
+    page = form.submit().follow()
 
     assert '2nd Consultation' not in page
     assert 'Test Consultation' in page
@@ -48,4 +46,3 @@ def test_translation_navbar(client):
     form = page.pyquery('form#search')[0]
     input_search = form[1]
     assert input_search.get('placeholder') == 'Suchen...'
-
