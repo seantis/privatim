@@ -26,6 +26,14 @@
                     <p tal:condition="consultation.recommendation"  class="consultation-text-paragraph make-line-breaks-in-p">
                         <span class="fw-bold" i18n:translate="">Recommendation:</span> ${consultation.recommendation}
                     </p>
+                    <p tal:condition="consultation.evaluation_result"
+                            class="consultation-text-paragraph make-line-breaks-in-p">
+                        <span class="fw-bold" i18n:translate="">Evaluation Result:</span> ${consultation.evaluation_result}
+                    </p>
+                    <p tal:condition="consultation.decision"
+                            class="consultation-text-paragraph make-line-breaks-in-p">
+                        <span class="fw-bold" i18n:translate="">Decision:</span> ${consultation.decision}
+                    </p>
                 </div>
 
 

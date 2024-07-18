@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-19 00:03+0200\n"
+"POT-Creation-Date: 2024-07-19 01:00+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -289,41 +289,9 @@ msgid "Unknown Creator"
 msgstr "Unbekannter Ersteller"
 
 #: src/privatim/views/templates/consultations.pt
-msgid "No leader"
-msgstr "Kein Leiter"
-
-#: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/search_results.pt
 msgid "Show Details"
 msgstr "Details anzeigen"
-
-#: src/privatim/views/templates/consultations.pt
-msgid "Working Group:"
-msgstr "Gremium:"
-
-#: src/privatim/views/templates/consultations.pt
-msgid "Show Meeting"
-msgstr "Sitzung anzeigen"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/forms/filter_form.py
-msgid "Meeting"
-msgstr "Sitzung"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/forms/filter_form.py
-msgid "Consultation"
-msgstr "Vernehmlassung"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr "Art"
-
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
-msgid "Filter"
-msgstr "Filter"
 
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
@@ -382,6 +350,14 @@ msgid "Recommendation:"
 msgstr "Empfehlung:"
 
 #: src/privatim/views/templates/consultation.pt
+msgid "Evaluation Result:"
+msgstr "Prüfergebnis:"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Decision:"
+msgstr "Beschluss:"
+
+#: src/privatim/views/templates/consultation.pt
 #: src/privatim/forms/add_comment.py
 msgid "Add Comment"
 msgstr "Kommentar hinzufügen"
@@ -431,11 +407,19 @@ msgstr "Kommentar hinzugefügt"
 
 #: src/privatim/views/templates/activities.pt
 msgid "by"
-msgstr ""
+msgstr "von"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Date:"
 msgstr "Datum:"
+
+#: src/privatim/views/templates/activities.pt
+msgid "Type"
+msgstr "Art"
+
+#: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+msgid "Filter"
+msgstr "Filter"
 
 #: src/privatim/views/templates/login.pt
 msgid "Sign in"
@@ -655,6 +639,14 @@ msgid "all"
 msgstr "Alle"
 
 #: src/privatim/forms/filter_form.py
+msgid "Consultation"
+msgstr "Vernehmlassung"
+
+#: src/privatim/forms/filter_form.py
+msgid "Meeting"
+msgstr "Sitzung"
+
+#: src/privatim/forms/filter_form.py
 msgid "Date from"
 msgstr "Datum von"
 
@@ -736,12 +728,3 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "by ${activity.creator.fullname}"
-#~ msgstr "von ${activity.creator.fullname}"
-
-#~ msgid "by ${activity.working_group.leader.fullname}"
-#~ msgstr "von ${activity.working_group.leader.fullname}"
-
-#~ msgid "by ${activity.user.fullname}"
-#~ msgstr "von ${activity.user.fullname}"

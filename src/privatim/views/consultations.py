@@ -187,9 +187,11 @@ def create_consultation_from_form(
     new_consultation = Consultation(
         title=maybe_escape(form.title.data) or prev.title,
         description=maybe_escape(form.description.data) or prev.description,
-        recommendation=maybe_escape(
-            form.recommendation.data
-        ) or prev.recommendation,
+        recommendation=maybe_escape(form.recommendation.data)
+        or prev.recommendation,
+        evaluation_result=maybe_escape(form.evaluation_result.data)
+        or prev.evaluation_result,
+        decision=maybe_escape(form.decision.data) or prev.decision,
         status=status or prev.status,
         secondary_tags=tags or prev.secondary_tags,
         creator=prev.creator,
