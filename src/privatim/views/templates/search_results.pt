@@ -26,7 +26,7 @@
 
                         <!-- Generic search result rendering -->
                         <tal:block tal:condition="python: result.type not in ['Comment', 'SearchableFile']">
-                            <div class="card d-flex flex-row activity-card-wrapper">
+                            <div class="card border-0 d-flex flex-row activity-card-wrapper">
                                 <div class="card-body col-md-8 d-flex flex-column">
                                     <tal:block tal:condition="result.headlines['title']" >
                                         <h4 class="card-title fw-bold m-2">
@@ -80,7 +80,7 @@
 
                         <!-- More specific search result rendering for SearchableFile-->
                         <tal:block tal:condition="python: result.type == 'SearchableFile'">
-                            <div class="card d-flex flex-row activity-card-wrapper">
+                            <div class="card border-0 d-flex flex-row activity-card-wrapper">
                                 <div class="card-body col-md-8 d-flex flex-column">
                                     <h5 class="card-title fw-bold">
                                         <i class="fas fa-file-pdf text-danger me-2"></i>
