@@ -39,10 +39,10 @@
                 <tal:b tal:condition="flattened_comments_tree">
                     <div class="row">
                         <div class="comment-container">
-                            <div class=mt-5></div>
-                            <metal:block use-macro="layout.macros['display_comments']"
-                                     tal:define="flattened_comments_tree flattened_comments_tree">
-                            </metal:block>
+                        <div class=mt-5></div>
+                        <metal:block use-macro="layout.macros['display_comments']"
+                                 tal:define="flattened_comments_tree flattened_comments_tree">
+                        </metal:block>
 
                         </div>
                     </div>

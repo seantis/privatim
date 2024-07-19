@@ -31,7 +31,7 @@
                                     </tal:b>
                                 </div>
                                 <a tal:attributes="href string:${request.route_url(activity.__class__.__name__.lower(), id=activity.id)}"
-                                        class="timeline-content-link">
+                                        class="content-link">
                                     <div class="timeline-content claude-element">
                                         <h4 class="timeline-title">
                                             <tal:b tal:switch="activity.__class__.__name__">

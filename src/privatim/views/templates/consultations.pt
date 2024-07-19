@@ -11,58 +11,50 @@
                     <h1 i18n:translate="">${title}</h1>
                 </div>
 
-                <tal:b  tal:condition="show_add_button">
+                <tal:b tal:condition="show_add_button">
                     <div class="col-md-6 text-end">
                         <a i18n:translate="" href="${request.route_url('add_consultation')}"
                                              class="btn btn-primary" role="button" tabindex="1">Add Consultation</a>
                     </div>
                 </tal:b>
-
             </div>
 
-            <!-- Separates the main content form the Navbar-->
+            <!-- Separates the main content from the Navbar-->
             <div class="row gx-5 mt-4">
                 <!-- Main content area (2/3 width) -->
-                <div class="main-activities-content order-md-1">
+                <div class="consultations-content-width order-md-1">
                     <div tal:repeat="consultation consultations" class="mt-4">
-                        <div class="card d-flex flex-row activity-card-wrapper">
-                            <div class="profile-section m-3">
+                        <a href="${request.route_url('consultation', id=consultation.id)}" class="content-link text-decoration-none">
+                            <div class="d-flex flex-row activity-card-wrapper">
+                                <div class="profile-section m-3">
+                                    <img tal:condition="consultation.creator.profile_pic"
+                                            src="${request.route_url('download_file', id=consultation.creator.picture.id)}"
+                                            class="rounded-circle m-3 profile-icon" alt="Profile Icon">
+                                    <img tal:condition="not consultation.creator.profile_pic"
+                                            src="${layout.static_url('privatim:static/default_profile_icon.png')}"
+                                            class="rounded-circle m-3 profile-icon" alt="Profile Icon">
 
-                                <img tal:condition="consultation.creator.profile_pic"
-                                        src="${request.route_url( 'download_file', id=consultation.creator.picture.id)}"
-                                        class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                <img tal:condition="not consultation.creator.profile_pic"
-                                        src="${layout.static_url('privatim:static/default_profile_icon.png')}"
-                                        class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-
-                                <div>
-                                    <tal:define define="has_creator python: consultation.creator is not None">
-                                        <tal:condition condition="has_creator">
-                                            <a tal:attributes="href request.route_url('person', id=consultation.creator.id)">
+                                    <div>
+                                        <tal:define define="has_creator python: consultation.creator is not None">
+                                            <tal:condition condition="has_creator">
                                                 <p class="profile-name" i18n:translate="">${consultation.creator.fullname}</p>
-                                            </a>
-                                        </tal:condition>
-                                        <tal:condition condition="not:has_creator">
-                                            <p class="profile-name"
-                                               style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                Unknown Creator</p>
-                                        </tal:condition>
-                                    </tal:define>
-                                    <p class="text-secondary">${layout.format_date(consultation.created, 'date')}  ${layout.format_date(consultation.created, 'time')}</p>
+                                            </tal:condition>
+                                            <tal:condition condition="not:has_creator">
+                                                <p class="profile-name"
+                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
+                                                    Unknown Creator</p>
+                                            </tal:condition>
+                                        </tal:define>
+                                        <p class="text-secondary">${layout.format_date(consultation.created, 'date')}  ${layout.format_date(consultation.created, 'time')}</p>
+                                    </div>
+                                </div>
+
+                                <div class="card-body col-md-8 d-flex flex-column">
+                                    <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
+                                    <p class="card-text" tal:condition="consultation.recommendation" tal:content="consultation.description if len(consultation.description) < 550 else consultation.description[:550] + '...'"></p>
                                 </div>
                             </div>
-
-                            <div class="card-body col-md-8 d-flex flex-column">
-                                <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
-                                <!-- Note: We could use a .text-truncate class to truncate the text with an ellipsis.
-                                However, by using a fixed length, this approach minimizes variables and creates a more manageable and predictable layout.
-                                -->
-                                <p class="card-text" tal:condition="consultation.recommendation" tal:content="consultation.description if len(consultation.description) < 100 else consultation.description[:100] + '...'"></p>
-                                <a href="${request.route_url('consultation', id=consultation.id)}" i18n:translate=""
-                                   class="details-link">Show Details</a>
-                            </div>
-
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

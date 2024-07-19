@@ -92,7 +92,7 @@ body {
     --timeline-line-left: calc(var(--icon-size) * 0.75);
     --timeline-icon-left: calc(var(--icon-size) * 0.25);
     --background-color: hsl(49, 27%, 92.0%);
-    --tw-gradient-stops: hsl(49 26.8% 92% / 1), hsl(50 23.1% 94.9% / 1);
+    --tw-gradient-stops: hsl(50, 30%, 92%), hsl(50 23.1% 94.9% / 1);
     --light-brown-border-color: hsl(46, 24%, 68%);
     --brown-border-color: hsl(48, 12.5%, 39.2%);
     --dimmed-white-background: hsl(60, 6.7%, 97.1%);
@@ -218,10 +218,21 @@ a:hover {
 /* Card section in overview*/
 .activity-card-wrapper {
     display: flex;
-    align-items: center;
     margin: 1rem 0;
+    padding: 1.5rem;
+    background-color: rgb(248, 248, 247);
+    border-radius: var(--border-radius);
+    transition: all 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
 
-    background-color: var(--dimmed-white-background)!important;
+    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
+/* New hover effect styles */
+.activity-card-wrapper:hover {
+    transform: scale(1.01);
+    border-color: var(--primary-color);
 }
 
 .rounded-circle {
@@ -393,6 +404,11 @@ mark {
     background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 
+.claude-element-without-border {
+    padding: 1.0rem; /* Adjust as needed */
+    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
 .claude-element .list-group-item {
   background-color: transparent;
   border: none;
@@ -427,8 +443,8 @@ mark {
     box-shadow: none;
 }
 
-.main-activities-content {
-    width: 70%;
+.consultations-content-width {
+    width: 75%;
 }
 
 .sidebar-filter {
@@ -438,8 +454,6 @@ mark {
 .make-line-breaks-in-p {
     white-space: pre-line;
 }
-
-
 
 
 .timeline {
@@ -499,6 +513,11 @@ mark {
     border: 1px solid transparent;
 }
 
+/* New hover effect styles */
+.timeline-item:hover .timeline-content {
+    transform: scale(1.01);
+    border-color: var(--primary-color);
+}
 .timeline-icon {
     position: absolute;
     left: var(--timeline-icon-left);
@@ -513,24 +532,16 @@ mark {
     z-index: 1;
 }
 
-/* New hover effect styles */
-.timeline-item:hover .timeline-content {
-    transform: scale(1.01);
-    border-color: var(--primary-color);
-}
 
-.timeline-content-link {
+.content-link {
     display: block;
     color: inherit;
     text-decoration: none;
 }
 
-.timeline-content-link:hover {
+.content-link:hover {
     text-decoration: none;
     color: inherit!important;
-}
-.timeline-content-link:hover .timeline-content {
-    /*background-color: rgba(0, 0, 0, 0.05);*/
 }
 
 .timeline-title {
