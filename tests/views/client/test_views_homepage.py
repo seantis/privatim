@@ -11,6 +11,7 @@ def test_filter(client):
     ]
     cons = create_consultation(tags=tags)
     session.add(cons)
+    session.add_all(tags)
     session.commit()
 
     meeting = create_meeting()
@@ -18,7 +19,6 @@ def test_filter(client):
     session.commit()
 
     # test the filter by tags (cantons)
-    tags = []
     # this one has no tags, should not appear in filter
     cons = Consultation(
         title='2nd Consultation',

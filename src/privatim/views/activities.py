@@ -35,7 +35,12 @@ def apply_date_filter(
 
 
 def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
-    """Display all activities in the system. (It's the landing page.)"""
+    """Display all activities in the system. (It's the landing page.)
+
+    Handle form submission using POST/Redirect/GET design pattern. This
+    prevents the browser warning on refresh.
+    """
+
     session = request.dbsession
     form = FilterForm(request)
 
@@ -71,7 +76,9 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             'meeting': str(form.meeting.data),
             'comment': str(form.comment.data),
             'start_date': (
-                form.start_date.data.isoformat() if form.start_date.data else ''
+                form.start_date.data.isoformat()
+                if form.start_date.data
+                else ''
             ),
             'end_date': (
                 form.end_date.data.isoformat() if form.end_date.data else ''

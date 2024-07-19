@@ -7,10 +7,10 @@
 
 <!-- 'Add comment' component. -->
 <metal:block define-macro="add_comment_form">
-    <div class="card border-0">
+    <div class="card border-0 comment-background ms-3 me-3">
         <form enctype="multipart/form-data" method="POST" action="${add_comment_route_name}">
             <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-            <div class="d-flex">
+            <div class="d-flex mt-4">
                 <img class="rounded-circle shadow-1-strong me-3"
                      src="${request.profile_pic}"
                      alt="avatar"
@@ -24,17 +24,17 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-end mt-2 pt-1">
+            <div class="d-flex justify-content-end mt-2 mb-4 pt-1">
                     ${form.submit()}
             </div>
         </form>
 </metal:block>
 
 
-<!-- 'Add comment' component but if answering a nested comment -->
 <metal:block define-macro="answer_comment_form">
+    <!-- 'Add comment' component but if answering a nested comment -->
     <div class="mt-4">
-        <div class="card border-0">
+        <div class="card border-0 comment-background ms-3 me-3">
             <form enctype="multipart/form-data" method="POST" action="${add_comment_route_name}">
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="ms-5 d-flex">
@@ -62,8 +62,8 @@
 
 <!-- Render all the comments. -->
 <metal:block define-macro="display_comments">
-    <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment flattened_comments_tree" class="consultation-main-text">
-        <div class="card border-0">
+    <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment flattened_comments_tree">
+        <div class="card border-0 comment-background ms-3 me-3">
             <div class="card-body">
                 <div class="d-flex flex-start align-items-center">
                     <img class="rounded-circle shadow-1-strong me-3 comment-picture"
@@ -103,9 +103,9 @@
         </div>
 
         <!-- Display children comments -->
-        <div class="indent-child-comments"
+        <div tal:condition="flattened_comment['children']" class="indent-child-comments"
                 tal:repeat="child_comment_dict flattened_comment['children']">
-            <div class="card border-0" tal:define="comment child_comment_dict['comment']; picture child_comment_dict['picture']">
+            <div class="card border-0 comment-background" tal:define="comment child_comment_dict['comment']; picture child_comment_dict['picture']">
                 <div class="card-body">
                     <div class="d-flex flex-start align-items-center">
                         <img class="rounded-circle shadow-1-strong me-3"

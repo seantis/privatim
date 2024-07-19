@@ -18,7 +18,7 @@
 
         <!-- Main Content -->
         <div class="row mt-4 mb-4">
-            <div class="col-lg-8 card mb-4 border-0">
+            <div class="col-lg-8 card mb-4 consultation-body">
                 <div class="row consultation-main-text">
                     <p tal:condition="consultation.description" class="consultation-text-paragraph make-line-breaks-in-p">
                         <span class="fw-bold" i18n:translate="">Description:</span> ${consultation.description}
@@ -36,21 +36,28 @@
                     </p>
                 </div>
 
+                <tal:b tal:condition="flattened_comments_tree">
+                    <div class="row">
+                        <div class="comment-container">
+                            <div class=mt-5></div>
+                            <metal:block use-macro="layout.macros['display_comments']"
+                                     tal:define="flattened_comments_tree flattened_comments_tree">
+                            </metal:block>
 
-                <div class="row">
-                    <div class=mt-5></div>
-                    <metal:block use-macro="layout.macros['display_comments']"
-                             tal:define="flattened_comments_tree flattened_comments_tree">
-                    </metal:block>
-                </div>
-                <h2 i18n:translate="" class="m-4">Add Comment</h2>
-                <div class="row">
-                    <metal:block use-macro="layout.macros['add_comment_form']"
-                             tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
-                                    _query={'target_url': 'consultation',
-                                            'parent_id': 'root'});
-                                    form consultation_comment_form">
-                    </metal:block>
+                        </div>
+                    </div>
+                </tal:b>
+
+                <div class="row consultation-main-text">
+                    <div class="comment-container">
+                        <h2 i18n:translate="" class="mt-4">Add Comment</h2>
+                        <metal:block use-macro="layout.macros['add_comment_form']"
+                                 tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
+                                        _query={'target_url': 'consultation',
+                                                'parent_id': 'root'});
+                                        form consultation_comment_form">
+                        </metal:block>
+                    </div>
                 </div>
 
 
@@ -78,12 +85,24 @@
                     </ul>
                 </div>
             </div>
-            <div class="card">
+            <div class="card mb-4 ms4 ">
                 <div class="card-body claude-element">
                     <h5 i18n:translate="" class="card-title">Status</h5>
-                    <p class="card-text" tal:condition="consultation.status">
+                    <h4 class="card-text" tal:condition="consultation.status">
                         <span class="badge rounded-pill bg-secondary text-light">${consultation.status.name}</span>
-                    </p>
+                    </h4>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body claude-element">
+                    <h5 i18n:translate="" class="card-title">Tags</h5>
+                    <ul class="list-group list-group-flush">
+                        <li tal:repeat="tag consultation.secondary_tags" class="list-group-item">
+                            <h4 class="card-text">
+                                <span class="badge rounded-pill bg-secondary text-light">${tag.name}</span>
+                            </h4>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

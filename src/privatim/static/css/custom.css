@@ -93,8 +93,9 @@ body {
     --timeline-icon-left: calc(var(--icon-size) * 0.25);
     --background-color: hsl(49, 27%, 92.0%);
     --tw-gradient-stops: hsl(49 26.8% 92% / 1), hsl(50 23.1% 94.9% / 1);
+    --light-brown-border-color: hsl(46, 24%, 68%);
     --brown-border-color: hsl(48, 12.5%, 39.2%);
-    --text-box-color: hsl(60, 6.7%, 97.1%);
+    --dimmed-white-background: hsl(60, 6.7%, 97.1%);
     --border-radius: 16px;
      /* ======== Overwrite bootstrap global variables ======= */
     /* See also https://www.getbootstrap.cn/docs/5.3/customize/css-variables/ */
@@ -135,7 +136,7 @@ textarea {
 }
 
 .dimmed-white-background {
-    background-color: var(--text-box-color)!important;
+    background-color: var(--dimmed-white-background)!important;
 }
 
 .btn-primary {
@@ -220,7 +221,7 @@ a:hover {
     align-items: center;
     margin: 1rem 0;
 
-    background-color: var(--text-box-color)!important;
+    background-color: var(--dimmed-white-background)!important;
 }
 
 .rounded-circle {
@@ -370,21 +371,34 @@ mark {
 
 /* consultation*/
 .consultation-main-text {
-    background: #F6F5F2;
     line-height: 1.6;
     font-size: 1.3rem;
     min-height: 8.1rem;
+    padding: 0rem 1.5rem;
 }
 
+.consultation-text-paragraph {
+    margin-bottom: 2.0rem;
+}
+.consultation-body{
+
+    /*background: #F6F5F2;*/
+    background: var(--dimmed-white-background);
+    border-radius: var(--border-radius);
+}
 .claude-element {
-    /*background: #F5F4EF;*/
+    padding: 1.0rem; /* Adjust as needed */
+    border-radius: var(--border-radius);
+    border: 1px solid var(--light-brown-border-color);
     background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 
-
-.consultation-text-paragraph {
-    margin-bottom: 2.4rem;
+.claude-element .list-group-item {
+  background-color: transparent;
+  border: none;
 }
+
+
 
 .filter-form {
     max-width: 100%;

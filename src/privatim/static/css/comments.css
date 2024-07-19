@@ -3,6 +3,13 @@
 /* The 'add comment' component */
 .comment-input-field {
     position: relative;
+    width: 100%;
+}
+
+.comment-container {
+    width: 100%;
+    padding: 0 1.0rem;
+    box-sizing: border-box;
 }
 
 .comment-input-field textarea {
@@ -52,6 +59,10 @@
 }
 
 
+.comment-background {
+    background: var(--dimmed-white-background);
+}
+
 .comment-text {
     margin-left: 75px;
     white-space: pre-line;
@@ -63,17 +74,20 @@
     overflow: hidden;
     transition: max-height 0.2s ease-out;
 }
+
 .comment-answer-form-container.show {
     max-height: 300px;
     transition: max-height 0.2s ease-in;
 }
+
 /* Animation End */
 
 
 /* Indentation of the child comment*/
-.indent-child-comments{
+.indent-child-comments {
     margin-left: 50px
 }
+
 .answer-button {
     /*margin-left: 50px*/
 }
