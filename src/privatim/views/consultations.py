@@ -173,15 +173,24 @@ def create_consultation_from_form(
     if not user:
         return None
 
-    files = prev.files
+    # We create a new list new_files to hold the SearchableFile instances for
+    # the new consultation.
+    # this preserves history
+    new_files = []
+    for file in prev.files:
+        new_file = SearchableFile(
+            filename=file.filename,
+            content=file.content
+        )
+        new_files.append(new_file)
+
     if form.files.data is not None:
-        for file in form.files.data:
-            if file.get('data', None) is not None:
-                files.append(SearchableFile(
-                    file['filename'],
-                    dictionary_to_binary(file)
-                    )
-                )
+        for new_file_from_form in form.files.data:
+            if new_file_from_form.get('data', None) is not None:
+                new_files.append(SearchableFile(
+                    filename=new_file_from_form['filename'],
+                    content=dictionary_to_binary(new_file_from_form)
+                ))
 
     assert prev.creator is not None
     new_consultation = Consultation(
@@ -196,7 +205,7 @@ def create_consultation_from_form(
         secondary_tags=tags or prev.secondary_tags,
         creator=prev.creator,
         editor=user,
-        files=files,
+        files=new_files,
         previous_version=prev,
         is_latest_version=1,
     )
