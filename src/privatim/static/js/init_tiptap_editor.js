@@ -12,6 +12,8 @@ import BubbleMenu from 'https://esm.sh/@tiptap/extension-bubble-menu@2.5.4';
 
 
 document.addEventListener('DOMContentLoaded', function () {
+    const editors = [];
+
     document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         const element = wrapper.querySelector('.tiptap-editor');
         const inputId = element.id.replace('-editor', '');
@@ -29,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 StarterKit,
                 BubbleMenu.configure({
                     element: bubbleMenu,
-                    tippyOptions: {
-                        duration: 100,
-                        placement: 'top',
+                    shouldShow: ({editor, view, state, oldState, from, to}) => {
+                        console.log('Checking if bubble menu should show:', from, to);
+                        return from !== to; // Show menu when text is selected
                     },
                 }),
             ],
@@ -39,10 +41,34 @@ document.addEventListener('DOMContentLoaded', function () {
             onUpdate: ({editor}) => {
                 inputElement.value = editor.getHTML();
             },
+            onSelectionUpdate: ({editor}) => {
+                console.log('Selection updated');
+            },
         });
 
-        // Ensure the bubble menu is visible
-        bubbleMenu.style.display = 'flex';
-    });
-});
+        editors.push(editor);
 
+        // Add event listeners to bubble menu buttons
+        bubbleMenu.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                const type = button.getAttribute('data-type');
+                console.log('Button clicked:', type);
+
+                switch (type) {
+                    case 'bold':
+                        editor.chain().focus().toggleBold().run();
+                        break;
+                    case 'italic':
+                        editor.chain().focus().toggleItalic().run();
+                        break;
+                    // Add more cases for other button types
+                    default:
+                        console.warn('Unhandled button type:', type);
+                }
+            });
+        });
+    });
+
+    // You can now access all editors if needed
+    console.log('Total editors initialized:', editors.length);
+});
