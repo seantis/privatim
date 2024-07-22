@@ -1,5 +1,3 @@
-from lxml.etree import tostring
-
 from privatim.models import User
 from privatim.models.comment import Comment
 from privatim.models.consultation import Status, Consultation
@@ -81,9 +79,8 @@ def test_view_add_and_delete_consultation(client):
 
     assert 'the description' in page
     assert 'Test.txt' in page
-    href = tostring(page.pyquery('a.document-link')[0]).decode(
-        'utf-8')
-    href = client.extract_href(href)
+
+    href = page.pyquery('a.document-link')[0].get('href')
     resp = client.get(href)
 
     assert not resp.status_code == 404
