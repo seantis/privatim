@@ -51,7 +51,10 @@ def extract_pdf_info(
     # Rollback the file handle to the beginning
     # This is sort of because of `reindex_files`, because that happens
     # before the file is **actually** saved.
-    content.seek(0)  # type:ignore[attr-defined]
+    try:
+        content.seek(0)  # type:ignore[attr-defined]
+    except Exception:  # nosec:B110
+        pass
     return len(pages), ' '.join(clean(page) for page in pages).strip()
 
 

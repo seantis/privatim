@@ -55,7 +55,7 @@ msgstr "Antworten"
 
 #: src/privatim/layouts/macros.pt
 msgid "Search..."
-msgstr "Suchen..."
+msgstr "Volltextsuche..."
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"

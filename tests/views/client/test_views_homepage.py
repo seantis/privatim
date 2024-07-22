@@ -45,4 +45,4 @@ def test_translation_navbar(client):
     page = client.get('/activities')
     form = page.pyquery('form#search')[0]
     input_search = form[1]
-    assert input_search.get('placeholder') == 'Suchen...'
+    assert input_search.get('placeholder') == 'Volltextsuche...'

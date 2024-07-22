@@ -691,7 +691,7 @@ msgstr "Contact conseil d'administration"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"
-msgstr "Suchen"
+msgstr "Recherche plein texte"
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

@@ -100,7 +100,7 @@ class SearchableAssociatedFiles:
                         )
                     logger.error(
                         f'Error extracting text contents for file'
-                        f' {file.id}: {str(e)}'
+                        f' id={file.id}, name={file.filename}: {str(e)}'
                     )
 
             setattr(
