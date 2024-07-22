@@ -9,7 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Austauschplattform privatim</title>
 <!--?
-This should fix this https://github.com/ueberdosis/tiptap/issues/577
+
+XXX Patch TipTap
+This fixes the error "Error: Looks like multiple versions of prosemirror-model were loaded"
+
+From this comment:
+https://github.com/ueberdosis/tiptap/issues/577#issuecomment-2129331646
+
+
 -->
     <script type="importmap">
         {

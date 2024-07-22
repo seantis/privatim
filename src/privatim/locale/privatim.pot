@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-19 01:00+0200\n"
+"POT-Creation-Date: 2024-07-19 12:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -277,11 +277,6 @@ msgstr ""
 msgid "Unknown Creator"
 msgstr ""
 
-#: ./src/privatim/views/templates/consultations.pt
-#: ./src/privatim/views/templates/search_results.pt
-msgid "Show Details"
-msgstr ""
-
 #: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
@@ -362,12 +357,20 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Tags"
+msgstr ""
+
 #: ./src/privatim/views/templates/search_results.pt
 msgid "Search Results"
 msgstr ""
 
 #: ./src/privatim/views/templates/search_results.pt
 msgid "No results containing all your search terms were found."
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Show Details"
 msgstr ""
 
 #: ./src/privatim/views/templates/search_results.pt
@@ -424,7 +427,7 @@ msgid "Profile Picture"
 msgstr ""
 
 #: ./src/privatim/views/templates/profile.pt
-msgid "<dynamic element> Edit"
+msgid "Edit"
 msgstr ""
 
 #: ./src/privatim/views/templates/profile.pt

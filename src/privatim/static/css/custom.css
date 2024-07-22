@@ -564,6 +564,10 @@ mark {
 }
 
 .tiptap-editor {
-    height: 300px;
+    height: 200px;
     overflow-y: auto;
 }
+
+/*.tiptap-wrapper {*/
+/*          height: 20rem; !* Adjust the height as needed *!*/
+/*}*/

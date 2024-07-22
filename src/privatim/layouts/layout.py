@@ -5,7 +5,7 @@ from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from privatim.static import (bootstrap_css, bootstrap_js, tom_select_css,
                              comments_css, profile_css, sortable_custom,
-                             custom_js)
+                             custom_js, init_tiptap_editor)
 from pytz import timezone
 import re
 from datetime import date, datetime
@@ -37,6 +37,7 @@ class Layout:
         self.request = request
         self.year = date.today().year
 
+        init_tiptap_editor.need()
         bootstrap_css.need()
         bootstrap_js.need()
         tom_select_css.need()

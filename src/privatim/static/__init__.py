@@ -17,7 +17,6 @@ css_library = Library('privatim:css', 'css')
 def render_js_module(url: str) -> str:
     return f'<script type="module" src="{url}"></script>'
 
-
 def js(
         relpath: str,
         depends: 'Iterable[Dependable] | None' = None,
@@ -81,3 +80,8 @@ custom_js = js('custom/custom.js')
 tom_select_css = css('tom-select.min.css')
 tom_select = js('tom-select.complete.min.js')
 init_tom_select = js('init-tom-select.js', depends=[tom_select])
+
+init_tiptap_editor = js(
+    'init_tiptap_editor.js',
+    renderer=render_js_module,
+)

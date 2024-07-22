@@ -27,28 +27,14 @@
                     </tal:block>
                     <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
                 </div>
+
+                <div class="mb-3">
+                    <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
+                </div>
             </form>
 
 
-            <script type="module">
-                import {Editor} from 'https://esm.sh/@tiptap/core'
-                import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
-
-                document.querySelectorAll('.element').forEach((element) => {
-                    const inputId = element.id.replace('-editor', '');
-                    const inputElement = document.getElementById(inputId);
-
-                    const editor = new Editor({
-                        element: element,
-                        extensions: [StarterKit],
-                        content: inputElement.value,
-                        onUpdate: ({editor}) => {
-                            inputElement.value = editor.getHTML();
-                        }
-
-                    });
-                });
-            </script>
         </div>
     </tal:block>
 </metal:block>

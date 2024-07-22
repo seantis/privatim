@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-19 01:00+0200\n"
+"POT-Creation-Date: 2024-07-19 12:51+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -288,11 +288,6 @@ msgstr "Speichern"
 msgid "Unknown Creator"
 msgstr "Unbekannter Ersteller"
 
-#: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/search_results.pt
-msgid "Show Details"
-msgstr "Details anzeigen"
-
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
@@ -372,6 +367,10 @@ msgstr "Dokumente"
 msgid "Status"
 msgstr "Status"
 
+#: src/privatim/views/templates/consultation.pt
+msgid "Tags"
+msgstr "Tags"
+
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"
 msgstr "Suchergebnisse"
@@ -380,6 +379,10 @@ msgstr "Suchergebnisse"
 msgid "No results containing all your search terms were found."
 msgstr ""
 "Es wurden keine Ergebnisse gefunden, die alle Ihre Suchbegriffe enthalten."
+
+#: src/privatim/views/templates/search_results.pt
+msgid "Show Details"
+msgstr "Details anzeigen"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "File Match"
@@ -407,7 +410,7 @@ msgstr "Kommentar hinzugefügt"
 
 #: src/privatim/views/templates/activities.pt
 msgid "by"
-msgstr "von"
+msgstr "von "
 
 #: src/privatim/views/templates/activities.pt
 msgid "Date:"
@@ -434,7 +437,7 @@ msgid "Profile Picture"
 msgstr "Profilbild"
 
 #: src/privatim/views/templates/profile.pt
-msgid "<dynamic element> Edit"
+msgid "Edit"
 msgstr "Bearbeiten"
 
 #: src/privatim/views/templates/profile.pt
@@ -728,3 +731,6 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "<dynamic element> Edit"
+#~ msgstr "Bearbeiten"
