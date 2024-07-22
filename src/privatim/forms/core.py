@@ -143,6 +143,11 @@ class Form(BaseForm):
             kwargs = dict(data, **kwargs)
 
         for name, field, in self._fields.items():
+            field.render_kw = field.render_kw or {}
+            field.render_kw['class'] = (
+                field.render_kw.get('class', '') + ' dimmed-white-background'
+            )
+
             if isinstance(field, TransparentFormField):
                 # NOTE: Treat the subform transparently with no prefix
                 #       and the same object/field access
