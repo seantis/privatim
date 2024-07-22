@@ -53,7 +53,7 @@
                                         <div class="timeline-body">
                                             <tal:b tal:switch="activity.__class__.__name__">
                                                 <div tal:case="'Consultation'">
-<!--?                                                    <h4 tal:condition="activity.title" tal:content="activity.title[:100] + '...' if len(activity.title) > 100 else activity.title"></h4>-->
+                                                    <h4 tal:condition="activity.title" tal:content="activity.title[:100] + '...' if len(activity.title) > 100 else activity.title"></h4>
 <!--?                                                    <p tal:condition="activity.description" tal:content="activity.description[:100] + '...' if len(activity.description) > 100 else activity.description"></p>-->
 <!--?                                                    <div class="changes" tal:condition="hasattr(activity, 'changes')">-->
 <!--?                                                        <h5 i18n:translate="">Changes:</h5>-->

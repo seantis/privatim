@@ -5,14 +5,11 @@ from tests.shared.utils import create_consultation, create_meeting
 def test_filter(client):
     session = client.db
     client.login_admin()
-
-    tags = [
-        Tag(name='ZH'),
-    ]
+    tag = Tag(name='ZH')
+    session.add(tag)
+    tags = [tag]
     cons = create_consultation(tags=tags)
     session.add(cons)
-    session.add_all(tags)
-    session.commit()
 
     meeting = create_meeting()
     session.add(meeting)
@@ -25,6 +22,7 @@ def test_filter(client):
         creator=client.user
     )
     session.add(cons)
+    session.flush()
     session.commit()
 
     page = client.get('/activities')
@@ -35,8 +33,18 @@ def test_filter(client):
     form['comment'] = False
     page = form.submit().follow()
 
-    assert '2nd Consultation' not in page
+    page = client.get('/activities')
+
     assert 'Test Consultation' in page
+
+    page = client.get('/activities')
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = True
+    form['comment'] = False
+    form.submit().follow()
+    page = client.get('/activities')
+    assert 'Powerpoint Parade' in page
 
 
 def test_translation_navbar(client):
