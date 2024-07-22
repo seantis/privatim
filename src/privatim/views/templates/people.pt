@@ -9,7 +9,7 @@
 
         <p tal:condition="not:people" i18n:translate="">No people added yet.</p>
 
-        <table class="table align-middle mb-0" tal:condition="people">
+        <table class="table align-middle mb-0 rounded-table" tal:condition="people">
             <thead class="bg-light">
                 <tr>
                     <th class="col-7" i18n:translate="">Name</th>
