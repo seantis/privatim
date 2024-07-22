@@ -74,8 +74,6 @@ class SearchCollection:
     Key features:
     - Supports searching in both model attributes and associated files
     - Generates highlighted snippets (headlines) of matching text
-    - Implements a weighted ranking system for search result relevance.
-    However, by default all model attributes are of equal weight.
     - We use websearch_to_tsquery, which automatically converts the search term
     into a tsquery.
 
