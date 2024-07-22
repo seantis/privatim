@@ -165,4 +165,51 @@
     </div>
 </tal:block>
 
+
+
+<!-- Transduce an ordinary wtforms field (like a textarea) into the TiptapEditor. -->
+<tal:block metal:define-macro="render_editor">
+    <style>
+        .bubble-menu {
+            background-color: white;
+            border: 1px solid rgba(61, 37, 20, 0.05);
+            border-radius: .7rem;
+            box-shadow: 0px 12px 33px 0px rgba(0, 0, 0, .06), 0px 3.618px 9.949px 0px rgba(0, 0, 0, .04);
+            display: flex;
+            padding: .2rem;
+        }
+
+        .bubble-menu button {
+            border: none;
+            background-color: unset;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 8px;
+            margin: 0 2px;
+            cursor: pointer;
+        }
+
+        .bubble-menu button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .bubble-menu button.is-active {
+            background-color: #e6f2ff;
+            color: #4a90e2;
+        }
+
+    </style>
+    <div class="tiptap-wrapper">
+        <div class="element tiptap-editor" id="${field.id}-editor"></div>
+        <div class="bubble-menu">
+            <button type="button" data-type="bold">B</button>
+            <button type="button" data-type="italic">I</button>
+            <button type="button" data-type="strike">S</button>
+        </div>
+    </div>
+    <input type="hidden" id="${field.id}" name="${field.name}" value="${field.data or ''}"/>
+</tal:block>
+
+
+
 </html>

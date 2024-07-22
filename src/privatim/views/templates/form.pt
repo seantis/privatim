@@ -16,15 +16,17 @@
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="mb-3" tal:repeat="field form">
                     <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
+
+                    <!-- TipTap Editor for all wtforms.fields.TextAreaField -->
                     <tal:block tal:condition="field.type == 'TextAreaField'">
-                        <div class="tiptap-wrapper">
-                            <div class="element tiptap-editor" id="${field.id}-editor"></div>
-                        </div>
-                        <input type="hidden" id="${field.id}" name="${field.name}" value="${field.data or ''}"/>
+                        <metal:editor use-macro="layout.macros['render_editor']" tal:define="field field" />
                     </tal:block>
+
+                    <!-- Else just render the field as usual. -->
                     <tal:block tal:condition="field.type != 'TextAreaField'">
                             ${field()}
                     </tal:block>
+
                     <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
                 </div>
 
