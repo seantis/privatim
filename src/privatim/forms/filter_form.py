@@ -15,8 +15,6 @@ if TYPE_CHECKING:
 
 def render_filter_field(field: 'Field') -> str:
     if isinstance(field, BooleanField):
-        if field.name == 'consultation' or field.name == 'meeting':
-            return field(class_="form-check-input", checked=True)
         return field(class_="form-check-input")
     else:
         return field(class_="form-control")

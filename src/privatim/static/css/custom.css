@@ -91,7 +91,7 @@ body {
     --timeline-padding-left: calc(var(--icon-size) * 2);
     --timeline-line-left: calc(var(--icon-size) * 0.75);
     --timeline-icon-left: calc(var(--icon-size) * 0.25);
-    --background-color: hsl(49, 27%, 92.0%);
+    --background-color: hsl(49, 27%, 91.0%);
     --tw-gradient-stops: hsl(50, 30%, 92%), hsl(50 23.1% 94.9% / 1);
     --light-brown-border-color: hsl(46, 24%, 68%);
     --brown-border-color: hsl(48, 12.5%, 39.2%);

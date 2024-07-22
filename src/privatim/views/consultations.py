@@ -176,14 +176,15 @@ def create_consultation_from_form(
     # We create a new list new_files to hold the SearchableFile instances for
     # the new consultation.
     # this preserves history
-    new_files = []
+    previous_files = []
     for file in prev.files:
         new_file = SearchableFile(
             filename=file.filename,
             content=file.content
         )
-        new_files.append(new_file)
+        previous_files.append(new_file)
 
+    new_files = []
     if form.files.data is not None:
         for new_file_from_form in form.files.data:
             if new_file_from_form.get('data', None) is not None:
@@ -191,7 +192,6 @@ def create_consultation_from_form(
                     filename=new_file_from_form['filename'],
                     content=dictionary_to_binary(new_file_from_form)
                 ))
-
     assert prev.creator is not None
     new_consultation = Consultation(
         title=maybe_escape(form.title.data) or prev.title,
@@ -205,9 +205,13 @@ def create_consultation_from_form(
         secondary_tags=tags or prev.secondary_tags,
         creator=prev.creator,
         editor=user,
-        files=new_files,
+        files=[*previous_files, *new_files],
         previous_version=prev,
-        is_latest_version=1,
+        # If new files are present reindexing should insert the searchable text
+        searchable_text_de_CH=prev.searchable_text_de_CH if not new_files
+        else None,
+        comments=prev.comments,
+        is_latest_version=1
     )
     prev.replaced_by = new_consultation
     prev.is_latest_version = 0

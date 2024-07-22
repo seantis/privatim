@@ -4,7 +4,7 @@ from lxml.etree import tostring
 from privatim.models import User
 from privatim.models.comment import Comment
 from privatim.models.consultation import Status, Consultation
-from sqlalchemy import select, exists
+from sqlalchemy import select, exists, func
 from webtest.forms import Upload
 
 
@@ -113,7 +113,7 @@ def test_view_add_and_delete_consultation(client):
 
 
 @pytest.mark.skip
-def test_edit_consultation(client):
+def test_edit_consultation_with_files(client):
 
     session = client.db
     client.login_admin()
@@ -247,12 +247,20 @@ def test_edit_consultation_without_files(client):
     consultation_id = session.execute(
         select(Consultation.id).filter_by(is_latest_version=1)
     ).scalar_one()
+
+    # add a comment
+    page = client.get(f'/consultation/{str(consultation_id)}')
+    page.form['content'] = 'Comment'
+    page.form.submit()
+
     page = client.get(f'/consultations/{str(consultation_id)}/edit')
 
     # edit the consultation
     page.form['title'] = 'updated title'
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
+    page.form['evaluation_result'] = 'evaluation result'
+    page.form['decision'] = 'decision'
     page.form['status'] = '2'
     page.form['secondary_tags'] = ['BE', 'LU']
     page = page.form.submit().follow()
@@ -261,16 +269,34 @@ def test_edit_consultation_without_files(client):
     stmt = select(Consultation).where(Consultation.is_latest_version == 1)
     assert len(session.scalars(stmt).all()) == 1
 
+    # test versioning
     with session.no_consultation_filter():
-        stmt_not_latest = select(Consultation).where(
-            Consultation.is_latest_version == 0)
-        assert len(session.scalars(stmt_not_latest).all()) == 1
+        count = session.scalar(
+            select(func.count())
+            .select_from(Consultation)
+            .where(Consultation.is_latest_version == 0)
+        )
+    assert count == 1
 
     consultation_id = session.execute(
         select(Consultation.id).filter_by(is_latest_version=1)
     ).scalar_one()
     assert f'consultation/{str(consultation_id)}' in page.request.url
 
-    # navigate with id to verify the edits
     client.get(f'/consultation/{str(consultation_id)}')
+
+    # After editing the comment should still be visible
+    assert page.pyquery('p.comment-text')[0].text.strip() == 'Comment'
+
+    text_paragraph = [
+        e.text_content().strip() for e in page.pyquery(
+            '.consultation-text-paragraph')
+    ]
     assert 'updated title' in page
+    assert 'updated description' in text_paragraph[0]
+    assert 'updated recommendation' in text_paragraph[1]
+    assert 'evaluation result' in text_paragraph[2]
+    assert 'decision' in text_paragraph[3]
+
+    assert 'BE' in page
+    assert 'LU' in page

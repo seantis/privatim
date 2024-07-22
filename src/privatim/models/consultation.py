@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
     from privatim.models.file import SearchableFile
+    from privatim.models.comment import Comment
+    from sqlalchemy.dialects.postgresql import TSVECTOR
 
 
 class Status(Base):
@@ -97,6 +99,8 @@ class Consultation(  # type: ignore[misc]
         replaced_by: 'Consultation | None' = None,
         secondary_tags: list[Tag] | None = None,
         previous_version: 'Consultation | None' = None,
+        searchable_text_de_CH: 'TSVECTOR | None' = None,
+        comments: list['Comment'] | None = None,
         is_latest_version: int = 1,
     ):
         self.id = str(uuid.uuid4())
@@ -118,6 +122,9 @@ class Consultation(  # type: ignore[misc]
         self.editor = editor
         self.replaced_by = replaced_by
         self.previous_version = previous_version
+        self.searchable_text_de_CH = searchable_text_de_CH
+        if comments is not None:
+            self.comments = comments
         self.is_latest_version = is_latest_version
 
     id: Mapped[UUIDStrPK]
@@ -194,6 +201,9 @@ class Consultation(  # type: ignore[misc]
         While potentially inefficient for large collections, it's typically
         fine as the number of files is expected to be small (1-5). Consider
         optimizing if performance issues arise.
+
+        This would optimally be inside SearchableAssociatedFiles, but it's a
+        tricky, type checking wise and otherwise.
         """
         self.reindex_files()
 

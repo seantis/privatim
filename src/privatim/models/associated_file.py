@@ -57,7 +57,6 @@ class SearchableAssociatedFiles:
         )
 
     def reindex_files(self) -> None:
-
         """Extract the text from the files and save it together with
         the language.
 
@@ -67,10 +66,8 @@ class SearchableAssociatedFiles:
             locale: [] for locale in locales
         }
 
-        #  files are in 'de_CH' locale for now
         files_by_locale['de_CH'] = list(self.files)
 
-        # Extract content and index
         for locale in locales:
             text = ''
             for file in files_by_locale[locale]:

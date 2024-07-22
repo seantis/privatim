@@ -65,7 +65,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             )
             form.canton.data = request.GET.get('canton', 'all')
         else:
-            # Set all activity types to True if no query parameters
+            # Default GET response, show everything, no filter.
             form.consultation.data = True
             form.meeting.data = True
             form.comment.data = True
