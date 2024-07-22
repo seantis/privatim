@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from itertools import chain
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
@@ -10,19 +11,20 @@ from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm, render_filter_field
 
 
-from typing import TYPE_CHECKING, Any
-
+from typing import TYPE_CHECKING, Any, Iterable
 if TYPE_CHECKING:
     from sqlalchemy import Select
+    from sqlalchemy.orm import Session
     from pyramid.interfaces import IRequest
-    from privatim.types import RenderDataOrRedirect
+    from privatim.types import RenderDataOrRedirect, Activity
+    from sqlalchemy.orm import InstrumentedAttribute
 
 
-def apply_date_filter(
+def maybe_apply_date_filter(
     query: 'Select[Any]',
     start_datetime: datetime | None,
     end_datetime: datetime | None,
-    date_column: Any,
+    date_column: 'InstrumentedAttribute[datetime]'
 ) -> 'Select[Any]':
     """
     Apply start and end date filters to a given query.
@@ -32,6 +34,50 @@ def apply_date_filter(
     if end_datetime:
         query = query.filter(date_column <= end_datetime)
     return query
+
+
+def get_activities(form: FilterForm, session: 'Session') -> dict[str, Any]:
+    """ Return all activities. """
+    def get_consultations() -> Iterable[Consultation]:
+        return session.execute(
+            select(Consultation)
+            .options(
+                joinedload(Consultation.creator),
+                joinedload(Consultation.status),
+                joinedload(Consultation.secondary_tags)
+            )
+            .order_by(Consultation.updated.desc())
+        ).scalars().unique()
+
+    def get_meetings() -> Iterable[Meeting]:
+        return session.execute(
+            select(Meeting)
+            .options(joinedload(Meeting.attendees))
+            .order_by(Meeting.updated.desc())
+        ).scalars().unique()
+
+    def get_comments() -> Iterable[Comment]:
+        return session.execute(
+            select(Comment)
+            .options(joinedload(Comment.user))
+            .order_by(Comment.updated.desc())
+        ).scalars().unique()
+
+    # Combine all activities using itertools.chain
+    all_activities = sorted(
+        chain(get_consultations(), get_meetings(), get_comments()),
+        key=lambda x: x.updated,  # type: ignore[attr-defined]
+        reverse=True
+    )
+
+    return {
+        'activities': all_activities,
+        'title': _('Activities'),
+        'show_add_button': False,
+        'filter_form': form,
+        'show_filter': True,
+        'render_filter_field': render_filter_field,
+    }
 
 
 def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
@@ -44,7 +90,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     session = request.dbsession
     form = FilterForm(request)
 
-    # Populate form with GET parameters
     has_query_params = any(request.GET)
 
     # Populate form with GET parameters or set defaults
@@ -66,9 +111,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             form.canton.data = request.GET.get('canton', 'all')
         else:
             # Default GET response, show everything, no filter.
-            form.consultation.data = True
-            form.meeting.data = True
-            form.comment.data = True
+            return get_activities(form, session)
 
     if request.method == 'POST' and form.validate():
         query_params = {
@@ -107,15 +150,16 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         else None
     )
 
-    items: list[Consultation | Meeting | Comment] = []
+    activities: list['Activity'] = []
 
     # Query construction for Consultations
     if include_consultations:
         consultation_query = select(Consultation).options(
             joinedload(Consultation.creator),
+            joinedload(Consultation.status),
             joinedload(Consultation.secondary_tags),
         )
-        consultation_query = apply_date_filter(
+        consultation_query = maybe_apply_date_filter(
             consultation_query,
             start_datetime,
             end_datetime,
@@ -125,30 +169,33 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             consultation_query = consultation_query.filter(
                 Consultation.secondary_tags.any(Tag.name == canton)
             )
-        items.extend(
+        activities.extend(
             session.execute(consultation_query).unique().scalars().all()
         )
 
     # Query construction for Meetings
     if include_meetings:
         meeting_query = select(Meeting).options(joinedload(Meeting.attendees))
-        meeting_query = apply_date_filter(
+        meeting_query = maybe_apply_date_filter(
             meeting_query, start_datetime, end_datetime, Meeting.updated
         )
-        items.extend(session.execute(meeting_query).unique().scalars().all())
-
+        activities.extend(
+            session.execute(meeting_query).unique().scalars().all()
+        )
     # Query construction for Comments
     if include_comments:
         comment_query = select(Comment).options(joinedload(Comment.user))
-        comment_query = apply_date_filter(
+        comment_query = maybe_apply_date_filter(
             comment_query, start_datetime, end_datetime, Comment.updated
         )
-        items.extend(session.execute(comment_query).unique().scalars().all())
+        activities.extend(
+            session.execute(comment_query).unique().scalars().all()
+        )
 
     # Sort all items by their 'updated' attribute
-    items.sort(key=lambda x: x.updated, reverse=True)
+    activities.sort(key=lambda x: x.updated, reverse=True)
     return {
-        'activities': items,
+        'activities': activities,
         'title': _('Activities'),
         'show_add_button': False,
         'filter_form': form,

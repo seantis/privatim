@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
 
+    from privatim.models import Consultation, Meeting
+    from privatim.models.comment import Comment
     from decimal import Decimal
     from fractions import Fraction
     from pyramid.httpexceptions import (
@@ -77,3 +79,5 @@ if TYPE_CHECKING:
 
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
+
+    Activity: TypeAlias = Consultation | Meeting | Comment
