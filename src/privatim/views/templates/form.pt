@@ -2,8 +2,7 @@
              xmlns="http://www.w3.org/1999/xhtml"
              xmlns:tal="http://xml.zope.org/namespaces/tal"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
-             xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-             i18n:domain="privatim">
+         i18n:domain="privatim">
 
     <tal:block metal:fill-slot="content">
 
@@ -15,20 +14,41 @@
             </div>
             <form enctype="multipart/form-data" method="POST" novalidate>
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-
                 <div class="mb-3" tal:repeat="field form">
-                ${field.label}${' *' if field.flags.required else ''}
-                        ${field()}
+                    <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
+                    <tal:block tal:condition="field.type == 'TextAreaField'">
+                        <div class="tiptap-wrapper">
+                            <div class="element tiptap-editor" id="${field.id}-editor"></div>
+                        </div>
+                        <input type="hidden" id="${field.id}" name="${field.name}" value="${field.data or ''}"/>
+                    </tal:block>
+                    <tal:block tal:condition="field.type != 'TextAreaField'">
+                            ${field()}
+                    </tal:block>
                     <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
                 </div>
-
-                <div class="mb-3">
-                    <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
-                    <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
-                </div>
             </form>
+
+
+            <script type="module">
+                import {Editor} from 'https://esm.sh/@tiptap/core'
+                import StarterKit from 'https://esm.sh/@tiptap/starter-kit'
+
+                document.querySelectorAll('.element').forEach((element) => {
+                    const inputId = element.id.replace('-editor', '');
+                    const inputElement = document.getElementById(inputId);
+
+                    const editor = new Editor({
+                        element: element,
+                        extensions: [StarterKit],
+                        content: inputElement.value,
+                        onUpdate: ({editor}) => {
+                            inputElement.value = editor.getHTML();
+                        }
+
+                    });
+                });
+            </script>
         </div>
-
-
     </tal:block>
 </metal:block>

@@ -8,10 +8,19 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Austauschplattform privatim</title>
+<!--?
+This should fix this https://github.com/ueberdosis/tiptap/issues/577
+-->
+    <script type="importmap">
+        {
+          "imports": {
+            "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.19.3/es2022/prosemirror-model.mjs"
+          }
+        }
+    </script>
 </head>
 
 <body class="d-flex flex-column h-100">
-
 <!-- Header -->
         ${panel('navbar')}
 <div class="main-content flex-grow-1">
