@@ -15,7 +15,7 @@
                     <p class="lead fw-bold" i18n:translate="">Profile Picture</p>
                     <div class="profile-icon-container mt-4">
                         <img src="${request.profile_pic}"
-                             class="img-thumbnail border-0 profile-icon rounded-circle" alt="Profile Picture"
+                             class="border-0 profile-icon rounded-circle" alt="Profile Picture"
                              title="Change your avatar">
                         <div class="dropdown">
                             <a i18n:translate=""
