@@ -39,10 +39,10 @@
                 <tal:b tal:condition="flattened_comments_tree">
                     <div class="row">
                         <div class="comment-container">
-                        <div class=mt-5></div>
-                        <metal:block use-macro="layout.macros['display_comments']"
-                                 tal:define="flattened_comments_tree flattened_comments_tree; return_to_model_id _id">
-                        </metal:block>
+                            <div class=mt-5></div>
+                            <metal:block use-macro="layout.macros['display_comments']"
+                                     tal:define="flattened_comments_tree flattened_comments_tree; return_to_model_id _id">
+                            </metal:block>
 
                         </div>
                     </div>
@@ -59,16 +59,14 @@
                         </metal:block>
                     </div>
                 </div>
-
-
             </div>
-
         </div>
+
         <!-- Sidebar for documents and status, starts below the title -->
         <div class="col-lg-4">
             <div class="card mb-4" tal:condition="documents">
                 <div class="card-body claude-element">
-                    <h5 i18n:translate="" class="card-title">Documents</h5>
+                    <h5 i18n:translate="" class="tag-card-title">Documents</h5>
                     <ul class="list-group list-group-flush">
                         <li tal:repeat="item documents" class="list-group-item">
                             <a href="${item.download_url}"
@@ -87,7 +85,7 @@
             </div>
             <div class="card mb-4 ms4 ">
                 <div class="card-body claude-element">
-                    <h5 i18n:translate="" class="card-title">Status</h5>
+                    <h5 i18n:translate="" class="tag-card-title">Status</h5>
                     <h4 class="card-text" tal:condition="status_name">
                         <span class="badge rounded-pill bg-secondary text-light">${status_name}</span>
                     </h4>
@@ -95,18 +93,19 @@
             </div>
             <div class="card">
                 <div class="card-body claude-element">
-                    <h5 i18n:translate="" class="card-title">Tags</h5>
-                    <ul class="list-group list-group-flush">
-                        <li tal:repeat="tag_name secondary_tags" class="list-group-item">
-                            <h4 class="card-text">
-                                <span class="badge rounded-pill bg-secondary text-light">${tag_name}</span>
-                            </h4>
-                        </li>
-                    </ul>
+                    <h5 i18n:translate="" class="tag-card-title">Tags</h5>
+
+                    <div tal:condition="secondary_tags"
+                            class="secondary-tags d-flex flex-row justify-content-start flex-wrap">
+                        <tal:b tal:repeat="tag_name secondary_tags">
+                            <span class="badge rounded-pill mb-4 text-dark fs-6 px-3 py-2 mx-1 tag-sidebar"> ${tag_name}</span>
+                        </tal:b>
+                    </div>
+
                 </div>
             </div>
         </div>
-
+        <!-- Sidebar End-->
 
     </div>
 </metal:block>

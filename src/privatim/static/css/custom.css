@@ -99,7 +99,6 @@ body {
     --border-radius: 16px;
     /* ======== Overwrite bootstrap global variables ======= */
     /* See also https://www.getbootstrap.cn/docs/5.3/customize/css-variables/ */
-    --bs-emphasis-color: var(--primary-color);
     --bs-border-radius: 16px;
     --bs-body-font-family: "DM Sans", sans-serif;
 }
@@ -385,7 +384,7 @@ mark {
     line-height: 1.6;
     font-size: 1.3rem;
     min-height: 8.1rem;
-    padding: 0rem 1.5rem;
+    padding: 2.0rem 2.0rem;
 }
 
 .consultation-text-paragraph {
@@ -393,8 +392,6 @@ mark {
 }
 
 .consultation-body {
-
-    /*background: #F6F5F2;*/
     background: var(--dimmed-white-background);
     border-radius: var(--border-radius);
 }
@@ -575,4 +572,30 @@ mark {
 .rounded-table {
     border-radius: var(--border-radius);
     overflow: hidden;
+}
+
+.tag-sidebar {
+    border: 1px solid var(--light-brown-border-color);
+    padding: 0.8rem;
+    background-color: var(--dimmed-white-background);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tag-sidebar .tag {
+    display: inline-block;
+    margin: 4px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    cursor: default;  /* Added normal cursor */
+    transition: background-color 0.3s ease;
+}
+.tag-sidebar:hover {
+    background-color: #d0d0d0;
+}
+
+.tag-card-title {
+   margin-bottom: 1.5rem;
 }

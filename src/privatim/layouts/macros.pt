@@ -63,6 +63,7 @@
 <!-- Render all the comments. -->
 <metal:block define-macro="display_comments">
     <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment flattened_comments_tree">
+        <h2 i18n:translate="" class="m-4">Comments</h2>
         <div class="card border-0 comment-background ms-3 me-3">
             <div class="card-body">
                 <div class="d-flex flex-start align-items-center">
