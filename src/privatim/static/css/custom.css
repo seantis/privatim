@@ -558,16 +558,14 @@ mark {
  /* Editor*/
 .element {
     background-color: var(--dimmed-white-background) !important;
-}
-
-.tiptap-editor {
     height: 200px;
     overflow-y: auto;
+    /*font-size: 0.85rem;*/
 }
 
-/*.tiptap-wrapper {*/
-/*          height: 20rem; !* Adjust the height as needed *!*/
-/*}*/
+.editor-probs {
+    outline:none;
+}
 
 .rounded-table {
     border-radius: var(--border-radius);

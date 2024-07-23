@@ -201,7 +201,9 @@
 
     </style>
     <div class="tiptap-wrapper">
-        <div class="element tiptap-editor" id="${field.id}-editor"></div>
+
+        <!-- The editor is rendered on whatever has the class element. -->
+        <div class="element" id="${field.id}-editor"></div>
         <div class="bubble-menu">
             <button type="button" data-type="bold">B</button>
             <button type="button" data-type="italic">I</button>
