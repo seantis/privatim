@@ -4,7 +4,7 @@
  *  Uses the CSS Paged Media Module (https://www.w3.org/TR/css-page-3/). This
  *  module allows to design documents for a paged presentation (unlike the web,
  *  where the content is mostly continuous). Most regular CSS directives apply
- *  here too, but there are some extra directives.
+ *  here too, but there are ome extra directives.
  *
  *  In addition, Weasyprint might not (yet) support all Paged Media Module
  *  extensions. A good overview can be found here: https://print-css.rocks/lessons
@@ -98,4 +98,3 @@ body {
     font-family: DM Sans;
     font-size: 10pt;
 }
-

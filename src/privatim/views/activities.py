@@ -70,6 +70,10 @@ def get_activities(form: FilterForm, session: 'Session') -> dict[str, Any]:
         reverse=True
     )
 
+    # Update the form so it reflects
+    form.consultation.data = True
+    form.meeting.data = True
+    form.comment.data = True
     return {
         'activities': all_activities,
         'title': _('Activities'),
