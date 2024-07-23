@@ -27,7 +27,6 @@ repos:
         additional_dependencies:
           - flake8-bugbear==24.2.6
           - flake8-comprehensions==3.14.0
-          - 'flake8-markupsafe@git+https://github.com/vmagamedov/flake8-markupsafe@b391bd13df9330e01666d304b7f4403d67e5ceba'
           - flake8-noqa==1.4.0
           - flake8-pyi==24.1.0
           - flake8-type-checking==2.9.0

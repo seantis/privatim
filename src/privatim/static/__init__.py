@@ -17,6 +17,7 @@ css_library = Library('privatim:css', 'css')
 def render_js_module(url: str) -> str:
     return f'<script type="module" src="{url}"></script>'
 
+
 def js(
         relpath: str,
         depends: 'Iterable[Dependable] | None' = None,

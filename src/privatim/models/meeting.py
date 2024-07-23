@@ -1,12 +1,13 @@
 import uuid
 
 from sedate import utcnow
-from sqlalchemy import Text, Integer, select, func
+from sqlalchemy import Integer, select, func, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
+
 from privatim.models import SearchableMixin
 from privatim.models.commentable import Commentable
 from privatim.orm.uuid_type import UUIDStr
@@ -136,7 +137,7 @@ class Meeting(Base, SearchableMixin, Commentable):
     def __init__(
             self,
             name: str,
-            time: 'datetime',
+            time: datetime,
             attendees: list['User'],
             working_group: 'WorkingGroup',
             agenda_items: list[AgendaItem] | None = None,

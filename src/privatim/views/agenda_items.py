@@ -34,8 +34,8 @@ def add_agenda_item_view(
     if request.method == 'POST' and form.validate():
         agenda_item = AgendaItem.create(
             session,
-            title=form.title.data,
-            description=form.description.data,
+            title=maybe_escape(form.title.data),
+            description=maybe_escape(form.description.data),
             meeting=context
         )
         session.add(agenda_item)

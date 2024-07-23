@@ -12,7 +12,6 @@ from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.meeting import Meeting, AgendaItem
 from privatim.models.file import GeneralFile, SearchableFile
-from privatim.models.statement import Statement
 from privatim.models.consultation import Tag
 from privatim.models.password_change_token import PasswordChangeToken
 from privatim.orm import get_engine
@@ -28,7 +27,6 @@ User
 Consultation
 Meeting
 AgendaItem
-Statement
 PasswordChangeToken
 GeneralFile
 SearchableFile

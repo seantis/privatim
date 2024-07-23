@@ -1,5 +1,6 @@
 import os
 import logging
+from markupsafe import Markup
 from sqlalchemy import select
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
@@ -38,22 +39,26 @@ def consultation_view(
     top_level_comments = (c for c in context.comments if c.parent_id is None)
 
     return {
-        'consultation': context,
+        'title': Markup(context.title),
+        '_id': context.id,
+        'description': Markup(context.description),
+        'recommendation': Markup(context.recommendation),
+        'evaluation_result': Markup(context.evaluation_result),
+        'decision': Markup(context.decision),
         'documents': [
             {
                 'display_filename': trim_filename(doc.filename),
                 'doc_content_type': doc.content_type,
-                'download_url': request.route_url(
-                    'download_file', id=doc.id
-                ),
+                'download_url': request.route_url('download_file', id=doc.id),
             }
             for doc in context.files
         ],
+        'status_name': context.status.name if context.status else '',
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
-        'flattened_comments_tree': flatten_comments(
-            top_level_comments, request
-        )
+        'flattened_comments_tree': flatten_comments(top_level_comments,
+                                                    request),
+        'secondary_tags': (t.name for t in context.secondary_tags or [])
     }
 
 
@@ -75,8 +80,20 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         .where(Consultation.is_latest_version == 1)
         .order_by(Consultation.updated)
     )
-    consultations = session.scalars(stmt).unique().all()
 
+    consultations = [
+        {
+            '_id': _cons.id,
+            'creator_pic_id': _cons.creator.picture.id if _cons.creator else
+            None,
+            'title': Markup(_cons.title),
+            'creator': _cons.creator,
+            'has_creator': _cons.creator is not None,
+            'fullname': _cons.creator.fullname if _cons.creator else None,
+            'description': Markup(_cons.description),
+            'created': _cons.created
+        } for _cons in session.scalars(stmt).unique().all()
+    ]
     return {
         'title': _('Consultations'),
         'consultations': consultations,
@@ -109,11 +126,11 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
         # Create a new Consultation instance
         new_consultation = Consultation(
-            title=maybe_escape(form.title.data),
-            description=maybe_escape(form.description.data),
-            recommendation=maybe_escape(form.recommendation.data),
-            evaluation_result=maybe_escape(form.evaluation_result.data),
-            decision=maybe_escape(form.decision.data),
+            title=form.title.data,
+            description=form.description.data,
+            recommendation=form.recommendation.data,
+            evaluation_result=form.evaluation_result.data,
+            decision=form.decision.data,
             status=status,
             secondary_tags=tags,
             creator=user,
@@ -130,7 +147,6 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                         dictionary_to_binary(file)
                     )
                 )
-
         session.add(new_consultation)
         session.flush()
 

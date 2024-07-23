@@ -4,7 +4,6 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
                                       general_file_factory, file_factory,
-                                      comment_factory,
                                       consultation_from_comment_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory

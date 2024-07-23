@@ -216,3 +216,14 @@ def maybe_escape(value: str | None) -> str:
     if value is None:
         return ''
     return escape(value)
+
+
+def strip_p_tags(text: str) -> str:
+    """Remove <p> tags and strip whitespace from the given text.
+
+    Typically used to display HTML within <ul> and <li> tags,
+    ensuring elements remain on the same horizontal line. It's not the most
+    elegant solution, but less likely to break in the future.
+    """
+    _text = text.replace('<p>', '').replace('</p>', '')
+    return _text.strip()

@@ -31,8 +31,8 @@ from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
     from wtforms.fields.choices import SelectFieldBase
-    from markupsafe import Markup
     from collections.abc import Sequence
+    from markupsafe import Markup
     from datetime import datetime
     from privatim.types import FileDict as StrictFileDict
     from privatim.forms.types import (

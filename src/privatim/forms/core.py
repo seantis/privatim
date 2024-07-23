@@ -1,8 +1,10 @@
 from functools import partial
 from wtforms import Form as BaseForm
 from wtforms import Label
+from wtforms.fields.simple import TextAreaField
 from wtforms.meta import DefaultMeta
 
+from privatim.html import sanitize_html
 from privatim.i18n import pluralize
 from privatim.i18n import translate
 
@@ -15,8 +17,8 @@ from typing import Any, TypeVar, TYPE_CHECKING
 if TYPE_CHECKING:
     from _typeshed import SupportsItems
     from collections.abc import Callable, Mapping, MutableMapping, Sequence
-    from markupsafe import Markup
     from wtforms import Field
+    from markupsafe import Markup
     from wtforms.fields.core import UnboundField
     from wtforms.form import BaseForm as _BaseForm
     from wtforms.meta import _MultiDictLike
@@ -48,6 +50,16 @@ class PyramidTranslations:
         return pluralize(singular, plural, n)
 
 
+class HtmlField(TextAreaField):
+    """ A textfield with html with integrated sanitation. """
+
+    data: 'Markup | None'
+
+    def pre_validate(self, form: '_BaseForm') -> None:
+
+        self.data = sanitize_html(self.data)
+
+
 class BootstrapMeta(DefaultMeta):
 
     def bind_field(
@@ -56,6 +68,11 @@ class BootstrapMeta(DefaultMeta):
             unbound_field: 'UnboundField[_FieldT]',
             options:       'MutableMapping[str, Any]'
     ) -> 'Field':
+
+        # If the field is a TextAreaField, replace it with our patched version
+        if unbound_field.field_class is TextAreaField:
+            unbound_field.field_class = HtmlField
+
         # NOTE: This adds bootstrap specific field classes to render_kw
         render_kw = unbound_field.kwargs.get('render_kw', {})
         field_type = unbound_field.field_class.__name__
@@ -80,6 +97,7 @@ class BootstrapMeta(DefaultMeta):
         )
         if not isinstance(field, TransparentFormField):
             field.label = BootstrapLabel(field.label, field.description)
+
         return field
 
     def render_field(

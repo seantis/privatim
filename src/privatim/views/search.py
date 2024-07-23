@@ -18,7 +18,7 @@ from privatim.models.searchable import SearchableMixin
 from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar,
                     Union)
 
-from privatim.orm.markup_text_type import MarkupText
+from privatim.models.markup_text_type import MarkupText
 from privatim.utils import get_correct_comment_picture_for_comment
 
 if TYPE_CHECKING:
@@ -147,7 +147,7 @@ class SearchCollection:
             search_result = SearchResult(
                 id=result.id,
                 headlines={
-                    'file_content_headline': Markup(   # noqa: MS001
+                    'file_content_headline': Markup(
                         result.file_content_headline
                     )},
                 type='SearchableFile',
@@ -213,7 +213,7 @@ class SearchCollection:
         select_fields = [
             model.id,
             *headline_expressions,
-            literal(model.__name__).label('type'),  # noqa: MS001
+            literal(model.__name__).label('type'),
         ]
 
         return select(*select_fields).filter(
@@ -317,7 +317,7 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
             result_dict = result._asdict()  # Convert NamedTuple to dict
 
             if result.type == 'Comment':
-                result_dict['headlines']['Content'] = Markup(  # noqa: MS001
+                result_dict['headlines']['Content'] = Markup(
                     result_dict['headlines']['Content']
                 )
                 comment = result.model_instance

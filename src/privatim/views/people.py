@@ -1,17 +1,16 @@
 from sqlalchemy import nullslast
 from sqlalchemy.orm import selectinload
-
-from privatim.models import User
 from sqlalchemy.future import select
+from markupsafe import Markup
+
+from privatim.utils import strip_p_tags
+from privatim.models import User
 
 
-from typing import TYPE_CHECKING, Sequence
-
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData
-    from sqlalchemy.orm import Session
-    from privatim.models import Consultation, Meeting
 
 
 def people_view(request: 'IRequest') -> 'RenderData':
@@ -23,7 +22,7 @@ def people_view(request: 'IRequest') -> 'RenderData':
                 nullslast(User.last_name),
                 nullslast(User.first_name)
             )
-        ).scalars().all()
+        ).scalars()
     )
 
     return {
@@ -31,7 +30,8 @@ def people_view(request: 'IRequest') -> 'RenderData':
     }
 
 
-def query_user_details(session: 'Session', user_id: str) -> User:
+def person_view(context: User, request: 'IRequest') -> 'RenderData':
+    session = request.dbsession
     stmt = (
         select(User)
         .options(
@@ -39,29 +39,26 @@ def query_user_details(session: 'Session', user_id: str) -> User:
             selectinload(User.meetings),
             selectinload(User.consultations),
         )
-        .filter_by(id=user_id)
+        .filter_by(id=context.id)
     )
-    return session.execute(stmt).scalar_one()
+    user = session.execute(stmt).scalar_one()
 
+    meetings_dict = [
+        {
+            'name': Markup(strip_p_tags(meeting.name)),
+            'url': request.route_url('meeting', id=meeting.id)
+        } for meeting in user.meetings
+    ]
 
-def person_view(context: User, request: 'IRequest') -> 'RenderData':
-    session = request.dbsession
-
-    user = query_user_details(session, context.id)
-
-    def generate_urls(
-        items: 'Sequence[Consultation | Meeting]', name: str
-    ) -> 'list[tuple[Consultation | Meeting, str]]':
-        return [(item, request.route_url(name, id=item.id)) for item in items]
-
-    meeting_urls = generate_urls(user.meetings, 'meeting')
-    consultation_urls = generate_urls(
-        [c for c in user.consultations if c.is_latest_version == 1],
-        'consultation'
-    )
+    consultation_dict = [
+        {
+            'title': Markup(strip_p_tags(consultation.title)),
+            'url': request.route_url('consultation', id=consultation.id)
+        } for consultation in user.consultations
+    ]
 
     return {
         'user': user,
-        'meeting_urls': meeting_urls,
-        'consultation_urls': consultation_urls
+        'meeting_urls': meetings_dict,
+        'consultation_urls': consultation_dict
     }

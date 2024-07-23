@@ -48,9 +48,16 @@ def comment_factory(request: 'IRequest') -> Comment:
 
 def consultation_from_comment_factory(
     request: 'IRequest',
-) -> 'Consultation | None':
+) -> Consultation | None:
     comment_id = request.matchdict['id']
     session = request.dbsession
+
+    """ This allows us to conveniently link to comments, and we are link to
+    the model they appear in instead.
+
+    Note: Currently there is only one model (Consultation) in which we make
+    comments. If this changes in the future we'll have to adjust this function.
+    """
 
     # First, get the comment
     comment = session.get(Comment, comment_id)

@@ -5,7 +5,7 @@ from privatim.reporting.report import (
     ReportOptions,
     HTMLReportRenderer,
 )
-from privatim.utils import datetime_format
+from privatim.utils import datetime_format, strip_p_tags
 from privatim.controls.controls import Button, Icon, IconStyle
 from pyramid.httpexceptions import (
     HTTPFound,
@@ -62,26 +62,21 @@ def meeting_view(
         ]
     )
 
-    # should already be sorted, (by 'order_by')
-    assert context.agenda_items == sorted(
-        context.agenda_items, key=lambda x: x.position
-    ), "Agenda items are not sorted"
-
     agenda_items = []
     for indx, item in enumerate(context.agenda_items, start=1):
         agenda_items.append(
             {
-                'title': Markup(  # noqa: MS001
-                    '<strong>{}.</strong> {}'.format(indx, item.title)
+                'title': Markup(
+                    '<strong>{}.</strong> {}'.format(indx, Markup(
+                        strip_p_tags(item.title)))
                 ),
-                'description': item.description,
+                'description': Markup(item.description),
                 'id': item.id,
                 'position': item.position,
                 'edit_btn': Button(
                     url=request.route_url('edit_agenda_item', id=item.id),
                     icon='edit',
                     description=_('Edit Agenda Item'),
-                    css_class='',
                 ),
             }
         )
@@ -207,7 +202,7 @@ def meetings_view(
     add_meeting_link = request.route_url('add_meeting', id=context.id)
     leader = None
     if context.leader is not None:
-        leader = Markup(  # noqa: MS001
+        leader = Markup(
             '<a href="{}" class="mb-1">{}</a>'.format(
                 request.route_url("person", id=context.leader.id),
                 context.leader.fullname

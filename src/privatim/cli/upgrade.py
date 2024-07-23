@@ -1,8 +1,6 @@
 import logging
 import os
 from enum import Enum
-from typing import TYPE_CHECKING
-from typing import Any
 
 import click
 import plaster
@@ -17,10 +15,12 @@ from privatim.models import get_session_factory
 from privatim.orm import Base
 
 
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from sqlalchemy import Column as _Column
     from sqlalchemy import Engine
     from sqlalchemy.orm import Session
+    from sqlalchemy.engine.interfaces import ReflectedColumn
 
     Column = _Column[Any]
 
@@ -31,12 +31,12 @@ class UpgradeContext:
 
     def __init__(self, db: 'Session'):
         self.session = db
-        self.engine: Engine = self.session.bind  # type: ignore
+        self.engine: 'Engine' = self.session.bind  # type: ignore
 
         self.operations_connection = db._connection_for_bind(
             self.engine
         )
-        self.operations: Any = Operations(
+        self.operations: Operations = Operations(
             MigrationContext.configure(
                 self.operations_connection
             )
@@ -60,6 +60,18 @@ class UpgradeContext:
         if self.has_table(table):
             if not self.has_column(table, column.name):
                 self.operations.add_column(table, column)
+                return True
+        return False
+
+    def alter_column(
+        self, table_name: str, column: str, new_column_name: str
+    ) -> bool:
+        if self.has_table(table_name):
+            if (not self.has_column(table_name, new_column_name) and
+                    self.has_column(table_name, column)):
+                self.operations.alter_column(
+                    table_name, column, new_column_name=new_column_name
+                )
                 return True
         return False
 
@@ -88,6 +100,24 @@ class UpgradeContext:
             )
             return True
         return False
+
+    def get_column_info(
+            self,
+            table: str, column: str
+    ) -> 'ReflectedColumn | None':
+        """ Get type information about column. Use like this:
+
+             col_info = context.get_column_info('consultations', column)
+             if col_info and not isinstance(col_info['type'], MarkupText):
+                do_something()
+        """
+
+        inspector = inspect(self.operations_connection)
+        columns = inspector.get_columns(table)
+        for col in columns:
+            if col['name'] == column:
+                return col
+        return None
 
     def get_enum_values(self, enum_name: str) -> set[str]:
         if self.engine.name != 'postgresql':

@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const bubbleMenu = wrapper.querySelector('.bubble-menu');
 
         if (!bubbleMenu) {
-            console.error('Bubble menu not found for editor:', inputId);
             return;
         }
 
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 BubbleMenu.configure({
                     element: bubbleMenu,
                     shouldShow: ({editor, view, state, oldState, from, to}) => {
-                        console.log('Checking if bubble menu should show:', from, to);
                         return from !== to; // Show menu when text is selected
                     },
                 }),
@@ -40,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
             content: inputElement.value,
             onUpdate: ({editor}) => {
                 inputElement.value = editor.getHTML();
-            },
-            onSelectionUpdate: ({editor}) => {
-                console.log('Selection updated');
             },
         });
 
@@ -52,8 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
         bubbleMenu.querySelectorAll('button').forEach(button => {
             button.addEventListener('click', () => {
                 const type = button.getAttribute('data-type');
-                console.log('Button clicked:', type);
-
                 switch (type) {
                     case 'bold':
                         editor.chain().focus().toggleBold().run();

@@ -1,6 +1,8 @@
 from functools import partial
 from fanstatic import Fanstatic
 
+from pyramid.events import BeforeRender
+from privatim import helpers
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
@@ -107,6 +109,16 @@ def includeme(config: Configurator) -> None:
         'add_action_menu_entries', reify=True)
 
 
+def add_renderer_globals(event: BeforeRender) -> None:
+    """ Makes the helpers module available in all templates.
+    For example, you can access Markup via 'h':
+
+    <h4 tal:content="h.Markup(activity.title[:100])>
+
+    """
+    event['h'] = helpers
+
+
 def main(
     global_config: Any, **settings: Any
 ) -> 'WSGIApplication':  # pragma: no cover
@@ -130,6 +142,7 @@ def main(
 
     with Configurator(settings=settings, root_factory=root_factory) as config:
         includeme(config)
+        config.add_subscriber(add_renderer_globals, BeforeRender)
 
     app = config.make_wsgi_app()
     return Fanstatic(app, versioning=True)
@@ -164,9 +177,71 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             server_default=func.now()
         )
     )
-    context.operations.alter_column(
+
+    context.alter_column(
         'comments',
         'modified',
         new_column_name='updated'
     )
+
+    # drop unused Statements column
+    context.drop_column('user', 'statements')
+    context.drop_table('statements')
+
+    # for column in [
+    #     'title',
+    #     'description',
+    #     'recommendation',
+    #     'evaluation_result',
+    #     'decision',
+    # ]:
+    #     if context.has_column('consultations', column):
+    #         col_info = context.get_column_info('consultations', column)
+    #         if col_info and not isinstance(col_info['type'], MarkupText):
+    #             context.operations.alter_column(
+    #                 'consultations',
+    #                 column,
+    #                 type_=MarkupText,
+    #                 existing_type=col_info['type'],
+    #                 nullable=col_info['nullable']
+    #             )
+    #
+    # # Upgrade Meeting model
+    # for column in ['name', 'decisions']:
+    #     if context.has_column('meetings', column):
+    #         col_info = context.get_column_info('meetings', column)
+    #         if col_info and not isinstance(col_info['type'], MarkupText):
+    #             context.operations.alter_column(
+    #                 'meetings',
+    #                 column,
+    #                 type_=MarkupText,
+    #                 existing_type=col_info['type'],
+    #                 nullable=col_info['nullable']
+    #             )
+    # # Upgrade AgendaItem model
+    # for column in ['title', 'description']:
+    #     if context.has_column('agenda_items', column):
+    #         col_info = context.get_column_info('agenda_items', column)
+    #         if col_info and not isinstance(col_info['type'], MarkupText):
+    #             context.operations.alter_column(
+    #                 'agenda_items',
+    #                 column,
+    #                 type_=MarkupText,
+    #                 existing_type=col_info['type'],
+    #                 nullable=col_info['nullable']
+    #             )
+    #
+    # # Upgrade Comment model
+    # if context.has_table('comments'):
+    #     if context.has_column('comments', 'content'):
+    #         col_info = context.get_column_info('comments', 'content')
+    #         if col_info and not isinstance(col_info['type'], MarkupText):
+    #             context.operations.alter_column(
+    #                 'comments',
+    #                 'content',
+    #                 type_=MarkupText,
+    #                 existing_type=col_info['type'],
+    #                 nullable=col_info['nullable']
+    #             )
+    #
     context.commit()

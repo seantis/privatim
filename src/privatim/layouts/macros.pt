@@ -94,7 +94,7 @@
             </div>
             <div class="row comment-answer-form-container">
                 <metal:block use-macro="layout.macros['answer_comment_form']"
-                         tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
+                         tal:define="add_comment_route_name request.route_url('add_comment', id=return_to_model_id,
                                 _query={'target_url': 'consultation',
                                         'parent_id': flattened_comment['comment'].id});
                                 form nested_comment_form">
@@ -137,7 +137,7 @@
                 <!--? Answer for a child comment  -->
                 <div class="row comment-answer-form-container">
                     <metal:block use-macro="layout.macros['answer_comment_form']"
-                             tal:define="add_comment_route_name request.route_url('add_comment', id=consultation.id,
+                             tal:define="add_comment_route_name request.route_url('add_comment', id=return_to_model_id,
                                     _query={'target_url': 'consultation',
                                             'parent_id': flattened_comment['comment'].id});
                                     form nested_comment_form">
@@ -204,7 +204,6 @@
         <div class="bubble-menu">
             <button type="button" data-type="bold">B</button>
             <button type="button" data-type="italic">I</button>
-            <button type="button" data-type="strike">S</button>
         </div>
     </div>
     <input type="hidden" id="${field.id}" name="${field.name}" value="${field.data or ''}"/>

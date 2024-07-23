@@ -12,18 +12,20 @@
                     <h1 class="mb-3">${title}</h1>
                 </div>
             </div>
+
             <form enctype="multipart/form-data" method="POST" novalidate>
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="mb-3" tal:repeat="field form">
                     <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
 
                     <!-- TipTap Editor for all wtforms.fields.TextAreaField -->
-                    <tal:block tal:condition="field.type == 'TextAreaField'">
+                    <!-- Conceptually, the editor is a layer on top of the TextArea, we still process the field as usual. -->
+                    <tal:block tal:condition="field.type == 'HtmlField'">
                         <metal:editor use-macro="layout.macros['render_editor']" tal:define="field field" />
                     </tal:block>
 
                     <!-- Else just render the field as usual. -->
-                    <tal:block tal:condition="field.type != 'TextAreaField'">
+                    <tal:block tal:condition="field.type != 'HtmlField'">
                             ${field()}
                     </tal:block>
 

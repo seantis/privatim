@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+
 from sedate import utcnow
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -11,6 +12,7 @@ from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
 from privatim.models.searchable import SearchableMixin
 from privatim.orm import Base
+
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
 

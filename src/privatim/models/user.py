@@ -90,12 +90,6 @@ class User(Base):
         back_populates='leader',
     )
 
-    statements = relationship(
-        'Statement',
-        back_populates='drafter',
-        foreign_keys='[Statement.drafted_by]',  # todo: check this is needed
-    )
-
     comments: Mapped[list['Comment']] = relationship(
         'Comment', back_populates='user',
     )
