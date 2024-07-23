@@ -7,6 +7,7 @@ from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.orm import relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
+from privatim.orm.meta import UUIDStr as UUIDStrType
 
 from privatim.models import SearchableMixin
 from privatim.models.commentable import Commentable
@@ -141,12 +142,14 @@ class Meeting(Base, SearchableMixin, Commentable):
             attendees: list['User'],
             working_group: 'WorkingGroup',
             agenda_items: list[AgendaItem] | None = None,
+            creator: 'User | None' = None
     ):
         self.id = str(uuid.uuid4())
         self.name = maybe_escape(name)
         self.time = time
         self.attendees = attendees
         self.working_group = working_group
+        self.creator = creator
         if agenda_items:
             self.agenda_items = agenda_items
 
@@ -172,6 +175,15 @@ class Meeting(Base, SearchableMixin, Commentable):
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    creator_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('users.id'), nullable=True
+    )
+    creator: Mapped['User | None'] = relationship(
+        'User',
+        back_populates='created_meetings',
+        foreign_keys=[creator_id]
+    )
 
     # allfällige Beschlüsse
     decisions: Mapped[str | None] = mapped_column()

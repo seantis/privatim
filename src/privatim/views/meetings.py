@@ -238,7 +238,8 @@ def add_meeting_view(
             name=maybe_escape(form.name.data),
             time=time,
             attendees=attendees,
-            working_group=context
+            working_group=context,
+            creator=request.user
         )
         session.add(meeting)
         message = _(

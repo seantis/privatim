@@ -100,6 +100,12 @@ class User(Base):
         foreign_keys='Consultation.creator_id',
     )
 
+    created_meetings: Mapped[list['Consultation']] = relationship(
+        'Meeting',
+        back_populates='creator',
+        foreign_keys='Meeting.creator_id',
+    )
+
     def set_password(self, password: str) -> None:
         password = password or ''
         pwhash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())

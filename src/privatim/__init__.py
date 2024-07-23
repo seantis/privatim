@@ -244,4 +244,16 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     #                 nullable=col_info['nullable']
     #             )
     #
+
+
+    if not context.has_column('meetings', 'creator_id'):
+        context.add_column(
+            'meetings',
+            Column(
+                'creator_id',
+                UUIDStrType,
+                ForeignKey('users.id'),
+                nullable=True,
+            ),
+        )
     context.commit()

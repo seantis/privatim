@@ -45,7 +45,7 @@
                                                 <span class="timeline-user">
                                                 <tal:b tal:switch="activity.__class__.__name__">
                                                     <span tal:case="'Consultation'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
-                                                    <span tal:case="'Meeting'" tal:condition="activity.working_group.leader"><span i18n:translate="">by </span>${activity.working_group.leader.fullname}</span>
+                                                    <span tal:case="'Meeting'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
                                                     <span tal:case="'Comment'" tal:condition="activity.user"><span i18n:translate="">by </span>${activity.user.fullname}</span>
                                                 </tal:b>
                                                 </span>
