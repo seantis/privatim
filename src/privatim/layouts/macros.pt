@@ -183,7 +183,7 @@
         .bubble-menu button {
             border: none;
             background-color: unset;
-            font-size: 14px;
+            font-size: 1.2rem;
             font-weight: 500;
             padding: 4px 8px;
             margin: 0 2px;

@@ -10,7 +10,8 @@ import StarterKit from 'https://esm.sh/@tiptap/starter-kit@2.4.0';
 
 import BubbleMenu from 'https://esm.sh/@tiptap/extension-bubble-menu@2.5.4';
 import Link from 'https://esm.sh/@tiptap/extension-link@2.4.0';
-import Paragraph from 'https://esm.sh/@tiptap/extension-paragraphk@2.4.0';
+import Paragraph from 'https://esm.sh/@tiptap/extension-paragraph@2.4.0';
+import Document from 'https://esm.sh/@tiptap/extension-document';
 import Text from 'https://esm.sh/@tiptap/extension-text@2.4.0';
 import Code from 'https://esm.sh/@tiptap/extension-code@2.4.0';
 
@@ -22,14 +23,14 @@ document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
     const inputId = element.id.replace('-editor', '');
     const inputElement = document.getElementById(inputId);
     const bubbleMenu = wrapper.querySelector('.bubble-menu');
-    const proseMirror = element.querySelector('.ProseMirror.editor-probbs');
 
-    element.addEventListener('click', function (event) {
-        // Make sure the click on the whole field is forwarded to act like a click on the editor.
-        if (event.target === element) {
-            event.preventDefault();
+    [...document.getElementsByClassName('element')].forEach((el) => {
+        el.addEventListener('click', function (event) {
+            // Make sure the click on the whole field is forwarded to act like a click on the editor.
+            // event.preventDefault();
+            let proseMirror = el.querySelector('.ProseMirror.editor-probs');
             proseMirror.focus();
-        }
+        });
     });
 
     if (!bubbleMenu) {

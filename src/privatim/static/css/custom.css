@@ -560,6 +560,7 @@ mark {
     background-color: var(--dimmed-white-background) !important;
     height: 200px;
     overflow-y: auto;
+    cursor: text;
     /*font-size: 0.85rem;*/
 }
 
