@@ -78,7 +78,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     stmt = (
         select(Consultation)
         .where(Consultation.is_latest_version == 1)
-        .order_by(Consultation.updated)
+        .order_by(Consultation.created.desc())
     )
 
     consultations = [
