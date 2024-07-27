@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-19 12:51+0200\n"
+"POT-Creation-Date: 2024-07-27 20:12+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -49,6 +49,10 @@ msgstr "Aktionen"
 msgid "Message"
 msgstr "Nachricht"
 
+#: src/privatim/layouts/macros.pt
+msgid "Comments"
+msgstr "Kommentare"
+
 #: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
 msgid "Answer"
 msgstr "Antworten"
@@ -62,7 +66,6 @@ msgid "Activities"
 msgstr "Aktivitäten"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
-#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Vernehmlassungen"
 
@@ -137,6 +140,11 @@ msgstr "Details"
 #: src/privatim/views/meetings.py
 msgid "Delete"
 msgstr "Löschen"
+
+#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Gremium bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
@@ -234,6 +242,11 @@ msgstr "Gremium hinzufügen"
 
 #: src/privatim/views/working_groups.py
 #, python-format
+msgid "Successfully updated working group \"${name}\""
+msgstr "Gremium \"${name}\" erfolgreich bearbeitet"
+
+#: src/privatim/views/working_groups.py
+#, python-format
 msgid ""
 "Cannot delete working group \"${name}\" because it has associated meetings. "
 "Please delete all meetings first."
@@ -314,6 +327,10 @@ msgid "Leader"
 msgstr "Leiter"
 
 #: src/privatim/views/templates/working_group.pt
+msgid "Chairman Contact"
+msgstr "Kontakt Vorstand"
+
+#: src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/meeting_form.py
 msgid "Add Meeting"
 msgstr "Sitzung hinzufügen"
@@ -325,7 +342,6 @@ msgid ""
 msgstr "Hier können Sie Sitzungen dieses Gremiums hinzufügen."
 
 #: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr "Sitzungen"
 
@@ -395,6 +411,14 @@ msgstr "Dateiinhalt"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Passwort ändern"
+
+#: src/privatim/views/templates/person.pt
+msgid "Created Meetings"
+msgstr "Sitzungen erstellt"
+
+#: src/privatim/views/templates/person.pt
+msgid "Created Consultations"
+msgstr "Vernehmlassungen erstellt"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
@@ -606,6 +630,10 @@ msgstr "Beschluss"
 msgid "Cantons"
 msgstr "Kantone"
 
+#: src/privatim/forms/consultation_form.py
+msgid "Choose a canton..."
+msgstr "Kanton auswählen..."
+
 #: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Kommentar"
@@ -684,10 +712,6 @@ msgid "Copy to"
 msgstr "Kopieren nach"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Gremium bearbeiten"
-
-#: src/privatim/forms/working_group_forms.py
 msgid "No Leader"
 msgstr "Kein Leiter"
 
@@ -723,6 +747,10 @@ msgstr "Weitere Dokumente hochladen"
 msgid "Select..."
 msgstr "Auswählen"
 
+#: src/privatim/forms/fields/fields.py
+msgid "No Users Found"
+msgstr "Keine Benutzer gefunden"
+
 #: src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
@@ -731,6 +759,3 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "<dynamic element> Edit"
-#~ msgstr "Bearbeiten"

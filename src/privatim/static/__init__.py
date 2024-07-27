@@ -80,7 +80,6 @@ custom_js = js('custom/custom.js')
 
 tom_select_css = css('tom-select.min.css')
 tom_select = js('tom_select.complete.min.js')
-init_tom_select = js('init_tom_select.js', depends=[tom_select])
 
 init_tiptap_editor = js(
     'init_tiptap_editor.js',

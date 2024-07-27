@@ -22,6 +22,12 @@
                     <span class="fw-bold" i18n:translate="">Leader</span>: <i class="fas fa-user user-list-item"></i>${leader}
                 </p>
                     ${user_list}
+
+                <p tal:condition="chairman_contact">
+                    <span class="fw-bold" i18n:translate="">Chairman Contact</span>: <i
+                        class=""></i>${chairman_contact}
+                </p>
+
             </div>
         </div>
 

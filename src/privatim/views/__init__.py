@@ -45,10 +45,9 @@ from privatim.views.people import people_view, person_view
 from privatim.views.profile import profile_view, add_profile_image_view
 from privatim.views.comment import add_comment_view
 from privatim.views.search import search
-from privatim.views.working_groups import (
-    add_or_edit_working_group,
-    delete_working_group_view,
-)
+from privatim.views.working_groups import (delete_working_group_view,
+                                           add_working_group,
+                                           edit_working_group)
 from privatim.views.working_groups import working_groups_view
 
 
@@ -186,21 +185,39 @@ def includeme(config: 'Configurator') -> None:
         '/working_groups/add',
     )
     config.add_view(
-        add_or_edit_working_group,
+        add_working_group,
         route_name='add_working_group',
         renderer='templates/form.pt',
         xhr=False
     )
     config.add_view(
-        add_or_edit_working_group,
+        add_working_group,
         route_name='add_working_group',
         renderer='json',
         request_method='POST',
         xhr=True
     )
 
-    # Note that view working_group is like viewing all meetings (same
-    # thing)
+    config.add_route(
+        'edit_working_group',
+        '/working_groups/edit/{id}',
+        factory=working_group_factory
+    )
+    config.add_view(
+        edit_working_group,
+        route_name='edit_working_group',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        edit_working_group,
+        route_name='edit_working_group',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    # viewing a working_group is like viewing all meetings (same thing)
     config.add_route(
         'meetings',
         '/working_groups/{id}/meetings/view',

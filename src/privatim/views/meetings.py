@@ -195,6 +195,10 @@ def meetings_view(
     assert isinstance(context, WorkingGroup)
 
     request.add_action_menu_entry(
+        translate(_('Edit Working Group')),
+        request.route_url('edit_working_group', id=context.id)
+    )
+    request.add_action_menu_entry(
         translate(_('Delete Working Group')),
         request.route_url('delete_working_group', id=context.id)
     )
@@ -213,6 +217,7 @@ def meetings_view(
         'title': context.name,
         'add_meeting_link': add_meeting_link,
         'leader': leader,
+        'chairman_contact': context.chairman_contact,
         'user_list': user_list(request, context.users, title),
         'meetings': context.meetings,
     }

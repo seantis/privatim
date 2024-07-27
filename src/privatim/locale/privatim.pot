@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-19 12:51+0200\n"
+"POT-Creation-Date: 2024-07-27 20:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,10 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
+#: ./src/privatim/layouts/macros.pt
+msgid "Comments"
+msgstr ""
+
 #: ./src/privatim/layouts/macros.pt ./src/privatim/forms/add_comment.py
 msgid "Answer"
 msgstr ""
@@ -59,7 +63,6 @@ msgid "Activities"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/consultations.py
-#: ./src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr ""
 
@@ -133,6 +136,11 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/views/working_groups.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -228,6 +236,11 @@ msgstr ""
 
 #: ./src/privatim/views/working_groups.py
 #, python-format
+msgid "Successfully updated working group \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
 msgid ""
 "Cannot delete working group \"${name}\" because it has associated meetings. "
 "Please delete all meetings first."
@@ -303,6 +316,10 @@ msgid "Leader"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
+msgid "Chairman Contact"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_group.pt
 #: ./src/privatim/forms/meeting_form.py
 msgid "Add Meeting"
 msgstr ""
@@ -314,7 +331,6 @@ msgid ""
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr ""
 
@@ -383,6 +399,14 @@ msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
+msgstr ""
+
+#: ./src/privatim/views/templates/person.pt
+msgid "Created Meetings"
+msgstr ""
+
+#: ./src/privatim/views/templates/person.pt
+msgid "Created Consultations"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -596,6 +620,10 @@ msgstr ""
 msgid "Cantons"
 msgstr ""
 
+#: ./src/privatim/forms/consultation_form.py
+msgid "Choose a canton..."
+msgstr ""
+
 #: ./src/privatim/forms/add_comment.py ./src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr ""
@@ -670,10 +698,6 @@ msgid "Copy to"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr ""
-
-#: ./src/privatim/forms/working_group_forms.py
 msgid "No Leader"
 msgstr ""
 
@@ -707,6 +731,10 @@ msgstr ""
 
 #: ./src/privatim/forms/fields/fields.py
 msgid "Select..."
+msgstr ""
+
+#: ./src/privatim/forms/fields/fields.py
+msgid "No Users Found"
 msgstr ""
 
 #: ./src/privatim/reporting/report.py

@@ -1,11 +1,10 @@
 import inspect
 from itertools import zip_longest
-
 import sedate
 from sqlalchemy import select
 
 from privatim.models.file import SearchableFile
-from privatim.static import init_tom_select
+from privatim.static import tom_select
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
@@ -15,7 +14,7 @@ from wtforms.fields.simple import FileField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
 from privatim.forms.widgets.widgets import UploadWidget, UploadMultipleWidget
-from privatim.i18n import _
+from privatim.i18n import _, translate
 from privatim.utils import (
     binary_to_dictionary,
     dictionary_to_binary,
@@ -25,6 +24,7 @@ from privatim.utils import (
 from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
 from privatim.models import GeneralFile
 from operator import itemgetter
+from markupsafe import Markup
 
 
 from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
@@ -32,7 +32,6 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import Session
     from wtforms.fields.choices import SelectFieldBase
     from collections.abc import Sequence
-    from markupsafe import Markup
     from datetime import datetime
     from privatim.types import FileDict as StrictFileDict
     from privatim.forms.types import (
@@ -71,10 +70,9 @@ IMAGE_MIME = IMAGE_MIME_TYPES | {'image/svg+xml'}
 
 
 __all__ = [
-    "ChosenSelectWidget",
+    "TomSelectWidget",
     "DateTimeLocalField",
     "TimezoneDateTimeField",
-    "SearchableSelectField",
     "UploadField",
     "UploadMultipleField",
     # "UploadFileWithORMSupport",
@@ -92,18 +90,6 @@ def file_choices_from_session(session: 'Session') -> list[tuple[str, str]]:
         ((file_id, name) for file_id, name in result),
         key=itemgetter(1),
     )
-
-
-class ChosenSelectWidget(Select):
-
-    def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> 'Markup':
-        if not kwargs.get('class'):
-            kwargs['class'] = 'searchable-select'
-        else:
-            kwargs['class'] += ' searchable-select'
-        kwargs['placeholder_'] = _('Select...')
-        kwargs['autocomplete_'] = 'off'
-        return super(ChosenSelectWidget, self).__call__(field, **kwargs)
 
 
 class DateTimeLocalField(DateTimeLocalFieldBase):
@@ -133,6 +119,96 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
         super(DateTimeLocalField, self).process_formdata(valuelist)
 
 
+class TomSelectWidget(Select):
+
+    def __init__(
+        self,
+        multiple: bool = False,
+        translations: dict[str, str] | None = None,
+    ) -> None:
+        super().__init__(multiple=multiple)
+        self.translations = translations or {}
+
+    def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> Markup:
+        if not kwargs.get('class'):
+            kwargs['class'] = 'searchable-select'
+        else:
+            kwargs['class'] += ' searchable-select'
+
+        placeholder = self.translations.get('not_found', _('Select...'))
+        kwargs['placeholder_'] = placeholder
+        kwargs['autocomplete_'] = 'off'
+
+        html = super(TomSelectWidget, self).__call__(field, **kwargs)
+        not_found_message = self.translations.get(
+            'not_found', translate(_('No Users Found'))
+        )
+
+        # We handle translations on the backend and inject them into
+        # JavaScript. We use this approach here just because this allows to
+        # use the existing i18n translation in python. There are only a few
+        # default messages in Tom Select. Implementing frontend
+        # i18n translations for just two messages would be overkill.
+        inline_js = Markup(f"""
+        <script type="text/javascript">
+        (function() {{
+            function initializeSearchableSelect(
+                uniqueId, translatedNotFound
+                ) {{
+                let element = document.getElementById(uniqueId);
+                if (element) {{
+                    let settings = {{
+                        render: {{
+                            option: function (data, escape) {{
+                                return '<div>' + escape(data.text) + '</div>';
+                            }},
+                            no_results: function (data, escape) {{
+                                return '<div class="no-results">' +
+                                translatedNotFound + ' "'
+                                + escape(data.input) + '"</div>';
+                            }},
+                        }},
+                    }};
+                    new TomSelect(element, settings);
+                }}
+            }}
+            /* This schedules the initialization to happen on the next
+            animation frame, which is typically very soon after the DOM is
+            ready. DOMContentLoaded would take too long.
+            */
+            requestAnimationFrame(function() {{
+                initializeSearchableSelect('{field.id}',
+                 '{not_found_message}');
+            }});
+        }})();
+        </script>
+        """)
+        return inline_js + html
+
+
+class SearchableSelectField(SelectMultipleField):
+    """
+    A multiple select field with tom-select.js support.
+
+    Note: This is unrelated to PostgreSQL full-text search, which also uses
+    the term 'searchable'.
+    Note: you need to call form.raw_data() to actually get the choices as list
+    """
+
+    def __init__(
+        self,
+        label: str,
+        translations: dict[str, str] | None = None,
+        **kwargs: Any
+    ):
+        super().__init__(label, **kwargs)
+        self.widget = TomSelectWidget(multiple=True, translations=translations)
+
+    def __call__(self, **kwargs: Any) -> Any:
+        tom_select.need()
+        return super().__call__(**kwargs)
+
+
 class TimezoneDateTimeField(DateTimeLocalField):
     """ A datetime field data returns the date with the given timezone
     and expects datetime values with a timezone.
@@ -157,30 +233,6 @@ class TimezoneDateTimeField(DateTimeLocalField):
 
         if self.data:
             self.data = sedate.replace_timezone(self.data, self.timezone)
-
-
-class SearchableSelectField(SelectMultipleField):
-
-    """
-    A multiple select field with tom-select.js support.
-
-    Note: This is unrelated to PostgreSQL full-text search, which also uses
-    the term 'searchable'.
-    Note: you need to call form.raw_data() to actually get the choices as list
-    """
-
-    widget = ChosenSelectWidget(multiple=True)
-
-    def __call__(self, **kwargs: Any) -> Any:
-        init_tom_select.need()
-        self.data: list[str] = []
-        return super().__call__(**kwargs)
-
-    def process_data(self, value: list[object]) -> None:
-        if value:
-            self.data = [
-                str(v.id) if hasattr(v, 'id') else str(v) for v in value
-            ]
 
 
 class UploadField(FileField):

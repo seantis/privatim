@@ -245,7 +245,6 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     #             )
     #
 
-
     if not context.has_column('meetings', 'creator_id'):
         context.add_column(
             'meetings',

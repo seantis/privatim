@@ -1,11 +1,10 @@
 from sqlalchemy import select
 from wtforms import (StringField, validators, )
-
 from wtforms.validators import InputRequired
 from privatim.forms.core import Form
 
 from privatim.forms.fields import TimezoneDateTimeField
-from privatim.forms.fields import SearchableSelectField
+from privatim.forms.fields.fields import SearchableSelectField
 from privatim.models import User, Meeting
 from privatim.models import WorkingGroup
 from privatim.i18n import _

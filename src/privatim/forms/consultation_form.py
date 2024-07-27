@@ -7,8 +7,10 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields import SearchableSelectField
-from privatim.forms.fields.fields import UploadMultipleFilesWithORMSupport
+from privatim.forms.fields.fields import (
+    UploadMultipleFilesWithORMSupport,
+    SearchableSelectField,
+)
 from privatim.i18n import _, translate
 
 from privatim.models import Tag, GeneralFile
@@ -89,6 +91,10 @@ class ConsultationForm(Form):
         validators=[
             validators.Optional(),
         ],
+        translations={
+            'placeholder': translate(_('Choose a canton...')),
+            'not_found': 'No results found'
+        }
     )
 
     files = UploadMultipleFilesWithORMSupport(

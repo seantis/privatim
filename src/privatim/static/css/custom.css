@@ -349,7 +349,7 @@ span.accordion-text-9 {
     text-align: left;
 }
 
-/* 'resource-collection' means this cluster of lists of _stuff_, like
+/* 'resource-collection' means this cluster of lists of _stuff_, typically listed at the top of the page, like
 "documents", "attendees", "links".  */
 .resource-collection * {
     margin-top: 5px;
@@ -428,6 +428,10 @@ mark {
 .filter-form .btn-submit {
     display: block;
     width: 100%;
+}
+
+.ts-control {
+    background-color: var(--dimmed-white-background);
 }
 
 /* Custom checkbox styling */
@@ -555,7 +559,7 @@ mark {
     margin-top: 10px;
 }
 
- /* Editor*/
+/* Editor*/
 .element {
     background-color: var(--dimmed-white-background) !important;
     height: 200px;
@@ -565,7 +569,7 @@ mark {
 }
 
 .editor-probs {
-    outline:none;
+    outline: none;
 }
 
 .rounded-table {
@@ -588,13 +592,14 @@ mark {
     border-radius: 20px;
     font-size: 14px;
     color: #333;
-    cursor: default;  /* Added normal cursor */
+    cursor: default; /* Added normal cursor */
     transition: background-color 0.3s ease;
 }
+
 .tag-sidebar:hover {
     background-color: #d0d0d0;
 }
 
 .tag-card-title {
-   margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
 }

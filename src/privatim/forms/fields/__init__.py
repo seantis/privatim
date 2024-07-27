@@ -1,8 +1,7 @@
 from .fields import (
-    ChosenSelectWidget,
+    TomSelectWidget,
     DateTimeLocalField,
     TimezoneDateTimeField,
-    SearchableSelectField,
     UploadField,
     UploadMultipleField,
     # UploadOrSelectExistingMultipleFilesField,
@@ -24,11 +23,9 @@ def FieldList(**fields: 'Field') -> 'TransparentFormField[Any]':
 
 __all__ = (
     'FieldList',
-    'TransparentFormField',
-    "ChosenSelectWidget",
+    'TransparentFormField', "TomSelectWidget",
     "DateTimeLocalField",
     "TimezoneDateTimeField",
-    "SearchableSelectField",
     "UploadField",
     "UploadMultipleField",
     # "UploadOrSelectExistingMultipleFilesField"

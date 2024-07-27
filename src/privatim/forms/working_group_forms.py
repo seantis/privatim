@@ -3,7 +3,7 @@ from wtforms import StringField, SelectField
 from privatim.forms.core import Form
 from wtforms.validators import DataRequired
 
-from privatim.forms.fields import SearchableSelectField
+from privatim.forms.fields.fields import SearchableSelectField
 from privatim.i18n import _
 from privatim.models import User
 
@@ -39,13 +39,13 @@ class WorkingGroupForm(Form):
             )
         )
         self.leader.choices = (('0', _('No Leader')),) + user_choices
-        self.members.choices = user_choices
+        self.users.choices = user_choices
 
     name: StringField = StringField(_('Name'), validators=[DataRequired()])
 
     leader: SelectField = SelectField(_('Leader'))
 
-    members: SearchableSelectField = SearchableSelectField(
+    users: SearchableSelectField = SearchableSelectField(
         _('Members'), validators=[DataRequired()]
     )
 
