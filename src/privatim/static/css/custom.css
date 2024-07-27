@@ -109,8 +109,11 @@ body {
     box-shadow: none !important;
 }
 
-h1 {
+#main-title {
     margin-top: 1.0rem;
+    padding-top: 1.3rem;
+    margin-bottom: 1.0rem;
+    padding-bottom: 1.3rem;
 }
 
 .main-content {
@@ -122,9 +125,6 @@ body {
     font-family: "DM Sans", sans-serif;
 }
 
-h1 {
-    margin-top: 1.0rem;
-}
 
 .bg-light {
     background-color: #EDEDED !important;

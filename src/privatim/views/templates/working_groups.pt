@@ -7,7 +7,7 @@
 
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1 i18n:translate="">Working Groups</h1>
+                <h1 id="main-title" i18n:translate="">Working Groups</h1>
             </div>
             <div class="col-md-6 text-end">
                 <a i18n:translate="" href="${request.route_url('add_working_group')}" class="btn btn-primary" role="button"
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive pt-3">
 
             <table class="table align-middle mb-0 rounded-table">
                 <thead class="bg-light">
