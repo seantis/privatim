@@ -31,64 +31,6 @@ def working_groups_view(request: 'IRequest') -> 'RenderData':
     return {'working_groups': working_groups}
 
 
-def add_or_edit_working_group(
-
-    context: WorkingGroup | None, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
-
-    if isinstance(context, WorkingGroup):   # edit situation
-        group = context
-    else:  # add situation
-        group = None
-
-    form = WorkingGroupForm(context, request)
-    target_url = request.route_url('working_groups')
-    session = request.dbsession
-
-    if request.method == 'POST' and form.validate():
-        if group is None:
-
-            stmt = select(User).where(User.id.in_(form.users.raw_data))
-            users = list(session.execute(stmt).scalars().all())
-
-            leader_id = form.leader.data
-            leader_id = None if leader_id == '0' else leader_id
-            leader = None
-            if leader_id is not None and leader_id != '0':
-                leader = session.get(User, leader_id)
-
-            if leader is not None and leader not in users:
-                users.append(leader)
-
-            group = WorkingGroup(
-                name=maybe_escape(form.name.data),
-                leader=leader,
-                users=users,
-                chairman_contact=maybe_escape(form.chairman_contact.data)
-            )
-            session.add(group)
-            message = _(
-                'Successfully added working group "${name}"',
-                mapping={'name': form.name.data}
-            )
-            if not request.is_xhr:
-                request.messages.add(message, 'success')
-
-        if request.is_xhr:
-            return {'redirect_to': target_url}
-        else:
-            return HTTPFound(location=target_url)
-
-    if request.is_xhr:
-        return {'errors': form.errors}
-    else:
-        return {
-            'form': form,
-            'target_url': target_url,
-            'title': _('Add Working Group')
-        }
-
-
 def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
     form = WorkingGroupForm(None, request)
     target_url = request.route_url('working_groups')
