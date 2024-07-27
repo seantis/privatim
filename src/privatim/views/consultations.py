@@ -37,7 +37,6 @@ def consultation_view(
         ]
     )
     top_level_comments = (c for c in context.comments if c.parent_id is None)
-
     return {
         'title': Markup(context.title),
         '_id': context.id,
@@ -58,7 +57,7 @@ def consultation_view(
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
                                                     request),
-        'secondary_tags': (t.name for t in context.secondary_tags or [])
+        'secondary_tags': tuple(t.name for t in context.secondary_tags)
     }
 
 

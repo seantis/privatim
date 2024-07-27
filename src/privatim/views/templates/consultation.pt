@@ -91,12 +91,11 @@
                     </h4>
                 </div>
             </div>
-            <div class="card">
+
+            <div tal:condition="secondary_tags" class="card">
                 <div class="card-body claude-element">
                     <h5 i18n:translate="" class="tag-card-title">Tags</h5>
-
-                    <div tal:condition="secondary_tags"
-                            class="secondary-tags d-flex flex-row justify-content-start flex-wrap">
+                    <div class="secondary-tags d-flex flex-row justify-content-start flex-wrap">
                         <tal:b tal:repeat="tag_name secondary_tags">
                             <span class="badge rounded-pill mb-4 text-dark fs-6 px-3 py-2 mx-1 tag-sidebar"> ${tag_name}</span>
                         </tal:b>
