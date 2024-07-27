@@ -182,7 +182,7 @@ class SearchCollection:
                     self.lang,
                     SearchableFile.extract,
                     self.ts_query,
-                    'StartSel=<mark>, StopSel=</mark>, MaxWords=35, '
+                    'StartSel=<mark>, StopSel=</mark>, MaxWords=25, '
                     'MinWords=15, ShortWord=3, HighlightAll=FALSE, '
                     'MaxFragments=3, FragmentDelimiter=" ... "',
                 ).label('file_content_headline'),
@@ -324,6 +324,13 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
                 assert isinstance(comment, Comment)
                 result_dict['picture'] = (
                     get_correct_comment_picture_for_comment(comment, request)
+                )
+            if result.type == 'SearchableFile':
+                file = result.model_instance
+                assert isinstance(file, SearchableFile)
+                result_dict['file_name'] = file.filename
+                result_dict['file_link'] = request.route_url(
+                    'download_file', id=file.id
                 )
 
             if result.type in ['AgendaItem', 'Consultation', 'Meeting']:

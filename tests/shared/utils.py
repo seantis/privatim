@@ -1,3 +1,4 @@
+import hashlib
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
@@ -147,3 +148,9 @@ class CustomDummyRequest(DummyRequest):
         if path.startswith(prefix):
             path = path[len(prefix):]
         return f'{self.host}/static/{path}'
+
+
+def hash_file(file_bytes: bytes, hash_algorithm: str = 'sha256') -> str:
+    hash_func = hashlib.new(hash_algorithm)
+    hash_func.update(file_bytes)
+    return hash_func.hexdigest()
