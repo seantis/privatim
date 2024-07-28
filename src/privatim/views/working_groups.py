@@ -115,7 +115,6 @@ def edit_working_group(
             return HTTPFound(location=target_url)
     elif not request.POST:
         form.process(obj=group)
-        form.users.raw_data = [str(user.id) for user in group.users]
         form.users.data = [str(user.id) for user in group.users]
 
     if request.is_xhr:

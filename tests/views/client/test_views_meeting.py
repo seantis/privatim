@@ -87,4 +87,3 @@ def test_view_edit_meeting(client):
     page = client.get(f'/meetings/{meeting.id}/copy_agenda_item')
     page.form['copy_to'] = page.form['copy_to'].options[0][0]
     page.form.submit().follow()
-

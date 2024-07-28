@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-27 20:12+0200\n"
+"POT-Creation-Date: 2024-07-28 21:06+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -60,6 +60,17 @@ msgstr "Antworten"
 #: src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr "Volltextsuche..."
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Name"
+
+#: src/privatim/layouts/macros.pt src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr "Anwesend"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
@@ -183,7 +194,6 @@ msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Vernehmlassung Erfassen"
 
@@ -345,13 +355,6 @@ msgstr "Hier können Sie Sitzungen dieses Gremiums hinzufügen."
 msgid "Meetings"
 msgstr "Sitzungen"
 
-#: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Name"
-
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr "Beschreibung:"
@@ -399,14 +402,6 @@ msgstr ""
 #: src/privatim/views/templates/search_results.pt
 msgid "Show Details"
 msgstr "Details anzeigen"
-
-#: src/privatim/views/templates/search_results.pt
-msgid "File Match"
-msgstr "Dateiinhalt"
-
-#: src/privatim/views/templates/search_results.pt
-msgid "File Content"
-msgstr "Dateiinhalt"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
@@ -694,6 +689,10 @@ msgid "Time"
 msgstr "Datum / Uhrzeit"
 
 #: src/privatim/forms/meeting_form.py
+msgid "Attendance"
+msgstr "Anwesenheit"
+
+#: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
@@ -759,3 +758,12 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Invited"
+#~ msgstr "Eingeladen"
+
+#~ msgid "File Match"
+#~ msgstr "Dateiinhalt"
+
+#~ msgid "File Content"
+#~ msgstr "Dateiinhalt"

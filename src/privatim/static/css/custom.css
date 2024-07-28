@@ -113,7 +113,7 @@ body {
     margin-top: 1.0rem;
     padding-top: 1.3rem;
     margin-bottom: 1.0rem;
-    padding-bottom: 1.3rem;
+    padding-botom: 1.3rem;
 }
 
 .main-content {
@@ -602,4 +602,49 @@ mark {
 
 .tag-card-title {
     margin-bottom: 1.5rem;
+}
+
+
+.attendance-container {
+    width: 100%;
+}
+
+.attendance-list {
+    max-width: 500px;
+    width: 100%;
+}
+.attendance-header, .attendance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+.attendance-header {
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+.attendance-row {
+    border-bottom: 1px solid #eee;
+}
+.attendee-name {
+    flex: 1;
+    padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.attendee-name input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.attendee-status {
+    width: 80px;
+    display: flex;
+    justify-content: center;
+}
+.no-white-background {
+    background: transparent !important;
 }

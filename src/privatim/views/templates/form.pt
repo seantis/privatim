@@ -9,14 +9,17 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="mb-3">${title}</h1>
+                    <h1 id="main-title" class="pb-3">${title}</h1>
                 </div>
             </div>
 
             <form enctype="multipart/form-data" method="POST" novalidate>
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="mb-3" tal:repeat="field form">
+
+
                     <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
+
 
                     <!-- TipTap Editor for all wtforms.fields.TextAreaField -->
                     <!-- Conceptually, the editor is a layer on top of the TextArea, we still process the field as usual. -->
@@ -25,14 +28,19 @@
                     </tal:block>
 
                     <!-- Else just render the field as usual. -->
-                    <tal:block tal:condition="field.type != 'HtmlField'">
+                    <tal:block tal:condition="field.type != 'HtmlField' and field.name != 'attendance'">
                             ${field()}
                     </tal:block>
+
+                    <tal:block tal:condition="field.name == 'attendance'">
+                        <metal:editor use-macro="layout.macros['render_attendance_field']" tal:define="field field" />
+                    </tal:block>
+
 
                     <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <a href="${target_url}" class="btn btn-secondary" i18n:translate="">Cancel</a>
                     <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Save</button>
                 </div>

@@ -255,4 +255,5 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
                 nullable=True,
             ),
         )
+
     context.commit()

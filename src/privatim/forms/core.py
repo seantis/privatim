@@ -80,7 +80,7 @@ class BootstrapMeta(DefaultMeta):
             css_class = 'form-select'
         elif field_type in ('RadioField', 'CheckboxField'):
             css_class = ''
-            options.setdefault('widget', CheckboxListWidget())
+            # options.setdefault('widget', CheckboxListWidget())
         else:
             css_class = 'form-control'
 
@@ -162,9 +162,12 @@ class Form(BaseForm):
 
         for name, field, in self._fields.items():
             field.render_kw = field.render_kw or {}
-            field.render_kw['class'] = (
-                field.render_kw.get('class', '') + ' dimmed-white-background'
-            )
+            # Apply some CSS for all fields
+            if 'no-white-background' not in field.render_kw['class']:
+                field.render_kw['class'] = (
+                    field.render_kw.get('class', '') +
+                    ' dimmed-white-background'
+                )
 
             if isinstance(field, TransparentFormField):
                 # NOTE: Treat the subform transparently with no prefix

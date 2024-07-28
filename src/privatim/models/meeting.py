@@ -1,5 +1,4 @@
 import uuid
-
 from sedate import utcnow
 from sqlalchemy import Integer, select, func, Text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -44,7 +43,24 @@ meetings_users_association: Table = Table(
         UUIDStr,
         ForeignKey('users.id'),
         primary_key=True
-    )
+    ),
+)
+
+
+attended_meetings_users_association: Table = Table(
+    'attended_meetings_users_association', Base.metadata,
+    Column(
+        'meeting_id',
+        UUIDStr,
+        ForeignKey('meetings.id'),
+        primary_key=True
+    ),
+    Column(
+        'user_id',
+        UUIDStr,
+        ForeignKey('users.id'),
+        primary_key=True
+    ),
 )
 
 
@@ -159,10 +175,18 @@ class Meeting(Base, SearchableMixin, Commentable):
 
     time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
+    # the users which were invited to the meeting
     attendees: Mapped[list['User']] = relationship(
         'User',
         secondary=meetings_users_association,
         back_populates='meetings'
+    )
+
+    # the users which actually attended the meeting
+    attended_attendees = relationship(
+        'User',
+        secondary=attended_meetings_users_association,
+        back_populates='attended_meetings',
     )
 
     # Traktanden (=Themen)

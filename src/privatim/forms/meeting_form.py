@@ -1,6 +1,11 @@
 from sqlalchemy import select
 from wtforms import (StringField, validators, )
+from wtforms.fields.choices import RadioField
+from wtforms.fields.form import FormField
+from wtforms.fields.list import FieldList
+from wtforms.fields.simple import BooleanField
 from wtforms.validators import InputRequired
+
 from privatim.forms.core import Form
 
 from privatim.forms.fields import TimezoneDateTimeField
@@ -10,10 +15,33 @@ from privatim.models import WorkingGroup
 from privatim.i18n import _
 
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from wtforms import Field
+    from wtforms.meta import _MultiDictLike
+    from collections.abc import Mapping, Sequence
+
+
+class CheckboxField(BooleanField):
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+
+class AttendanceForm(Form):
+    user_id = StringField(
+        'user_id',
+        render_kw={'class': 'hidden no-white-background'},
+    )
+    fullname = StringField(
+        _('Name'),
+        render_kw={'disabled': 'disabled', 'class': 'no-white-background'},
+    )
+    status = CheckboxField(
+        _('Attended'),
+        render_kw={'class': 'no-white-background'},
+    )
 
 
 class MeetingForm(Form):
@@ -57,6 +85,11 @@ class MeetingForm(Form):
         validators=[InputRequired()],
     )
 
+    attendance = FieldList(
+        FormField(AttendanceForm),
+        label=_('Attendance'),
+    )
+
     def validate_name(self, field: 'Field') -> None:
         if self._title == _('Add Meeting'):
             session = self.meta.dbsession
@@ -74,5 +107,56 @@ class MeetingForm(Form):
                 stmt = select(User).where(User.id.in_(field.raw_data))
                 attendees = session.execute(stmt).scalars().all()
                 obj.attendees = attendees
+            elif name == 'attendance':
+                for status_form in field:
+                    user_id = status_form.user_id.data
+                    status = status_form.status.data
+                    potential_attendee = next(
+                        (p for p in obj.attendees if str(p.id) == user_id)
+                        and status is True, None,
+                    )
+                    if potential_attendee:
+                        obj.attended_attendees.append(potential_attendee)
             else:
                 field.populate_obj(obj, name)
+
+    def process(
+        self,
+        formdata: '_MultiDictLike | None' = None,
+        obj:           object | None = None,
+        data:          'Mapping[str, Any] | None' = None,
+        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        **kwargs: Any
+    ) -> None:
+
+        # todo: test this
+        super().process(formdata, obj, **kwargs)
+        if isinstance(obj, Meeting):
+            self.attendance.entries = []
+
+            # A set for O(1) lookup
+            attended_set = set(obj.attended_attendees)
+
+            for attendee in obj.attendees:
+                self.attendance.append_entry(
+                    {
+                        'user_id': str(attendee.id),
+                        'fullname': attendee.fullname,
+                        'status': (
+                            'attended'
+                            if attendee in attended_set
+                            else 'invited'
+                        ),
+                    }
+                )
+        else:
+            self.attendance.entries = []
+            if formdata:
+                attendee_ids = self.attendees.data if self.attendees.data else []
+                session = self.meta['dbsession']
+                for attendee_id in attendee_ids:
+                    user = session.get(User, attendee_id)
+                    if user:
+                        self.attendance.append_entry({'user_id': str(user.id),
+                            'fullname': user.fullname, 'status': 'invited'
+                        })

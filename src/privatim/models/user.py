@@ -16,7 +16,8 @@ from privatim.models import Group, WorkingGroup
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
-from privatim.models.meeting import meetings_users_association
+from privatim.models.meeting import meetings_users_association, \
+    attended_meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
 
@@ -82,6 +83,12 @@ class User(Base):
         'Meeting',
         secondary=meetings_users_association,
         back_populates='attendees',
+    )
+
+    attended_meetings: Mapped[list['Meeting']] = relationship(
+        'Meeting',
+        secondary=attended_meetings_users_association,
+        back_populates='attended_attendees',
     )
 
     # the groups this user is a leader of

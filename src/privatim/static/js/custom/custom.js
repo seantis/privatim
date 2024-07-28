@@ -88,3 +88,71 @@ function setupCommentAnswerField() {
 
     }
 }
+
+
+(function () {
+// Add users to table if added in the Multiple Select field
+    document.addEventListener('DOMContentLoaded', function () {
+        const tomSelectWrapper = document.querySelector('.ts-wrapper');
+        const attendanceList = document.querySelector('.attendance-list');
+
+        if (!tomSelectWrapper || !attendanceList) {
+            console.error('Required elements not found. Please check your selectors.');
+            return;
+        }
+
+        // Function to add a new attendee to the attendance list
+        function addAttendee(userId, name) {
+            const existingAttendee = document.querySelector(`#attendance-${userId}`);
+            if (existingAttendee) {
+                return;
+            }
+
+            if (!document.querySelector(`#attendance-${userId}`)) {
+                const newRow = document.createElement('div');
+                newRow.className = 'attendance-row';
+                newRow.id = `attendance-${userId}`;
+                newRow.innerHTML = `
+                <input class="form-control hidden no-white-background" id="attendance-${userId}-user_id" name="attendance-${userId}-user_id" type="hidden" value="${userId}">
+                <span class="attendee-name"><input class="form-control no-white-background" disabled="disabled" id="attendance-${userId}-fullname" name="attendance-${userId}-fullname" type="text" value="${name}"></span>
+                <span class="attendee-status"><input checked class="no-white-background" id="attendance-${userId}-status" name="attendance-${userId}-status" type="checkbox" value="y"></span>
+            `;
+                attendanceList.appendChild(newRow);
+                console.log('Attendee added:', {userId, name});
+            }
+        }
+
+        // Function to remove an attendee from the attendance list
+        function removeAttendee(userId) {
+            const rowToRemove = document.querySelector(`#attendance-${userId}`);
+            if (rowToRemove) {
+                rowToRemove.remove();
+                console.log('Attendee removed:', userId);
+            }
+        }
+
+        // Set up the Mutation Observer
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
+                            const userId = node.getAttribute('data-value');
+                            const name = node.textContent;
+                            addAttendee(userId, name);
+                        }
+                    });
+                    mutation.removedNodes.forEach((node) => {
+                        if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
+                            const userId = node.getAttribute('data-value');
+                            removeAttendee(userId);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Start observing the TomSelect wrapper
+        observer.observe(tomSelectWrapper, {childList: true, subtree: true});
+    });
+})(); // IIFE ends here

@@ -213,5 +213,22 @@
 </tal:block>
 
 
-
+<tal:block metal:define-macro="render_attendance_field">
+    <div class="attendance-container">
+        <div class="attendance-list">
+            <div class="attendance-header">
+                <span>Name</span>
+                <span>Anwesend</span>
+            </div>
+            <tal:block tal:repeat="subfield field">
+                <div class="attendance-row">
+                ${subfield.user_id(type='hidden')}
+                    <span class="attendee-name">${subfield.fullname(disabled='disabled')}</span>
+                    <span class="attendee-status">${subfield.status()}</span>
+                </div>
+            </tal:block>
+        </div>
+        <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
+    </div>
+</tal:block>
 </html>

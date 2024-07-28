@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-27 20:12+0200\n"
+"POT-Creation-Date: 2024-07-28 21:06+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -57,6 +57,17 @@ msgstr "Répondre"
 #: src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr "Rechercher..."
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Nom"
+
+#: src/privatim/layouts/macros.pt src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr "Attendus"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
@@ -180,7 +191,6 @@ msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/consultations.pt
-#: src/privatim/views/templates/activities.pt
 msgid "Add Consultation"
 msgstr "Ajouter une consultation"
 
@@ -344,13 +354,6 @@ msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 msgid "Meetings"
 msgstr "Réunions"
 
-#: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Nom"
-
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
 msgstr "Description"
@@ -397,14 +400,6 @@ msgstr "Aucun résultat ne contient tous les termes de votre recherche."
 #: src/privatim/views/templates/search_results.pt
 msgid "Show Details"
 msgstr "Afficher les détails"
-
-#: src/privatim/views/templates/search_results.pt
-msgid "File Match"
-msgstr "Correspondance de fichier"
-
-#: src/privatim/views/templates/search_results.pt
-msgid "File Content"
-msgstr "Contenu du fichier"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
@@ -690,6 +685,10 @@ msgid "Time"
 msgstr "Date / heure"
 
 #: src/privatim/forms/meeting_form.py
+msgid "Attendance"
+msgstr "Participation"
+
+#: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr "Une réunion avec ce nom existe déjà."
 
@@ -753,6 +752,15 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Invited"
+#~ msgstr "invités"
+
+#~ msgid "File Match"
+#~ msgstr "Correspondance de fichier"
+
+#~ msgid "File Content"
+#~ msgstr "Contenu du fichier"
 
 #~ msgid "No Elements Found"
 #~ msgstr "Aucun élément trouvé"

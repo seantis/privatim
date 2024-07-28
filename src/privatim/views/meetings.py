@@ -300,6 +300,7 @@ def edit_meeting_view(
 
     elif not request.POST:
         form.process(obj=meeting)
+        form.attendees.data = [str(user.id) for user in meeting.attendees]
 
     return {
         'form': form,
