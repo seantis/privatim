@@ -1,6 +1,5 @@
 from sqlalchemy import select
 from wtforms import (StringField, validators, )
-from wtforms.fields.choices import RadioField
 from wtforms.fields.form import FormField
 from wtforms.fields.list import FieldList
 from wtforms.fields.simple import BooleanField
@@ -112,8 +111,8 @@ class MeetingForm(Form):
                     user_id = status_form.user_id.data
                     status = status_form.status.data
                     potential_attendee = next(
-                        (p for p in obj.attendees if str(p.id) == user_id)
-                        and status is True, None,
+                        (p for p in obj.attendees if str(p.id) == user_id
+                         and status is True), None
                     )
                     if potential_attendee:
                         obj.attended_attendees.append(potential_attendee)
@@ -152,11 +151,16 @@ class MeetingForm(Form):
         else:
             self.attendance.entries = []
             if formdata:
-                attendee_ids = self.attendees.data if self.attendees.data else []
+                attendee_ids = (self.attendees.data
+                                if self.attendees.data else [])
                 session = self.meta['dbsession']
                 for attendee_id in attendee_ids:
                     user = session.get(User, attendee_id)
                     if user:
-                        self.attendance.append_entry({'user_id': str(user.id),
-                            'fullname': user.fullname, 'status': 'invited'
-                        })
+                        self.attendance.append_entry(
+                            {
+                                'user_id': str(user.id),
+                                'fullname': user.fullname,
+                                'status': 'invited',
+                            }
+                        )

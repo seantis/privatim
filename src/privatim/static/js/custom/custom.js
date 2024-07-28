@@ -91,8 +91,7 @@ function setupCommentAnswerField() {
 
 
 (function () {
-// Add users to table if added in the Multiple Select field
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const tomSelectWrapper = document.querySelector('.ts-wrapper');
         const attendanceList = document.querySelector('.attendance-list');
 
@@ -103,28 +102,29 @@ function setupCommentAnswerField() {
 
         // Function to add a new attendee to the attendance list
         function addAttendee(userId, name) {
-            const existingAttendee = document.querySelector(`#attendance-${userId}`);
+            // Check if the attendee already exists in the attendance list
+            const existingAttendee = document.querySelector(`input[value="${userId}"]`);
             if (existingAttendee) {
+                console.log('Attendee already exists:', { userId, name });
                 return;
             }
 
-            if (!document.querySelector(`#attendance-${userId}`)) {
-                const newRow = document.createElement('div');
-                newRow.className = 'attendance-row';
-                newRow.id = `attendance-${userId}`;
-                newRow.innerHTML = `
-                <input class="form-control hidden no-white-background" id="attendance-${userId}-user_id" name="attendance-${userId}-user_id" type="hidden" value="${userId}">
-                <span class="attendee-name"><input class="form-control no-white-background" disabled="disabled" id="attendance-${userId}-fullname" name="attendance-${userId}-fullname" type="text" value="${name}"></span>
-                <span class="attendee-status"><input checked class="no-white-background" id="attendance-${userId}-status" name="attendance-${userId}-status" type="checkbox" value="y"></span>
-            `;
-                attendanceList.appendChild(newRow);
-                console.log('Attendee added:', {userId, name});
-            }
+            // If the attendee doesn't exist, add them
+            const newIndex = attendanceList.children.length - 1; // -1 for header
+            const newRow = document.createElement('div');
+            newRow.className = 'attendance-row';
+            newRow.innerHTML = `
+            <input class="hidden no-white-background" id="attendance-${newIndex}-user_id" name="attendance-${newIndex}-user_id" type="hidden" value="${userId}">
+            <span class="attendee-name"><input class="form-control no-white-background" disabled="disabled" id="attendance-${newIndex}-fullname" name="attendance-${newIndex}-fullname" type="text" value="${name}"></span>
+            <span class="attendee-status"><input checked class="no-white-background" id="attendance-${newIndex}-status" name="attendance-${newIndex}-status" type="checkbox" value="y"></span>
+        `;
+            attendanceList.appendChild(newRow);
+            console.log('Attendee added:', { userId, name });
         }
 
         // Function to remove an attendee from the attendance list
         function removeAttendee(userId) {
-            const rowToRemove = document.querySelector(`#attendance-${userId}`);
+            const rowToRemove = document.querySelector(`input[value="${userId}"]`).closest('.attendance-row');
             if (rowToRemove) {
                 rowToRemove.remove();
                 console.log('Attendee removed:', userId);
@@ -153,6 +153,8 @@ function setupCommentAnswerField() {
         });
 
         // Start observing the TomSelect wrapper
-        observer.observe(tomSelectWrapper, {childList: true, subtree: true});
+        observer.observe(tomSelectWrapper, { childList: true, subtree: true });
+
+        console.log('Mutation observer started for TomSelect wrapper');
     });
 })(); // IIFE ends here
