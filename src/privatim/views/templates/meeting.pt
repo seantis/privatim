@@ -48,8 +48,10 @@
                 </div>
 
                 <div class="text-end mt-4">
-                    <a i18n:translate="" href="${request.route_url('add_agenda_item', id=meeting.id)}"
-                                         class="btn btn-primary" role="button" tabindex="1">Add Agenda Item</a>
+                    <a href="${request.route_url('add_agenda_item', id=meeting.id)}"
+                       class="btn btn-primary" role="button" tabindex="1">
+                        <i class="fa fa-plus-circle me-2"></i><span i18n:translate=""> Add Agenda Item</span>
+                    </a>
                 </div>
 
             </div>

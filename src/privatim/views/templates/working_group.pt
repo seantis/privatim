@@ -35,8 +35,10 @@
         <div class="col-lg-9 mb-4">
 
             <div class="text-end mt-4">
-                <a href="${add_meeting_link}" class="btn btn-primary" role="button"
-                   tabindex="1" i18n:translate="">Add Meeting</a>
+                <a href="${add_meeting_link}"
+                   class="btn btn-primary" role="button" tabindex="1">
+                    <i class="fa fa-plus-circle me-2"></i><span i18n:translate=""> Add Meeting</span>
+                </a>
             </div>
             <div class="table-responsive">
 
