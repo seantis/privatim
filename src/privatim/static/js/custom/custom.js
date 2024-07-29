@@ -96,20 +96,15 @@ function setupCommentAnswerField() {
         const attendanceList = document.querySelector('.attendance-list');
 
         if (!tomSelectWrapper || !attendanceList) {
-            console.error('Required elements not found. Please check your selectors.');
             return;
         }
 
-        // Function to add a new attendee to the attendance list
         function addAttendee(userId, name) {
-            // Check if the attendee already exists in the attendance list
             const existingAttendee = document.querySelector(`input[value="${userId}"]`);
             if (existingAttendee) {
-                console.log('Attendee already exists:', { userId, name });
                 return;
             }
 
-            // If the attendee doesn't exist, add them
             const newIndex = attendanceList.children.length - 1; // -1 for header
             const newRow = document.createElement('div');
             newRow.className = 'attendance-row';
@@ -119,19 +114,15 @@ function setupCommentAnswerField() {
             <span class="attendee-status"><input checked class="no-white-background" id="attendance-${newIndex}-status" name="attendance-${newIndex}-status" type="checkbox" value="y"></span>
         `;
             attendanceList.appendChild(newRow);
-            console.log('Attendee added:', { userId, name });
         }
 
-        // Function to remove an attendee from the attendance list
         function removeAttendee(userId) {
             const rowToRemove = document.querySelector(`input[value="${userId}"]`).closest('.attendance-row');
             if (rowToRemove) {
                 rowToRemove.remove();
-                console.log('Attendee removed:', userId);
             }
         }
 
-        // Set up the Mutation Observer
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'childList') {
@@ -152,9 +143,6 @@ function setupCommentAnswerField() {
             });
         });
 
-        // Start observing the TomSelect wrapper
         observer.observe(tomSelectWrapper, { childList: true, subtree: true });
-
-        console.log('Mutation observer started for TomSelect wrapper');
     });
 })(); // IIFE ends here
