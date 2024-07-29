@@ -40,3 +40,6 @@ class MeetingUserAttendance(Base):
     user: Mapped['User'] = relationship(
         "User", back_populates="meeting_attendance"
     )
+
+    def __repr__(self) -> str:
+        return f'<MeetingUserAttendance {self.user_id} {self.status}>'

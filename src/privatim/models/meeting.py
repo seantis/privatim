@@ -20,8 +20,7 @@ from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.utils import maybe_escape
 
 
-from typing import TYPE_CHECKING, Iterator, Union
-
+from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.models import User
     from sqlalchemy.orm import Session
@@ -163,51 +162,39 @@ class Meeting(Base, SearchableMixin, Commentable):
 
     @property
     def attendees(self) -> list['User']:
+        """ Returns all attendees regardless of status. """
         return [record.user for record in self.attendance_records]
 
     def update_attendees_with_status(
-        self,
-        users_with_status: list[Union[tuple['User', 'AttendanceStatus'], 'User']],
+        self, users_with_status: list[tuple['User', AttendanceStatus]]
     ) -> None:
         """
         Set attendees with optional status.
 
-        :param users_with_status: List of User objects or tuples of (User, AttendanceStatus)
+        :param users_with_status: List of User objects or tuples of
+        (User, AttendanceStatus)
         """
-        # Create a dictionary of existing records for efficient lookup
         existing_records = {
             str(record.user_id): record for record in self.attendance_records
         }
-
         new_records = []
         for item in users_with_status:
-            if isinstance(item, tuple):
-                user, status = item
-            else:
-                user = item
-                status = AttendanceStatus.INVITED  # Default status if not provided
-
+            user, status = item
             if user.id in existing_records:
-                # Update existing record
                 existing_records[str(user.id)].status = status
             else:
-                # Create new record
-                new_records.append(MeetingUserAttendance(user=user, status=status))
+                new_records.append(MeetingUserAttendance(
+                    user=user, status=status)
+                )
 
-        # Add new records
         self.attendance_records.extend(new_records)
-
         # Remove records for users not in the new list
-        user_ids = {
-            user.id if isinstance(user, User) else user[0].id
-            for user in users_with_status
-        }
+        user_ids = {item[0].id for item in users_with_status}
         self.attendance_records = [
             record
             for record in self.attendance_records
             if record.user_id in user_ids
         ]
-
 
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,

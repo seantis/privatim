@@ -255,11 +255,17 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
                 nullable=True,
             ),
         )
-
-    # Migrate data from meetings_users to meetings_users_attendance
-    context.operations.execute("""
-        INSERT INTO meetings_users_attendance (meeting_id, user_id, status)
-        SELECT meeting_id, user_id, 'invited' FROM meetings_users_association
-    """)
+    if context.has_table('meetings_users_association'):
+        # Migrate data from meetings_users to meetings_users_attendance
+        # this also stores the  field if attended
+        context.operations.execute(
+            """
+            INSERT INTO meetings_users_attendance (meeting_id, user_id,
+            status)
+            SELECT meeting_id, user_id, 'invited' FROM
+            meetings_users_association
+        """
+        )
+        context.drop_table('meetings_users_association')
 
     context.commit()

@@ -28,6 +28,7 @@ from typing import TypeVar, TYPE_CHECKING, Any, Sequence
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
+    from privatim.models.association_tables import MeetingUserAttendance
     from sqlalchemy.orm import Query
     from privatim.types import RenderData, XHRDataOrRedirect
     _Q = TypeVar("_Q", bound=Query[Any])
@@ -93,7 +94,7 @@ def meeting_view(
         'time': formatted_time,
         'meeting': context,
         'meeting_attendees': user_list(
-            request, context.attendees, translate(_('Members'))
+            request, context.attendance_records, translate(_('Members'))
         ),
         'agenda_items': agenda_items,
         'sortable_url': data_sortable_url,
@@ -139,22 +140,34 @@ def meeting_buttons(
 
 
 def user_list(
-    request: 'IRequest',
-    users: Sequence[User],
-    title: str
+    request: 'IRequest', users: Sequence['MeetingUserAttendance'], title: str
 ) -> Markup:
-    """Returns an HTML list of users with links to their profiles """
+    """Returns an HTML list of users with links to their profiles and
+    Bootstrap checkbox for attendance status on the right"""
     user_items = tuple(
         Markup(
-            '<li class="user-list-item">{} '
-            '<a href="{}" class="mb-1">{}</a>'
+            '<li class="user-list-item d-flex justify-content-between '
+            'align-items-center">'
+            '<div class="d-flex align-items-center">'
+            '{} <a href="{}" class="mb-1 ms-2">{}</a>'
+            '</div>'
+            '<div class="form-check">'
+            ' <input class="form-check-input fix-checkbox-in-list" '
+            'type="checkbox" '
+            'value="" '
+            'id="attendance-{}" {} disabled>'
+            '<label class="form-check-label" for="attendance-{}"></label>'
+            '</div>'
             '</li>'
         ).format(
             Icon('user', IconStyle.solid),
-            request.route_url("person", id=user.id),
-            user.fullname
+            request.route_url("person", id=user.user_id),
+            user.user.fullname,
+            user.user_id,
+            'checked' if user.status == AttendanceStatus.ATTENDED else '',
+            user.user_id,
         )
-        for user in sorted(users, key=lambda user: user.fullname)
+        for user in sorted(users, key=lambda user: user.user.fullname)
     )
     return Markup(
         '''
@@ -162,7 +175,7 @@ def user_list(
         <p>
             <span class="fw-bold">{}:</span>
         </p>
-        <ul class="generic-user-list">{}</ul>
+        <ul class="generic-user-list list-unstyled">{}</ul>
     </div>
     '''
     ).format(title, Markup('').join(user_items))
@@ -188,21 +201,18 @@ def export_meeting_as_pdf_view(
 
 
 # alias working_group_view
-def meetings_view(
-        context: WorkingGroup,
-        request: 'IRequest'
-) -> 'RenderData':
-    """ Displays the table of meetings a single working group has. """
+def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
+    """Displays the table of meetings a single working group has."""
 
     assert isinstance(context, WorkingGroup)
 
     request.add_action_menu_entry(
         translate(_('Edit Working Group')),
-        request.route_url('edit_working_group', id=context.id)
+        request.route_url('edit_working_group', id=context.id),
     )
     request.add_action_menu_entry(
         translate(_('Delete Working Group')),
-        request.route_url('delete_working_group', id=context.id)
+        request.route_url('delete_working_group', id=context.id),
     )
 
     add_meeting_link = request.route_url('add_meeting', id=context.id)
@@ -211,16 +221,40 @@ def meetings_view(
         leader = Markup(
             '<a href="{}" class="mb-1">{}</a>'.format(
                 request.route_url("person", id=context.leader.id),
-                context.leader.fullname
+                context.leader.fullname,
             )
         )
     title = translate(_('Participants'))
+
+    user_items = tuple(
+        Markup(
+            '<li class="user-list-item">{} '
+            '<a href="{}" class="mb-1">{}</a>'
+            '</li>'
+        ).format(
+            Icon('user', IconStyle.solid),
+            request.route_url("person", id=user.id),
+            user.fullname,
+        )
+        for user in sorted(context.users, key=lambda user: user.fullname)
+    )
+    user_list = Markup(
+        '''
+    <div class="generic-user-list-container">
+        <p>
+            <span class="fw-bold">{}:</span>
+        </p>
+        <ul class="generic-user-list">{}</ul>
+    </div>
+    '''
+    ).format(title, Markup('').join(user_items))
+
     return {
         'title': context.name,
         'add_meeting_link': add_meeting_link,
         'leader': leader,
         'chairman_contact': context.chairman_contact,
-        'user_list': user_list(request, context.users, title),
+        'user_list': user_list,
         'meetings': context.meetings,
     }
 
@@ -239,7 +273,6 @@ def add_meeting_view(
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
         attendees = list(session.execute(stmt).scalars().all())
-        # todo: get attendance from form and write
         assert form.time.data is not None
         time = fix_utc_to_local_time(form.time.data)
         meeting = Meeting(
@@ -249,6 +282,9 @@ def add_meeting_view(
             working_group=context,
             creator=request.user
         )
+        # meeting.update_attendees_with_status(
+        #     get_attendees_with_status(form.attendance, session, attendees)
+        # )
         session.add(meeting)
         message = _(
             'Successfully added meeting "${name}"',
@@ -291,19 +327,6 @@ def edit_meeting_view(
         assert form.time.data is not None
         meeting.name = maybe_escape(meeting.name)
 
-        # Update attendees with their status
-        new_attendees_with_status = []
-        for attendance_data in form.attendance.data:
-            user_id = attendance_data['user_id']
-            user = session.get(User, user_id)
-            if user:
-                if attendance_data['status']:
-                    status = AttendanceStatus.ATTENDED
-                    new_attendees_with_status.append((user, status))
-                else:
-                    new_attendees_with_status.append(user)
-
-        meeting.update_attendees_with_status(new_attendees_with_status)
         meeting.time = fix_utc_to_local_time(form.time.data)
 
         session.add(meeting)

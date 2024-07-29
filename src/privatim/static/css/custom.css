@@ -356,6 +356,11 @@ span.accordion-text-9 {
     margin-bottom: 5px;
 }
 
+.fix-checkbox-in-list {
+    margin-left: 1px!important;
+}
+
+
 .generic-user-list-container {
     display: flex;
     gap: 1.5rem;

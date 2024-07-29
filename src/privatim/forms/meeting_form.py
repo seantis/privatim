@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import load_only
-from wtforms import (StringField, validators, )
+from wtforms import StringField, validators
 from wtforms.fields.form import FormField
 from wtforms.fields.list import FieldList
 from wtforms.fields.simple import BooleanField
@@ -16,11 +16,12 @@ from privatim.i18n import _
 from privatim.models.association_tables import AttendanceStatus
 from privatim.models import MeetingUserAttendance
 
-
 from typing import TYPE_CHECKING, Any
+
+from privatim.utils import attendance_status
 if TYPE_CHECKING:
-    from pyramid.interfaces import IRequest
     from wtforms import Field
+    from pyramid.interfaces import IRequest
     from wtforms.meta import _MultiDictLike
     from collections.abc import Mapping, Sequence
 
@@ -41,6 +42,7 @@ class AttendanceForm(Form):
     status = CheckboxField(
         _('Attended'),
         render_kw={'class': 'no-white-background'},
+        default=False
     )
 
 
@@ -63,7 +65,8 @@ class MeetingForm(Form):
             obj=context,
             meta={
                 'context': context,
-                'dbsession': session
+                'dbsession': session,
+                'request': request
             }
         )
 
@@ -106,39 +109,39 @@ class MeetingForm(Form):
                 ))
 
     def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
+        def find_attendance_in_form(user_id: str) -> bool:
+            for f in self._fields.get('attendance'):
+                if f.user_id.data == user_id:
+                    # XXX
+                    # status data is incorrect (!). The form does not
+                    # reflect request.POST for some reason. We retrieve it
+                    # manually as a workaround
+                    request = self.meta.request.POST
+                    return attendance_status(request, user_id)
+
+            return False
+
         for name, field in self._fields.items():
             if isinstance(field, SearchableSelectField):
+                session = self.meta.dbsession
+                stmt = select(User).where(User.id.in_(field.raw_data))
+                users = session.execute(stmt).scalars().all()
+
+                # Clear existing attendance records
+                obj.attendance_records = []
+
+                # Create new attendance records
+                for user in users:
+                    actual_status = AttendanceStatus.INVITED
+                    if find_attendance_in_form(user.id) is True:
+                        actual_status = AttendanceStatus.ATTENDED
+                    attendance = MeetingUserAttendance(
+                        meeting=obj, user=user, status=actual_status
+                    )
+                    obj.attendance_records.append(attendance)
+            elif name == 'attendance':
+                # this is already handled in SearchableSelectField above
                 pass
-                # session = self.meta.dbsession
-                # stmt = select(User).where(User.id.in_(field.raw_data))
-                # users = session.execute(stmt).scalars().all()
-                #
-                # # Clear existing attendance records
-                # obj.attendance_records = []
-                #
-                # # Create new attendance records
-                # for user in users:
-                #     attendance = MeetingUserAttendance(
-                #         meeting=obj, user=user, status=AttendanceStatus.INVITED
-                #     )
-                #     obj.attendance_records.append(attendance)
-            # elif name == 'attendance':
-            #     for status_form in field:
-            #         user_id = status_form.user_id.data
-            #         attended = status_form.status.data
-            #         attendance_record = next(
-            #             (
-            #                 ar for ar in obj.attendance_records
-            #                 if str(ar.user_id) == user_id
-            #             ),
-            #             None,
-            #         )
-            #         if attendance_record:
-            #             attendance_record.status = (
-            #                 AttendanceStatus.ATTENDED
-            #                 if attended
-            #                 else AttendanceStatus.INVITED
-            #             )
             else:
                 field.populate_obj(obj, name)
 
@@ -158,7 +161,12 @@ class MeetingForm(Form):
                     {
                         'user_id': str(attendance_record.user_id),
                         'fullname': attendance_record.user.fullname,
-                        'status': attendance_record.status,
+                        'status': (
+                            True
+                            if attendance_record.status ==
+                               AttendanceStatus.ATTENDED   # noqa: E131
+                            else False
+                        ),
                     }
                 )
         else:
