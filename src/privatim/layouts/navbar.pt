@@ -3,7 +3,7 @@
         <div class="d-flex flex-wrap align-items-center justify-content-between">
             <a class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none"
                href="${request.route_url('home')}">
-                <img src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo"
+                <img src="${layout.static_url('privatim:static/logo-dark-font-transparent-smaller.png')}" alt="Logo"
                      class="bi me-4"
                      width="242" height="87">
             </a>
