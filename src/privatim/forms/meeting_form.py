@@ -22,6 +22,8 @@ from privatim.utils import attendance_status
 if TYPE_CHECKING:
     from wtforms import Field
     from pyramid.interfaces import IRequest
+    from webob.multidict import GetDict
+    from sqlalchemy.orm import Session
     from wtforms.meta import _MultiDictLike
     from collections.abc import Mapping, Sequence
 
@@ -109,36 +111,15 @@ class MeetingForm(Form):
                 ))
 
     def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
-        def find_attendance_in_form(user_id: str) -> bool:
-            for f in self._fields.get('attendance'):
-                if f.user_id.data == user_id:
-                    # XXX
-                    # The form does not reflect request.POST for some reason.
-                    # Therefore the status is not filled properly somehow.
-                    # We retrieve it manually as a workaround
-                    request = self.meta.request.POST
-                    return attendance_status(request, user_id)
-
-            return False
 
         for name, field in self._fields.items():
             if isinstance(field, SearchableSelectField):
-                session = self.meta.dbsession
-                stmt = select(User).where(User.id.in_(field.raw_data))
-                users = session.execute(stmt).scalars().all()
-
-                # Clear existing attendance records
-                obj.attendance_records = []
-
-                # Create new attendance records
-                for user in users:
-                    actual_status = AttendanceStatus.INVITED
-                    if find_attendance_in_form(user.id) is True:
-                        actual_status = AttendanceStatus.ATTENDED
-                    attendance = MeetingUserAttendance(
-                        meeting=obj, user=user, status=actual_status
-                    )
-                    obj.attendance_records.append(attendance)
+                sync_meeting_attendance_records(
+                    self,
+                    obj,
+                    self.meta.request.POST,
+                    self.meta.dbsession,
+                )
             elif name == 'attendance':
                 # this is already handled in SearchableSelectField above
                 pass
@@ -153,22 +134,21 @@ class MeetingForm(Form):
             extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
             **kwargs: Any
     ) -> None:
-
-        session = self.meta.dbsession
         super().process(formdata, obj, **kwargs)
         if isinstance(obj, Meeting):
             self.attendance.entries = []
-            stuff = session.execute(obj.sorted_attendance_records).unique(
-            ).scalars().all()
-            for attendance_record in stuff:
+            records = obj.sorted_attendance_records
+            for attendance_record in (
+                self.meta.dbsession.execute(records).unique().scalars().all()
+            ):
                 self.attendance.append_entry(
                     {
                         'user_id': str(attendance_record.user_id),
                         'fullname': attendance_record.user.fullname,
                         'status': (
                             True
-                            if attendance_record.status ==
-                               AttendanceStatus.ATTENDED   # noqa: E131
+                            if attendance_record.status
+                            == AttendanceStatus.ATTENDED
                             else False
                         ),
                     }
@@ -193,3 +173,38 @@ class MeetingForm(Form):
                         'fullname': user.fullname,
                         'status': AttendanceStatus.INVITED,
                     })
+
+
+def sync_meeting_attendance_records(
+    meeting_form: MeetingForm,
+    obj: Meeting,
+    post_data: 'GetDict',
+    session: 'Session',
+) -> None:
+    """ Searches in request.POST to manually get data and find the status
+    for each user and map it to MeetingUserAttendance."""
+
+    def find_attendance_in_form(user_id: str) -> bool:
+        for f in meeting_form._fields.get('attendance'):
+            if f.user_id.data == user_id:
+                # XXX this is kind of crude, but I couldn't find a way to do
+                # it otherwise. Request.POST is somehow is not mapped to the
+                # 'status' field in AttendanceForm.
+                # We have to get it manually as a workaround
+                return attendance_status(post_data, user_id)
+
+        return False
+
+    stmt = select(User).where(User.id.in_(meeting_form.attendees.raw_data))
+    users = session.execute(stmt).scalars().all()
+    # Clear existing attendance records
+    obj.attendance_records = []
+    # Create new attendance records
+    for user in users:
+        actual_status = AttendanceStatus.INVITED
+        if find_attendance_in_form(user.id) is True:
+            actual_status = AttendanceStatus.ATTENDED
+        attendance = MeetingUserAttendance(
+            meeting=obj, user=user, status=actual_status
+        )
+        obj.attendance_records.append(attendance)

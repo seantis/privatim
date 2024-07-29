@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-28 21:06+0200\n"
+"POT-Creation-Date: 2024-07-29 20:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,19 +56,6 @@ msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
 msgid "Search..."
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-#: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/views/templates/profile.pt
-#: ./src/privatim/views/templates/people.pt
-#: ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt ./src/privatim/forms/meeting_form.py
-msgid "Attended"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py
@@ -149,6 +136,14 @@ msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Invited"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/views/working_groups.py
@@ -344,6 +339,14 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Meetings"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/profile.pt
+#: ./src/privatim/views/templates/people.pt
+#: ./src/privatim/forms/meeting_form.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Name"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt

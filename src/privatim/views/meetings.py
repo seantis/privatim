@@ -19,7 +19,10 @@ from privatim.utils import maybe_escape
 from sqlalchemy import select
 
 from privatim.utils import fix_utc_to_local_time
-from privatim.forms.meeting_form import MeetingForm
+from privatim.forms.meeting_form import (
+    MeetingForm,
+    sync_meeting_attendance_records,
+)
 from privatim.models import Meeting, User, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
@@ -143,7 +146,7 @@ def user_list(
     request: 'IRequest', users: Sequence['MeetingUserAttendance'], title: str
 ) -> Markup:
     """Returns an HTML list of users with links to their profiles and
-    Bootstrap checkbox for attendance status on the right"""
+    checkbox on the right, with tooltips."""
     user_items = tuple(
         Markup(
             '<li class="user-list-item d-flex justify-content-between '
@@ -151,7 +154,7 @@ def user_list(
             '<div class="d-flex align-items-center">'
             '{} <a href="{}" class="mb-1 ms-2">{}</a>'
             '</div>'
-            '<div class="form-check">'
+            '<div class="form-check" data-bs-toggle="tooltip" title="{}">'
             ' <input class="form-check-input fix-checkbox-in-list" '
             'type="checkbox" '
             'value="" '
@@ -163,6 +166,11 @@ def user_list(
             Icon('user', IconStyle.solid),
             request.route_url("person", id=user.user_id),
             user.user.fullname,
+            (
+                translate(_('Attended'))
+                if user.status == AttendanceStatus.ATTENDED
+                else translate(_('Invited'))
+            ),
             user.user_id,
             'checked' if user.status == AttendanceStatus.ATTENDED else '',
             user.user_id,
@@ -282,9 +290,7 @@ def add_meeting_view(
             working_group=context,
             creator=request.user
         )
-        # meeting.update_attendees_with_status(
-        #     get_attendees_with_status(form.attendance, session, attendees)
-        # )
+        sync_meeting_attendance_records(form, meeting, request.POST, session)
         session.add(meeting)
         message = _(
             'Successfully added meeting "${name}"',

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-28 21:06+0200\n"
+"POT-Creation-Date: 2024-07-29 20:49+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -57,17 +57,6 @@ msgstr "Répondre"
 #: src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr "Rechercher..."
-
-#: src/privatim/layouts/macros.pt src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Nom"
-
-#: src/privatim/layouts/macros.pt src/privatim/forms/meeting_form.py
-msgid "Attended"
-msgstr "Attendus"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
@@ -148,6 +137,14 @@ msgstr "Des détails"
 #: src/privatim/views/meetings.py
 msgid "Delete"
 msgstr "Supprimer"
+
+#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr "Attendus"
+
+#: src/privatim/views/meetings.py
+msgid "Invited"
+msgstr "Absent"
 
 #: src/privatim/views/meetings.py src/privatim/views/working_groups.py
 #: src/privatim/forms/working_group_forms.py
@@ -353,6 +350,13 @@ msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 #: src/privatim/views/templates/working_group.pt
 msgid "Meetings"
 msgstr "Réunions"
+
+#: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Nom"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
@@ -752,9 +756,6 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#~ msgid "Invited"
-#~ msgstr "invités"
 
 #~ msgid "File Match"
 #~ msgstr "Correspondance de fichier"
