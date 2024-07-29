@@ -260,11 +260,10 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         # this also stores the  field if attended
         context.operations.execute(
             """
-            INSERT INTO meetings_users_attendance (meeting_id, user_id,
-            status)
-            SELECT meeting_id, user_id, 'invited' FROM
-            meetings_users_association
-        """
+            INSERT INTO meetings_users_attendance (meeting_id, user_id, status)
+            SELECT meeting_id, user_id, 'INVITED'::attendancestatus
+            FROM meetings_users_association
+            """
         )
         context.drop_table('meetings_users_association')
 
