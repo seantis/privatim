@@ -113,9 +113,9 @@ class MeetingForm(Form):
             for f in self._fields.get('attendance'):
                 if f.user_id.data == user_id:
                     # XXX
-                    # status data is incorrect (!). The form does not
-                    # reflect request.POST for some reason. We retrieve it
-                    # manually as a workaround
+                    # The form does not reflect request.POST for some reason.
+                    # Therefore the status is not filled properly somehow.
+                    # We retrieve it manually as a workaround
                     request = self.meta.request.POST
                     return attendance_status(request, user_id)
 
@@ -153,10 +153,14 @@ class MeetingForm(Form):
             extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
             **kwargs: Any
     ) -> None:
+
+        session = self.meta.dbsession
         super().process(formdata, obj, **kwargs)
         if isinstance(obj, Meeting):
             self.attendance.entries = []
-            for attendance_record in obj.attendance_records:
+            stuff = session.execute(obj.sorted_attendance_records).unique(
+            ).scalars().all()
+            for attendance_record in stuff:
                 self.attendance.append_entry(
                     {
                         'user_id': str(attendance_record.user_id),

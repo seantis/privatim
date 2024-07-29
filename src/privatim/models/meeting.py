@@ -1,8 +1,8 @@
 import uuid
 
 from sedate import utcnow
-from sqlalchemy import Integer, select, func, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, select, func, Text, Select
+from sqlalchemy.orm import Mapped, mapped_column, contains_eager
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -18,11 +18,11 @@ from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.utils import maybe_escape
+from privatim.models.user import User
 
 
 from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
-    from privatim.models import User
     from sqlalchemy.orm import Session
     from privatim.models import WorkingGroup
     from privatim.types import ACL
@@ -125,10 +125,10 @@ class Meeting(Base, SearchableMixin, Commentable):
             self,
             name: str,
             time: datetime,
-            attendees: list['User'],
+            attendees: list[User],
             working_group: 'WorkingGroup',
             agenda_items: list[AgendaItem] | None = None,
-            creator: 'User | None' = None
+            creator: User | None = None
     ):
         self.id = str(uuid.uuid4())
         self.name = name
@@ -161,12 +161,26 @@ class Meeting(Base, SearchableMixin, Commentable):
     )
 
     @property
-    def attendees(self) -> list['User']:
+    def sorted_attendance_records(self) \
+            -> Select[tuple[MeetingUserAttendance]]:
+        return (
+            select(MeetingUserAttendance)
+            .join(MeetingUserAttendance.user)
+            .filter(MeetingUserAttendance.meeting_id == self.id)
+            .options(contains_eager(MeetingUserAttendance.user))
+            .order_by(
+                func.coalesce(User.last_name, '').desc(),
+                func.coalesce(User.first_name, '').desc(),
+            )
+        )
+
+    @property
+    def attendees(self) -> list[User]:
         """ Returns all attendees regardless of status. """
         return [record.user for record in self.attendance_records]
 
     def update_attendees_with_status(
-        self, users_with_status: list[tuple['User', AttendanceStatus]]
+        self, users_with_status: list[tuple[User, AttendanceStatus]]
     ) -> None:
         """
         Set attendees with optional status.
@@ -209,7 +223,7 @@ class Meeting(Base, SearchableMixin, Commentable):
     creator_id: Mapped[UUIDStrType] = mapped_column(
         ForeignKey('users.id'), nullable=True
     )
-    creator: Mapped['User | None'] = relationship(
+    creator: Mapped[User | None] = relationship(
         'User',
         back_populates='created_meetings',
         foreign_keys=[creator_id]
