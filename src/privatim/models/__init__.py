@@ -11,6 +11,7 @@ from privatim.models.searchable import SearchableMixin
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.meeting import Meeting, AgendaItem
+from privatim.models.association_tables import MeetingUserAttendance
 from privatim.models.file import GeneralFile, SearchableFile
 from privatim.models.consultation import Tag
 from privatim.models.password_change_token import PasswordChangeToken
@@ -20,12 +21,14 @@ from privatim.orm import get_tm_session
 
 
 # Prevent linters from complaining about unused imports
+
 Tag
 Group
 WorkingGroup
 User
 Consultation
 Meeting
+MeetingUserAttendance
 AgendaItem
 PasswordChangeToken
 GeneralFile

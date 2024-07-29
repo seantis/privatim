@@ -5,7 +5,7 @@
 
     <div metal:fill-slot="content">
 
-        <h1 id="main-title" i18n:translate="">List of Persons</h1>
+        <h1 id="main-title" class="pb-3" i18n:translate="">List of Persons</h1>
 
         <p tal:condition="not:people" i18n:translate="">No people added yet.</p>
 

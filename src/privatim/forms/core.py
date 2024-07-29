@@ -10,7 +10,6 @@ from privatim.i18n import translate
 
 from .fields import TransparentFormField
 from .validators import Immutable
-from .widgets import CheckboxListWidget
 
 
 from typing import Any, TypeVar, TYPE_CHECKING

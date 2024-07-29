@@ -4,7 +4,7 @@
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
     <div metal:fill-slot="content">
-        <h1>${user.fullname}</h1>
+        <h1 id="main-title">${user.fullname}</h1>
         <ul>
             <li>${user.email}</li>
         </ul>

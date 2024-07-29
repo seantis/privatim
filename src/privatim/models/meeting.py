@@ -1,67 +1,38 @@
 import uuid
+
 from sedate import utcnow
 from sqlalchemy import Integer, select, func, Text
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-from privatim.orm.meta import UUIDStr as UUIDStrType
 
+from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
 from privatim.models.commentable import Commentable
+from privatim.models.association_tables import AttendanceStatus
+from privatim.models.association_tables import MeetingUserAttendance
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.utils import maybe_escape
-from datetime import datetime
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING, Iterator, Union
+
 if TYPE_CHECKING:
-    from privatim.models import User, WorkingGroup
-    from privatim.types import ACL
+    from privatim.models import User
     from sqlalchemy.orm import Session
+    from privatim.models import WorkingGroup
+    from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
 
 
 class AgendaItemCreationError(Exception):
     """Custom exception for errors in creating AgendaItem instances."""
     pass
-
-
-meetings_users_association: Table = Table(
-    'meetings_users_association', Base.metadata,
-    Column(
-        'meeting_id',
-        UUIDStr,
-        ForeignKey('meetings.id'),
-        primary_key=True
-    ),
-    Column(
-        'user_id',
-        UUIDStr,
-        ForeignKey('users.id'),
-        primary_key=True
-    ),
-)
-
-
-attended_meetings_users_association: Table = Table(
-    'attended_meetings_users_association', Base.metadata,
-    Column(
-        'meeting_id',
-        UUIDStr,
-        ForeignKey('meetings.id'),
-        primary_key=True
-    ),
-    Column(
-        'user_id',
-        UUIDStr,
-        ForeignKey('users.id'),
-        primary_key=True
-    ),
-)
 
 
 class AgendaItem(Base, SearchableMixin):
@@ -161,9 +132,18 @@ class Meeting(Base, SearchableMixin, Commentable):
             creator: 'User | None' = None
     ):
         self.id = str(uuid.uuid4())
-        self.name = maybe_escape(name)
+        self.name = name
         self.time = time
-        self.attendees = attendees
+
+        # Create MeetingUserAttendance objects for each attendee
+        self.attendance_records = [
+            MeetingUserAttendance(
+                user=attendee,
+                status=AttendanceStatus.INVITED
+            )
+            for attendee in attendees
+        ]
+
         self.working_group = working_group
         self.creator = creator
         if agenda_items:
@@ -175,21 +155,60 @@ class Meeting(Base, SearchableMixin, Commentable):
 
     time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
-    # the users which were invited to the meeting
-    attendees: Mapped[list['User']] = relationship(
-        'User',
-        secondary=meetings_users_association,
-        back_populates='meetings'
+    attendance_records: Mapped[list[MeetingUserAttendance]] = relationship(
+        "MeetingUserAttendance",
+        back_populates="meeting",
+        cascade="all, delete-orphan",
     )
 
-    # the users which actually attended the meeting
-    attended_attendees = relationship(
-        'User',
-        secondary=attended_meetings_users_association,
-        back_populates='attended_meetings',
-    )
+    @property
+    def attendees(self) -> list['User']:
+        return [record.user for record in self.attendance_records]
 
-    # Traktanden (=Themen)
+    def update_attendees_with_status(
+        self,
+        users_with_status: list[Union[tuple['User', 'AttendanceStatus'], 'User']],
+    ) -> None:
+        """
+        Set attendees with optional status.
+
+        :param users_with_status: List of User objects or tuples of (User, AttendanceStatus)
+        """
+        # Create a dictionary of existing records for efficient lookup
+        existing_records = {
+            str(record.user_id): record for record in self.attendance_records
+        }
+
+        new_records = []
+        for item in users_with_status:
+            if isinstance(item, tuple):
+                user, status = item
+            else:
+                user = item
+                status = AttendanceStatus.INVITED  # Default status if not provided
+
+            if user.id in existing_records:
+                # Update existing record
+                existing_records[str(user.id)].status = status
+            else:
+                # Create new record
+                new_records.append(MeetingUserAttendance(user=user, status=status))
+
+        # Add new records
+        self.attendance_records.extend(new_records)
+
+        # Remove records for users not in the new list
+        user_ids = {
+            user.id if isinstance(user, User) else user[0].id
+            for user in users_with_status
+        }
+        self.attendance_records = [
+            record
+            for record in self.attendance_records
+            if record.user_id in user_ids
+        ]
+
+
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
         back_populates='meeting',

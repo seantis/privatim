@@ -4,7 +4,7 @@ from privatim.models import User, WorkingGroup, Meeting
 from privatim.utils import fix_utc_to_local_time
 
 
-def test_view_edit_meeting(client):
+def test_edit_meeting(client):
     users = [
         User(email='max@example.org', first_name='Max', last_name='Müller'),
         User(
@@ -51,9 +51,9 @@ def test_view_edit_meeting(client):
         attendees_options = form_fields[field][0].__dict__['options']
         return [entry[2] for entry in attendees_options if entry[1]]
 
-    # form should be populated:
+    # form should be filled
     assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
-    # assert get_attendees(page) == ['Max Müller', 'Alexa Troller']
+    assert get_attendees(page) == ['Max Müller', 'Alexa Troller']
 
     # Modify the meeting details
     new_meeting_time = meeting_time + timedelta(days=1)

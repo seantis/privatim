@@ -52,7 +52,6 @@ def get_activities(form: FilterForm, session: 'Session') -> dict[str, Any]:
     def get_meetings() -> Iterable[Meeting]:
         return session.execute(
             select(Meeting)
-            .options(joinedload(Meeting.attendees))
             .order_by(Meeting.updated.desc())
         ).scalars().unique()
 
@@ -179,7 +178,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     # Query construction for Meetings
     if include_meetings:
-        meeting_query = select(Meeting).options(joinedload(Meeting.attendees))
+        meeting_query = select(Meeting)
         meeting_query = maybe_apply_date_filter(
             meeting_query, start_datetime, end_datetime, Meeting.updated
         )

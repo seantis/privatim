@@ -36,12 +36,11 @@ def person_view(context: User, request: 'IRequest') -> 'RenderData':
         select(User)
         .options(
             selectinload(User.comments),
-            selectinload(User.meetings),
             selectinload(User.consultations),
         )
         .filter_by(id=context.id)
     )
-    user = session.execute(stmt).scalar_one()
+    user: User = session.execute(stmt).scalar_one()
 
     meetings_dict = [
         {

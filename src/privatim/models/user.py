@@ -6,26 +6,27 @@ import bcrypt
 from datetime import datetime
 from datetime import timezone
 
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, select
 
 from privatim.models import Group, WorkingGroup
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
-from privatim.models.meeting import meetings_users_association, \
-    attended_meetings_users_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128
 
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.models.association_tables import MeetingUserAttendance
     from privatim.types import ACL
     from privatim.models import Meeting
+    from sqlalchemy import Select
     from privatim.models.commentable import Comment
     from privatim.models import Consultation
     from privatim.models import GeneralFile
@@ -79,17 +80,25 @@ class User(Base):
         back_populates='users',
     )
 
-    meetings: Mapped[list['Meeting']] = relationship(
-        'Meeting',
-        secondary=meetings_users_association,
-        back_populates='attendees',
+    meeting_attendance: Mapped[list['MeetingUserAttendance']] = relationship(
+        'MeetingUserAttendance',
+        back_populates='user',
+        cascade='all, delete-orphan'
     )
 
-    attended_meetings: Mapped[list['Meeting']] = relationship(
-        'Meeting',
-        secondary=attended_meetings_users_association,
-        back_populates='attended_attendees',
-    )
+    @hybrid_property
+    def meetings(self) -> list['Meeting']:
+        return [record.meeting for record in self.meeting_attendance]
+
+    @meetings.expression  # type: ignore[no-redef]
+    def meetings(cls) -> 'Select[tuple[Meeting]]':
+        from privatim.models.meeting import Meeting
+        from privatim.models.association_tables import MeetingUserAttendance
+        return (
+            select(Meeting)
+            .join(MeetingUserAttendance)
+            .filter(MeetingUserAttendance.user_id == cls.id)
+        )
 
     # the groups this user is a leader of
     leading_groups: Mapped[list[WorkingGroup]] = relationship(

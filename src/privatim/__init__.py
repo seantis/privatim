@@ -256,4 +256,10 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             ),
         )
 
+    # Migrate data from meetings_users to meetings_users_attendance
+    context.operations.execute("""
+        INSERT INTO meetings_users_attendance (meeting_id, user_id, status)
+        SELECT meeting_id, user_id, 'invited' FROM meetings_users_association
+    """)
+
     context.commit()

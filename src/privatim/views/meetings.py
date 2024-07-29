@@ -1,5 +1,7 @@
 from markupsafe import Markup
 from pyramid.response import Response
+
+from privatim.models.association_tables import AttendanceStatus
 from privatim.reporting.report import (
     MeetingReport,
     ReportOptions,
@@ -237,6 +239,7 @@ def add_meeting_view(
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data))
         attendees = list(session.execute(stmt).scalars().all())
+        # todo: get attendance from form and write
         assert form.time.data is not None
         time = fix_utc_to_local_time(form.time.data)
         meeting = Meeting(
@@ -287,8 +290,20 @@ def edit_meeting_view(
         form.populate_obj(meeting)
         assert form.time.data is not None
         meeting.name = maybe_escape(meeting.name)
-        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
-        meeting.attendees = list(session.execute(stmt).scalars().all())
+
+        # Update attendees with their status
+        new_attendees_with_status = []
+        for attendance_data in form.attendance.data:
+            user_id = attendance_data['user_id']
+            user = session.get(User, user_id)
+            if user:
+                if attendance_data['status']:
+                    status = AttendanceStatus.ATTENDED
+                    new_attendees_with_status.append((user, status))
+                else:
+                    new_attendees_with_status.append(user)
+
+        meeting.update_attendees_with_status(new_attendees_with_status)
         meeting.time = fix_utc_to_local_time(form.time.data)
 
         session.add(meeting)
