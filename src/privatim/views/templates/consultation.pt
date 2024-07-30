@@ -63,7 +63,7 @@
         </div>
 
         <!-- Sidebar for documents and status, starts below the title -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 gx-5">
             <div class="card mb-4" tal:condition="documents">
                 <div class="card-body claude-element">
                     <h5 i18n:translate="" class="tag-card-title">Documents</h5>
@@ -83,7 +83,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card mb-4 ms4 ">
+            <div class="card mb-4 ms4">
                 <div class="card-body claude-element">
                     <h5 i18n:translate="" class="tag-card-title">Status</h5>
                     <h4 class="card-text" tal:condition="status_name">
