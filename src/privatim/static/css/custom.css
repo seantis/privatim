@@ -131,10 +131,6 @@ body {
     background-color: #EDEDED !important;
 }
 
-textarea {
-
-}
-
 .dimmed-white-background {
     background-color: var(--dimmed-white-background) !important;
 }
@@ -153,7 +149,6 @@ a {
     /* set color for all links */
     color: var(--primary-color);
 }
-
 
 .btn-secondary {
     background: white;
@@ -175,6 +170,7 @@ a:hover {
 /* Navbar */
 #active_tab {
     text-decoration: underline !important;
+    text-decoration-color: var(--primary-color) !important;
     text-decoration-thickness: 0.3rem !important;
     text-underline-offset: 1.25rem;
 }
