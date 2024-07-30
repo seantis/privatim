@@ -231,6 +231,7 @@ def create_consultation_from_form(
     prev.replaced_by = new_consultation
     prev.is_latest_version = 0
     session.add(prev)
+    new_consultation.reindex_files()
     return new_consultation
 
 
