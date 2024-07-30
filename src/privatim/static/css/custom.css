@@ -91,12 +91,12 @@ body {
     --timeline-padding-left: calc(var(--icon-size) * 2);
     --timeline-line-left: calc(var(--icon-size) * 0.75);
     --timeline-icon-left: calc(var(--icon-size) * 0.25);
-    --background-color: hsl(49, 27%, 91.0%);
+    --background-color: rgb(244, 242, 238);
     --tw-gradient-stops: hsl(50, 30%, 92%), hsl(50 23.1% 94.9% / 1);
     --light-brown-border-color: hsl(46, 24%, 68%);
     --brown-border-color: hsl(48, 12.5%, 39.2%);
     --dimmed-white-background: hsl(60, 6.7%, 97.1%);
-    --border-radius: 16px;
+    --border-radius: 10px;
     /* ======== Overwrite bootstrap global variables ======= */
     /* See also https://www.getbootstrap.cn/docs/5.3/customize/css-variables/ */
     --bs-border-radius: 16px;
@@ -219,13 +219,11 @@ a:hover {
     display: flex;
     margin: 1rem 0;
     padding: 1.2rem;
-    background-color: rgb(248, 248, 247);
+    background-color: #fff;
     border-radius: var(--border-radius);
     transition: all 0.1s cubic-bezier(0.25, 0.1, 0.25, 1);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid transparent;
-
-    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 
 .consultation-card {
@@ -401,20 +399,17 @@ mark {
 }
 
 .consultation-body {
-    background: var(--dimmed-white-background);
     border-radius: var(--border-radius);
 }
 
 .claude-element {
     padding: 1.0rem; /* Adjust as needed */
     border-radius: var(--border-radius);
-    border: 1px solid var(--light-brown-border-color);
-    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+    border: none;
 }
 
 .claude-element-without-border {
     padding: 1.0rem; /* Adjust as needed */
-    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 
 .claude-element .list-group-item {
@@ -570,11 +565,12 @@ mark {
 
 /* Editor*/
 .element {
-    background-color: var(--dimmed-white-background) !important;
+    background-color: #fff;
     height: 200px;
     overflow-y: auto;
     cursor: text;
     /*font-size: 0.85rem;*/
+    padding: 1rem
 }
 
 .editor-probs {
