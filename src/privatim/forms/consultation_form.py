@@ -91,7 +91,6 @@ class ConsultationForm(Form):
         ],
         translations={
             'placeholder': translate(_('Choose a canton...')),
-            'not_found': 'No results found'
         }
     )
 
