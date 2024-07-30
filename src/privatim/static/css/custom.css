@@ -228,6 +228,10 @@ a:hover {
     background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 
+.consultation-card {
+    cursor: pointer;
+}
+
 /* New hover effect styles */
 .activity-card-wrapper:hover {
     transform: scale(1.01);
