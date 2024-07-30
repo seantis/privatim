@@ -98,6 +98,7 @@ body {
     --dimmed-white-background: hsl(60, 6.7%, 97.1%);
     --border-radius: 10px;
     /* ======== Overwrite bootstrap global variables ======= */
+    /* This is very useful in order to make global changes. */
     /* See also https://www.getbootstrap.cn/docs/5.3/customize/css-variables/ */
     --bs-border-radius: 16px;
     --bs-body-font-family: "DM Sans", sans-serif;
@@ -443,10 +444,34 @@ mark {
     border-color: var(--primary-color); /* Matches the checkbox color */
 }
 
-
 .form-check-input:focus {
     box-shadow: none;
+
 }
+/* https://stackoverflow.com/a/48484022/ */
+.form-control:focus,
+.form-select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus {
+    border-color: rgba(255, 84, 95, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(255, 84, 95, 0.6);;
+    outline: 0 none;
+}
+
 
 .consultations-content-width {
     width: 75%;

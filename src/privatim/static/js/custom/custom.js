@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupCommentAnswerField();
     makeConsultationsClickable();
 
-    if (window.location.href.includes('consultations/edit')) {
+    if (window.location.href.includes('consultations/')) {
         document.querySelectorAll('.upload-widget.without-data').forEach(el => {
             el.style.display = 'none';
         });
