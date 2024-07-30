@@ -10,15 +10,12 @@ from sedate import to_timezone
 from markupsafe import escape
 from sqlalchemy.orm import DeclarativeBase
 
-from privatim.models.association_tables import AttendanceStatus
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
-from privatim.models import User
 
 
 from typing import Any, TYPE_CHECKING, overload, TypeVar
 if TYPE_CHECKING:
-    from sqlalchemy.orm import Session
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
@@ -229,26 +226,6 @@ def strip_p_tags(text: str) -> str:
     """
     _text = text.replace('<p>', '').replace('</p>', '')
     return _text.strip()
-
-
-def get_attendees_with_status(
-    field: Any, session: 'Session', users: list[User]
-) -> list[tuple[User, AttendanceStatus]]:
-
-    new_attendees_with_status = []
-    for attendance_form in field:
-        user_id = attendance_form.user_id.data
-        attended = attendance_form.status.data
-        print(f'user_id: {user_id}, attended: {attended}')
-        user = session.get(User, user_id)
-        if user and user in users:
-            status = (
-                AttendanceStatus.ATTENDED
-                if attended
-                else AttendanceStatus.INVITED
-            )
-            new_attendees_with_status.append((user, status))
-    return new_attendees_with_status
 
 
 def attendance_status(data: '_MultiDictLike', user_id: str) -> bool:
