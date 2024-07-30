@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 11:01+0200\n"
+"POT-Creation-Date: 2024-07-30 15:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,6 +56,22 @@ msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
 msgid "Search..."
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "B"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "I"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Add Link"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Remove Link"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py
