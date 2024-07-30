@@ -233,7 +233,6 @@ a:hover {
 /* New hover effect styles */
 .activity-card-wrapper:hover {
     transform: scale(1.01);
-    border-color: var(--primary-color);
 }
 
 .rounded-circle {
@@ -521,7 +520,6 @@ mark {
 /* New hover effect styles */
 .timeline-item:hover .timeline-content {
     transform: scale(1.01);
-    border-color: var(--primary-color);
 }
 
 .timeline-icon {
