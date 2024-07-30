@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 15:27+0200\n"
+"POT-Creation-Date: 2024-07-30 20:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,11 +67,7 @@ msgid "I"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
-msgid "Add Link"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Remove Link"
+msgid "URL"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py
@@ -328,7 +324,6 @@ msgid "Add Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/reporting/template/report.pt
 msgid "Working Group"
 msgstr ""
 
@@ -758,6 +753,10 @@ msgstr ""
 #: ./src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
+msgstr ""
+
+#: ./src/privatim/reporting/template/report.pt
+msgid "Working Group:"
 msgstr ""
 
 #: ./src/privatim/reporting/template/report.pt

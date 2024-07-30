@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 15:27+0200\n"
+"POT-Creation-Date: 2024-07-30 20:09+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -67,12 +67,8 @@ msgid "I"
 msgstr "I"
 
 #: src/privatim/layouts/macros.pt
-msgid "Add Link"
-msgstr "Ajouter un lien"
-
-#: src/privatim/layouts/macros.pt
-msgid "Remove Link"
-msgstr "Supprimer le lien"
+msgid "URL"
+msgstr "URL"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
@@ -338,7 +334,6 @@ msgid "Add Agenda Item"
 msgstr "Ajouter un élément de l'ordre du jour"
 
 #: src/privatim/views/templates/working_group.pt
-#: src/privatim/reporting/template/report.pt
 msgid "Working Group"
 msgstr "Comité"
 
@@ -769,8 +764,18 @@ msgid "Protocol of meeting ${title}"
 msgstr "Procès-verbal de la réunion ${title}"
 
 #: src/privatim/reporting/template/report.pt
+msgid "Working Group:"
+msgstr "Comité:"
+
+#: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Add Link"
+#~ msgstr "Ajouter un lien"
+
+#~ msgid "Remove Link"
+#~ msgstr "Supprimer le lien"
 
 #, python-format
 #~ msgid "Successfully added consultation \"${name}\""
