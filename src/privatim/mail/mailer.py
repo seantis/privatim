@@ -1,4 +1,3 @@
-# type: ignore
 import base64
 import io
 import json
@@ -6,12 +5,6 @@ import re
 from email.headerregistry import Address
 from string import ascii_letters
 from string import digits
-from typing import TYPE_CHECKING
-from typing import Any
-from typing import ClassVar
-from typing import Union
-from typing import cast
-from typing import overload
 
 import requests
 from zope.interface import implementer
@@ -20,9 +13,15 @@ from .exceptions import InactiveRecipient
 from .exceptions import MailConnectionError
 from .exceptions import MailError
 from .interfaces import IMailer
-
 from .types import MailState
 
+
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import ClassVar
+from typing import Union
+from typing import cast
+from typing import overload
 if TYPE_CHECKING:
     from requests import Response
 
@@ -243,7 +242,7 @@ class PostmarkMailer:
             raise InactiveRecipient()
         elif data['ErrorCode'] != 0:
             raise MailError(data['Message'])
-        return data['MessageID']
+        return data['MessageID']  # type:ignore[return-value]
 
     def send(self,
              sender:      Address | None,
@@ -400,7 +399,7 @@ class PostmarkMailer:
                         else:
                             # if we don't get an ID we don't want to fail hard
                             # so we just pretend the mail has been delivered
-                            result.append(message['MessageID'])
+                            result.append(message['MessageID'])  # type:ignore
 
                 except ConnectionError:
                     # we'll treat these as a temporary failures
@@ -466,12 +465,18 @@ class PostmarkMailer:
         #       a status for each recipient individually. So if we ever specify
         #       multiple recipients, this method will be wrong.
         details = self.get_message_details(message_id)
-        if not isinstance(details, dict):
+        if (
+            not isinstance(details, dict)
+            or not isinstance(details['MessageEvents'], list)
+        ):
             raise MailError('Invalid API data.')
+
         state = max(
             (
-                message_event_type_to_mail_state.get(event['Type'], -1)
+                message_event_type_to_mail_state.get(event_type, -1)
                 for event in details['MessageEvents']
+                if isinstance(event, dict)
+                if isinstance((event_type := event['Type']), str)
             ),
             default=-1
         )

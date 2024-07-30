@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 20:09+0200\n"
+"POT-Creation-Date: 2024-07-30 20:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,6 +108,14 @@ msgstr ""
 msgid "Successfully updated profile picture"
 msgstr ""
 
+#: ./src/privatim/views/login.py ./src/privatim/views/mtan.py
+#, python-format
+msgid ""
+"Privatim Login Token:\n"
+"${tan}"
+msgstr ""
+
+#. FIXME: log failure for fail2ban
 #: ./src/privatim/views/login.py
 msgid "Login failed."
 msgstr ""
@@ -183,6 +191,26 @@ msgstr ""
 #: ./src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully deleted meeting \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Token"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Authentication failed"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Existing mobile number"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Mobile Number"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Verification failed"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -296,6 +324,15 @@ msgid ""
 "email address."
 msgstr ""
 
+#: ./src/privatim/views/templates/mtan.pt
+msgid "Mobile Authentication"
+msgstr ""
+
+#: ./src/privatim/views/templates/mtan.pt
+#: ./src/privatim/views/templates/mtan_setup.pt
+msgid "Submit"
+msgstr ""
+
 #: ./src/privatim/views/templates/form.pt ./src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr ""
@@ -404,6 +441,14 @@ msgstr ""
 
 #: ./src/privatim/views/templates/search_results.pt
 msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/mtan_setup.pt
+msgid "Mobile Authentication Setup"
+msgstr ""
+
+#: ./src/privatim/views/templates/mtan_setup.pt
+msgid "→ Send another token / Try a different number"
 msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
@@ -740,6 +785,32 @@ msgstr ""
 
 #: ./src/privatim/forms/widgets/widgets.py
 msgid "Upload additional files"
+msgstr ""
+
+#: ./src/privatim/forms/fields/phone_number.py
+msgid "fixed line number"
+msgstr ""
+
+#: ./src/privatim/forms/fields/phone_number.py
+msgid "mobile number"
+msgstr ""
+
+#. NOTE: We could give a more specific error message
+#: ./src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number"
+msgstr ""
+
+#: ./src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number region"
+msgstr ""
+
+#: ./src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number for selected region"
+msgstr ""
+
+#: ./src/privatim/forms/fields/phone_number.py
+#, python-format
+msgid "Invalid ${number_type}"
 msgstr ""
 
 #: ./src/privatim/forms/fields/fields.py

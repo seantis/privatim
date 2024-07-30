@@ -7,6 +7,7 @@ from .fields import (
     UploadMultipleField,
     ConstantTextAreaField
 )
+from .phone_number import PhoneNumberField
 from .transparent_form_field import TransparentFormField
 
 
@@ -23,11 +24,12 @@ def FieldList(**fields: 'Field') -> 'TransparentFormField[Any]':
 
 
 __all__ = (
+    'ConstantTextAreaField',
+    'DateTimeLocalField',
     'FieldList',
+    'PhoneNumberField',
     'TransparentFormField',
     'TomSelectWidget',
-    'ConstantTextAreaField'
-    'DateTimeLocalField',
     'TimezoneDateTimeField',
     'UploadField',
     'UploadMultipleField',

@@ -278,7 +278,7 @@ def add_meeting_view(
 
     target_url = None
     if request.method == 'POST' and form.validate():
-        stmt = select(User).where(User.id.in_(form.attendees.raw_data))
+        stmt = select(User).where(User.id.in_(form.attendees.raw_data or ()))
         attendees = list(session.execute(stmt).scalars().all())
         assert form.time.data is not None
         time = fix_utc_to_local_time(form.time.data)

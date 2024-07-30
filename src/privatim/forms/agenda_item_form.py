@@ -12,6 +12,8 @@ from privatim.models import Meeting
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from wtforms.fields.choices import _Choice
+
     from pyramid.interfaces import IRequest
     from privatim.models import AgendaItem
 
@@ -63,7 +65,7 @@ class AgendaItemCopyForm(Form):
             meta={'context': context, 'request': request},
         )
 
-        all_meetings_for_choices = [
+        all_meetings_for_choices: list[_Choice] = [
             (str(meeting.id), meeting.name)
             # valid destination are all meetings except the one from which
             # we are copying from
@@ -72,6 +74,7 @@ class AgendaItemCopyForm(Form):
             ).scalars().all()
         ]
         if not all_meetings_for_choices:
+            assert isinstance(self.copy_to.validators, list)
             self.copy_to.validators.append(
                 lambda form, field: ValidationError(
                     _('No valid destination meetings available.')

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 20:09+0200\n"
+"POT-Creation-Date: 2024-07-30 20:15+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -111,6 +111,16 @@ msgstr "Foto löschen"
 msgid "Successfully updated profile picture"
 msgstr "Profilbild erfolgreich geändert"
 
+#: src/privatim/views/login.py src/privatim/views/mtan.py
+#, python-format
+msgid ""
+"Privatim Login Token:\n"
+"${tan}"
+msgstr ""
+"Privatim Login Code:\n"
+"${tan}"
+
+#. FIXME: log failure for fail2ban
 #: src/privatim/views/login.py
 msgid "Login failed."
 msgstr "Anmeldung fehlgeschlagen."
@@ -187,6 +197,26 @@ msgstr "Sitzung erfolgreich bearbeitet."
 #, python-format
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Sitzung \"${name}\" erfolgreich gelöscht"
+
+#: src/privatim/views/mtan.py
+msgid "Token"
+msgstr "Code"
+
+#: src/privatim/views/mtan.py
+msgid "Authentication failed"
+msgstr "Anmeldung fehlgeschlagen"
+
+#: src/privatim/views/mtan.py
+msgid "Existing mobile number"
+msgstr "Existierende Mobiltelefonnummer"
+
+#: src/privatim/views/mtan.py
+msgid "Mobile Number"
+msgstr "Mobiltelefonnummer"
+
+#: src/privatim/views/mtan.py
+msgid "Verification failed"
+msgstr "Verifizierung fehlgeschlagen"
 
 #: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
 msgid "Edit Consultation"
@@ -307,6 +337,15 @@ msgstr ""
 "erhalten, überprüfen Sie bitte, ob Sie die korrekte E-Mail-Adresse "
 "eingegeben haben."
 
+#: src/privatim/views/templates/mtan.pt
+msgid "Mobile Authentication"
+msgstr "Mobile Authentifizierung"
+
+#: src/privatim/views/templates/mtan.pt
+#: src/privatim/views/templates/mtan_setup.pt
+msgid "Submit"
+msgstr "Anmelden"
+
 #: src/privatim/views/templates/form.pt src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -416,6 +455,14 @@ msgstr ""
 #: src/privatim/views/templates/search_results.pt
 msgid "Show Details"
 msgstr "Details anzeigen"
+
+#: src/privatim/views/templates/mtan_setup.pt
+msgid "Mobile Authentication Setup"
+msgstr "Einrichten Mobile Authentifizierung"
+
+#: src/privatim/views/templates/mtan_setup.pt
+msgid "→ Send another token / Try a different number"
+msgstr "→ Code noch einmal senden / Eine andere Nummer probieren"
 
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
@@ -756,6 +803,32 @@ msgstr "Datei ersetzen"
 msgid "Upload additional files"
 msgstr "Weitere Dokumente hochladen"
 
+#: src/privatim/forms/fields/phone_number.py
+msgid "fixed line number"
+msgstr "Festnetznummer"
+
+#: src/privatim/forms/fields/phone_number.py
+msgid "mobile number"
+msgstr "Mobiltelefonnummer"
+
+#. NOTE: We could give a more specific error message
+#: src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number"
+msgstr "Ungültige Telefonnummer"
+
+#: src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number region"
+msgstr "Ungültige Telefonnummer Region"
+
+#: src/privatim/forms/fields/phone_number.py
+msgid "Invalid phone number for selected region"
+msgstr "Ungültige Telefonnummer für ausgewählte Region"
+
+#: src/privatim/forms/fields/phone_number.py
+#, python-format
+msgid "Invalid ${number_type}"
+msgstr "Ungültige ${number_type}"
+
 #: src/privatim/forms/fields/fields.py
 msgid "Select..."
 msgstr "Auswählen"
@@ -771,7 +844,7 @@ msgstr "Protokoll der Sitzung ${title}"
 
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
-msgstr "Gremium"
+msgstr "Gremium:"
 
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"

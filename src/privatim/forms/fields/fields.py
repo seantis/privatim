@@ -358,7 +358,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         ) -> UploadField: ...
 
     upload_field_class: type[UploadField] = UploadField
-    upload_widget: 'Widget[UploadField]' = UploadWidget()  # type:ignore
+    upload_widget: 'Widget[UploadField]' = UploadWidget()
 
     def __init__(
         self,
@@ -368,10 +368,10 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         description: str = '',
         id: str | None = None,
         default: 'Sequence[FileDict]' = (),
-        widget: 'Widget[Self] | None' = None,  # type:ignore
+        widget: 'Widget[Self] | None' = None,
         render_kw: dict[str, Any] | None = None,
         name: str | None = None,
-        upload_widget: 'Widget[UploadField] | None' = None,  # type:ignore
+        upload_widget: 'Widget[UploadField] | None' = None,
         _form: 'BaseForm | None' = None,
         _prefix: str = '',
         _translations: '_SupportsGettextAndNgettext | None' = None,
@@ -396,7 +396,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
             max_entries=None,
             id=id,
             default=default,
-            widget=widget,
+            widget=widget,  # type:ignore[arg-type]
             render_kw=render_kw,
             name=name,
             _form=_form,
@@ -452,7 +452,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
         # we fake the formdata for the new field
         # we use a werkzeug MultiDict because the WebOb version
         # needs to get wrapped to be usable in WTForms
-        formdata: MultiDict[str, 'RawFormValue'] = MultiDict()
+        formdata: MultiDict[str, RawFormValue] = MultiDict()
         name = f'{self.short_name}{self._separator}{len(self)}'
         formdata.add(name, fs)
         return self._add_entry(formdata)
