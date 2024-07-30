@@ -616,6 +616,7 @@ mark {
     margin-bottom: 1.5rem;
 }
 
+.card {border-color: var(--background-color);}
 
 .attendance-container {
     width: 100%;
