@@ -206,10 +206,10 @@
         <div class="element" id="${field.id}-editor"></div>
         <div class="bubble-menu">
             <div class="bubble-menu">
-                <button type="button" i18n:translate="" data-type="bold">B</button>
-                <button type="button" i18n:translate="" data-type="italic">I</button>
-                <button type="button" i18n:translate="" data-type="link">Add Link</button>
-                <button type="button" i18n:translate="" data-type="unlink">Remove Link</button>
+                <button type="button" i18n:translate="" data-type="bold"><b>B</b></button>
+                <button type="button" i18n:translate="" data-type="italic"><i>I</i></button>
+                <button type="button" i18n:translate="" data-type="link">URL</button>
+                <button type="button" i18n:translate="" data-type="unlink"><s>URL</s></button>
             </div>
         </div>
     </div>
