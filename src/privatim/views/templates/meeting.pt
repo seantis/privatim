@@ -33,14 +33,14 @@
                 <div class="accordion" id="agenda-items" data-sortable="" data-sortable-url="${sortable_url}">
                         <div data-sortable-id="${item.position}" class="accordion-item handle-for-dragging draggable-item" tal:repeat="item agenda_items">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed agenda-item-accordion dimmed-white-background" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}" >
+                                <button class="accordion-button collapsed agenda-item-accordion" type="button" data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false" aria-controls="item-${item.id}" >
                                     <span class="accordion-text-9">${item.title}</span>
                                     ${item.edit_btn()}
                                     <i class="fas fa-arrows-alt-v"></i>
                                 </button>
                         </h2>
                         <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">
-                            <div class="accordion-body dimmed-white-background">
+                            <div class="accordion-body">
                                 <p class="make-line-breaks-in-p">${item.description}</p>
                             </div>
                         </div>
