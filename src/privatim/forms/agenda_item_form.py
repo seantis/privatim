@@ -5,6 +5,7 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import ValidationError
 
 from privatim.forms.core import Form
+from privatim.forms.fields.fields import ConstantTextAreaField
 from privatim.i18n import _
 from privatim.models import Meeting
 
@@ -36,7 +37,7 @@ class AgendaItemForm(Form):
             meta={'context': context, 'request': request},
         )
 
-    title = TextAreaField(
+    title = ConstantTextAreaField(
         label=_('Title'), validators=[validators.DataRequired()],
         render_kw={'rows': 3}
     )

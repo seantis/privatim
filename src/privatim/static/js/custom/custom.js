@@ -2,13 +2,29 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
+    makeConsultationsClickable();
 
-    if (window.location.href.includes('consultations/edit')) {
+    if (window.location.href.includes('consultations/')) {
         document.querySelectorAll('.upload-widget.without-data').forEach(el => {
             el.style.display = 'none';
         });
     }
 });
+
+function makeConsultationsClickable() {
+    // The whole consultation card was previously wrapped in a link before. This worked until we started rendering
+    // user-generated links (as html from the editor) in the description. Nesting Link is not allowed by HTML standard.
+    if (window.location.href.includes('/consultations')) {
+            const cards = document.querySelectorAll('.consultation-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function (e) {
+                    if (e.target.tagName !== 'A') {
+                        window.location.href = this.dataset.href;
+                    }
+                });
+            });
+    }
+}
 
 function handleProfilePicFormSubmission() {
     // Manually submit the form in profile picture view.

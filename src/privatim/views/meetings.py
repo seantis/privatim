@@ -273,11 +273,10 @@ def add_meeting_view(
 ) -> 'MixedDataOrRedirect':
 
     assert isinstance(context, WorkingGroup)
-    target_url = request.route_url('meetings', id=context.id)  # fallback
     form = MeetingForm(context, request)
     session = request.dbsession
 
-    meeting = None
+    target_url = None
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data or ()))
         attendees = list(session.execute(stmt).scalars().all())
@@ -292,19 +291,15 @@ def add_meeting_view(
         )
         sync_meeting_attendance_records(form, meeting, request.POST, session)
         session.add(meeting)
+        session.flush()
         message = _(
             'Successfully added meeting "${name}"',
             mapping={'name': form.name.data}
         )
         request.messages.add(message, 'success')
-
-        if request.is_xhr:
-            return {'redirect_to': target_url}
-        else:
-            return HTTPFound(location=target_url)
-
-    if meeting is not None:
-        target_url = request.route_url('meeting', id=meeting.id)
+        return HTTPFound(
+            location=request.route_url('meeting', id=meeting.id),
+        )
 
     if request.is_xhr:
         return {'errors': form.errors}

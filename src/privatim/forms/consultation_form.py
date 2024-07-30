@@ -7,10 +7,9 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields.fields import (
-    UploadMultipleFilesWithORMSupport,
-    SearchableSelectField,
-)
+from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
+                                          SearchableSelectField,
+                                          ConstantTextAreaField, )
 from privatim.i18n import _, translate
 
 from privatim.models import Tag, GeneralFile
@@ -52,7 +51,7 @@ class ConsultationForm(Form):
             for code, label in STATUS_CHOICES
         ]
 
-    title = TextAreaField(
+    title = ConstantTextAreaField(
         _('Title'),
         validators=[DataRequired()],
     )

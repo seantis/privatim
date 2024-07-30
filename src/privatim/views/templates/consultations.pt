@@ -14,7 +14,7 @@
                 <tal:b tal:condition="show_add_button">
                     <div class="col-md-6 text-end">
                         <a href="${request.route_url('add_consultation')}"
-                                             class="btn btn-primary" role="button" tabindex="1">
+                           class="btn btn-primary" role="button" tabindex="1">
                             <i class="fa fa-plus-circle me-2"></i><span i18n:translate=""> Add Consultation</span>
                         </a>
                     </div>
@@ -27,37 +27,35 @@
                 <!-- Main content area (2/3 width) -->
                 <div class="consultations-content-width order-md-1">
                     <div tal:repeat="consultation consultations" class="mt-4">
-                        <a href="${request.route_url('consultation', id=consultation._id)}" class="content-link text-decoration-none">
-                            <div class="d-flex flex-row activity-card-wrapper">
-                                <div class="profile-section m-3">
-                                    <img tal:condition="consultation.creator_pic_id"
-                                            src="${request.route_url('download_file', id=consultation.creator_pic_id)}"
-                                            class="rounded-circle m-3 profile-icon" alt="Profile Icon">
-                                    <img tal:condition="not consultation.creator_pic_id"
-                                            src="${layout.static_url('privatim:static/default_profile_icon.png')}"
-                                            class="rounded-circle m-3 profile-icon" alt="Profile Icon">
+                        <div class="d-flex flex-row activity-card-wrapper consultation-card" data-href="${request.route_url('consultation', id=consultation._id)}">
+                            <div class="profile-section m-3">
+                                <img tal:condition="consultation.creator_pic_id"
+                                        src="${request.route_url('download_file', id=consultation.creator_pic_id)}"
+                                        class="rounded-circle m-3 profile-icon" alt="Profile Icon">
+                                <img tal:condition="not consultation.creator_pic_id"
+                                        src="${layout.static_url('privatim:static/default_profile_icon.png')}"
+                                        class="rounded-circle m-3 profile-icon" alt="Profile Icon">
 
-                                    <div>
-                                        <tal:define define="has_creator python: consultation.creator is not None">
-                                            <tal:condition condition="consultation.has_creator">
-                                                <p class="profile-name" i18n:translate="">${consultation.fullname}</p>
-                                            </tal:condition>
-                                            <tal:condition condition="not:consultation.has_creator">
-                                                <p class="profile-name"
-                                                   style="max-width: 150px; visibility: hidden;" i18n:translate="">
-                                                    Unknown Creator</p>
-                                            </tal:condition>
-                                        </tal:define>
-                                        <p class="text-secondary">${layout.format_date(consultation.created, 'date')}  ${layout.format_date(consultation.created, 'time')}</p>
-                                    </div>
-                                </div>
-
-                                <div class="card-body col-md-8 d-flex flex-column">
-                                    <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
-                                    <p class="card-text" tal:condition="consultation.description" tal:content="consultation.description if len(consultation.description) < 550 else consultation.description[:550] + '...'"></p>
+                                <div>
+                                    <tal:define define="has_creator python: consultation.creator is not None">
+                                        <tal:condition condition="consultation.has_creator">
+                                            <p class="profile-name" i18n:translate="">${consultation.fullname}</p>
+                                        </tal:condition>
+                                        <tal:condition condition="not:consultation.has_creator">
+                                            <p class="profile-name"
+                                               style="max-width: 150px; visibility: hidden;" i18n:translate="">
+                                                Unknown Creator</p>
+                                        </tal:condition>
+                                    </tal:define>
+                                    <p class="text-secondary">${layout.format_date(consultation.created, 'date')}  ${layout.format_date(consultation.created, 'time')}</p>
                                 </div>
                             </div>
-                        </a>
+
+                            <div class="card-body col-md-8 d-flex flex-column">
+                                <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
+                                <p class="card-text" tal:condition="consultation.description" tal:content="consultation.description if len(consultation.description) < 550 else consultation.description[:550] + '...'"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

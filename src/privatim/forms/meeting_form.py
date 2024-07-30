@@ -9,7 +9,8 @@ from wtforms.validators import InputRequired
 from privatim.forms.core import Form
 
 from privatim.forms.fields import TimezoneDateTimeField
-from privatim.forms.fields.fields import SearchableSelectField
+from privatim.forms.fields.fields import SearchableSelectField, \
+    ConstantTextAreaField
 from privatim.models import User, Meeting
 from privatim.models import WorkingGroup
 from privatim.i18n import _
@@ -78,7 +79,7 @@ class MeetingForm(Form):
         users = session.execute(query).scalars().all()
         self.attendees.choices = [(str(u.id), u.fullname) for u in users]
 
-    name: StringField = StringField(
+    name: ConstantTextAreaField = ConstantTextAreaField(
         label=_('Name'), validators=[InputRequired()]
     )
 

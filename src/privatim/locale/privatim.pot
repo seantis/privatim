@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 16:20+0200\n"
+"POT-Creation-Date: 2024-07-30 17:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,37 +44,6 @@ msgstr ""
 
 #: ./src/privatim/forms/add_comment.py ./src/privatim/views/templates/form.pt
 msgid "Cancel"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-#: ./src/privatim/views/templates/meeting.pt
-msgid "Add Agenda Item"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py ./src/privatim/views/meetings.py
-msgid "Edit Agenda Item"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-#: ./src/privatim/forms/consultation_form.py
-msgid "Title"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-#: ./src/privatim/forms/consultation_form.py
-msgid "Description"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-msgid "Select Destionation for Agenda Item"
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-msgid "No valid destination meetings available."
-msgstr ""
-
-#: ./src/privatim/forms/agenda_item_form.py
-msgid "Copy to"
 msgstr ""
 
 #: ./src/privatim/forms/constants.py
@@ -181,6 +150,118 @@ msgstr ""
 msgid "Zürich"
 msgstr ""
 
+#: ./src/privatim/forms/filter_form.py
+#: ./src/privatim/views/templates/activities.pt
+msgid "Filter"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Canton"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "all"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Consultation"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Meeting"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Date from"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Date to"
+msgstr ""
+
+#: ./src/privatim/forms/search_form.py
+msgid "Search"
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "This field is required."
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+#, python-format
+msgid "File does not have an approved extension: {extensions}"
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "This field is disabled."
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "This field is read only."
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/views/working_groups.py ./src/privatim/views/meetings.py
+msgid "Edit Working Group"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+msgid "No Leader"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/forms/meeting_form.py
+#: ./src/privatim/views/templates/people.pt
+#: ./src/privatim/views/templates/profile.pt
+#: ./src/privatim/views/templates/working_group.pt
+msgid "Name"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/views/templates/working_group.pt
+msgid "Leader"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
+msgid "Members"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Contact Chairman"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+#: ./src/privatim/views/templates/meeting.pt
+msgid "Add Agenda Item"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py ./src/privatim/views/meetings.py
+msgid "Edit Agenda Item"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+#: ./src/privatim/forms/consultation_form.py
+msgid "Title"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+#: ./src/privatim/forms/consultation_form.py
+msgid "Description"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Select Destionation for Agenda Item"
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "No valid destination meetings available."
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Copy to"
+msgstr ""
+
 #: ./src/privatim/forms/consultation_form.py
 msgid "Open"
 msgstr ""
@@ -228,43 +309,6 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: ./src/privatim/forms/filter_form.py
-#: ./src/privatim/views/templates/activities.pt
-msgid "Filter"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Canton"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "all"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Consultation"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Meeting"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Date from"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Date to"
-msgstr ""
-
-#: ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py
-#: ./src/privatim/views/templates/people.pt
-#: ./src/privatim/views/templates/profile.pt
-#: ./src/privatim/views/templates/working_group.pt
-msgid "Name"
-msgstr ""
-
 #: ./src/privatim/forms/meeting_form.py ./src/privatim/views/meetings.py
 msgid "Attended"
 msgstr ""
@@ -283,63 +327,11 @@ msgid "Time"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py ./src/privatim/views/meetings.py
-msgid "Members"
-msgstr ""
-
-#: ./src/privatim/forms/meeting_form.py
 msgid "Attendance"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
-msgstr ""
-
-#: ./src/privatim/forms/search_form.py
-msgid "Search"
-msgstr ""
-
-#: ./src/privatim/forms/validators.py
-msgid "This field is required."
-msgstr ""
-
-#: ./src/privatim/forms/validators.py
-#, python-format
-msgid "File does not have an approved extension: {extensions}"
-msgstr ""
-
-#: ./src/privatim/forms/validators.py
-msgid "This field is disabled."
-msgstr ""
-
-#: ./src/privatim/forms/validators.py
-msgid "This field is read only."
-msgstr ""
-
-#: ./src/privatim/forms/working_group_forms.py ./src/privatim/views/meetings.py
-#: ./src/privatim/views/working_groups.py
-msgid "Edit Working Group"
-msgstr ""
-
-#: ./src/privatim/forms/working_group_forms.py
-msgid "No Leader"
-msgstr ""
-
-#: ./src/privatim/forms/working_group_forms.py
-#: ./src/privatim/views/templates/working_group.pt
-msgid "Leader"
-msgstr ""
-
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Contact Chairman"
-msgstr ""
-
-#: ./src/privatim/forms/fields/fields.py
-msgid "Select..."
-msgstr ""
-
-#: ./src/privatim/forms/fields/fields.py
-msgid "No Users Found"
 msgstr ""
 
 #: ./src/privatim/forms/fields/phone_number.py
@@ -368,6 +360,14 @@ msgstr ""
 msgid "Invalid ${number_type}"
 msgstr ""
 
+#: ./src/privatim/forms/fields/fields.py
+msgid "Select..."
+msgstr ""
+
+#: ./src/privatim/forms/fields/fields.py
+msgid "No Users Found"
+msgstr ""
+
 #: ./src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
 msgstr ""
@@ -388,10 +388,6 @@ msgstr ""
 msgid "Upload additional files"
 msgstr ""
 
-#: ./src/privatim/layouts/action_menu.pt
-msgid "Actions"
-msgstr ""
-
 #. Default: Close
 #: ./src/privatim/layouts/flash.pt
 msgid "Close"
@@ -403,18 +399,6 @@ msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
 msgid "Contact"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Message"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Comments"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Search..."
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py
@@ -443,6 +427,38 @@ msgstr ""
 msgid "Sign out"
 msgstr ""
 
+#: ./src/privatim/layouts/action_menu.pt
+msgid "Actions"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Message"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Comments"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Search..."
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "B"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "I"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Add Link"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+msgid "Remove Link"
+msgstr ""
+
 #: ./src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
@@ -465,6 +481,30 @@ msgstr ""
 #: ./src/privatim/reporting/template/report.pt
 #: ./src/privatim/views/templates/meeting.pt
 msgid "Agenda Items"
+msgstr ""
+
+#: ./src/privatim/views/general_file.py
+#, python-format
+msgid "Successfully deleted file \"${title}\""
+msgstr ""
+
+#: ./src/privatim/views/password_retrieval.py
+msgid ""
+"An email has been sent to the requested account with further information. If "
+"you do not receive an email then please confirm you have entered the correct "
+"email address."
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Upload a photo..."
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Delete photo"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Successfully updated profile picture"
 msgstr ""
 
 #: ./src/privatim/views/agenda_items.py
@@ -491,13 +531,98 @@ msgstr ""
 msgid "Successfully added comment"
 msgstr ""
 
+#: ./src/privatim/views/login.py ./src/privatim/views/mtan.py
+#, python-format
+msgid ""
+"Privatim Login Token:\n"
+"${tan}"
+msgstr ""
+
+#. FIXME: log failure for fail2ban
+#: ./src/privatim/views/login.py
+msgid "Login failed."
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Token"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Authentication failed"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Existing mobile number"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Mobile Number"
+msgstr ""
+
+#: ./src/privatim/views/mtan.py
+msgid "Verification failed"
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid "Email"
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid "New Password"
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid "Confirm New Password"
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid "Password changed"
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid ""
+"There was a problem with your submission. Errors have been highlighted below."
+msgstr ""
+
+#: ./src/privatim/views/password_change.py
+msgid ""
+"Password must have minimal length of 8 characters, contain one upper case "
+"letter, one lower case letter, one digit and one special character."
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully added working group \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "Add Working Group"
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully updated working group \"${name}\""
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid ""
+"Cannot delete working group \"${name}\" because it has associated meetings. "
+"Please delete all meetings first."
+msgstr ""
+
+#: ./src/privatim/views/working_groups.py
+#, python-format
+msgid "Successfully deleted working group \"${name}\""
+msgstr ""
+
 #: ./src/privatim/views/consultations.py
 msgid "Delete Consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully added consultation \"${name}\""
+msgid "Successfully added consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -511,23 +636,6 @@ msgstr ""
 
 #: ./src/privatim/views/consultations.py
 msgid "Successfully deleted consultation."
-msgstr ""
-
-#: ./src/privatim/views/general_file.py
-#, python-format
-msgid "Successfully deleted file \"${title}\""
-msgstr ""
-
-#: ./src/privatim/views/login.py ./src/privatim/views/mtan.py
-#, python-format
-msgid ""
-"Privatim Login Token:\n"
-"${tan}"
-msgstr ""
-
-#. FIXME: log failure for fail2ban
-#: ./src/privatim/views/login.py
-msgid "Login failed."
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -580,99 +688,6 @@ msgstr ""
 msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
-#: ./src/privatim/views/password_change.py
-msgid "Email"
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid "New Password"
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid "Confirm New Password"
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid "Password changed"
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid ""
-"There was a problem with your submission. Errors have been highlighted below."
-msgstr ""
-
-#: ./src/privatim/views/password_change.py
-msgid ""
-"Password must have minimal length of 8 characters, contain one upper case "
-"letter, one lower case letter, one digit and one special character."
-msgstr ""
-
-#: ./src/privatim/views/password_retrieval.py
-msgid ""
-"An email has been sent to the requested account with further information. If "
-"you do not receive an email then please confirm you have entered the correct "
-"email address."
-msgstr ""
-
-#: ./src/privatim/views/profile.py
-msgid "Upload a photo..."
-msgstr ""
-
-#: ./src/privatim/views/profile.py
-msgid "Delete photo"
-msgstr ""
-
-#: ./src/privatim/views/profile.py
-msgid "Successfully updated profile picture"
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully added working group \"${name}\""
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "Add Working Group"
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully updated working group \"${name}\""
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#, python-format
-msgid ""
-"Cannot delete working group \"${name}\" because it has associated meetings. "
-"Please delete all meetings first."
-msgstr ""
-
-#: ./src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully deleted working group \"${name}\""
-msgstr ""
-
-#: ./src/privatim/views/mtan.py
-msgid "Token"
-msgstr ""
-
-#: ./src/privatim/views/mtan.py
-msgid "Authentication failed"
-msgstr ""
-
-#: ./src/privatim/views/mtan.py
-msgid "Existing mobile number"
-msgstr ""
-
-#: ./src/privatim/views/mtan.py
-msgid "Mobile Number"
-msgstr ""
-
-#: ./src/privatim/views/mtan.py
-msgid "Verification failed"
-msgstr ""
-
 #: ./src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
 msgstr ""
@@ -715,10 +730,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
 msgid "Tags"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultations.pt
-msgid "Unknown Creator"
 msgstr ""
 
 #: ./src/privatim/views/templates/form.pt
@@ -773,18 +784,6 @@ msgstr ""
 msgid "E-Mail-Address"
 msgstr ""
 
-#: ./src/privatim/views/templates/search_results.pt
-msgid "Search Results"
-msgstr ""
-
-#: ./src/privatim/views/templates/search_results.pt
-msgid "No results containing all your search terms were found."
-msgstr ""
-
-#: ./src/privatim/views/templates/search_results.pt
-msgid "Show Details"
-msgstr ""
-
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Chairman Contact"
 msgstr ""
@@ -797,10 +796,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Meetings"
-msgstr ""
-
-#: ./src/privatim/views/templates/working_groups.pt
-msgid "Committee"
 msgstr ""
 
 #: ./src/privatim/views/templates/mtan.pt
@@ -818,4 +813,24 @@ msgstr ""
 
 #: ./src/privatim/views/templates/mtan_setup.pt
 msgid "→ Send another token / Try a different number"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultations.pt
+msgid "Unknown Creator"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Search Results"
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "No results containing all your search terms were found."
+msgstr ""
+
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Show Details"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_groups.pt
+msgid "Committee"
 msgstr ""
