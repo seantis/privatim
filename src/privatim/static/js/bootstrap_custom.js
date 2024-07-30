@@ -6,6 +6,4 @@ $(function() {
         var btn = new bootstrap.Button(this);
         btn.toggle();
     });
-    // initialize tooltips
-    new bootstrap.Tooltip(document.body, {selector: '[data-bs-toggle="tooltip"]'});
 });
