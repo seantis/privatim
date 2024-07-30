@@ -580,6 +580,15 @@ mark {
 .rounded-table {
     border-radius: var(--border-radius);
     overflow: hidden;
+    background-color: var(--background-color);
+}
+
+.rounded-table td, .rounded-table th {
+    padding: 1.3rem;
+}
+
+.rounded-table tr {
+    border-bottom-color: var(--background-color);
 }
 
 .tag-sidebar {
