@@ -299,6 +299,7 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
     session = request.dbsession
     form: SearchForm = SearchForm(request)
     if request.method == 'POST' and form.validate():
+        assert form.term.data is not None
         return HTTPFound(
             location=request.route_url(
                 'search',

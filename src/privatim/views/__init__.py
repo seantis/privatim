@@ -30,6 +30,7 @@ from privatim.views.forbidden import forbidden_view
 from privatim.views.home import home_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
+from privatim.views.mtan import mtan_view, mtan_setup_view
 from privatim.views.meetings import (add_meeting_view,
                                      export_meeting_as_pdf_view,
                                      sortable_agenda_items_view)
@@ -73,6 +74,24 @@ def includeme(config: 'Configurator') -> None:
         login_view,
         route_name='login',
         renderer='templates/login.pt',
+        require_csrf=False,
+        permission=NO_PERMISSION_REQUIRED,
+    )
+
+    config.add_route('mtan', '/mtan')
+    config.add_view(
+        mtan_view,
+        route_name='mtan',
+        renderer='templates/mtan.pt',
+        require_csrf=False,
+        permission=NO_PERMISSION_REQUIRED,
+    )
+
+    config.add_route('mtan_setup', '/mtan-setup')
+    config.add_view(
+        mtan_setup_view,
+        route_name='mtan_setup',
+        renderer='templates/mtan_setup.pt',
         require_csrf=False,
         permission=NO_PERMISSION_REQUIRED,
     )

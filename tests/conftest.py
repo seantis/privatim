@@ -9,8 +9,11 @@ from privatim import main
 from privatim.file.setup import setup_filestorage
 from privatim.models import User, WorkingGroup
 from privatim.models.consultation import Status, Consultation
+from privatim.mtan_tool import MTanTool
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
-from privatim.testing import DummyRequest, DummyMailer, MockRequests
+from privatim.testing import (
+    DummyRequest, DummyMailer, DummySMSGateway, MockRequests
+)
 from tests.shared.client import Client
 
 
@@ -114,6 +117,13 @@ def mailer(pg_config):
     return mailer
 
 
+@pytest.fixture
+def sms_gateway(pg_config):
+    gateway = DummySMSGateway()
+    pg_config.registry.registerUtility(gateway)
+    return gateway
+
+
 @pytest.fixture(scope='function')
 def engine(app_settings):
     engine = engine_from_config(app_settings)
@@ -215,3 +225,8 @@ def pdf_vemz():
     path = Path(__file__).parent / 'views/client/test_files' / filename
     with open(path, 'rb') as f:
         yield filename, f.read()
+
+
+@pytest.fixture()
+def mtan_tool(session):
+    return MTanTool(session)

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from privatim.models.association_tables import MeetingUserAttendance
     from privatim.types import ACL
     from privatim.models import Meeting
-    from sqlalchemy import Select
+    from sqlalchemy import ScalarSelect
     from privatim.models.commentable import Comment
     from privatim.models import Consultation
     from privatim.models import GeneralFile
@@ -54,6 +54,7 @@ class User(Base):
     last_name: Mapped[str_256 | None]
     email: Mapped[str_256] = mapped_column(unique=True)
     password: Mapped[str_128 | None]
+    mobile_number: Mapped[str_128 | None] = mapped_column(unique=True)
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
 
@@ -90,14 +91,16 @@ class User(Base):
     def meetings(self) -> list['Meeting']:
         return [record.meeting for record in self.meeting_attendance]
 
-    @meetings.expression  # type: ignore[no-redef]
-    def meetings(cls) -> 'Select[tuple[Meeting]]':
+    @meetings.inplace.expression
+    @classmethod
+    def _meetings_expression(cls) -> 'ScalarSelect[Meeting]':
         from privatim.models.meeting import Meeting
         from privatim.models.association_tables import MeetingUserAttendance
         return (
             select(Meeting)
             .join(MeetingUserAttendance)
             .filter(MeetingUserAttendance.user_id == cls.id)
+            .scalar_subquery()
         )
 
     # the groups this user is a leader of

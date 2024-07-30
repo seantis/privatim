@@ -6,7 +6,7 @@ from privatim import helpers
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey, TIMESTAMP, func
+from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -18,6 +18,7 @@ from privatim.i18n import LocaleNegotiator
 from privatim.route_factories.root_factory import root_factory
 from privatim.security import authenticated_user
 from privatim.security_policy import SessionSecurityPolicy
+from privatim.sms.sms_gateway import ASPSMSGateway
 
 __version__ = '0.0.0'
 
@@ -45,6 +46,8 @@ def includeme(config: Configurator) -> None:
         stream,
         blackhole=blackhole
     ))
+    smsdir = settings.get('sms.queue_path', '')
+    config.registry.registerUtility(ASPSMSGateway(smsdir))
     config.include('pyramid_beaker')
     config.include('pyramid_chameleon')
     config.include('pyramid_layout')
@@ -266,5 +269,14 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             """
         )
         context.drop_table('meetings_users_association')
+
+    context.add_column(
+        'users',
+        Column(
+            'mobile_number',
+            String(length=128),
+            nullable=True
+        )
+    )
 
     context.commit()

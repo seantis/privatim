@@ -41,6 +41,7 @@ def add_comment_view(
             raise HTTPNotFound("Parent comment not found")
 
     if request.method == 'POST' and form.validate():
+        assert form.content.data is not None
         comment = Comment(
             content=form.content.data,
             user=request.user,

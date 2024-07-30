@@ -60,6 +60,8 @@ def password_change_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     form = PasswordChangeForm(formdata=request.POST)
     if 'email' in request.POST:
         if form.validate():
+            assert form.email.data is not None
+            assert form.password.data is not None
             token = request.GET.get('token', '')
             email = form.email.data.lower()
             password = form.password.data

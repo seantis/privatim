@@ -8,7 +8,6 @@ skips = ["B101"]
 [tool.pytest.ini_options]
 log_level = "INFO"
 testpaths = ["tests"]
-timeout = 300
 norecursedirs = [
     "*.egg",
     ".git",
@@ -51,15 +50,11 @@ mypy_path = "$MYPY_CONFIG_FILE_DIR/src:$MYPY_CONFIG_FILE_DIR/stubs"
 [[tool.mypy.overrides]]
 module = [
     "alembic.*",
-    "fanstatic.*",
     "plaster.*",
     "pyramid.*",
     "pyramid.i18n.*",
     "pyramid_beaker.*",
     "pyramid_layout.*",
-    "transaction.*",
-    "wtforms.*",
-    "zope.sqlalchemy.*"
 ]
 ignore_missing_imports = true
 disallow_untyped_defs = false

@@ -34,7 +34,7 @@ if TYPE_CHECKING:
             _meta: DefaultMeta | None = None,
         ) -> None: ...
 
-        process: None
+        process: None  # type:ignore[assignment]
 else:
 
     class TransparentFormField(FormField):

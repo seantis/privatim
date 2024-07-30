@@ -16,13 +16,13 @@ from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 from typing import Any, TYPE_CHECKING, overload, TypeVar
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
     from privatim.models.commentable import Comment
     from pyramid.interfaces import IRequest
     from typing import TypedDict
-    from wtforms.meta import _MultiDictLike
 
     class ChildCommentDict(TypedDict):
         comment: 'Comment'
@@ -168,13 +168,13 @@ def flatten_comments(
     are not displayed with further indentation. Which is why this function
     does not need to do a full-blown tree traversal."""
 
-    flattened_comments: list['FlattenedCommentDict'] = []
+    flattened_comments: list[FlattenedCommentDict] = []
     for comment in top_level_comments:
         children = sorted(comment.children, key=lambda c: c.created)
         pic = get_correct_comment_picture_for_comment(comment, request)
 
         # Process children comments
-        _children: list['ChildCommentDict'] = []
+        _children: list[ChildCommentDict] = []
         for child in children:
             child_pic = get_correct_comment_picture_for_comment(child, request)
             _children.append({'comment': child, 'picture': child_pic})
@@ -228,7 +228,7 @@ def strip_p_tags(text: str) -> str:
     return _text.strip()
 
 
-def attendance_status(data: '_MultiDictLike', user_id: str) -> bool:
+def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
     """ Returns true if for the given user the checkbox has been checked,
     false otherwise. """
     # Find the index for the given user_id
