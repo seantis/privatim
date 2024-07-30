@@ -15,10 +15,10 @@ from typing import Any
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Query
+    from privatim.types import MixedDataOrRedirect
     from privatim.types import XHRDataOrRedirect
 
     _Q = TypeVar("_Q", bound=Query[Any])
-    from privatim.types import MixedDataOrRedirect
 
 
 def add_agenda_item_view(
@@ -130,7 +130,7 @@ def delete_agenda_item_view(
 def copy_agenda_item_view(
         context: Meeting,
         request: 'IRequest'
-) -> 'XHRDataOrRedirect':
+) -> 'MixedDataOrRedirect':
 
     form = AgendaItemCopyForm(context, request)
     assert isinstance(context, Meeting)

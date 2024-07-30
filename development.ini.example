@@ -24,6 +24,10 @@ pyramid.available_languages =
 # sqlalchemy.url = sqlite:///%(here)s/privatim.sqlite
 sqlalchemy.url = postgresql://dev:postgres@localhost:5432/privatim
 
+auth.password_only = true
+
+sms.queue_path = data/sms
+
 session.type = file
 session.data_dir = %(here)s/data/sessions/data
 session.lock_dir = %(here)s/data/sessions/lock

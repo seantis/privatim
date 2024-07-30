@@ -47,11 +47,10 @@ class ConsultationForm(Form):
             }
         )
 
-        translated_choices = [
+        self.status.choices = [
             (code, translate(label))
             for code, label in STATUS_CHOICES
         ]
-        self.status.choices = translated_choices
 
     title = TextAreaField(
         _('Title'),
@@ -132,7 +131,7 @@ class ConsultationForm(Form):
                 all_tags = set(existing_tags.values()).union(new_tags)
                 setattr(obj, name, list(all_tags))
             elif isinstance(field, SelectField) and field.data is not None:
-                value = dict(field.choices)[field.data]
+                value = dict(field.choices)[field.data]  # type:ignore
                 if (value and obj.status is not None and obj.status.name !=
                         value):
                     setattr(obj, name, Status(name=value))

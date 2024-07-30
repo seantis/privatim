@@ -8,11 +8,15 @@ from privatim.i18n import _
 
 
 from typing import Any
+from typing import Literal
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from abc import abstractmethod
-    from wtforms import Field, Form
+    from wtforms import Field
+    from wtforms.form import BaseForm
     from collections.abc import Sequence
+
+    PhoneNumberFormat = Literal['full', 'short', 'mixed']
 
 
 email_regex = re.compile(
@@ -28,19 +32,18 @@ class OptionalIf(Optional):
     Marks a field optional if another field is set.
     """
 
-    def __init__(self, check_field: str, *args: str, **kwargs: str):
+    def __init__(self, check_field: str, strip_whitespace: bool = True):
         self.check_field = check_field
-        super(OptionalIf, self).__init__(*args, **kwargs)
+        super().__init__(strip_whitespace=strip_whitespace)
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
         other_field = form._fields.get(self.check_field)
 
         if other_field is None:
-            raise Exception('no field named "%s" in form' %
-                            self.other_field_name)
+            raise Exception(f'no field named "{self.check_field}" in form')
 
         if bool(other_field.data):
-            super(OptionalIf, self).__call__(form, field)
+            super().__call__(form, field)
 
 
 class FileRequired(DataRequired):
@@ -51,7 +54,7 @@ class FileRequired(DataRequired):
     https://flask-wtf.readthedocs.io/en/0.15.x/api/#flask_wtf.file.FileRequired
     """
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
         if not (isinstance(field.data, FieldStorage)):
             raise StopValidation(
                 self.message or field.gettext("This field is required.")
@@ -77,7 +80,7 @@ class FileExtensionsAllowed:
         self.extensions = extensions
         self.message = message
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
         filename = field.data.filename.lower()
 
         if any(filename.endswith(ext) for ext in self.extensions):
@@ -91,14 +94,14 @@ class FileExtensionsAllowed:
         )
 
 
-def email_validator(form: 'Form', field: 'Field') -> None:
+def email_validator(form: 'BaseForm', field: 'Field') -> None:
     if not email_regex.match(field.data):
         raise ValidationError('Not a valid email.')
 
 
-def password_validator(form: 'Form', field: 'Field') -> None:
-    password = form.password.data
-    password_confirmation = form.password_confirmation.data
+def password_validator(form: 'BaseForm', field: 'Field') -> None:
+    password = form['password'].data
+    password_confirmation = form['password_confirmation'].data
 
     if not password or not password_confirmation:
         return
@@ -126,7 +129,7 @@ class Immutable:
     field_flags: dict[str, Any] = {}
     if TYPE_CHECKING:
         @abstractmethod
-        def __call__(self, form: 'Form', field: 'Field') -> None: ...
+        def __call__(self, form: 'BaseForm', field: 'Field') -> None: ...
 
 
 class Disabled(Immutable):
@@ -139,7 +142,7 @@ class Disabled(Immutable):
     def __init__(self) -> None:
         self.field_flags = {'disabled': True, 'aria_disabled': 'true'}
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
         if field.raw_data is not None:
             raise ValidationError(_('This field is disabled.'))
 
@@ -154,6 +157,6 @@ class ReadOnly(Immutable):
     def __init__(self) -> None:
         self.field_flags = {'readonly': True, 'aria_readonly': 'true'}
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
         if field.data != field.object_data:
             raise ValidationError(_('This field is read only.'))

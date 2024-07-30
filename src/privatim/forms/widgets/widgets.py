@@ -151,7 +151,7 @@ class UploadWidget(FileInput):
 
     def __call__(
             self,
-            field: 'UploadField',
+            field: 'UploadField',  # type:ignore[override]
             **kwargs: Any
     ) -> Markup:
 
@@ -204,7 +204,7 @@ class UploadMultipleWidget(FileInput):
 
     def __call__(
             self,
-            field: 'UploadMultipleField',
+            field: 'UploadMultipleField',  # type:ignore[override]
             **kwargs: Any
     ) -> Markup:
 

@@ -12,6 +12,7 @@ from privatim.models import WorkingGroup
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
+    from wtforms.fields.choices import _Choice
 
 
 class WorkingGroupForm(Form):
@@ -33,12 +34,12 @@ class WorkingGroupForm(Form):
         session = self.meta.request.dbsession
         users = session.execute(select(User)).scalars().all()
 
-        user_choices = tuple(
+        user_choices: list[_Choice] = [
             (str(u.id), u.fullname) for u in sorted(
                 users, key=lambda u: u.first_name or ''
             )
-        )
-        self.leader.choices = (('0', _('No Leader')),) + user_choices
+        ]
+        self.leader.choices = [('0', _('No Leader'))] + user_choices
         self.users.choices = user_choices
 
     name: StringField = StringField(_('Name'), validators=[DataRequired()])
