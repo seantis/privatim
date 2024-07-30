@@ -35,7 +35,7 @@
             <span class="fw-bold" i18n:translate="">Date / Time:</span> ${meeting_time}
         </p>
         <p>
-            <span class="fw-bold" i18n:translate="">Working Group</span> ${meeting.working_group.name}
+            <span class="fw-bold" i18n:translate="">Working Group:</span> ${meeting.working_group.name}
         </p>
         <p tal:condition="meeting.attendees">
             <span class="fw-bold" i18n:translate="">Attendees:</span>
@@ -51,8 +51,8 @@
         <h2 i18n:translate="" class="mt-4">Agenda Items</h2>
         <ul tal:repeat="item meeting.agenda_items" class="agenda-items-list">
             <li>
-                <h3><span>${repeat.item.index + 1}. </span>${item.title}</h3>
-                <p>${item.description}</p>
+                <h3 tal:content="h.Markup(repeat.item.index + 1) + h.Markup('. ') + h.Markup(item.title)"></h3>
+                <p tal:content="h.Markup(item.description)"></p>
             </li>
         </ul>
 

@@ -66,11 +66,13 @@ class BootstrapMeta(DefaultMeta):
             form:          '_BaseForm',
             unbound_field: 'UnboundField[_FieldT]',
             options:       'MutableMapping[str, Any]'
-    ) -> 'Field':
+    ) -> '_FieldT':
 
         # If the field is a TextAreaField, replace it with our patched version
+        # FIXME: Why not just always use HtmlField in forms? There may be
+        #        some legitimate use-cases for text areas without an editor
         if unbound_field.field_class is TextAreaField:
-            unbound_field.field_class = HtmlField
+            unbound_field.field_class = HtmlField  # type:ignore[assignment]
 
         # NOTE: This adds bootstrap specific field classes to render_kw
         render_kw = unbound_field.kwargs.get('render_kw', {})
@@ -89,7 +91,7 @@ class BootstrapMeta(DefaultMeta):
         render_kw['class'] = css_class
         options['render_kw'] = render_kw
         field = unbound_field.bind(form=form, **options)
-        field.post_validate = partial(
+        field.post_validate = partial(  # type:ignore[method-assign]
             update_field_class,
             field,
             field.post_validate

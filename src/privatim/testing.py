@@ -6,11 +6,12 @@ from webob.acceptparse import accept_language_property
 from webob.multidict import MultiDict
 from zope.interface.verify import verifyClass
 
+from privatim.flash import MessageQueue
+from privatim.i18n import _
 from privatim.mail import IMailer
 from privatim.mail import MailError
-from privatim.flash import MessageQueue
 from privatim.security import authenticated_user
-from privatim.i18n import _
+from privatim.sms.interfaces import ISMSGateway
 
 from typing import Dict
 from typing import List
@@ -188,6 +189,30 @@ class DummyMailer:
 
     def template_exists(self, alias: str) -> bool:
         raise NotImplementedError()
+
+
+class Message(NamedTuple):
+    receiver: str
+    content: str
+    sender: str
+
+
+@implementer(ISMSGateway)
+class DummySMSGateway:
+
+    messages: list[Message]
+
+    def __init__(self) -> None:
+        self.messages = []
+
+    def send(
+            self,
+            receivers: 'Sequence[str]',
+            content: str,
+            sender: str = 'Privatim'
+    ) -> None:
+        for receiver in receivers:
+            self.messages.append(Message(receiver, content, sender))
 
 
 class MockResponse:

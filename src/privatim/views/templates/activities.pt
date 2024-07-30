@@ -47,7 +47,7 @@
                                         <div class="timeline-body">
                                             <tal:b tal:switch="activity.__class__.__name__">
                                                 <div tal:case="'Consultation'">
-                                                <h4 tal:condition="activity.title" tal:content="h.Markup(activity.title[:100]) + '...' if len(activity.title) > 100 else h.Markup(activity.title)"></h4>
+                                                <h4 tal:condition="activity.title" tal:content=" h.Markup(activity.title[:100]) + '...' if len(activity.title) > 100 else h.Markup(activity.title)"></h4>
                                                 </div>
                                                 <div tal:case="'Meeting'">
                                                     <h4 i18n:translate="">${activity.name}</h4>

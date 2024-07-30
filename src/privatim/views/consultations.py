@@ -110,20 +110,23 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         user = request.user
         if form.status.data:
             status = Status(name=form.status.data)
-            status.name = dict(form.status.choices)[form.status.data]
+            status.name = dict(form.status.choices)[  # type:ignore
+                form.status.data
+            ]
             session.add(status)
             session.flush()
         else:
             status = None
 
         if form.secondary_tags.data:
-            tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
+            tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
             session.add_all(tags)
             session.flush()
         else:
             tags = None
 
         # Create a new Consultation instance
+        assert form.title.data is not None
         new_consultation = Consultation(
             title=form.title.data,
             description=form.description.data,
@@ -173,13 +176,13 @@ def create_consultation_from_form(
 
     session = request.dbsession
     status = Status(name=form.status.data)
-    status.name = dict(form.status.choices)[form.status.data]
+    status.name = dict(form.status.choices)[form.status.data]  # type:ignore
 
     session.add(status)
     session.flush()
     session.refresh(status)
 
-    tags = [Tag(name=n) for n in form.secondary_tags.raw_data]
+    tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
     session.add_all(tags)
     session.flush()
 

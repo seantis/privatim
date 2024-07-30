@@ -1,0 +1,38 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:tal="http://xml.zope.org/namespaces/tal"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+    <tal:block metal:fill-slot="content">
+
+        <div class="row">
+            <div class="col-md-4">
+                <form class="form-mtan-setup" action="${submit_url}" method="POST">
+                    <h1 class="mt-5" i18n:translate>Mobile Authentication  Setup</h1>
+                    <div class="mb-3" tal:repeat="field form">
+
+                        <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
+
+                        ${field()}
+
+                        <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary btn-submit" i18n:translate="">Submit</button>
+                    </div>
+                </form>
+                <tal:block tal:condition="retry_url">
+                    <hr />
+                    <a href="${retry_url}" i18n:translate="">
+                        → Send another token / Try a different number
+                    </a>
+                </tal:block>
+
+            </div>
+        </div>
+
+    </tal:block>
+
+</metal:block>

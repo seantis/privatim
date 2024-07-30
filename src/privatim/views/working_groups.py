@@ -36,7 +36,7 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
     target_url = request.route_url('working_groups')
     session = request.dbsession
     if request.method == 'POST' and form.validate():
-        stmt = select(User).where(User.id.in_(form.users.raw_data))
+        stmt = select(User).where(User.id.in_(form.users.raw_data or ()))
         users = list(session.execute(stmt).scalars().all())
         leader_id = form.leader.data
         leader_id = None if leader_id == '0' else leader_id
@@ -95,7 +95,7 @@ def edit_working_group(
             group.leader = None
 
         # Update members
-        stmt = select(User).where(User.id.in_(form.users.raw_data))
+        stmt = select(User).where(User.id.in_(form.users.raw_data or ()))
         users = list(session.execute(stmt).scalars().all())
         if group.leader is not None and group.leader not in users:
             users.append(group.leader)

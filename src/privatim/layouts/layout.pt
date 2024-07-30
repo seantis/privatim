@@ -34,7 +34,9 @@ https://github.com/ueberdosis/tiptap/issues/577#issuecomment-2129331646
     <!-- Begin page content -->
     <main class="flex-shrink-0 main-content">
 
-    ${panel('flash')}
+        <div class="p-4">
+            ${panel('flash')}
+        <div class="container">
 
         <div class="container">
             <tal:block metal:define-slot="content" />

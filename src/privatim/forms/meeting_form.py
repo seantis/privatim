@@ -186,7 +186,7 @@ def sync_meeting_attendance_records(
     for each user and map it to MeetingUserAttendance."""
 
     def find_attendance_in_form(user_id: str) -> bool:
-        for f in meeting_form._fields.get('attendance'):
+        for f in meeting_form._fields.get('attendance', ()):  # type:ignore
             if f.user_id.data == user_id:
                 # XXX this is kind of crude, but I couldn't find a way to do
                 # it otherwise. Request.POST is somehow is not mapped to the
@@ -196,7 +196,10 @@ def sync_meeting_attendance_records(
 
         return False
 
-    stmt = select(User).where(User.id.in_(meeting_form.attendees.raw_data))
+    stmt = select(User).where(User.id.in_(
+        # FIXME: Does this give the correct result for an empty selection?
+        meeting_form.attendees.raw_data or ()
+    ))
     users = session.execute(stmt).scalars().all()
     # Clear existing attendance records
     obj.attendance_records = []
