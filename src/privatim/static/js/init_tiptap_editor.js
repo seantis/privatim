@@ -45,6 +45,7 @@ document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         },
         element: element,
         extensions: [
+            StarterKit,
             Document,
             Paragraph,
             Text,
