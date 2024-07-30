@@ -4,8 +4,14 @@ privatim [![Tests](https://github.com/seantis/privatim/actions/workflows/tests.y
 Getting Started
 ---------------
 
+Linux:
 ```
 sudo apt install postgresql libpq-dev python3-dev build-essential weasyprint
+```
+
+MacOS:
+```
+brew install postgresql python libpq weasyprint
 ```
 
 Create the PostgreSQL database:
