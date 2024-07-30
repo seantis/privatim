@@ -179,37 +179,6 @@ class Meeting(Base, SearchableMixin, Commentable):
         """ Returns all attendees regardless of status. """
         return [record.user for record in self.attendance_records]
 
-    def update_attendees_with_status(
-        self, users_with_status: list[tuple[User, AttendanceStatus]]
-    ) -> None:
-        """
-        Set attendees with optional status.
-
-        :param users_with_status: List of User objects or tuples of
-        (User, AttendanceStatus)
-        """
-        existing_records = {
-            str(record.user_id): record for record in self.attendance_records
-        }
-        new_records = []
-        for item in users_with_status:
-            user, status = item
-            if user.id in existing_records:
-                existing_records[str(user.id)].status = status
-            else:
-                new_records.append(MeetingUserAttendance(
-                    user=user, status=status)
-                )
-
-        self.attendance_records.extend(new_records)
-        # Remove records for users not in the new list
-        user_ids = {item[0].id for item in users_with_status}
-        self.attendance_records = [
-            record
-            for record in self.attendance_records
-            if record.user_id in user_ids
-        ]
-
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
         back_populates='meeting',

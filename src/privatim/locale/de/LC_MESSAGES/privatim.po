@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-30 11:01+0200\n"
+"POT-Creation-Date: 2024-07-30 15:27+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -60,6 +60,22 @@ msgstr "Antworten"
 #: src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr "Volltextsuche..."
+
+#: src/privatim/layouts/macros.pt
+msgid "B"
+msgstr "F"
+
+#: src/privatim/layouts/macros.pt
+msgid "I"
+msgstr "K"
+
+#: src/privatim/layouts/macros.pt
+msgid "Add Link"
+msgstr "Link einfügen"
+
+#: src/privatim/layouts/macros.pt
+msgid "Remove Link"
+msgstr "Link entfernen"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
