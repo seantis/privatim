@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-29 20:49+0200\n"
+"POT-Creation-Date: 2024-07-30 11:01+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -185,9 +185,8 @@ msgid "Delete Consultation"
 msgstr "Vernehmlassung löschen"
 
 #: src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully added consultation \"${name}\""
-msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
+msgid "Successfully added consultation"
+msgstr "Vernehmlassung erfolgreich hinzugefügt"
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/consultations.pt
@@ -762,6 +761,10 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#, python-format
+#~ msgid "Successfully added consultation \"${name}\""
+#~ msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
 
 #~ msgid "File Match"
 #~ msgstr "Dateiinhalt"

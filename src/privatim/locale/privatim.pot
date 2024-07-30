@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-29 20:49+0200\n"
+"POT-Creation-Date: 2024-07-30 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,8 +183,7 @@ msgid "Delete Consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
-#, python-format
-msgid "Successfully added consultation \"${name}\""
+msgid "Successfully added consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py

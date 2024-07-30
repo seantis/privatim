@@ -150,8 +150,7 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         session.flush()
 
         message = _(
-            'Successfully added consultation "${name}"',
-            mapping={'name': form.title.data}
+            'Successfully added consultation'
         )
         if not request.is_xhr:
             request.messages.add(message, 'success')
