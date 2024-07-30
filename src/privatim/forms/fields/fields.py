@@ -10,7 +10,7 @@ from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
 from wtforms.fields import FieldList
 from wtforms.fields.choices import SelectMultipleField
-from wtforms.fields.simple import FileField
+from wtforms.fields.simple import FileField, TextAreaField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
 from privatim.forms.widgets.widgets import UploadWidget, UploadMultipleWidget
@@ -117,6 +117,11 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
             date_str = 'T'.join(valuelist).replace(' ', 'T')  # type:ignore
             valuelist = [date_str[:16]]
         super(DateTimeLocalField, self).process_formdata(valuelist)
+
+
+class ConstantTextAreaField(TextAreaField):
+    """ TextAreaField that remains and will not be replaced by editor."""
+    pass
 
 
 class TomSelectWidget(Select):
