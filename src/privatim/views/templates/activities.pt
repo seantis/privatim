@@ -27,13 +27,13 @@
                                 <a tal:attributes="href string:${request.route_url(activity.__class__.__name__.lower(), id=activity.id)}"
                                         class="content-link">
                                     <div class="timeline-content claude-element">
-                                        <h4 class="timeline-title">
+                                        <h6 class="timeline-title">
                                             <tal:b tal:switch="activity.__class__.__name__">
                                                 <span tal:case="'Consultation'" i18n:translate="">Consultation Added</span>
                                                 <span tal:case="'Meeting'" i18n:translate="">Meeting Scheduled</span>
                                                 <span tal:case="'Comment'" i18n:translate="">Comment Added</span>
                                             </tal:b>
-                                        </h4>
+                                        </h6>
                                         <p class="timeline-info">
                                             <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
                                                 <span class="timeline-user">
