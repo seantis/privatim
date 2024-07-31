@@ -2,6 +2,7 @@ import os
 import logging
 from markupsafe import Markup
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
@@ -279,7 +280,7 @@ def edit_consultation_view(
 
 
 def delete_consultation_chain(
-        session: 'FilteredSession', consultation: Consultation
+    session: 'FilteredSession', consultation: Consultation
 ) -> list[str]:
     """
     Go backwards through the version history of the consultations linked
@@ -292,7 +293,7 @@ def delete_consultation_chain(
         ids_to_delete.append(str(current.id))
         current = current.previous_version  # type:ignore
 
-    # Fetch all consultations with their associated status and files
+    # Fetch all consultations with their associated data
     consultations = (
         session.execute(
             select(Consultation)
@@ -309,25 +310,66 @@ def delete_consultation_chain(
         .all()
     )
 
-    # Delete consultations one by one
-    for consultation in reversed(consultations):
+    for consultation in consultations:
         try:
-            # Explicitly delete associated objects
-            if consultation.status:
-                session.delete(consultation.status)
+            # Handle associated files
             for file in consultation.files:
-                session.delete(file)
-            for tag in consultation.secondary_tags:
-                session.delete(tag)
-            for comment in consultation.comments:
-                session.delete(comment)
+                try:
+                    session.delete(file)
+                except IntegrityError:
+                    log.warning(
+                        f"Associated file {file.id} for consultation "
+                        f"{consultation.id} not found or already deleted."
+                    )
+                    session.rollback()
 
-            # Now delete the consultation
+            # Handle secondary tags
+            for tag in consultation.secondary_tags:
+                try:
+                    consultation.secondary_tags.remove(tag)
+                except ValueError:
+                    log.warning(
+                        f"Secondary tag {tag.id} for consultation "
+                        f"{consultation.id} not found or already removed."
+                    )
+
+            # Handle comments
+            for comment in consultation.comments:
+                try:
+                    session.delete(comment)
+                except IntegrityError:
+                    log.warning(
+                        f"Comment {comment.id} for consultation "
+                        f"{consultation.id} not found or already deleted."
+                    )
+                    session.rollback()
+
+            # Handle status
+            if consultation.status:
+                try:
+                    session.delete(consultation.status)
+                except IntegrityError:
+                    log.warning(
+                        f"Status for consultation {consultation.id} not found "
+                        f"or already deleted."
+                    )
+                    session.rollback()
+
+            # Delete the consultation
             session.delete(consultation)
             session.flush()
+
         except Exception as e:
             log.error(f'Error deleting consultation {consultation.id}: {e}')
+            session.rollback()
             raise
+
+    try:
+        session.commit()
+    except IntegrityError as e:
+        log.error(f"Integrity error during final commit: {e}")
+        session.rollback()
+        raise
 
     return ids_to_delete
 
@@ -340,7 +382,7 @@ def delete_consultation_view(
     start_id = context.id
     start = session.get(Consultation, start_id)
     if start is not None:
-        assert isinstance(start,  Consultation)
+        assert isinstance(start, Consultation)
         delete_consultation_chain(session, start)  # type: ignore[arg-type]
         message = _('Successfully deleted consultation.')
         if not request.is_xhr:
