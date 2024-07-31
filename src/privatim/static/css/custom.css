@@ -392,10 +392,6 @@ mark {
     padding: 2.0rem 2.0rem;
 }
 
-.consultation-text-paragraph {
-    margin-bottom: 2.0rem;
-}
-
 .consultation-body {
     border-radius: var(--border-radius);
 }
