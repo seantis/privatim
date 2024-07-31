@@ -6,7 +6,7 @@
 
 <head>
     <meta charset="utf-8">
-    <link href="${layout.static_url('privatim:static/css/report.css')}" media="print" rel="stylesheet">
+    <link href="${layout.static_url('privatim:static/report.css')}" media="print" rel="stylesheet">
     <title>${document.title}</title>
     <meta name="description" content="${document.title}">
 </head>
@@ -22,7 +22,8 @@
 <!--!
     Company logo - will be moved into the page header
 -->
-<img class="logo" src="${layout.static_url('privatim:static/logo-dark-font-transparent.png')}" alt="Logo"
+
+<img src="${layout.static_url('privatim:static/logo-dark-font-transparent-smaller.png')}" alt="Logo"
      class="bi me-4">
 
 
