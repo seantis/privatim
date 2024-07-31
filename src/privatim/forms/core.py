@@ -166,8 +166,7 @@ class Form(BaseForm):
             # Apply some CSS for all fields
             if 'no-white-background' not in field.render_kw['class']:
                 field.render_kw['class'] = (
-                    field.render_kw.get('class', '') +
-                    ' dimmed-white-background'
+                    field.render_kw.get('class', '')
                 )
 
             if isinstance(field, TransparentFormField):
