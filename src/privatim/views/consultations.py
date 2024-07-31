@@ -177,40 +177,50 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 def create_consultation_from_form(
         form: ConsultationForm, request: 'IRequest', prev: Consultation
 ) -> Consultation | None:
+
     session = request.dbsession
     status = Status(name=form.status.data)
     status.name = dict(form.status.choices)[form.status.data]  # type:ignore
+
     session.add(status)
     session.flush()
     session.refresh(status)
+
     tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
     session.add_all(tags)
     session.flush()
+
     user = request.user
     if not user:
         return None
 
-    # Create a dictionary of existing files for quick lookup
-    existing_files = {file.filename: file for file in prev.files}
+    # We create a new list new_files to hold the SearchableFile instances for
+    # the new consultation.
+    # this preserves history
+    previous_files = []
+    for file in prev.files:
+        new_file = SearchableFile(
+            filename=file.filename,
+            content=file.content
+        )
+        previous_files.append(new_file)
 
     new_files = []
     if form.files.data is not None:
         for new_file_from_form in form.files.data:
             if new_file_from_form.get('data', None) is not None:
-                filename = new_file_from_form['filename']
-                if filename in existing_files:
-                    # If file already exists, create a new SearchableFile
-                    # with the same content
-                    new_files.append(SearchableFile(
-                        filename=filename,
-                        content=existing_files[filename].content
-                    ))
-                else:
-                    # If it's a new file, create a new SearchableFile instance
-                    new_files.append(SearchableFile(
-                        filename=filename,
-                        content=dictionary_to_binary(new_file_from_form)
-                    ))
+                new_files.append(SearchableFile(
+                    filename=new_file_from_form['filename'],
+                    content=dictionary_to_binary(new_file_from_form)
+                ))
+
+    seen = set()
+    combined = [*previous_files, *new_files]
+    for f in combined:
+        if f.filename not in seen:
+            seen.add(f.filename)
+
+    combined = [file for file in combined if file.filename in seen]
 
     assert prev.creator is not None
     new_consultation = Consultation(
@@ -225,8 +235,9 @@ def create_consultation_from_form(
         secondary_tags=tags or prev.secondary_tags,
         creator=prev.creator,
         editor=user,
-        files=new_files,
+        files=combined,
         previous_version=prev,
+        # If new files are present reindexing should insert the searchable text
         searchable_text_de_CH=prev.searchable_text_de_CH if not new_files
         else None,
         comments=prev.comments,
