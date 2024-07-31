@@ -110,7 +110,7 @@ class HTMLReportRenderer:
 
     """
 
-    css = 'privatim/reporting/template/report.css'
+    css = 'privatim:reporting/template/report.css'
     template = 'privatim:reporting/template/report.pt'
     macros = 'privatim:reporting/template/macros.pt'
 
