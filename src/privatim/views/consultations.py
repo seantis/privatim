@@ -279,49 +279,57 @@ def edit_consultation_view(
 
 
 def delete_consultation_chain(
-    session: 'FilteredSession', consultation: Consultation
+        session: 'FilteredSession', consultation: Consultation
 ) -> list[str]:
     """
     Go backwards through the version history of the consultations linked
     list and delete all of them. We need to make sure we delete associated
     Status and SearchableAssociatedFile from association table.
     """
-    with session.no_consultation_filter():
-        # Gather all IDs in the chain
-        ids_to_delete = []
-        current = consultation
+    ids_to_delete = []
+    current = consultation
+    while current:
         ids_to_delete.append(str(current.id))
-        while current:
-            current = current.previous_version  # type: ignore
-            if current is not None:
-                ids_to_delete.append(str(current.id))
+        current = current.previous_version  # type:ignore
 
-        # Fetch all consultations with their associated status and files
-        consultations = (
-            session.execute(
-                select(Consultation)
-                .options(
-                    joinedload(Consultation.status),
-                    joinedload(Consultation.files),
-                )
-                .where(Consultation.id.in_(ids_to_delete))
+    # Fetch all consultations with their associated status and files
+    consultations = (
+        session.execute(
+            select(Consultation)
+            .options(
+                joinedload(Consultation.status),
+                joinedload(Consultation.files),
+                joinedload(Consultation.secondary_tags),
+                joinedload(Consultation.comments),
             )
-            .unique()
-            .scalars()
-            .all()
+            .where(Consultation.id.in_(ids_to_delete))
         )
+        .unique()
+        .scalars()
+        .all()
+    )
 
-        # Delete consultations one by one
-        for consultation in consultations:
-            # The Status and files will be automatically deleted due to cascade
-            try:
-                session.delete(consultation)
-            except Exception as e:
-                log.error(f'Error deleting consultation: {e}')
+    # Delete consultations one by one
+    for consultation in reversed(consultations):
+        try:
+            # Explicitly delete associated objects
+            if consultation.status:
+                session.delete(consultation.status)
+            for file in consultation.files:
+                session.delete(file)
+            for tag in consultation.secondary_tags:
+                session.delete(tag)
+            for comment in consultation.comments:
+                session.delete(comment)
 
-        session.flush()
+            # Now delete the consultation
+            session.delete(consultation)
+            session.flush()
+        except Exception as e:
+            log.error(f'Error deleting consultation {consultation.id}: {e}')
+            raise
 
-        return ids_to_delete
+    return ids_to_delete
 
 
 def delete_consultation_view(
@@ -332,6 +340,7 @@ def delete_consultation_view(
     start_id = context.id
     start = session.get(Consultation, start_id)
     if start is not None:
+        assert isinstance(start,  Consultation)
         delete_consultation_chain(session, start)  # type: ignore[arg-type]
         message = _('Successfully deleted consultation.')
         if not request.is_xhr:
