@@ -50,7 +50,8 @@
     size: A4;
 
     /* Configure inner margins */
-    margin: 2cm;
+    margin: 1.5cm;
+    margin-top: 1cm;
 
     /* Font for the headers and footers. */
     font-family: DM Sans;
@@ -82,9 +83,9 @@
     }
 }
 
-
 .agenda-items-list {
     list-style: none;
+    padding-left: 0;
 }
 
 img {
@@ -97,4 +98,18 @@ img {
 body {
     font-family: DM Sans;
     font-size: 10pt;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.attendees-list {
+    padding-left: 1rem;
+}
+
+hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #000;
 }
