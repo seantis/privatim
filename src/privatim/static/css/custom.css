@@ -126,6 +126,10 @@ body {
     font-family: "DM Sans", sans-serif;
 }
 
+p, textarea.form-control {
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
 
 .bg-light {
     background-color: #EDEDED !important;
@@ -384,8 +388,6 @@ mark {
 
 /* consultation */
 .consultation-main-text {
-    line-height: 1.6;
-    font-size: 1.3rem;
     min-height: 8.1rem;
     padding: 2.0rem 2.0rem;
 }
