@@ -51,7 +51,7 @@
                                 </div>
                             </div>
 
-                            <div class="card-body col-md-8 d-flex flex-column">
+                            <div class="card-body col-md-8 d-flex flex-column ms-4">
                                 <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
                                 <p class="card-text" tal:condition="consultation.description" tal:content="consultation.description if len(consultation.description) < 550 else consultation.description[:550] + '...'"></p>
                             </div>
