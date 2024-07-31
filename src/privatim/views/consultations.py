@@ -177,58 +177,56 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 def create_consultation_from_form(
         form: ConsultationForm, request: 'IRequest', prev: Consultation
 ) -> Consultation | None:
-
     session = request.dbsession
     status = Status(name=form.status.data)
     status.name = dict(form.status.choices)[form.status.data]  # type:ignore
-
     session.add(status)
     session.flush()
     session.refresh(status)
-
     tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
     session.add_all(tags)
     session.flush()
-
     user = request.user
     if not user:
         return None
 
-    # We create a new list new_files to hold the SearchableFile instances for
-    # the new consultation.
-    # this preserves history
-    previous_files = []
-    for file in prev.files:
-        new_file = SearchableFile(
-            filename=file.filename,
-            content=file.content
-        )
-        previous_files.append(new_file)
+    # Create a dictionary of existing files for quick lookup
+    existing_files = {file.filename: file for file in prev.files}
 
     new_files = []
     if form.files.data is not None:
         for new_file_from_form in form.files.data:
             if new_file_from_form.get('data', None) is not None:
-                new_files.append(SearchableFile(
-                    filename=new_file_from_form['filename'],
-                    content=dictionary_to_binary(new_file_from_form)
-                ))
+                filename = new_file_from_form['filename']
+                if filename in existing_files:
+                    # If file already exists, create a new SearchableFile
+                    # with the same content
+                    new_files.append(SearchableFile(
+                        filename=filename,
+                        content=existing_files[filename].content
+                    ))
+                else:
+                    # If it's a new file, create a new SearchableFile instance
+                    new_files.append(SearchableFile(
+                        filename=filename,
+                        content=dictionary_to_binary(new_file_from_form)
+                    ))
+
     assert prev.creator is not None
     new_consultation = Consultation(
         title=maybe_escape(form.title.data) or prev.title,
         description=maybe_escape(form.description.data) or prev.description,
-        recommendation=maybe_escape(form.recommendation.data)
-        or prev.recommendation,
-        evaluation_result=maybe_escape(form.evaluation_result.data)
-        or prev.evaluation_result,
+        recommendation=maybe_escape(
+            form.recommendation.data) or prev.recommendation,
+        evaluation_result=maybe_escape(
+            form.evaluation_result.data) or prev.evaluation_result,
         decision=maybe_escape(form.decision.data) or prev.decision,
         status=status or prev.status,
         secondary_tags=tags or prev.secondary_tags,
         creator=prev.creator,
         editor=user,
-        files=[*previous_files, *new_files],
+        files=new_files,
         previous_version=prev,
-        # If new files are present reindexing should insert the searchable text
         searchable_text_de_CH=prev.searchable_text_de_CH if not new_files
         else None,
         comments=prev.comments,
@@ -376,7 +374,9 @@ def delete_consultation_view(
     start = session.get(Consultation, start_id)
     if start is not None:
         assert isinstance(start, Consultation)
-        delete_consultation_chain(session, start)  # type: ignore[arg-type]
+        session.delete(context)
+        session.flush()
+        # delete_consultation_chain(session, start)  # type: ignore[arg-type]
         message = _('Successfully deleted consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')
