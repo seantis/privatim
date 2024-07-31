@@ -1,8 +1,10 @@
-from privatim.models import User
+from privatim.models import User, SearchableFile
 from privatim.models.comment import Comment
 from privatim.models.consultation import Status, Consultation
 from sqlalchemy import select, exists, func
 from webtest.forms import Upload
+
+from privatim.views.consultations import delete_consultation_chain
 
 
 def test_view_consultation(client):
@@ -238,3 +240,92 @@ def test_edit_consultation_without_files(client):
 
     assert 'BE' in page
     assert 'LU' in page
+
+
+def get_files_by_filename(session, filenames):
+    with session.no_consultation_filter():
+        query = (
+            select(SearchableFile)
+            .filter(
+                SearchableFile.filename.in_(filenames),
+            )
+        )
+        result = session.execute(query)
+        files = result.scalars().all()
+        found_files = {file.filename: file for file in files}
+        # missing_files = set(filenames) - set(found_files.keys())
+        return found_files
+
+
+def test_edit_and_delete_consultation_chain(client, pdf_vemz):
+    session = client.db
+    client.login_admin()
+
+    # Create a new consultation
+    page = client.get('/consultations')
+    page = page.click('Vernehmlassung Erfassen')
+    page.form['title'] = 'Initial Consultation'
+    page.form['description'] = 'Initial description'
+    page.form['recommendation'] = 'Initial recommendation'
+    page.form['status'] = '1'
+    page.form['secondary_tags'] = ['AG', 'ZH']
+    page.form['files'] = Upload(*pdf_vemz)
+    page.form.submit().follow()
+
+    initial_consultation = session.execute(
+        select(Consultation).filter_by(description='Initial description')
+    ).scalar_one()
+    initial_id = initial_consultation.id
+
+    # Edit the consultation to create a new version
+    page = client.get(f'/consultations/{str(initial_id)}/edit')
+    page.form['title'] = 'Updated Consultation'
+    page.form['description'] = 'Updated description'
+    page.form['recommendation'] = 'Updated recommendation'
+    page.form['status'] = '2'
+    page.form['secondary_tags'] = ['BE', 'LU']
+    page.form['files'] = Upload('UpdatedTest.txt',
+                                b'Updated file content.')
+    page.form.submit().follow()
+
+    # check files exisit query
+    # filename1 = 'search_test_privatim_Vernehmlassung_VEMZ.pdf'
+    # filename2 = 'UpdatedTest.txt'
+
+    # assert (
+    #     'search_test_privatim_Vernehmlassung_VEMZ.pdf' in files
+    # ), "Expected file not found"
+    # assert 'UpdatedTest.txt' in files, "Expected file not found"
+
+    updated_consultation = session.execute(
+        select(Consultation).filter_by(is_latest_version=1)
+    ).scalar_one()
+    updated_id = updated_consultation.id
+
+    # # Verify the chain
+    with session.no_consultation_filter():
+        initial_consultation = session.execute(
+            select(Consultation).filter_by(is_latest_version=0)
+        ).scalar_one()
+        updated_consultation = session.execute(
+            select(Consultation).filter_by(is_latest_version=1)
+        ).scalar_one()
+
+        # assert initial_consultation.replaced_by == updated_consultation
+        assert updated_consultation.previous_version == initial_consultation
+
+    # Delete the consultation chain
+    deleted_ids = delete_consultation_chain(session, updated_consultation)
+
+    # Verify deletions
+    assert len(deleted_ids) == 2
+    assert initial_id in deleted_ids
+    assert updated_id in deleted_ids
+
+    # Verify consultations no longer exist in the database
+
+    with session.no_consultation_filter():
+        assert not session.query(Consultation).count()
+        # Verify related Status objects have been deleted
+        assert session.execute(select(Status).filter(
+            Status.consultation_id.in_(deleted_ids))).first() is None

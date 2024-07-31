@@ -40,12 +40,14 @@ class Status(Base):
     id: Mapped[UUIDStrPK]
 
     name: Mapped[str] = mapped_column(nullable=False)
-    consultations = relationship(
-        'Consultation', back_populates='status'
+
+    consultations: Mapped['Consultation'] = relationship(
+        'Consultation',
+        back_populates='status',
     )
     consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id'),
-        nullable=True
+        ForeignKey('consultations.id', ondelete='CASCADE'),
+        nullable=True,
     )
 
     def __repr__(self) -> str:
@@ -70,8 +72,9 @@ class Tag(Base):
     consultation: Mapped['Consultation'] = relationship(
         'Consultation', back_populates='secondary_tags',
     )
+
     consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id'),
+        ForeignKey('consultations.id', ondelete='CASCADE'),
         nullable=True
     )
 
@@ -138,13 +141,15 @@ class Consultation(  # type: ignore[misc]
 
     status: Mapped[Status | None] = relationship(
         'Status', back_populates='consultations',
-    )
+        cascade="all, delete-orphan", )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     secondary_tags: Mapped[list[Tag]] = relationship(
-        'Tag', back_populates='consultation',
+        'Tag',
+        back_populates='consultation',
+        cascade='all, delete-orphan'
     )
 
     # in theory this could be nullable=False, but let's avoid problems with

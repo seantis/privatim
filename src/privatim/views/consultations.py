@@ -2,6 +2,8 @@ import os
 import logging
 from markupsafe import Markup
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
+
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
@@ -14,6 +16,7 @@ from privatim.utils import dictionary_to_binary, flatten_comments, maybe_escape
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.orm import FilteredSession
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
 
@@ -230,8 +233,8 @@ def create_consultation_from_form(
         comments=prev.comments,
         is_latest_version=1
     )
-    prev.replaced_by = new_consultation
     prev.is_latest_version = 0
+    prev.replaced_by = new_consultation
     session.add(prev)
     new_consultation.reindex_files()
     return new_consultation
@@ -275,27 +278,61 @@ def edit_consultation_view(
     }
 
 
+def delete_consultation_chain(
+    session: 'FilteredSession', consultation: Consultation
+) -> list[str]:
+    """
+    Go backwards through the version history of the consultations linked
+    list and delete all of them. We need to make sure we delete associated
+    Status and SearchableAssociatedFile from association table.
+    """
+    with session.no_consultation_filter():
+        # Gather all IDs in the chain
+        ids_to_delete = []
+        current = consultation
+        ids_to_delete.append(str(current.id))
+        while current:
+            current = current.previous_version  # type: ignore
+            if current is not None:
+                ids_to_delete.append(str(current.id))
+
+        # Fetch all consultations with their associated status and files
+        consultations = (
+            session.execute(
+                select(Consultation)
+                .options(
+                    joinedload(Consultation.status),
+                    joinedload(Consultation.files),
+                )
+                .where(Consultation.id.in_(ids_to_delete))
+            )
+            .unique()
+            .scalars()
+            .all()
+        )
+
+        # Delete consultations one by one
+        for consultation in consultations:
+            # The Status and files will be automatically deleted due to cascade
+            session.delete(consultation)
+
+        session.flush()
+
+        return ids_to_delete
+
+
 def delete_consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
 
-    # from sqlalchemy_file.storage import StorageManager
-    # for file in context.files:
-    #     try:
-    #         # be extra cautious and delete the file first
-    #         path = file.file.path
-    #         StorageManager.delete_file(path)
-    #     except Exception as e:
-    #         log.error(f'StorageManager deleting file: {path}; {e}')
-
-    session.delete(context)
-
-    # with contextlib.suppress(ObjectDoesNotExistError):
-    #     request.tm.commit()
+    start_id = context.id
+    start = session.get(Consultation, start_id)
+    if start is not None:
+        delete_consultation_chain(session, start)  # type: ignore[arg-type]
+        message = _('Successfully deleted consultation.')
+        if not request.is_xhr:
+            request.messages.add(message, 'success')
 
     target_url = request.route_url('activities')
-    message = _('Successfully deleted consultation.')
-    if not request.is_xhr:
-        request.messages.add(message, 'success')
     return HTTPFound(location=target_url)
