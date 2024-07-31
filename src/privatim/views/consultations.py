@@ -314,7 +314,12 @@ def delete_consultation_chain(
         # Delete consultations one by one
         for consultation in consultations:
             # The Status and files will be automatically deleted due to cascade
-            session.delete(consultation)
+            try:
+                session.delete(consultation)
+                session.flush()
+            except Exception as e:
+                session.rollback()
+                log.error(f'Error deleting consultation: {e}')
 
         session.flush()
 
