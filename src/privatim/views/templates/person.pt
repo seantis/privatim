@@ -8,13 +8,13 @@
         <ul>
             <li>${user.email}</li>
         </ul>
-        <h2 tal:condition="meeting_urls" i18n:translate="">Created Meetings</h2>
+        <h2 tal:condition="meeting_urls" i18n:translate="">Meetings</h2>
         <ul tal:condition="meeting_urls">
             <li tal:repeat="meeting meeting_urls">
                 <a tal:attributes="href meeting.url">${meeting.name}</a>
             </li>
         </ul>
-        <h2 tal:condition="consultation_urls" i18n:translate="">Created Consultations</h2>
+        <h2 tal:condition="consultation_urls" i18n:translate="">Consultations</h2>
         <ul tal:condition="consultation_urls">
             <li tal:repeat="consultation consultation_urls">
                 <a tal:attributes="href consultation.url">${consultation.title}</a>
