@@ -63,6 +63,8 @@ def get_default_profile_pic_data() -> tuple[str, bytes]:
 fontawesome_css = css('fontawesome.min.css')
 bootstrap = css('bootstrap.min.css')
 bootstrap_css = css('custom.css', depends=[fontawesome_css, bootstrap])
+report_css = css('report.css')
+
 comments_css = css('comments.css')
 profile_css = css('profile.css')
 

@@ -6,7 +6,7 @@
 
 <head>
     <meta charset="utf-8">
-    <link href="${layout.static_url('privatim:static/report.css')}" media="print" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://privatim-test.seantis.ch/static/report.css" />
     <title>${document.title}</title>
     <meta name="description" content="${document.title}">
 </head>
@@ -23,8 +23,7 @@
     Company logo - will be moved into the page header
 -->
 
-<img src="${layout.static_url('privatim:static/logo-dark-font-transparent-smaller.png')}" alt="Logo"
-     class="bi me-4">
+<img src="https://privatim-test.seantis.ch/static/logo-dark-font-transparent-smaller.png" alt="Logo" class="bi me-4" width="242" height="87">
 
 
 <div class="col-lg-9 mb-4">
