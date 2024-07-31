@@ -364,13 +364,6 @@ def delete_consultation_chain(
             session.rollback()
             raise
 
-    try:
-        session.commit()
-    except IntegrityError as e:
-        log.error(f"Integrity error during final commit: {e}")
-        session.rollback()
-        raise
-
     return ids_to_delete
 
 
