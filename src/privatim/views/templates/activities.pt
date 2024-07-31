@@ -19,9 +19,9 @@
                             <div class="timeline-item">
                                 <div class="timeline-icon">
                                     <tal:b tal:switch="activity.__class__.__name__">
-                                        <i tal:case="'Meeting'" class="meeting-icon"></i>
-                                        <i tal:case="'Consultation'" class="consultation-icon"></i>
-                                        <i tal:case="'Comment'" class="comment-icon"></i>
+                                        <i tal:case="'Meeting'" class="fas fa-users"></i>
+                                        <i tal:case="'Consultation'" class="fas fa-file-alt"></i>
+                                        <i tal:case="'Comment'" class="fas fa-comment"></i>
                                     </tal:b>
                                 </div>
                                 <a tal:attributes="href string:${request.route_url(activity.__class__.__name__.lower(), id=activity.id)}"
