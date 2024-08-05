@@ -1,4 +1,5 @@
 from privatim.static import get_default_profile_pic_data
+from functools import cache
 from sqlalchemy import select
 
 
@@ -8,6 +9,7 @@ if TYPE_CHECKING:
     from privatim.models import GeneralFile
 
 
+@cache
 def get_or_create_default_profile_pic(session: 'Session') -> 'GeneralFile':
     from privatim.models import GeneralFile
     stmt = select(GeneralFile).where(
