@@ -409,6 +409,7 @@ mark {
 
 }
 /* https://stackoverflow.com/a/48484022/ */
+/* Prevent having a blue outline (default) everywhere */
 .form-control:focus,
 .form-select:focus,
 textarea:focus,

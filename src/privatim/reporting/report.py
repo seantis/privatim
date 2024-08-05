@@ -6,7 +6,7 @@ from pathlib import Path
 from babel.dates import format_datetime
 
 from privatim.i18n import translate, _
-from privatim.layouts.layout import DEFAULT_TIMEZONE, Layout
+from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.utils import datetime_format
 from pyramid.renderers import render
 from weasyprint import HTML  # type: ignore
@@ -110,7 +110,6 @@ class HTMLReportRenderer:
 
     """
 
-    css = 'privatim:reporting/template/report.css'
     template = 'privatim:reporting/template/report.pt'
 
     def render(
@@ -134,20 +133,11 @@ class HTMLReportRenderer:
 
         title = translate(_("Protocol of meeting ${title}",
                           mapping={'title': document_context['title']}))
-
-        layout = Layout(meeting, request)
         ctx = {
             'title': title,
             'meeting': meeting,
             'meeting_time': datetime_format(meeting.time),
             'document': document_context,
-            'layout': layout,
-            # 'stylesheet': layout.static_url(
-            #     'privatim:static/custom.css'
-            # ),
-            'logo_url': layout.static_url(
-                'privatim:static/logo-dark-font-transparent-smaller.png'
-            )
         }
         return render(self.template, ctx)
 
