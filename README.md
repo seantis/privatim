@@ -5,14 +5,16 @@ Getting Started
 ---------------
 
 Linux:
-```
-sudo apt install postgresql libpq-dev python3-dev build-essential weasyprint
+```bash
+sudo apt update && sudo apt install libpoppler-cpp-dev libpq-dev python3-dev build-essential weasyprint
 ```
 
 MacOS:
+```bash
+brew update && brew install postgresql poppler python libpq weasyprint
 ```
-brew install postgresql python libpq weasyprint
-```
+
+PostgresSQL is required. Sqlite won't work. Version needs to be >=12.
 
 Create the PostgreSQL database:
 ```
