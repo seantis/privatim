@@ -11,6 +11,10 @@ _primary_search_fields: dict[type, str] = {}
 
 
 class SearchableMixin:
+    """ Enable full-text search in models inheriting from this class.
+    The searchable_fields method must be implemented in each model to
+    specify the fields to be searched. """
+
     if TYPE_CHECKING:
         id: Mapped[UUIDStrPK]
     _primary_search_field: dict[type, str] = {}
@@ -19,7 +23,6 @@ class SearchableMixin:
     def searchable_fields(
         cls,
     ) -> 'Iterator[InstrumentedAttribute[str | None]]':
-        # Override this method in each model to specify searchable fields
         raise NotImplementedError(
             "Searchable fields must be defined for each model"
         )
