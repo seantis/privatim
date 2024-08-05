@@ -70,7 +70,7 @@
                     <ul class="list-group list-group-flush">
                         <li tal:repeat="item documents" class="list-group-item">
                             <a href="${item.download_url}"
-                               class="text-decoration-none document-link" target="_blank">
+                               class="text-decoration-none document-link" target="_blank" rel="noopener noreferrer">
                                     <span class="icon-container">
                                         <i tal:condition="python:'pdf' in item.doc_content_type"
                                                 class="fas fa-file-pdf"></i>
