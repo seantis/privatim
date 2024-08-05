@@ -36,7 +36,7 @@
                                         </h6>
                                         <p class="timeline-info">
                                             <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
-                                                <span class="timeline-user">
+                                            <span class="timeline-user">
                                                 <tal:b tal:switch="activity.__class__.__name__">
                                                     <span tal:case="'Consultation'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
                                                     <span tal:case="'Meeting'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
@@ -47,7 +47,7 @@
                                         <div class="timeline-body">
                                             <tal:b tal:switch="activity.__class__.__name__">
                                                 <div tal:case="'Consultation'">
-                                                <h4 tal:condition="activity.title" tal:content=" h.Markup(activity.title[:100]) + '...' if len(activity.title) > 100 else h.Markup(activity.title)"></h4>
+                                                    <h4 tal:condition="activity.title" tal:content=" h.Markup(activity.title[:100]) + '...' if len(activity.title) > 100 else h.Markup(activity.title)"></h4>
                                                 </div>
                                                 <div tal:case="'Meeting'">
                                                     <h4 i18n:translate="">${activity.name}</h4>
@@ -68,34 +68,27 @@
                 </div>
 
                 <!-- Filter Sidebar -->
-                <div class="col-md-3 order-md-2" tal:condition="show_filter">
-                    <form class="filter-form" method="POST" enctype="multipart/form-data"
-                          action="${request.route_url('activities')}" id="filter_activities">
+                <form class="filter-form col-md-3 order-md-2" method="POST" enctype="multipart/form-data"
+                      action="${request.route_url('activities')}" id="filter_activities">
+
+                    <div class="" tal:repeat="field form">
                         <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-                        <div class="mb-3">
-                            <label for="canton" class="form-label">${filter_form.canton.label.text}</label>
-                                ${render_filter_field(filter_form.canton)}
+
+                        <!-- Render label first but only if it's a Checkbox-->
+                        <div class="" tal:condition="field.type == 'CheckboxField'">
+                        ${field()}
+                            <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
+                        </div>
+                        <div class="mb-3" tal:condition="field.type != 'CheckboxField'">
+                            <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
+                                ${field()}
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label" i18n:translate="">Type</label>
-                            <div tal:repeat="field filter_form.get_type_fields()" class="form-check">
-                            ${render_filter_field(field)}
-                                <label class="form-check-label"
-                                       for="${field.id}" i18n:translate="">${field.label.text}</label>
-                            </div>
-                        </div>
-
-                        <div tal:repeat="(field_id, field) filter_form.get_date_fields()" class="mb-3">
-                            <label for="${field_id}" class="form-label" i18n:translate="">${field.label.text}</label>
-                                ${render_filter_field(field)}
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-submit">
-                            <i class="fa fa-filter me-2"></i><span i18n:translate=""> Filter</span></button>
-                    </form>
-                </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <i class="fa fa-filter me-2"></i><span i18n:translate=""> Filter</span></button>
+                </form>
             </div>
-        </div>
+        </div>  <!--? Container -->
     </tal:block>
 </metal:block>

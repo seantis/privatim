@@ -8,7 +8,7 @@ from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting, Tag
 from privatim.models.comment import Comment
 from privatim.i18n import _
-from privatim.forms.filter_form import FilterForm, render_filter_field
+from privatim.forms.filter_form import FilterForm
 
 
 from typing import TYPE_CHECKING, Any, Iterable
@@ -36,7 +36,7 @@ def maybe_apply_date_filter(
     return query
 
 
-def get_activities(form: FilterForm, session: 'Session') -> dict[str, Any]:
+def get_activities(session: 'Session') -> list[Any]:
     """ Return all activities. """
     def get_consultations() -> Iterable[Consultation]:
         return session.execute(
@@ -68,19 +68,7 @@ def get_activities(form: FilterForm, session: 'Session') -> dict[str, Any]:
         key=lambda x: x.updated,  # type: ignore[attr-defined]
         reverse=True
     )
-
-    # Update the form so it reflects
-    form.consultation.data = True
-    form.meeting.data = True
-    form.comment.data = True
-    return {
-        'activities': all_activities,
-        'title': _('Activities'),
-        'show_add_button': False,
-        'filter_form': form,
-        'show_filter': True,
-        'render_filter_field': render_filter_field,
-    }
+    return all_activities
 
 
 def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
@@ -94,8 +82,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     form = FilterForm(request)
 
     has_query_params = any(request.GET)
-
-    # Populate form with GET parameters or set defaults
     if request.method == 'GET':
         if has_query_params:
             form.consultation.data = request.GET.get('consultation') == 'True'
@@ -114,7 +100,14 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             form.canton.data = request.GET.get('canton', 'all')
         else:
             # Default GET response, show everything, no filter.
-            return get_activities(form, session)
+            form.consultation.data = True
+            form.meeting.data = True
+            form.comment.data = True
+            return {
+                'title': _('Activities'),
+                'activities': get_activities(session),
+                'form': form
+            }
 
     if request.method == 'POST' and form.validate():
         query_params = {
@@ -153,7 +146,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         else None
     )
 
-    activities: list['Activity'] = []
+    activities: list[Activity] = []
 
     # Query construction for Consultations
     if include_consultations:
@@ -198,10 +191,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     # Sort all items by their 'updated' attribute
     activities.sort(key=lambda x: x.updated, reverse=True)
     return {
-        'activities': activities,
         'title': _('Activities'),
-        'show_add_button': False,
-        'filter_form': form,
-        'show_filter': True,
-        'render_filter_field': render_filter_field,
+        'form': form,
+        'activities': activities,
     }
