@@ -5,7 +5,7 @@ from privatim.views.search import SearchCollection
 from tests.shared.utils import create_consultation, hash_file
 
 
-def test_search_client(client, pdf_vemz):
+def test_search_with_client(client, pdf_vemz):
 
     # search in Files
     # search in Consultation [x]

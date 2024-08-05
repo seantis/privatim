@@ -2,9 +2,6 @@ import os
 import logging
 from markupsafe import Markup
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import joinedload
-
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
@@ -15,9 +12,9 @@ from pyramid.httpexceptions import HTTPFound
 from privatim.models.file import SearchableFile
 from privatim.utils import dictionary_to_binary, flatten_comments, maybe_escape
 
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from privatim.orm import FilteredSession
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
 
@@ -150,7 +147,8 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 new_consultation.files.append(
                     SearchableFile(
                         file['filename'],
-                        dictionary_to_binary(file)
+                        dictionary_to_binary(file),
+                        content_type=file['mimetype']
                     )
                 )
         session.add(new_consultation)
@@ -201,7 +199,8 @@ def create_consultation_from_form(
     for file in prev.files:
         new_file = SearchableFile(
             filename=file.filename,
-            content=file.content
+            content=file.content,
+            content_type=file.content_type
         )
         previous_files.append(new_file)
 
@@ -211,7 +210,8 @@ def create_consultation_from_form(
             if new_file_from_form.get('data', None) is not None:
                 new_files.append(SearchableFile(
                     filename=new_file_from_form['filename'],
-                    content=dictionary_to_binary(new_file_from_form)
+                    content=dictionary_to_binary(new_file_from_form),
+                    content_type=new_file_from_form['mimetype']
                 ))
 
     seen = set()
@@ -237,16 +237,12 @@ def create_consultation_from_form(
         editor=user,
         files=combined,
         previous_version=prev,
-        # If new files are present reindexing should insert the searchable text
-        searchable_text_de_CH=prev.searchable_text_de_CH if not new_files
-        else None,
         comments=prev.comments,
         is_latest_version=1
     )
     prev.is_latest_version = 0
     prev.replaced_by = new_consultation
     session.add(prev)
-    new_consultation.reindex_files()
     return new_consultation
 
 
@@ -288,106 +284,13 @@ def edit_consultation_view(
     }
 
 
-def delete_consultation_chain(
-    session: 'FilteredSession', consultation: Consultation
-) -> list[str]:
-    """
-    Go backwards through the version history of the consultations linked
-    list and delete all of them. We need to make sure we delete associated
-    Status and SearchableAssociatedFile from association table.
-    """
-    ids_to_delete = []
-    current = consultation
-    while current:
-        ids_to_delete.append(str(current.id))
-        current = current.previous_version  # type:ignore
-
-    # Fetch all consultations with their associated data
-    consultations = (
-        session.execute(
-            select(Consultation)
-            .options(
-                joinedload(Consultation.status),
-                joinedload(Consultation.files),
-                joinedload(Consultation.secondary_tags),
-                joinedload(Consultation.comments),
-            )
-            .where(Consultation.id.in_(ids_to_delete))
-        )
-        .unique()
-        .scalars()
-        .all()
-    )
-
-    for consultation in consultations:
-        try:
-            # Handle associated files
-            for file in consultation.files:
-                try:
-                    session.delete(file)
-                except IntegrityError:
-                    log.warning(
-                        f"Associated file {file.id} for consultation "
-                        f"{consultation.id} not found or already deleted."
-                    )
-                    session.rollback()
-
-            # Handle secondary tags
-            for tag in consultation.secondary_tags:
-                try:
-                    consultation.secondary_tags.remove(tag)
-                except ValueError:
-                    log.warning(
-                        f"Secondary tag {tag.id} for consultation "
-                        f"{consultation.id} not found or already removed."
-                    )
-
-            # Handle comments
-            for comment in consultation.comments:
-                try:
-                    session.delete(comment)
-                except IntegrityError:
-                    log.warning(
-                        f"Comment {comment.id} for consultation "
-                        f"{consultation.id} not found or already deleted."
-                    )
-                    session.rollback()
-
-            # Handle status
-            if consultation.status:
-                try:
-                    session.delete(consultation.status)
-                except IntegrityError:
-                    log.warning(
-                        f"Status for consultation {consultation.id} not found "
-                        f"or already deleted."
-                    )
-                    session.rollback()
-
-            # Delete the consultation
-            session.delete(consultation)
-            session.flush()
-
-        except Exception as e:
-            log.error(f'Error deleting consultation {consultation.id}: {e}')
-            session.rollback()
-            raise
-
-    return ids_to_delete
-
-
 def delete_consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-
-    start_id = context.id
-    start = session.get(Consultation, start_id)
-    if start is not None:
-        assert isinstance(start, Consultation)
+    with session.no_consultation_filter():  # type: ignore
         session.delete(context)
         session.flush()
-        # delete_consultation_chain(session, start)  # type: ignore[arg-type]
         message = _('Successfully deleted consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')

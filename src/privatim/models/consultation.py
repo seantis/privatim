@@ -6,9 +6,7 @@ from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
-from sqlalchemy_utils import observes  # type: ignore[import-untyped]
 
-from privatim.models.associated_file import SearchableAssociatedFiles
 from privatim.models.commentable import Commentable
 from privatim.models.searchable import SearchableMixin
 from privatim.orm import Base
@@ -19,12 +17,12 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 
 from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
+    from sqlalchemy.dialects.postgresql import TSVECTOR
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
     from privatim.models.file import SearchableFile
     from privatim.models.comment import Comment
-    from sqlalchemy.dialects.postgresql import TSVECTOR
 
 
 class Status(Base):
@@ -82,9 +80,7 @@ class Tag(Base):
         return f'<Tag {self.name}>'
 
 
-class Consultation(  # type: ignore[misc]
-    Base, Commentable, SearchableAssociatedFiles, SearchableMixin
-):
+class Consultation(Base, Commentable, SearchableMixin):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -175,15 +171,18 @@ class Consultation(  # type: ignore[misc]
         'Consultation',
         back_populates='previous_version',
         foreign_keys='Consultation.replaced_consultation_id',
-        remote_side='Consultation.id'
+        remote_side='Consultation.id',
+        cascade='all, delete'
     )
     replaced_consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id'), nullable=True
+        ForeignKey('consultations.id', ondelete='CASCADE'),
+        nullable=True
     )
     previous_version: Mapped['Consultation | None'] = relationship(
         'Consultation',
         back_populates='replaced_by',
-        foreign_keys=[replaced_consultation_id]
+        foreign_keys=[replaced_consultation_id],
+        cascade='all, delete'
     )
 
     # Querying the latest version is undoubtedly a common operation.
@@ -193,6 +192,12 @@ class Consultation(  # type: ignore[misc]
         Integer, default=1, index=True,
     )
 
+    files: Mapped[list['SearchableFile']] = relationship(
+        'SearchableFile',
+        back_populates='consultation',
+        cascade='all, delete-orphan'
+    )
+
     @classmethod
     def searchable_fields(
         cls,
@@ -200,19 +205,6 @@ class Consultation(  # type: ignore[misc]
         for field in [cls.title, cls.description, cls.recommendation]:
             if field is not None:
                 yield field
-
-    @observes('files')
-    def files_observer(self, files: list['SearchableFile']) -> None:
-        """
-        Observer method for the 'files' relationship.
-        While potentially inefficient for large collections, it's typically
-        fine as the number of files is expected to be small (1-5). Consider
-        optimizing if performance issues arise.
-
-        This would optimally be inside SearchableAssociatedFiles, but it's a
-        tricky, type checking wise and otherwise.
-        """
-        self.reindex_files()
 
     def __repr__(self) -> str:
         return (

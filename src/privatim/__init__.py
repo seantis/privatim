@@ -2,11 +2,13 @@ from functools import partial
 from fanstatic import Fanstatic
 
 from pyramid.events import BeforeRender
+from sqlalchemy.dialects.postgresql import TSVECTOR
+
 from privatim import helpers
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func
+from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -191,63 +193,6 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     context.drop_column('user', 'statements')
     context.drop_table('statements')
 
-    # for column in [
-    #     'title',
-    #     'description',
-    #     'recommendation',
-    #     'evaluation_result',
-    #     'decision',
-    # ]:
-    #     if context.has_column('consultations', column):
-    #         col_info = context.get_column_info('consultations', column)
-    #         if col_info and not isinstance(col_info['type'], MarkupText):
-    #             context.operations.alter_column(
-    #                 'consultations',
-    #                 column,
-    #                 type_=MarkupText,
-    #                 existing_type=col_info['type'],
-    #                 nullable=col_info['nullable']
-    #             )
-    #
-    # # Upgrade Meeting model
-    # for column in ['name', 'decisions']:
-    #     if context.has_column('meetings', column):
-    #         col_info = context.get_column_info('meetings', column)
-    #         if col_info and not isinstance(col_info['type'], MarkupText):
-    #             context.operations.alter_column(
-    #                 'meetings',
-    #                 column,
-    #                 type_=MarkupText,
-    #                 existing_type=col_info['type'],
-    #                 nullable=col_info['nullable']
-    #             )
-    # # Upgrade AgendaItem model
-    # for column in ['title', 'description']:
-    #     if context.has_column('agenda_items', column):
-    #         col_info = context.get_column_info('agenda_items', column)
-    #         if col_info and not isinstance(col_info['type'], MarkupText):
-    #             context.operations.alter_column(
-    #                 'agenda_items',
-    #                 column,
-    #                 type_=MarkupText,
-    #                 existing_type=col_info['type'],
-    #                 nullable=col_info['nullable']
-    #             )
-    #
-    # # Upgrade Comment model
-    # if context.has_table('comments'):
-    #     if context.has_column('comments', 'content'):
-    #         col_info = context.get_column_info('comments', 'content')
-    #         if col_info and not isinstance(col_info['type'], MarkupText):
-    #             context.operations.alter_column(
-    #                 'comments',
-    #                 'content',
-    #                 type_=MarkupText,
-    #                 existing_type=col_info['type'],
-    #                 nullable=col_info['nullable']
-    #             )
-    #
-
     if not context.has_column('meetings', 'creator_id'):
         context.add_column(
             'meetings',
@@ -278,5 +223,46 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             nullable=True
         )
     )
+
+    # New changes for consultations and files
+
+    # 1. Drop the association table
+    context.drop_table('searchable_files_for_consultations_files')
+
+    # 2. Add consultation_id to searchable_files
+    context.add_column(
+        'searchable_files',
+        Column(
+            'consultation_id',
+            UUIDStrType,
+            ForeignKey('consultations.id'),
+            nullable=True,
+        ),
+    )
+
+    # 3. drop previous
+    context.drop_column('consultations', 'searchable_text_de_CH')
+
+    context.add_column(
+        'searchable_files',
+        Column(
+            'searchable_text_de_CH',
+            TSVECTOR,
+            Computed(
+                "to_tsvector('german', COALESCE(extract, ''))",
+                persisted=True
+            ),
+            nullable=True,
+        ),
+
+    )
+
+    # this needs to be added in the second run
+    # context.operations.create_index(
+    #     'idx_searchable_files_searchable_text_de_CH',
+    #     'searchable_files',
+    #     ['searchable_text_de_CH'],
+    #     postgresql_using='gin',
+    # )
 
     context.commit()

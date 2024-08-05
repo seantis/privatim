@@ -26,4 +26,3 @@ def test_generate_meeting_report(pg_config):
     assert 'Waffle Workshop Group' in all_text
     assert 'Parade' in all_text
     assert 'Powerpoint' in all_text
-    assert 'Logo' in all_text

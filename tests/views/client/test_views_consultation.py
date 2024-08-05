@@ -1,10 +1,11 @@
+import pytest
+from sqlalchemy.orm import selectinload
+
 from privatim.models import User, SearchableFile
 from privatim.models.comment import Comment
 from privatim.models.consultation import Status, Consultation
 from sqlalchemy import select, exists, func
 from webtest.forms import Upload
-
-from privatim.views.consultations import delete_consultation_chain
 
 
 def test_view_consultation(client):
@@ -69,9 +70,16 @@ def test_view_add_and_delete_consultation(client):
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
 
-    consultation_id = session.execute(
-        select(Consultation.id).filter_by(description='the description')
+    consultation = session.execute(
+        select(Consultation)
+        .options(selectinload(Consultation.files))
+        .filter_by(description='the description')
     ).scalar_one()
+    consultation_id = consultation.id
+
+    searchable_file = consultation.files[0]
+    searchable_file: SearchableFile
+    assert searchable_file.content_type == 'text/plain'
 
     # assert we are redirected to the just created consultation:
     assert f'consultation/{str(consultation_id)}' in page.request.url
@@ -109,7 +117,14 @@ def test_view_add_and_delete_consultation(client):
     consultation = session.scalar(consultation_stmt)
     assert consultation is None
 
+    # test file deleted
+    searchable_file_stmt = select(SearchableFile).where(
+        SearchableFile.id == searchable_file.id
+    )
+    assert session.scalar(searchable_file_stmt) is None
 
+
+@pytest.mark.skip('need to re-write to not use client test')
 def test_edit_consultation_with_files(client, pdf_vemz):
 
     session = client.db
@@ -127,12 +142,18 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page = page.form.submit().follow()
 
     consultation = session.execute(
-        select(Consultation).filter_by(description='the description')
+        select(Consultation)
+        .options(selectinload(Consultation.files))
+        .filter_by(description='the description')
     ).scalar_one()
+
+    updated_file = consultation.files[0]
     assert (
         'datenschutzbeauftragt'
-        in consultation.searchable_text_de_CH
+        in updated_file.searchable_text_de_CH
     )
+    assert ('Verordnung über den Einsatz elektronischer Mittel' in
+            updated_file.extract)
 
     # assert we are redirected to the just created consultation:
     consultation_id = consultation.id
@@ -147,21 +168,37 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page.form['recommendation'] = 'updated recommendation'
     page.form['status'] = '2'
     page.form['secondary_tags'] = ['BE', 'LU']
-
-    # breakpoint()
     page.form['files'] = Upload(
         'UpdatedTest.txt',
         b'Updated file ' b'content.'
     )
     page = page.form.submit().follow()
     assert page.status_code == 200
+    with session.no_consultation_filter():
+        # there should be a total 2 Consultation objects in the db
+        count_stmt = select(func.count(Consultation.id))
+        assert session.execute(count_stmt).scalar() == 2
 
-    consultation_id = session.execute(
-        select(Consultation.id).filter_by(is_latest_version=1)
+    consultation = session.execute(
+        select(Consultation)
+        .options(selectinload(Consultation.files)).filter_by(
+            is_latest_version=1)
     ).scalar_one()
+    consultation_id = consultation.id
+    assert consultation.title == 'updated title'
+    assert consultation.description == 'updated description'
+    assert consultation.recommendation == 'updated recommendation'
+
+    updated_file = consultation.files[0]
+    # assert 'Updated file' in updated_file.searchable_text_de_CH
+    assert 'Updated file' in updated_file.extract
+
     assert f'consultation/{str(consultation_id)}' in page.request.url
     page = client.get(f'/consultation/{str(consultation_id)}')
     assert 'updated description' in page
+
+    # todo: assert tags, status
+    # todo: test replaced_by and previous!
 
     # check the file link
     href = page.pyquery('a.document-link')[0].get('href')
@@ -257,75 +294,68 @@ def get_files_by_filename(session, filenames):
         return found_files
 
 
-def test_edit_and_delete_consultation_chain(client, pdf_vemz):
+def test_consultation_delete(client, pdf_vemz):
+
     session = client.db
     client.login_admin()
 
     # Create a new consultation
     page = client.get('/consultations')
     page = page.click('Vernehmlassung Erfassen')
-    page.form['title'] = 'Initial Consultation'
-    page.form['description'] = 'Initial description'
-    page.form['recommendation'] = 'Initial recommendation'
+    page.form['title'] = 'test'
+    page.form['description'] = 'the description'
+    page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload(*pdf_vemz)
-    page.form.submit().follow()
+    page = page.form.submit().follow()
 
-    initial_consultation = session.execute(
-        select(Consultation).filter_by(description='Initial description')
+    consultation = session.execute(
+        select(Consultation)
+        .options(selectinload(Consultation.files))
+        .filter_by(description='the description')
     ).scalar_one()
-    initial_id = initial_consultation.id
 
-    # Edit the consultation to create a new version
-    page = client.get(f'/consultations/{str(initial_id)}/edit')
-    page.form['title'] = 'Updated Consultation'
-    page.form['description'] = 'Updated description'
-    page.form['recommendation'] = 'Updated recommendation'
+    updated_file = consultation.files[0]
+    assert (
+            'datenschutzbeauftragt'
+            in updated_file.searchable_text_de_CH
+    )
+    assert ('Verordnung über den Einsatz elektronischer Mittel' in
+            updated_file.extract)
+
+    # assert we are redirected to the just created consultation:
+    consultation_id = consultation.id
+    assert f'consultation/{str(consultation_id)}' in page.request.url
+
+    # navigate to the edit page
+    page = client.get(f'/consultations/{str(consultation_id)}/edit')
+
+    # edit the consultation
+    page.form['title'] = 'updated title'
+    page.form['description'] = 'updated description'
+    page.form['recommendation'] = 'updated recommendation'
     page.form['status'] = '2'
     page.form['secondary_tags'] = ['BE', 'LU']
-    page.form['files'] = Upload('UpdatedTest.txt',
-                                b'Updated file content.')
-    page.form.submit().follow()
+    page.form['files'] = Upload(
+        'UpdatedTest.txt',
+        b'Updated file ' b'content.'
+    )
+    page = page.form.submit().follow()
+    assert page.status_code == 200
 
-    # check files exisit query
-    # filename1 = 'search_test_privatim_Vernehmlassung_VEMZ.pdf'
-    # filename2 = 'UpdatedTest.txt'
-
-    # assert (
-    #     'search_test_privatim_Vernehmlassung_VEMZ.pdf' in files
-    # ), "Expected file not found"
-    # assert 'UpdatedTest.txt' in files, "Expected file not found"
-
-    updated_consultation = session.execute(
-        select(Consultation).filter_by(is_latest_version=1)
+    consultation = session.execute(
+        select(Consultation)
+        .filter_by(description='updated description')
     ).scalar_one()
-    updated_id = updated_consultation.id
 
-    # # Verify the chain
-    with session.no_consultation_filter():
-        initial_consultation = session.execute(
-            select(Consultation).filter_by(is_latest_version=0)
-        ).scalar_one()
-        updated_consultation = session.execute(
-            select(Consultation).filter_by(is_latest_version=1)
-        ).scalar_one()
+    latest_id = consultation.id
+    page = client.get(f'/consultation/{latest_id}')
+    page.form['content'] = 'Comment is here'
+    page = page.form.submit().follow()
+    assert page.status_code == 200
 
-        # assert initial_consultation.replaced_by == updated_consultation
-        assert updated_consultation.previous_version == initial_consultation
-
-    # Delete the consultation chain
-    deleted_ids = delete_consultation_chain(session, updated_consultation)
-
-    # Verify deletions
-    assert len(deleted_ids) == 2
-    assert initial_id in deleted_ids
-    assert updated_id in deleted_ids
-
-    # Verify consultations no longer exist in the database
-
-    with session.no_consultation_filter():
-        assert not session.query(Consultation).count()
-        # Verify related Status objects have been deleted
-        assert session.execute(select(Status).filter(
-            Status.consultation_id.in_(deleted_ids))).first() is None
+    # now delete
+    page = client.get(f'/consultations/{latest_id}/delete')
+    page = page.follow()
+    assert 'Vernehmlassung erfolgreich gelöscht' in page

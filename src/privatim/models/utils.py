@@ -1,4 +1,3 @@
-from mimetypes import guess_extension
 from pdftotext import PDF  # type: ignore
 
 
@@ -47,30 +46,4 @@ def extract_pdf_info(
             text = text.replace(character, '')
         return ' '.join(text.split())
 
-    # XXX
-    # Rollback the file handle to the beginning
-    # This is sort of because of `reindex_files`, because that happens
-    # before the file is **actually** saved.
-    try:
-        content.seek(0)  # type:ignore[attr-defined]
-    except Exception:  # nosec:B110
-        pass
     return len(pages), ' '.join(clean(page) for page in pages).strip()
-
-
-def extension_for_content_type(
-    content_type: str, filename: str | None = None
-) -> str:
-    """Gets the extension for the given content type. Note that this is
-    *meant for display only*. A file claiming to be a PDF might not be one,
-    but this function would not let you know that.
-
-    """
-
-    if filename is not None:
-        _, sep, ext = filename.rpartition('.')
-        ext = ext.lower() if sep else ''
-    else:
-        ext = guess_extension(content_type, strict=False) or ''
-
-    return ext.strip('. ')

@@ -7,7 +7,6 @@ from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
 from privatim.models import AgendaItem
-from privatim.models.associated_file import SearchableAssociatedFiles
 
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
@@ -25,7 +24,6 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
     from privatim.types import RenderDataOrRedirect
-
 
 T = TypeVar('T', bound=Union[BinaryExpression[Any], Function[Any]])
 
@@ -67,8 +65,6 @@ class SearchCollection:
     """
      Integrates PostgreSQL full-text search. Models can derive from
     `SearchableMixin` and implement `searchable_fields` for column searches.
-     Additionally, models may use `SearchableAssociatedFiles` to search in
-     their files.
 
 
     Key features:
@@ -106,13 +102,13 @@ class SearchCollection:
         self._add_agenda_items_to_results()
 
     def search_model(
-        self, model: type[SearchableMixin | SearchableAssociatedFiles]
+        self, model: type[SearchableMixin | SearchableFile]
     ) -> list[SearchResult]:
         attribute_results = []
         if issubclass(model, SearchableMixin):
             attribute_results = self.search_in_columns(model)
 
-        if issubclass(model, SearchableAssociatedFiles):
+        if issubclass(model, SearchableFile):
             file_results = self.search_in_model_files(model)
             return attribute_results + file_results
 
@@ -139,7 +135,7 @@ class SearchCollection:
         ]
 
     def search_in_model_files(
-        self, model: type[SearchableAssociatedFiles]
+        self, model: type[SearchableFile]
     ) -> list[SearchResult]:
         query = self.build_file_query(model)
         results_list = []
@@ -158,7 +154,7 @@ class SearchCollection:
         return results_list
 
     def build_file_query(
-            self, model: type[SearchableAssociatedFiles]
+            self, model: type[SearchableFile]
     ) -> 'Select[tuple[FileSearchResultType, ...]]':
         """ Search in the files.
 
@@ -190,7 +186,6 @@ class SearchCollection:
                 literal('SearchableFile').label('type')
             )
             .select_from(model)
-            .join(SearchableFile, model.files)
             .filter(model.searchable_text_de_CH.op('@@')(self.ts_query))
         )
 

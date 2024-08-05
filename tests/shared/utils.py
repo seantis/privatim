@@ -115,11 +115,11 @@ def create_consultation(documents=None, tags=None, user=None):
 
     documents = documents or [
         SearchableFile(
-            filename='document1.pdf',
+            filename='document1.txt',
             content=b'Content of Document 1',
         ),
         SearchableFile(
-            filename='document2.pdf',
+            filename='document2.txt',
             content=b'Content of Document 2',
         ),
     ]

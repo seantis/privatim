@@ -1,4 +1,6 @@
+from privatim.models.file import SearchableFile
 from privatim.orm import Base
+
 
 from typing import Iterator, TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
@@ -28,13 +30,15 @@ class SearchableMixin:
         )
 
 
-def searchable_models() -> tuple[type[SearchableMixin], ...]:
+def searchable_models() -> tuple[type[SearchableMixin | SearchableFile], ...]:
     """Retrieve all models inheriting from SearchableMixin."""
     model_classes = set()
     for _ in Base.metadata.tables.values():
         for mapper in Base.registry.mappers:
             cls = mapper.class_
-            if issubclass(cls, SearchableMixin):
+            if issubclass(cls, SearchableMixin) or issubclass(
+                cls, SearchableFile
+            ):
                 model_classes.add(cls)
     return tuple(model_classes)
 

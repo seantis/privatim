@@ -1,6 +1,5 @@
 from contextlib import contextmanager
-
-from sqlalchemy import engine_from_config, event, Select
+from sqlalchemy import engine_from_config, event, exists
 import zope.sqlalchemy
 from sqlalchemy.orm import (
     sessionmaker,
@@ -64,6 +63,7 @@ class FilteredSession(BaseSession):
                 and not self._disable_consultation_filter
             ):
                 from privatim.models.consultation import Consultation
+                from privatim.models.file import SearchableFile
 
                 # Below, an option is added to all SELECT statements that
                 # will limit all queries against Consultation to filter on
@@ -77,6 +77,17 @@ class FilteredSession(BaseSession):
                         with_loader_criteria(
                             Consultation,
                             Consultation.is_latest_version == 1
+                        ),
+
+                        # Files of previously edited consultation are also
+                        # almost never of interest probably
+                        with_loader_criteria(
+                            SearchableFile,
+                            exists().where(
+                                (SearchableFile.consultation_id
+                                 == Consultation.id)
+                                & (Consultation.is_latest_version == 1)
+                            ),
                         )
                     )
                 )
