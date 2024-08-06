@@ -1,5 +1,6 @@
 from sqlalchemy import select
 
+from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
 from wtforms.fields.choices import SelectField
@@ -9,7 +10,9 @@ from wtforms import validators
 
 from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
                                           SearchableSelectField,
-                                          ConstantTextAreaField, )
+                                          ConstantTextAreaField,
+                                          UploadMultipleField, )
+from privatim.forms.validators import FileSizeLimit, ExpectedExtensions
 from privatim.i18n import _, translate
 
 from privatim.models import Tag, GeneralFile
@@ -94,9 +97,14 @@ class ConsultationForm(Form):
         }
     )
 
-    files = UploadMultipleFilesWithORMSupport(
-        label=_('Documents'), validators=[validators.Optional()],
-        file_class=GeneralFile
+    files = UploadMultipleField(
+        label=_('Documents'),
+        validators=[
+            validators.Optional(),
+            ExpectedExtensions(['docx', 'doc', 'pdf', 'txt']),
+            FileSizeLimit(DEFAULT_UPLOAD_LIMIT)
+        ],
+        file_class=GeneralFile,
     )
 
     def populate_obj(
