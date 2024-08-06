@@ -1,9 +1,13 @@
 from cgi import FieldStorage
+from mimetypes import types_map
+
+import humanize
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
 import re
+
 from privatim.i18n import _
 
 
@@ -11,6 +15,8 @@ from typing import Any
 from typing import Literal
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from collections.abc import Collection
+    from privatim.forms.core import Form
     from abc import abstractmethod
     from wtforms import Field
     from wtforms.form import BaseForm
@@ -25,6 +31,102 @@ email_regex = re.compile(
 password_regex = re.compile(
     r'^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[\W]).*$'
 )
+
+
+class FileSizeLimit:
+    """ Makes sure an uploaded file is not bigger than the given number of
+    bytes.
+
+    Expects an :class:`onegov.form.fields.UploadField` or
+    :class:`onegov.form.fields.UploadMultipleField` instance.
+
+    """
+
+    message = _(
+        "The file is too large, please provide a file smaller than {}."
+    )
+
+    def __init__(self, max_bytes: int):
+        self.max_bytes = max_bytes
+
+    def __call__(self, form: 'Form', field: 'Field') -> None:
+        if not field.data:
+            return
+
+        if field.data.get('size', 0) > self.max_bytes:
+            message = field.gettext(self.message).format(
+                humanize.naturalsize(self.max_bytes)
+            )
+            raise ValidationError(message)
+
+
+class WhitelistedMimeType:
+    """ Makes sure an uploaded file is in a whitelist of allowed mimetypes.
+
+    Expects an :class:`onegov.form.fields.UploadField` or
+    :class:`onegov.form.fields.UploadMultipleField` instance.
+
+    Word's MIME Types
+    .doc:
+      application/msword
+
+    docx:
+      application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    .dotx:
+      application/vnd.openxmlformats-officedocument.wordprocessingml.template
+    .docm:
+      application/vnd.ms-word.document.macroEnabled.12
+    .dotm:
+      application/vnd.ms-word.template.macroEnabled.12
+
+    """
+
+    whitelist: 'Collection[str]' = {
+        'application/msword',
+        ('application/vnd.openxmlformats-officedocument.wordprocessingml'
+         '.document'),
+        'application/pdf',
+        'text/plain',
+    }
+
+    message = _("Files of this type are not supported.")
+
+    def __init__(self, whitelist: 'Collection[str] | None' = None):
+        if whitelist is not None:
+            self.whitelist = whitelist
+
+    def __call__(self, form: 'Form', field: 'Field') -> None:
+        if not field.data:
+            return
+
+        if field.data['mimetype'] not in self.whitelist:
+            raise ValidationError(field.gettext(self.message))
+
+
+class ExpectedExtensions(WhitelistedMimeType):
+    """ Makes sure an uploaded file has one of the expected extensions. Since
+    extensions are not something we can count on we look up the mimetype of
+    the extension and use that to check.
+
+    Expects an :class:`onegov.form.fields.UploadField` instance.
+
+    Usage::
+
+        ExpectedExtensions(['*'])  # default whitelist
+        ExpectedExtensions(['pdf'])  # makes sure the given file is a pdf
+    """
+
+    def __init__(self, extensions: 'Sequence[str]'):
+        # normalize extensions
+        if len(extensions) == 1 and extensions[0] == '*':
+            mimetypes = None
+        else:
+            mimetypes = {
+                mimetype for ext in extensions
+                # we silently discard any extensions we don't know for now
+                if (mimetype := types_map.get('.' + ext.lstrip('.'), None))
+            }
+        super().__init__(whitelist=mimetypes)
 
 
 class OptionalIf(Optional):
