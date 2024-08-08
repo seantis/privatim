@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
+    setupCommentEditFlow();
     makeConsultationsClickable();
 
 
@@ -11,14 +12,14 @@ function makeConsultationsClickable() {
     // The whole consultation card was previously wrapped in a link before. This worked until we started rendering
     // user-generated links (as html from the editor) in the description. Nesting Link is not allowed by HTML standard.
     if (window.location.href.includes('/consultations')) {
-            const cards = document.querySelectorAll('.consultation-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function (e) {
-                    if (e.target.tagName !== 'A') {
-                        window.location.href = this.dataset.href;
-                    }
-                });
+        const cards = document.querySelectorAll('.consultation-card');
+        cards.forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (e.target.tagName !== 'A') {
+                    window.location.href = this.dataset.href;
+                }
             });
+        });
     }
 }
 
@@ -85,6 +86,62 @@ function initializePopoversAndTooltips() {
 }
 
 
+function setupCommentEditFlow() {
+    document.querySelectorAll('.edit-comment-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const commentId = this.dataset.commentId;
+            const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
+            const originalContent = commentContentElement.textContent.trim();
+
+            // Replace content with textarea
+            commentContentElement.innerHTML = `
+        <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
+        <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}">Save</button>
+        <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
+      `;
+            // Setup save button
+            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function () {
+
+                const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                fetch(`/comments/${commentId}/edit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    body: JSON.stringify({content: editedContent})
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelector(`#comment-content-${commentId}`).innerHTML = editedContent;
+                        } else {
+                            alert('Error updating comment: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating comment');
+                    });
+            });
+
+            // Setup cancel button
+            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function () {
+                commentContentElement.innerHTML = originalContent;
+            });
+        });
+    });
+}
+
+
 function setupCommentAnswerField() {
     // Makes the answer comment form appear.
     let replys = document.querySelectorAll('.comment-answer-form-container');
@@ -103,7 +160,7 @@ function setupCommentAnswerField() {
 
 
 (function () {
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const tomSelectWrapper = document.querySelector('.ts-wrapper');
         const attendanceList = document.querySelector('.attendance-list');
 
@@ -155,6 +212,6 @@ function setupCommentAnswerField() {
             });
         });
 
-        observer.observe(tomSelectWrapper, { childList: true, subtree: true });
+        observer.observe(tomSelectWrapper, {childList: true, subtree: true});
     });
 })(); // IIFE ends here

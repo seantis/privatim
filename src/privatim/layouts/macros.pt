@@ -62,55 +62,14 @@
 
 <!-- Render all the comments. -->
 <metal:block define-macro="display_comments">
-    <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment flattened_comments_tree">
-        <h2 i18n:translate="" class="m-4">Comments</h2>
-        <div class="card border-0 comment-background ms-3 me-3">
-            <div class="card-body">
-                <div class="d-flex flex-start align-items-center">
-                    <img class="rounded-circle shadow-1-strong me-3 comment-picture"
-                         src="${flattened_comment['picture']}"
-                         alt="avatar"
-                         width="60"
-                         height="60"
-                    />
-                    <div>
-                        <h6 class="fw-bold text-primary mb-1">
-                            <a href="${request.route_url('person', id=flattened_comment['comment'].user.id)}">${flattened_comment['comment'].user.fullname or flattened_comment['comment'].user.email}</a>
-                        </h6>
-                        <p class="text-muted small mb-0">
-                                ${layout.format_date(flattened_comment['comment'].created, 'relative')}
-                        </p>
-                    </div>
-                </div>
-                <p class="comment-text mb-3 mt-1">
-                        ${flattened_comment['comment'].content}
-                </p>
-                <div class="answer-button small d-flex">
-                    <a href="#!" class="d-flex align-items-center me-3 comment-answer-button">
-                        <i class="far fa-comment-dots me-2"></i>
-                        <p i18n:translate="" class="mb-0">Answer</p>
-                    </a>
-                </div>
-                <!--? Answer for a top-level comment  -->
-            </div>
-            <div class="row comment-answer-form-container">
-                <metal:block use-macro="layout.macros['answer_comment_form']"
-                         tal:define="add_comment_route_name request.route_url('add_comment', id=return_to_model_id,
-                                _query={'target_url': 'consultation',
-                                        'parent_id': flattened_comment['comment'].id});
-                                form nested_comment_form">
-                </metal:block>
-            </div>
-        </div>
-
-        <!-- Display children comments -->
-        <div tal:condition="flattened_comment['children']" class="indent-child-comments"
-                tal:repeat="child_comment_dict flattened_comment['children']">
-            <div class="card border-0 comment-background" tal:define="comment child_comment_dict['comment']; picture child_comment_dict['picture']">
+    <div tal:condition="flattened_comments_tree" tal:repeat="flattened_comment_dict flattened_comments_tree">
+        <tal:b tal:define="comment flattened_comment_dict['comment']">
+            <h2 i18n:translate="" class="m-4">Comments</h2>
+            <div class="card border-0 comment-background ms-3 me-3">
                 <div class="card-body">
                     <div class="d-flex flex-start align-items-center">
-                        <img class="rounded-circle shadow-1-strong me-3"
-                             src="${picture}"
+                        <img class="rounded-circle shadow-1-strong me-3 comment-picture"
+                             src="${flattened_comment_dict['picture']}"
                              alt="avatar"
                              width="60"
                              height="60"
@@ -125,7 +84,7 @@
                             </p>
                         </div>
                     </div>
-                    <p class="comment-text mb-3 mt-1">
+                    <p class="comment-text mb-3 mt-1" id="comment-content-${comment.id}">
                             ${comment.content}
                     </p>
                     <div class="answer-button small d-flex">
@@ -133,23 +92,94 @@
                             <i class="far fa-comment-dots me-2"></i>
                             <p i18n:translate="" class="mb-0">Answer</p>
                         </a>
+
                     </div>
                 </div>
-                <!--? Answer for a child comment  -->
+
+                <!--? three dots for dropdown menu, action edit and delete -->
+                <div class="dropdown pt-4">
+                    <a class="btn btn-secondary dropdown-toggle w-20" type="button" id="commentsdropdown"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false" i18n:translate="">
+                        ...
+                    </a>
+                    <div class="dropdown-menu dropdown-secondary " aria-labelledby="commentsdropdown">
+                        <div>
+                            <a href="#" class="d-flx edit-comment-link" data-comment-id="${comment.id}">
+                                <i class="far fa-edit me-2"></i>
+                                <p i18n:translate="" class="mb-0">edit</p>
+                            </a>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <div>
+                            <a href="${request.route_url('delete_comment', id=comment.id)}" class="d-flex">
+                                <i class="far fa-dot-circle me-2"></i>
+                                <p i18n:translate="" class="mb-0">delete</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer for a top-level comment -->
                 <div class="row comment-answer-form-container">
                     <metal:block use-macro="layout.macros['answer_comment_form']"
                              tal:define="add_comment_route_name request.route_url('add_comment', id=return_to_model_id,
                                     _query={'target_url': 'consultation',
-                                            'parent_id': flattened_comment['comment'].id});
+                                            'parent_id': comment.id});
                                     form nested_comment_form">
                     </metal:block>
                 </div>
             </div>
 
-        </div>
-        <!-- Slightly more bold divider line-->
-        <hr class="border-2 "/>
+            <!-- Display children comments -->
+            <div tal:condition="flattened_comment_dict['children']" class="indent-child-comments"
+                     tal:repeat="child_comment_dict flattened_comment_dict['children']">
+                <div class="card border-0 comment-background" tal:define="comment child_comment_dict['comment'];
+                        picture child_comment_dict['picture']">
+                    <div class="card-body">
+                        <div class="d-flex flex-start align-items-center">
+                            <img class="rounded-circle shadow-1-strong me-3"
+                                 src="${picture}"
+                                 alt="avatar"
+                                 width="60"
+                                 height="60"
+                            />
+                            <div>
+                                <h6 class="fw-bold text-primary mb-1">
+                                    <a href="${request.route_url('person', id=comment.user.id)}">
+                                            ${comment.user.fullname or comment.user.email}</a>
+                                </h6>
+                                <p class="text-muted small mb-0">
+                                        ${layout.format_date(comment.created, 'relative')}
+                                </p>
+                            </div>
+                        </div>
+                        <p class="comment-text mb-3 mt-1" id="comment-content-${comment.id}">
+                                ${comment.content}
+                        </p>
+                        <div class="answer-button small d-flex">
+                            <a href="#!" class="d-flex align-items-center me-3 comment-answer-button">
+                                <i class="far fa-comment-dots me-2"></i>
+                                <p i18n:translate="" class="mb-0">answer</p>
+                            </a>
+                        </div>
+                    </div>
+                    <!--? answer for a child comment  -->
+                    <div class="row comment-answer-form-container">
+                        <metal:block use-macro="layout.macros['answer_comment_form']"
+                                 tal:define="add_comment_route_name request.route_url('add_comment', id=return_to_model_id,
+                                        _query={'target_url': 'consultation',
+                                                'parent_id': comment.id});
+                                        form nested_comment_form">
+                        </metal:block>
+                    </div>
+                </div>
 
+            </div>
+            <!-- slightly more bold divider line-->
+            <hr class="border-2 "/>
+
+        </tal:b>
     </div> <!--?  tal repeat end -->
 </metal:block>
 
@@ -202,7 +232,7 @@
     </style>
     <div class="tiptap-wrapper">
 
-        <!-- The editor is rendered on whatever has the class element. -->
+        <!-- The editor is rendered on whatever has the class 'element'. -->
         <div class="element" id="${field.id}-editor"></div>
         <div class="bubble-menu">
             <div class="bubble-menu">
