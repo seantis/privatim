@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-31 01:23+0200\n"
+"POT-Creation-Date: 2024-08-10 20:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,6 +75,7 @@ msgid "Activities"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr ""
 
@@ -385,6 +386,7 @@ msgid ""
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr ""
 
@@ -455,14 +457,6 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: ./src/privatim/views/templates/person.pt
-msgid "Created Meetings"
-msgstr ""
-
-#: ./src/privatim/views/templates/person.pt
-msgid "Created Consultations"
-msgstr ""
-
 #: ./src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
 msgstr ""
@@ -481,10 +475,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
 msgid "Date:"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Type"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -654,7 +644,6 @@ msgid "Title"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
-#: ./src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr ""
 
@@ -684,6 +673,15 @@ msgstr ""
 
 #: ./src/privatim/forms/add_comment.py
 msgid "Add comment"
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+#, python-format
+msgid "The file is too large, please provide a file smaller than {}."
+msgstr ""
+
+#: ./src/privatim/forms/validators.py
+msgid "Files of this type are not supported."
 msgstr ""
 
 #: ./src/privatim/forms/validators.py
@@ -741,6 +739,10 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
+msgstr ""
+
+#: ./src/privatim/forms/agenda_item_form.py
+msgid "Potentially Description"
 msgstr ""
 
 #: ./src/privatim/forms/agenda_item_form.py

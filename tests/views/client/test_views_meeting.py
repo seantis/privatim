@@ -25,7 +25,7 @@ def test_edit_meeting(client):
     client.db.commit()
 
     meeting_time = fix_utc_to_local_time(utcnow())
-    # Create a meeting iwth Max and Alexa
+    # Create a meeting with Max and Alexa
     meeting = Meeting(
         name='Initial Meeting',
         time=meeting_time,
@@ -55,6 +55,11 @@ def test_edit_meeting(client):
     assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
     assert get_attendees(page) == ['Max Müller', 'Alexa Troller']
 
+    # Test the cancel button
+    page = page.click('Abbrechen')
+    assert f'working_groups/{meeting.working_group.id}' in page.request.url
+
+    page = client.get(f'/meetings/{meeting.id}/edit')
     # Modify the meeting details
     new_meeting_time = meeting_time + timedelta(days=1)
     page.form['name'] = 'Updated Meeting'

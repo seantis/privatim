@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-31 01:23+0200\n"
+"POT-Creation-Date: 2024-08-10 20:04+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -78,6 +78,7 @@ msgid "Activities"
 msgstr "Aktivitäten"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
+#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Vernehmlassungen"
 
@@ -398,6 +399,7 @@ msgid ""
 msgstr "Hier können Sie Sitzungen dieses Gremiums hinzufügen."
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr "Sitzungen"
 
@@ -468,14 +470,6 @@ msgstr "→ Code noch einmal senden / Eine andere Nummer probieren"
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: src/privatim/views/templates/person.pt
-msgid "Created Meetings"
-msgstr "Sitzungen erstellt"
-
-#: src/privatim/views/templates/person.pt
-msgid "Created Consultations"
-msgstr "Vernehmlassungen erstellt"
-
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
 msgstr "Vernehmlassung hinzugefügt"
@@ -495,10 +489,6 @@ msgstr "von "
 #: src/privatim/views/templates/activities.pt
 msgid "Date:"
 msgstr "Datum:"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr "Art"
 
 #: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Filter"
@@ -666,7 +656,6 @@ msgid "Title"
 msgstr "Titel"
 
 #: src/privatim/forms/consultation_form.py
-#: src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -697,6 +686,15 @@ msgstr "Kommentar"
 #: src/privatim/forms/add_comment.py
 msgid "Add comment"
 msgstr "Kommentar erfassen"
+
+#: src/privatim/forms/validators.py
+#, python-format
+msgid "The file is too large, please provide a file smaller than {}."
+msgstr "Die Datei ist zu gross, bitte eine Datei kleiner als {} bereitstellen."
+
+#: src/privatim/forms/validators.py
+msgid "Files of this type are not supported."
+msgstr "Dateien dieses Typs werden nicht unterstützt."
 
 #: src/privatim/forms/validators.py
 msgid "This field is required."
@@ -756,6 +754,10 @@ msgstr "Anwesenheit"
 #: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Potentially Description"
+msgstr "Gegebenenfalls Beschreibung"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Select Destionation for Agenda Item"
@@ -849,6 +851,15 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Created Meetings"
+#~ msgstr "Sitzungen erstellt"
+
+#~ msgid "Created Consultations"
+#~ msgstr "Vernehmlassungen erstellt"
+
+#~ msgid "Type"
+#~ msgstr "Art"
 
 #~ msgid "No results found"
 #~ msgstr "Keine Resultate gefunden"

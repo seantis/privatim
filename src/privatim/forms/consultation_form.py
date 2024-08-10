@@ -104,7 +104,6 @@ class ConsultationForm(Form):
             ExpectedExtensions(['docx', 'doc', 'pdf', 'txt']),
             FileSizeLimit(DEFAULT_UPLOAD_LIMIT)
         ],
-        file_class=GeneralFile,
     )
 
     def populate_obj(

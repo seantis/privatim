@@ -276,7 +276,7 @@ def add_meeting_view(
     form = MeetingForm(context, request)
     session = request.dbsession
 
-    target_url = None
+    target_url = request.route_url('meetings', id=context.id)
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data or ()))
         attendees = list(session.execute(stmt).scalars().all())
@@ -319,7 +319,7 @@ def edit_meeting_view(
 
     assert isinstance(meeting, Meeting)
 
-    target_url = request.route_url('meeting', id=meeting.id)
+    target_url = request.route_url('meetings', id=meeting.working_group.id)
     form = MeetingForm(meeting, request)
     session = request.dbsession
 
@@ -335,7 +335,7 @@ def edit_meeting_view(
         message = _('Successfully edited meeting.')
         if not request.is_xhr:
             request.messages.add(message, 'success')
-        return HTTPFound(location=target_url)
+        return HTTPFound(location=request.route_url('meeting', id=meeting.id))
 
     elif not request.POST:
         form.process(obj=meeting)

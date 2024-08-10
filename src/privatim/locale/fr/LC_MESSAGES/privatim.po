@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-31 01:23+0200\n"
+"POT-Creation-Date: 2024-08-10 20:04+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -75,6 +75,7 @@ msgid "Activities"
 msgstr "Activités"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
+#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Consultations"
 
@@ -397,6 +398,7 @@ msgid ""
 msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr "Réunions"
 
@@ -466,14 +468,6 @@ msgstr "→ Envoyer à nouveau le code / essayer un autre numéro"
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
-#: src/privatim/views/templates/person.pt
-msgid "Created Meetings"
-msgstr "Sessions créées"
-
-#: src/privatim/views/templates/person.pt
-msgid "Created Consultations"
-msgstr "Consultations créées"
-
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
 msgstr "Consultation ajoutée"
@@ -493,10 +487,6 @@ msgstr "de "
 #: src/privatim/views/templates/activities.pt
 msgid "Date:"
 msgstr "Date:"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr "Variété"
 
 #: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Filter"
@@ -664,7 +654,6 @@ msgid "Title"
 msgstr "Titre"
 
 #: src/privatim/forms/consultation_form.py
-#: src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr "Description"
 
@@ -695,6 +684,17 @@ msgstr "Commentaire"
 #: src/privatim/forms/add_comment.py
 msgid "Add comment"
 msgstr "Ajouter un commentaire"
+
+#: src/privatim/forms/validators.py
+#, python-format
+msgid "The file is too large, please provide a file smaller than {}."
+msgstr ""
+"Le fichier est trop volumineux, veuillez fournir un fichier plus petit que "
+"{}."
+
+#: src/privatim/forms/validators.py
+msgid "Files of this type are not supported."
+msgstr "Les fichiers de ce type ne sont pas pris en charge."
 
 #: src/privatim/forms/validators.py
 msgid "This field is required."
@@ -752,6 +752,10 @@ msgstr "Participation"
 #: src/privatim/forms/meeting_form.py
 msgid "A meeting with this name already exists."
 msgstr "Une réunion avec ce nom existe déjà."
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Potentially Description"
+msgstr "Description potentielle"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Select Destionation for Agenda Item"
@@ -843,6 +847,15 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Created Meetings"
+#~ msgstr "Sessions créées"
+
+#~ msgid "Created Consultations"
+#~ msgstr "Consultations créées"
+
+#~ msgid "Type"
+#~ msgstr "Variété"
 
 #~ msgid "No results found"
 #~ msgstr "Aucun résultat trouvé"
