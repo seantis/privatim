@@ -85,61 +85,80 @@ function initializePopoversAndTooltips() {
     });
 }
 
-
 function setupCommentEditFlow() {
     document.querySelectorAll('.edit-comment-link').forEach(link => {
-        link.addEventListener('click', function (e) {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
             const commentId = this.dataset.commentId;
             const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
             const originalContent = commentContentElement.textContent.trim();
 
-            // Replace content with textarea
+            // Replace content with textarea and buttons
             commentContentElement.innerHTML = `
         <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
         <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}">Save</button>
         <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
       `;
+
             // Setup save button
-            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function () {
-
+            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function() {
                 const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                fetch(`/comments/${commentId}/edit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': csrfToken
-                    },
-                    body: JSON.stringify({content: editedContent})
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            document.querySelector(`#comment-content-${commentId}`).innerHTML = editedContent;
-                        } else {
-                            alert('Error updating comment: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error updating comment');
-                    });
+                saveCommentEdit(commentId, editedContent);
             });
 
             // Setup cancel button
-            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function () {
+            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function() {
                 commentContentElement.innerHTML = originalContent;
             });
         });
     });
 }
+
+function saveCommentEdit(commentId, editedContent) {
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+    // Create FormData object to match what the backend form expects
+    const formData = new FormData();
+    formData.append('content', editedContent);
+    formData.append('csrf_token', csrfToken);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `/comments/${commentId}/edit`, true);
+    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    // Don't set Content-Type header, let the browser set it with the boundary for FormData
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        document.querySelector(`#comment-content-${commentId}`).innerHTML = response.content;
+                    } else {
+                        alert('Error updating comment: ' + (response.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    alert('Error updating comment: Invalid response from server');
+                }
+            } else {
+                console.error('HTTP error:', xhr.status, xhr.statusText);
+                alert('Error updating comment: ' + xhr.statusText);
+            }
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('Network error occurred');
+        alert('Network error occurred while updating comment');
+    };
+
+    xhr.send(formData);
+}
+
+
+
 
 
 function setupCommentAnswerField() {

@@ -107,7 +107,7 @@
                         <div>
                             <a href="#" class="d-flx edit-comment-link" data-comment-id="${comment.id}">
                                 <i class="far fa-edit me-2"></i>
-                                <p i18n:translate="" class="mb-0">edit</p>
+                                <span i18n:translate="" class="mb-0">edit</span>
                             </a>
                         </div>
                         <hr class="dropdown-divider">

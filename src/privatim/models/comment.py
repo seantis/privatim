@@ -1,20 +1,22 @@
 import uuid
 from datetime import datetime
 from sedate import utcnow
-
 from privatim.orm import Base
 from privatim.orm.associable import Associable
-from sqlalchemy.orm import relationship, Mapped, mapped_column, foreign, \
-    remote, object_session
+from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
+    remote, object_session,
+)
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
 from privatim.models import SearchableMixin
+from pyramid.authorization import Allow, Authenticated
 
 
 from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
 if TYPE_CHECKING:
     from privatim.models import User
     from sqlalchemy.orm import InstrumentedAttribute
+    from privatim.types import ACL
     T = TypeVar('T', bound='Base')
     # Define a TypeVar for the commentable entity
 
@@ -108,6 +110,11 @@ class Comment(Base, Associable, SearchableMixin):
 
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'
+
+    def __acl__(self) -> list['ACL']:
+        return [
+            (Allow, Authenticated, ['view']),
+        ]
 
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
