@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-10 20:04+0200\n"
+"POT-Creation-Date: 2024-08-10 20:30+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -152,6 +152,14 @@ msgstr "Traiter un point de l'ordre du jour"
 #: src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Membres"
+
+#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
+msgid "Expand All"
+msgstr "Développer tout"
+
+#: src/privatim/views/meetings.py
+msgid "Collapse All"
+msgstr "Réduire tout"
 
 #: src/privatim/views/meetings.py
 msgid "Details"

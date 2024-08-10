@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
     makeConsultationsClickable();
-
+    setupAgendaItemGlobalToggle();
 
 });
 
@@ -101,6 +101,44 @@ function setupCommentAnswerField() {
     }
 }
 
+function setupAgendaItemGlobalToggle() {
+    if (!window.location.href.includes('/meeting')) {
+       return;
+    }
+
+    const toggleBtn = document.getElementById('toggleAllItems');
+    const accordionItems = document.querySelectorAll('.accordion-collapse');
+    let isExpanded = false;
+
+    function toggleAll() {
+        isExpanded = !isExpanded;
+        accordionItems.forEach(item => {
+            const bsCollapse = new bootstrap.Collapse(item, {
+                toggle: false
+            });
+            if (isExpanded) {
+                bsCollapse.show();
+            } else {
+                bsCollapse.hide();
+            }
+        });
+
+        // Update button text and icon
+        const btnText = toggleBtn.querySelector('span');
+        const btnIcon = toggleBtn.querySelector('i');
+        if (isExpanded) {
+            btnText.textContent = toggleBtn.dataset.collapseText;
+            btnIcon.classList.replace('fa-caret-down', 'fa-caret-up');
+        } else {
+            btnText.textContent = toggleBtn.dataset.expandText;
+            btnIcon.classList.replace('fa-caret-up', 'fa-caret-down');
+        }
+    }
+
+    toggleBtn.addEventListener('click', toggleAll);
+
+}
+
 
 (function () {
     document.addEventListener('DOMContentLoaded', function() {
@@ -158,3 +196,5 @@ function setupCommentAnswerField() {
         observer.observe(tomSelectWrapper, { childList: true, subtree: true });
     });
 })(); // IIFE ends here
+
+

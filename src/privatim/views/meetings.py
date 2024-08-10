@@ -101,6 +101,8 @@ def meeting_view(
         ),
         'agenda_items': agenda_items,
         'sortable_url': data_sortable_url,
+        'expand_all_text': _('Expand All'),
+        'collapse_all_text': _('Collapse All'),
     }
 
 
