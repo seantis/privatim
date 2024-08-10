@@ -134,4 +134,3 @@ def test_edit_meeting(client):
     dest_updated = client.db.scalars(stmt).unique().one()
     assert dest_updated.agenda_items[0].title == 'Agenda item'
     assert dest_updated.agenda_items[0].description == 'description'
-

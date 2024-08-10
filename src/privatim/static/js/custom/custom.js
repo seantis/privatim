@@ -107,6 +107,9 @@ function setupAgendaItemGlobalToggle() {
     }
 
     const toggleBtn = document.getElementById('toggleAllItems');
+    if (!toggleBtn) {
+        return;
+    }
     const accordionItems = document.querySelectorAll('.accordion-collapse');
     let isExpanded = false;
 

@@ -138,6 +138,7 @@ def copy_agenda_item_view(
 
     target_url = request.route_url('meeting', id=context.id)
     if request.method == 'POST' and form.validate():
+
         destination_str_id = form.copy_to.data
         stmt = select(Meeting).where(Meeting.id == destination_str_id)
         dest_meeting = session.execute(stmt).scalar_one()
