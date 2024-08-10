@@ -35,7 +35,6 @@ def edit_comment_view(
     form = CommentForm(context, request)
     session = request.dbsession
 
-    breakpoint()
     if request.method == 'POST' and form.validate():
         context.content = maybe_escape(form.content.data)
         message = _('Successfully edited comment')

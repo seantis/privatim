@@ -1,10 +1,15 @@
+from webob.multidict import MultiDict
+from sqlalchemy import select
 from privatim.models import User
 from privatim.models.comment import Comment
+from privatim.testing import DummyRequest
 from privatim.views import edit_comment_view
 from shared.utils import create_consultation
 
 
-def test_sortable_agenda_items_view(pg_config):
+def test_comments_editable(pg_config):
+
+    pg_config.add_route('comment', '/comment/{id}/')
     pg_config.add_route('edit_comment', '/comments/{id}/edit')
     db = pg_config.dbsession
     cons = create_consultation()
@@ -12,17 +17,15 @@ def test_sortable_agenda_items_view(pg_config):
     db.flush()
 
     user = User(email='a@b.ch')
-    comment = Comment(content='Test Comment', user=user)
+    comment = Comment(content='Original Comment', user=user)
     cons.comments.append(comment)
+    request = DummyRequest(post=MultiDict({'content': 'Updated Comment'}))
 
-    agenda_items = [
-        {'title': 'Introduction', 'description': 'Welcome and introductions.'},
-        {'title': 'Project Update', 'description': 'Update on projects.'},
-    ]
+    edit_comment_view(comment, request)
 
-    meeting = edit_comment_view(comment, db)
+    updated_comment = db.execute(
+        select(Comment).filter_by(id=comment.id)
+    ).scalar_one()
 
-    assert [[e.title, e.position] for e in meeting.agenda_items] == [
-        ['Introduction', 0],
-        ['Project Update', 1]
-    ]
+    assert updated_comment.content == 'Updated Comment'
+    assert updated_comment.content != 'Original Comment'
