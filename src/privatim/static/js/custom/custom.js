@@ -93,20 +93,17 @@ function setupCommentEditFlow() {
             const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
             const originalContent = commentContentElement.textContent.trim();
 
-            // Replace content with textarea and buttons
             commentContentElement.innerHTML = `
         <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
         <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}">Save</button>
         <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
       `;
 
-            // Setup save button
             document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function() {
                 const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
                 saveCommentEdit(commentId, editedContent);
             });
 
-            // Setup cancel button
             document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function() {
                 commentContentElement.innerHTML = originalContent;
             });
@@ -117,7 +114,6 @@ function setupCommentEditFlow() {
 function saveCommentEdit(commentId, editedContent) {
     const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
-    // Create FormData object to match what the backend form expects
     const formData = new FormData();
     formData.append('content', editedContent);
     formData.append('csrf_token', csrfToken);
@@ -126,7 +122,6 @@ function saveCommentEdit(commentId, editedContent) {
     xhr.open('POST', `/comments/${commentId}/edit`, true);
     xhr.setRequestHeader('X-CSRF-Token', csrfToken);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    // Don't set Content-Type header, let the browser set it with the boundary for FormData
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -136,29 +131,23 @@ function saveCommentEdit(commentId, editedContent) {
                     if (response.success) {
                         document.querySelector(`#comment-content-${commentId}`).innerHTML = response.content;
                     } else {
-                        alert('Error updating comment: ' + (response.message || 'Unknown error'));
+                        console.error('Error updating comment:', response.message || 'Unknown error');
                     }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
-                    alert('Error updating comment: Invalid response from server');
                 }
             } else {
                 console.error('HTTP error:', xhr.status, xhr.statusText);
-                alert('Error updating comment: ' + xhr.statusText);
             }
         }
     };
 
     xhr.onerror = function() {
-        console.error('Network error occurred');
-        alert('Network error occurred while updating comment');
+        console.error('Network error occurred while updating comment');
     };
 
     xhr.send(formData);
 }
-
-
-
 
 
 function setupCommentAnswerField() {

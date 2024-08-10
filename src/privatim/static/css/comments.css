@@ -91,3 +91,29 @@
 .answer-button {
     /*margin-left: 50px*/
 }
+
+.comments-elements-wrap div:last-child {
+    margin-left: auto;
+}
+
+.comments-actions {
+    color: var(--bs-secondary-color);
+
+    /* Make the area around the comments dropdown
+      slightly bigger for convenience: */
+    /*padding: 20px;*/
+
+    padding: 20px;  /* Adjust this value as needed */
+    margin: -20px;  /* This should be the negative of the padding */
+    display: inline-block;
+    position: relative;
+}
+
+.comments-actions i {
+    display: block;  /* This ensures the icon itself doesn't add to the size */
+}
+
+.three-dots {
+    align-self: baseline;
+}
+
