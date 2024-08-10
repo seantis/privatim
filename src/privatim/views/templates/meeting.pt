@@ -27,7 +27,7 @@
 
             <div class="col-lg-9 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3" tal:condition="agenda_items">
                     <h2 i18n:translate="">Agenda Items</h2>
                     <button class="btn" id="toggleAllItems"
                             data-expand-text="${expand_all_text}"
