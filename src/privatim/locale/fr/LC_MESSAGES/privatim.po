@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-10 22:03+0200\n"
+"POT-Creation-Date: 2024-08-10 22:07+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -777,6 +777,10 @@ msgstr "Aucune réunion de destination valide disponible."
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy to"
 msgstr "Copier vers"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy description aswell"
+msgstr "Copier également la description"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "No Leader"

@@ -17,24 +17,37 @@
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="mb-3" tal:repeat="field form">
 
-
-                    <label for="${field.id}">${field.label}${' *' if field.flags.required else ''}</label>
-
-
-                    <!-- TipTap Editor for all wtforms.fields.TextAreaField -->
-                    <!-- Conceptually, the editor is a layer on top of the TextArea, we still process the field as usual. -->
-                    <tal:block tal:condition="field.type == 'HtmlField'">
-                        <metal:editor use-macro="layout.macros['render_editor']" tal:define="field field" />
+                    <!-- For Checkbox, the label should be on the right side -->
+                    <tal:block tal:condition="field.type == 'CheckboxField'">
+                        <div class="form-check">
+                        ${field(class_='form-check-input')}
+                            <label class="form-check-label" for="${field.id}">
+                            ${field.label}${' *' if field.flags.required else ''}
+                            </label>
+                        </div>
                     </tal:block>
 
-                    <!-- Else just render the field as usual. -->
-                    <tal:block tal:condition="field.type != 'HtmlField' and field.name != 'attendance'">
-                            ${field()}
+                    <tal:block tal:condition="field.type != 'CheckboxField'">
+                        <label for="${field.id}" class="form-label">
+                        ${field.label}${' *' if field.flags.required else ''}
+                        </label>
+
+                        <!-- TipTap Editor for all wtforms.fields.TextAreaField -->
+                        <!-- Conceptually, the editor is a layer on top of the TextArea, we still process the field as usual. -->
+                        <tal:block tal:condition="field.type == 'HtmlField'">
+                            <metal:editor use-macro="layout.macros['render_editor']" tal:define="field field" />
+                        </tal:block>
+
+                        <!-- Else just render the field as usual. -->
+                        <tal:block tal:condition="field.type != 'HtmlField' and field.name != 'attendance'">
+                                ${field()}
+                        </tal:block>
+
+                        <tal:block tal:condition="field.name == 'attendance'">
+                            <metal:editor use-macro="layout.macros['render_attendance_field']" tal:define="field field" />
+                        </tal:block>
                     </tal:block>
 
-                    <tal:block tal:condition="field.name == 'attendance'">
-                        <metal:editor use-macro="layout.macros['render_attendance_field']" tal:define="field field" />
-                    </tal:block>
 
 
                     <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
