@@ -147,7 +147,8 @@ def copy_agenda_item_view(
         for agenda_item in context.agenda_items:
             new_item = AgendaItem(
                 title=agenda_item.title,
-                description=agenda_item.description,
+                description=agenda_item.description if
+                form.copy_description.data else '',
                 meeting=agenda_item.meeting,
                 position=agenda_item.position
             )

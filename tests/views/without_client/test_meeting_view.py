@@ -29,7 +29,6 @@ def test_sortable_agenda_items_view(pg_config):
     all_pos = {e.position for e in meeting.agenda_items}
     assert all_pos == {0, 1}
 
-    # print([item.title for item in meeting.agenda_items])
     request = DummyRequest()
     #  0 below 1 == swap the items
     request.matchdict = {

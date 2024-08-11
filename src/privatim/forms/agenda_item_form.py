@@ -8,6 +8,7 @@ from wtforms.widgets.core import ListWidget, html_params
 
 from privatim.forms.core import Form
 from privatim.forms.fields.fields import ConstantTextAreaField
+from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _, translate
 from privatim.models import Meeting
 from privatim.utils import datetime_format
@@ -132,6 +133,11 @@ class AgendaItemCopyForm(Form):
         label=_('Copy to'),
         validators=[validators.DataRequired()],
         widget=MeetingRadioRenderer(),
+    )
+
+    copy_description = CheckboxField(
+        _('Copy description aswell'),
+        default=False,
     )
 
     def populate_obj(self, obj: 'AgendaItem') -> None:  # type:ignore[override]
