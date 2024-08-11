@@ -1,5 +1,4 @@
 from privatim.forms.add_comment import CommentForm
-from privatim.models import Consultation
 from pyramid.httpexceptions import HTTPFound, HTTPClientError, HTTPNotFound
 from privatim.i18n import _
 from privatim.i18n import translate
@@ -9,6 +8,7 @@ from privatim.utils import maybe_escape
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.models import Consultation
     from pyramid.interfaces import IRequest
     from privatim.types import MixedDataOrRedirect
 
@@ -17,7 +17,13 @@ def delete_comment_view(
     context: Comment, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
     session = request.dbsession
-    consultation_id = context.get_commentable().id
+    commentable = context.get_commentable()
+    if commentable is None:
+        return HTTPFound(
+            location=request.route_url('comment', id=context.id)
+        )
+
+    consultation_id = commentable.id
     session.delete(context)
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
@@ -57,7 +63,7 @@ def edit_comment_view(
 
 
 def add_comment_view(
-        context: Consultation, request: 'IRequest'
+        context: 'Consultation', request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
 
     form = CommentForm(context, request)
@@ -66,7 +72,8 @@ def add_comment_view(
     # The target_url is a param because we want this to be generic. (We take
     # the possibility into account that other models are commentable in the
     # future, in that case, we'd like to re-use this view. Thus we don't hard-
-    # code `target` to consultation.)
+    # code `target` to consultation. Rather we pass the target_url in as
+    # parameter.)
     target_route_name = request.params.get('target_url')
     assert target_route_name, 'target_url is required.'
     target_url = request.route_url(target_route_name, id=context.id)

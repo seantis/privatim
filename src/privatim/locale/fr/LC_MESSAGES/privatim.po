@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-07-31 01:23+0200\n"
+"POT-Creation-Date: 2024-08-11 15:41+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -47,6 +47,22 @@ msgid "Message"
 msgstr "Message"
 
 #: src/privatim/layouts/macros.pt
+msgid "Show context Menu"
+msgstr ""
+
+#: src/privatim/layouts/macros.pt
+msgid "<dynamic element>"
+msgstr ""
+
+#: src/privatim/layouts/macros.pt
+msgid "edit"
+msgstr ""
+
+#: src/privatim/layouts/macros.pt
+msgid "delete"
+msgstr ""
+
+#: src/privatim/layouts/macros.pt
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -75,6 +91,7 @@ msgid "Activities"
 msgstr "Activités"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/consultations.py
+#: src/privatim/views/templates/person.pt
 msgid "Consultations"
 msgstr "Consultations"
 
@@ -274,6 +291,14 @@ msgstr ""
 "caractère spécial."
 
 #: src/privatim/views/comment.py
+msgid "Successfully deleted comment"
+msgstr ""
+
+#: src/privatim/views/comment.py
+msgid "Successfully edited comment"
+msgstr ""
+
+#: src/privatim/views/comment.py
 msgid "Successfully added comment"
 msgstr "Commentaire ajouté avec succès"
 
@@ -397,6 +422,7 @@ msgid ""
 msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
 msgid "Meetings"
 msgstr "Réunions"
 
@@ -466,14 +492,6 @@ msgstr "→ Envoyer à nouveau le code / essayer un autre numéro"
 msgid "Change Password"
 msgstr "Changer le mot de passe"
 
-#: src/privatim/views/templates/person.pt
-msgid "Created Meetings"
-msgstr "Sessions créées"
-
-#: src/privatim/views/templates/person.pt
-msgid "Created Consultations"
-msgstr "Consultations créées"
-
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
 msgstr "Consultation ajoutée"
@@ -493,10 +511,6 @@ msgstr "de "
 #: src/privatim/views/templates/activities.pt
 msgid "Date:"
 msgstr "Date:"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Type"
-msgstr "Variété"
 
 #: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
 msgid "Filter"
@@ -697,6 +711,15 @@ msgid "Add comment"
 msgstr "Ajouter un commentaire"
 
 #: src/privatim/forms/validators.py
+#, python-format
+msgid "The file is too large, please provide a file smaller than {}."
+msgstr ""
+
+#: src/privatim/forms/validators.py
+msgid "Files of this type are not supported."
+msgstr ""
+
+#: src/privatim/forms/validators.py
 msgid "This field is required."
 msgstr "Ce champ est obligatoire."
 
@@ -843,6 +866,15 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Created Meetings"
+#~ msgstr "Sessions créées"
+
+#~ msgid "Created Consultations"
+#~ msgstr "Consultations créées"
+
+#~ msgid "Type"
+#~ msgstr "Variété"
 
 #~ msgid "No results found"
 #~ msgstr "Aucun résultat trouvé"

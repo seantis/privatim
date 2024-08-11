@@ -1,19 +1,4 @@
-from privatim.utils import flatten_comments
 from privatim.views.consultations import trim_filename
-from tests.shared.utils import Bunch
-
-
-def test_empty_comments():
-    comments = []
-
-    request = Bunch(**{'comment.user': None})
-    assert (
-        flatten_comments(
-            comments,
-            request,
-        )
-        == []
-    )
 
 
 def test_short_filename():

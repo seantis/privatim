@@ -14,7 +14,8 @@ from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload, TypeVar
+from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable
+
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from privatim.types import FileDict, LaxFileDict
@@ -156,38 +157,10 @@ def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
         db_time, 'Europe/Zurich') or db_time
 
 
-def flatten_comments(
-    top_level_comments: 'Iterable[Comment]',
-    request: 'IRequest',
-) -> list['FlattenedCommentDict']:
-    """
-    Comments naturally contain arbitrary levels of nesting. (Each reply is a
-    child.) This basically returns a list of comments with level of depth=1.
-
-    The UI only shows one level of nesting, so deeply nested comments
-    are not displayed with further indentation. Which is why this function
-    does not need to do a full-blown tree traversal."""
-
-    flattened_comments: list[FlattenedCommentDict] = []
-    for comment in top_level_comments:
-        children = sorted(comment.children, key=lambda c: c.created)
-        pic = get_correct_comment_picture_for_comment(comment, request)
-
-        # Process children comments
-        _children: list[ChildCommentDict] = []
-        for child in children:
-            child_pic = get_correct_comment_picture_for_comment(child, request)
-            _children.append({'comment': child, 'picture': child_pic})
-
-        flattened_comments.append(
-            {'comment': comment, 'children': _children, 'picture': pic}
-        )
-    return flattened_comments
-
-
 def get_correct_comment_picture_for_comment(
-    comment: 'Comment', request: 'IRequest'
+        comment: 'Comment', request: 'IRequest'
 ) -> str:
+    """ Returns a downloadable link to the comment's profile pic."""
 
     fallback_profile_pic_link = request.route_url(
         'download_file', id=get_or_create_default_profile_pic(
@@ -209,6 +182,44 @@ def get_correct_comment_picture_for_comment(
                 else fallback_profile_pic_link
             )
     return pic
+
+
+def flatten_comments(
+    top_level_comments: 'Iterable[Comment]',
+    request: 'IRequest',
+    get_picture_for_comment: Callable[['Comment', 'IRequest'], str] = (
+        get_correct_comment_picture_for_comment
+    )
+) -> list['FlattenedCommentDict']:
+    """
+    Returns a list of comments where are child comments are on the same level.
+
+    Comments naturally contain arbitrary levels of nesting. They are trees.
+    The UI only shows one level of nesting, so deeply nested comments
+    are not displayed with further indentation.
+
+    We pass in the `get_picture_for_comment` callable to ease testing.
+    """
+
+    def process_comment(comment: 'Comment') -> 'FlattenedCommentDict':
+        pic = get_picture_for_comment(comment, request)
+        children = []
+        for child in sorted(comment.children, key=lambda c: c.created):
+            children.extend(process_comment(child)['children'])
+            children.append({
+                'comment': child,
+                'picture': get_picture_for_comment(
+                    child,
+                    request
+                )
+            })
+        return {
+            'comment': comment,
+            'children': children,
+            'picture': pic
+        }
+
+    return [process_comment(comment) for comment in top_level_comments]
 
 
 def maybe_escape(value: str | None) -> str:

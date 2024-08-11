@@ -64,6 +64,7 @@
     <!--? Ellipsis menu dropdown menu, action edit and delete -->
     <div class="ellipsis-menu dropdown">
         <a class="comments-actions" type="button"
+           i18n:attributes="title"
            data-bs-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" i18n:translate=""
            data-no-caret
