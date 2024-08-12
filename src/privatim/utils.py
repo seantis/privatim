@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
-    from privatim.models.commentable import Comment
+    from privatim.models.comment import Comment
     from pyramid.interfaces import IRequest
     from typing import TypedDict
 

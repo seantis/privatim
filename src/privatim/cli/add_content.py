@@ -70,28 +70,7 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
     if not consultation:
         status = Status(name='Erstellt')
         print(f'Adding {n}')
-        comments = [
-            Comment(
-                'Ich habe die Vorlage geprüft und beantrage den Verzicht auf '
-                'eine Stellungnahme. Die geringe Tragweite der (im Rahmen '
-                'des Schengen Acquis obligatorischen) Änderung wird '
-                'ersichtlich, wenn die synoptische Tabelle zusammen mit der '
-                'heutigen Fassung des BPI gelesen wird: - In Art. 15 Abs. 1 '
-                'BPI kommt der neue Bst. kbis als zusätzlicher Zweck von '
-                'RIPOL dazu; - in Art. 16 Abs. 2 BPI kommt der neue Bst. '
-                'gbis als zusätzlicher Zweck von N-SIS dazu; - in Art. 16 '
-                'Abs. 4 wird im Einleitungssatz geklärt, dass die dort '
-                'genannten Stellen keine Ausschreibungen für die Eingabe in '
-                'das N-SIS melden können, welche die neuen Inhalte betreffen '
-                '(wie bisher für die Bst. a–g und h–r, aber nicht für den '
-                'neuen gbis); die Vorschläge können hier nur von Europol '
-                'kommen und werden von Fedpol geprüft (Abs. 4bis). Das '
-                'erscheint mir alles als unproblematisch (und eben ohnehin '
-                'zwingend). ',
-                ueli_buri,
-            ),
-            Comment('Beschluss BA vom xx.yy.2024: Verzicht ', ueli_buri),
-        ]
+
         consultation = Consultation(
             description='Die Europäische Union sieht mit der Verordnung (EU) '
             '2022/1190 vom 6. Juli 2022 vor, dass die Agentur '
@@ -145,10 +124,33 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
             status=status,
             creator=ueli_buri,
         )
+
+        comments = [
+            Comment(
+                'Ich habe die Vorlage geprüft und beantrage den Verzicht auf '
+                'eine Stellungnahme. Die geringe Tragweite der (im Rahmen '
+                'des Schengen Acquis obligatorischen) Änderung wird '
+                'ersichtlich, wenn die synoptische Tabelle zusammen mit der '
+                'heutigen Fassung des BPI gelesen wird: - In Art. 15 Abs. 1 '
+                'BPI kommt der neue Bst. kbis als zusätzlicher Zweck von '
+                'RIPOL dazu; - in Art. 16 Abs. 2 BPI kommt der neue Bst. '
+                'gbis als zusätzlicher Zweck von N-SIS dazu; - in Art. 16 '
+                'Abs. 4 wird im Einleitungssatz geklärt, dass die dort '
+                'genannten Stellen keine Ausschreibungen für die Eingabe in '
+                'das N-SIS melden können, welche die neuen Inhalte betreffen '
+                '(wie bisher für die Bst. a–g und h–r, aber nicht für den '
+                'neuen gbis); die Vorschläge können hier nur von Europol '
+                'kommen und werden von Fedpol geprüft (Abs. 4bis). Das '
+                'erscheint mir alles als unproblematisch (und eben ohnehin '
+                'zwingend). ',
+                ueli_buri,
+                target_id=consultation.id
+            ),
+            Comment('Beschluss BA vom xx.yy.2024: Verzicht ', ueli_buri,
+                    target_id=consultation.id),
+        ]
         db.add(consultation)
         db.add_all(comments)
-        for comment in comments:
-            consultation.comments.append(comment)
 
         db.add(status)
         db.flush()
@@ -171,13 +173,7 @@ def add_content_mili(db: 'Session') -> None:
     if not consultation:
         print(f'Adding {n}')
         status = Status(name='Erstellt')
-        comments = [
-            Comment(
-                'Beschluss BA vom xx.yy.2020: ' 'Stellungnahme privatim',
-                ueli_buri,
-            ),
-            Comment('Eingabe STN privatim am 23.12.2020.', ueli_buri),
-        ]
+
         consultation = Consultation(
             title=n,
             description='Im Rahmen der Umsetzung zur Weiterentwicklung der '
@@ -215,10 +211,16 @@ def add_content_mili(db: 'Session') -> None:
             status=status,
             creator=ueli_buri,
         )
+        comments = [
+            Comment(
+                'Beschluss BA vom xx.yy.2020: ' 'Stellungnahme privatim',
+                ueli_buri, target_id=consultation.id
+            ),
+            Comment('Eingabe STN privatim am 23.12.2020.', ueli_buri,
+                    target_id=consultation.id),
+        ]
         db.add(consultation)
         db.add_all(comments)
-        for comment in comments:
-            consultation.comments.append(comment)
 
         privatim_document_20201223 = get_file()
         consultation.files.append(privatim_document_20201223)

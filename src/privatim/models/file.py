@@ -14,15 +14,15 @@ from sqlalchemy.orm import (
 from privatim.models.utils import extract_pdf_info, word_count
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 from privatim.orm.abstract import AbstractFile
-from privatim.orm.associable import Associable
 from sqlalchemy import Text, Integer, ForeignKey, Computed, Index
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.models import Consultation
 
 
-class GeneralFile(AbstractFile, Associable):
+class GeneralFile(AbstractFile):
     """A general file (image, document, pdf, etc), referenced in the database.
 
     A thin wrapper around the `File` from sqlalchemy-file so that we can easily

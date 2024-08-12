@@ -2,7 +2,7 @@ from privatim.forms.add_comment import CommentForm
 from pyramid.httpexceptions import HTTPFound, HTTPClientError, HTTPNotFound
 from privatim.i18n import _
 from privatim.i18n import translate
-from privatim.models.commentable import Comment
+from privatim.models.comment import Comment
 from privatim.utils import maybe_escape
 
 
@@ -17,20 +17,16 @@ def delete_comment_view(
     context: Comment, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
     session = request.dbsession
-    commentable = context.get_commentable()
-    if commentable is None:
-        return HTTPFound(
-            location=request.route_url('comment', id=context.id)
-        )
+    model = context.get_model(session)
+    assert context.target_type == 'consultations'
 
-    consultation_id = commentable.id
     session.delete(context)
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
     session.flush()
 
     return HTTPFound(
-        location=request.route_url('consultation', id=consultation_id)
+        location=request.route_url('consultation', id=model.id)
     )
 
 
@@ -97,6 +93,7 @@ def add_comment_view(
             content=maybe_escape(form.content.data),
             user=request.user,
             parent=parent,
+            target_id=context.id
         )
         session.add(comment)
         context.comments.append(comment)

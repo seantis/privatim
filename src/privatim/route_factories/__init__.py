@@ -2,8 +2,7 @@ from sqlalchemy import select, exists
 
 from .root_factory import root_factory
 from .uuid_factory import create_uuid_factory
-from privatim.models import AgendaItem, GeneralFile
-from privatim.models.commentable import Comment
+from privatim.models import AgendaItem, GeneralFile, Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 from privatim.models.file import SearchableFile
 

@@ -1,5 +1,5 @@
 from enum import Enum as PyEnum
-from sqlalchemy import Enum
+from sqlalchemy import Enum, Column, Table
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from privatim.orm import Base

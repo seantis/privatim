@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.models import Meeting
     from sqlalchemy import ScalarSelect
-    from privatim.models.commentable import Comment
+    from privatim.models.comment import Comment
     from privatim.models import Consultation
     from privatim.models import GeneralFile
 

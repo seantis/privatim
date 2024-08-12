@@ -13,8 +13,6 @@ if TYPE_CHECKING:
 class CommentForm(Form):
     def __init__(
             self,
-            # Type is consultation, but could be Commentable if this will be
-            # usd by other models in the future...
             context: 'Incomplete',
             request: 'IRequest',
     ) -> None:

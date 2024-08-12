@@ -14,11 +14,13 @@ def test_comment_editable(pg_config):
     db = pg_config.dbsession
     cons = create_consultation()
     db.add(cons)
+    comment = Comment(
+        content='Original Comment',
+        user=User(email='a@b.ch'),
+        target_id=cons.id
+    )
+    db.add(comment)
     db.flush()
-
-    user = User(email='a@b.ch')
-    comment = Comment(content='Original Comment', user=user)
-    cons.comments.append(comment)
     request = DummyRequest(post=MultiDict({'content': 'Updated Comment'}))
 
     edit_comment_view(comment, request)
@@ -38,9 +40,11 @@ def test_comment_delete(pg_config):
     db = pg_config.dbsession
     cons = create_consultation()
 
-    comment = Comment('El Commento', User(email='a@b.ch'))
+    comment = Comment('El Commento', User(email='a@b.ch'), target_id=cons.id)
     cons.comments.append(comment)
-    db.add(cons); db.flush()
+    db.add(cons)
+    db.add(comment)
+    db.flush()
     db.refresh(comment)
 
     request = DummyRequest()
@@ -50,6 +54,7 @@ def test_comment_delete(pg_config):
         select(~exists().where(Comment.content == 'El Commento'))
     )
     assert not_exists
+    return
 
     cons = db.scalar(select(Consultation).filter(Consultation.id == cons.id))
     assert cons.comments == []

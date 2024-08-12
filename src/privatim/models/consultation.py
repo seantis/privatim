@@ -7,22 +7,21 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
-from privatim.models.commentable import Commentable
 from privatim.models.searchable import SearchableMixin
 from privatim.orm import Base
 
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
+from privatim.models.comment import Comment
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING, Iterator, Any
 if TYPE_CHECKING:
     from sqlalchemy.dialects.postgresql import TSVECTOR
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
     from privatim.models.file import SearchableFile
-    from privatim.models.comment import Comment
 
 
 class Status(Base):
@@ -80,7 +79,7 @@ class Tag(Base):
         return f'<Tag {self.name}>'
 
 
-class Consultation(Base, Commentable, SearchableMixin):
+class Consultation(Base, SearchableMixin):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -184,6 +183,17 @@ class Consultation(Base, Commentable, SearchableMixin):
         foreign_keys=[replaced_consultation_id],
         cascade='all, delete'
     )
+
+    comments: Mapped[list[Comment]] = relationship(
+        'Comment',
+        primaryjoin="and_(Consultation.id == foreign(Comment.target_id), Comment.target_type == 'consultations')",
+        cascade='all, delete-orphan'
+    )
+
+    def add_comment(self, comment: 'Comment') -> None:
+        comment.target_id = self.id
+        comment.target_type = self.__tablename__
+        self.comments.append(comment)
 
     # Querying the latest version is undoubtedly a common operation.
     # So let's make it fast for the small price of a bit redundancy.
