@@ -9,8 +9,7 @@ from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_
 from privatim.models import SearchableMixin
-from pyramid.authorization import Allow, Authenticated
-
+from pyramid.authorization import Allow, Authenticated, DENY_ALL
 
 from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
 if TYPE_CHECKING:
@@ -112,8 +111,11 @@ class Comment(Base, Associable, SearchableMixin):
         return f'<Comment id={self.id}; content={self.content}>'
 
     def __acl__(self) -> list['ACL']:
+        """ This __acl__ method allows the comment owner to edit and delete
+             the comment, and denies access to all other users."""
         return [
-            (Allow, Authenticated, ['view']),
+            (Allow, str(self.user.id), ['edit', 'delete']),
+            DENY_ALL
         ]
 
     @classmethod

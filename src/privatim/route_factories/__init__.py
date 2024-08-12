@@ -51,6 +51,7 @@ def consultation_from_comment_factory(
 ) -> Consultation | None:
 
     # Linking to the comment will take us to the model in which it occurs
+    # This is actually what you want most of the time.
 
     comment_id = request.matchdict['id']
     session = request.dbsession

@@ -95,8 +95,10 @@ function setupCommentEditFlow() {
 
             commentContentElement.innerHTML = `
         <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
-        <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}">Save</button>
-        <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
+        <div class="d-flex justify-content-end mt-2 pt-1">
+            <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
+            <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}" style="margin-left: 1rem;">Save</button>
+        </div>
       `;
 
             document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function() {
