@@ -485,7 +485,7 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='POST',
         xhr=True,
-        permission = 'edit'
+        permission='edit'
     )
 
     config.add_route(

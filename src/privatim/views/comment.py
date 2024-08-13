@@ -20,7 +20,10 @@ def delete_comment_view(
     model = context.get_model(session)
     assert context.target_type == 'consultations'
 
-    session.delete(context)
+    consultation = model
+    # Remove the comment from the consultation's comments list
+    consultation.comments.remove(context)
+
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
     session.flush()

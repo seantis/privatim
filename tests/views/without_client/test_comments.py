@@ -53,8 +53,8 @@ def test_comment_delete(pg_config):
     not_exists = db.scalar(
         select(~exists().where(Comment.content == 'El Commento'))
     )
-    assert not_exists
-    return
+    assert not_exists # passes
 
+    # fails:
     cons = db.scalar(select(Consultation).filter(Consultation.id == cons.id))
     assert cons.comments == []

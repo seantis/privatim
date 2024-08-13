@@ -15,7 +15,7 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.comment import Comment
 
 
-from typing import TYPE_CHECKING, Iterator, Any
+from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from sqlalchemy.dialects.postgresql import TSVECTOR
     from privatim.types import ACL
@@ -186,7 +186,8 @@ class Consultation(Base, SearchableMixin):
 
     comments: Mapped[list[Comment]] = relationship(
         'Comment',
-        primaryjoin="and_(Consultation.id == foreign(Comment.target_id), Comment.target_type == 'consultations')",
+        primaryjoin="and_(Consultation.id == foreign(Comment.target_id), "
+                    "Comment.target_type == 'consultations')",
         cascade='all, delete-orphan'
     )
 

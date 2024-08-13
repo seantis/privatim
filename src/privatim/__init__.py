@@ -268,8 +268,9 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     # Drop all existing comments and related tables
     context.drop_table('comments_for_consultations_comments')
     context.drop_table('comments_for_meetings_comments')
-    context.drop_table('comments')
 
+    # For simplicity, first drop it, then re-create the comments table.
+    context.drop_table('comments')
 
     context.add_column(
         'comments',
@@ -279,6 +280,5 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         'comments',
         Column('target_type', String(50), nullable=False)
     )
-
 
     context.commit()

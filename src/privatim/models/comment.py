@@ -3,7 +3,7 @@ from datetime import datetime
 from sedate import utcnow
 from privatim.orm import Base
 from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
-                            remote, object_session)
+                            remote)
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_, select
 from privatim.models import SearchableMixin
@@ -39,7 +39,6 @@ class Comment(Base, SearchableMixin):
         self.target_type = target_type
 
     id: Mapped[UUIDStrPK] = mapped_column(primary_key=True)
-
 
     content: Mapped[str] = mapped_column(Text, nullable=False)
 
