@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
+    setupCommentEditFlow();
     makeConsultationsClickable();
     setupAgendaItemGlobalToggle();
 
@@ -11,14 +12,14 @@ function makeConsultationsClickable() {
     // The whole consultation card was previously wrapped in a link before. This worked until we started rendering
     // user-generated links (as html from the editor) in the description. Nesting Link is not allowed by HTML standard.
     if (window.location.href.includes('/consultations')) {
-            const cards = document.querySelectorAll('.consultation-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function (e) {
-                    if (e.target.tagName !== 'A') {
-                        window.location.href = this.dataset.href;
-                    }
-                });
+        const cards = document.querySelectorAll('.consultation-card');
+        cards.forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (e.target.tagName !== 'A') {
+                    window.location.href = this.dataset.href;
+                }
             });
+        });
     }
 }
 
@@ -84,6 +85,72 @@ function initializePopoversAndTooltips() {
     });
 }
 
+function setupCommentEditFlow() {
+    document.querySelectorAll('.edit-comment-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const commentId = this.dataset.commentId;
+            const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
+            const originalContent = commentContentElement.textContent.trim();
+
+            commentContentElement.innerHTML = `
+        <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
+        <div class="d-flex justify-content-end mt-2 pt-1">
+            <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
+            <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}" style="margin-left: 1rem;">Save</button>
+        </div>
+      `;
+
+            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function() {
+                const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
+                saveCommentEdit(commentId, editedContent);
+            });
+
+            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function() {
+                commentContentElement.innerHTML = originalContent;
+            });
+        });
+    });
+}
+
+function saveCommentEdit(commentId, editedContent) {
+    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+    const formData = new FormData();
+    formData.append('content', editedContent);
+    formData.append('csrf_token', csrfToken);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `/comments/${commentId}/edit`, true);
+    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        document.querySelector(`#comment-content-${commentId}`).innerHTML = response.content;
+                    } else {
+                        console.error('Error updating comment:', response.message || 'Unknown error');
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            } else {
+                console.error('HTTP error:', xhr.status, xhr.statusText);
+            }
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('Network error occurred while updating comment');
+    };
+
+    xhr.send(formData);
+}
+
 
 function setupCommentAnswerField() {
     // Makes the answer comment form appear.
@@ -144,7 +211,7 @@ function setupAgendaItemGlobalToggle() {
 
 
 (function () {
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const tomSelectWrapper = document.querySelector('.ts-wrapper');
         const attendanceList = document.querySelector('.attendance-list');
 
@@ -196,8 +263,6 @@ function setupAgendaItemGlobalToggle() {
             });
         });
 
-        observer.observe(tomSelectWrapper, { childList: true, subtree: true });
+        observer.observe(tomSelectWrapper, {childList: true, subtree: true});
     });
 })(); // IIFE ends here
-
-

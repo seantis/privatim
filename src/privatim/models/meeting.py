@@ -11,7 +11,6 @@ from pyramid.authorization import Authenticated
 
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
-from privatim.models.commentable import Commentable
 from privatim.models.association_tables import AttendanceStatus
 from privatim.models.association_tables import MeetingUserAttendance
 from privatim.orm.uuid_type import UUIDStr
@@ -116,7 +115,7 @@ class AgendaItem(Base, SearchableMixin):
         return f'<AgendaItem {self.title} position {self.position}>'
 
 
-class Meeting(Base, SearchableMixin, Commentable):
+class Meeting(Base, SearchableMixin):
     """Sitzung"""
 
     __tablename__ = 'meetings'

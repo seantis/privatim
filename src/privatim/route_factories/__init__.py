@@ -2,8 +2,7 @@ from sqlalchemy import select, exists
 
 from .root_factory import root_factory
 from .uuid_factory import create_uuid_factory
-from privatim.models import AgendaItem, GeneralFile
-from privatim.models.commentable import Comment
+from privatim.models import AgendaItem, GeneralFile, Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 from privatim.models.file import SearchableFile
 
@@ -49,17 +48,13 @@ def comment_factory(request: 'IRequest') -> Comment:
 def consultation_from_comment_factory(
     request: 'IRequest',
 ) -> Consultation | None:
+
+    # Linking to the comment will take us to the model in which it occurs
+    # This is actually what you want most of the time.
+
     comment_id = request.matchdict['id']
     session = request.dbsession
 
-    """ This allows us to conveniently link to comments, and we are link to
-    the model they appear in instead.
-
-    Note: Currently there is only one model (Consultation) in which we make
-    comments. If this changes in the future we'll have to adjust this function.
-    """
-
-    # First, get the comment
     comment = session.get(Comment, comment_id)
     if not comment:
         return None
@@ -69,10 +64,8 @@ def consultation_from_comment_factory(
             comment = comment.parent
         return comment
 
-    # Get the top-level comment
     top_level_comment = get_top_level_comment(comment)
 
-    # Now search for the consultation
     subquery = select(1).where(
         Consultation.comments.any(Comment.id == top_level_comment.id)
     )

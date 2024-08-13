@@ -85,9 +85,32 @@
 
 /* Indentation of the child comment*/
 .indent-child-comments {
-    margin-left: 50px
+    margin-left: 90px
 }
 
-.answer-button {
-    /*margin-left: 50px*/
+.comments-elements-wrap div:last-child {
+    margin-left: auto;
+}
+
+.comments-actions {
+    color: var(--bs-secondary-color);
+
+    /* Increase clickable area around the comments dropdown. */
+    padding: 15px;
+    margin: -15px;  /* This should be the negative of the padding. */
+    display: inline-block;
+    position: relative;
+}
+
+.comments-actions i {
+    display: block;  /* This ensures the icon itself doesn't add to the size. */
+}
+
+.ellipsis-menu {
+    align-self: baseline;
+}
+
+.comments-section a {
+    /* Remove underlines from links. */
+    text-decoration: none;
 }

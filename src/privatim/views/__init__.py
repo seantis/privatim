@@ -4,7 +4,8 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
                                       general_file_factory, file_factory,
-                                      consultation_from_comment_factory)
+                                      consultation_from_comment_factory,
+                                      comment_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -44,7 +45,11 @@ from privatim.views.password_retrieval import (  # type: ignore
 
 from privatim.views.people import people_view, person_view
 from privatim.views.profile import profile_view, add_profile_image_view
-from privatim.views.comment import add_comment_view
+from privatim.views.comment import (
+    add_comment_view,
+    edit_comment_view,
+    delete_comment_view,
+)
 from privatim.views.search import search
 from privatim.views.working_groups import (delete_working_group_view,
                                            add_working_group,
@@ -462,43 +467,41 @@ def includeme(config: 'Configurator') -> None:
         request_param=['target_url', 'parent_id']
     )
 
-    #
-    # config.add_route(
-    #     'edit_comment',
-    #     '/comments/{id}/edit',
-    #     factory=agenda_item_factory
-    # )
-    # config.add_view(
-    #     edit_agenda_item_view,
-    #     route_name='edit_comment',
-    #     renderer='templates/form.pt',
-    #     xhr=False
-    # )
-    # config.add_view(
-    #     edit_agenda_item_view,
-    #     route_name='edit_comment',
-    #     renderer='json',
-    #     request_method='POST',
-    #     xhr=True
-    # )
-    #
-    # config.add_route(
-    #     'delete_comment',
-    #     '/comments/{id}/delete',
-    #     factory=agenda_item_factory
-    # )
-    # config.add_view(
-    #     delete_agenda_item_view,
-    #     route_name='delete_comment',
-    #     xhr=False
-    # )
-    # config.add_view(
-    #     delete_agenda_item_view,
-    #     route_name='delete_comment',
-    #     renderer='json',
-    #     request_method='DELETE',
-    #     xhr=True
-    # )
+    config.add_route(
+        'edit_comment',
+        '/comments/{id}/edit',
+        factory=comment_factory
+    )
+    config.add_view(
+        edit_comment_view,
+        route_name='edit_comment',
+        renderer='templates/form.pt',
+        xhr=False,
+    )
+    config.add_view(
+        edit_comment_view,
+        route_name='edit_comment',
+        renderer='json',
+        request_method='POST',
+        xhr=True,
+    )
+
+    config.add_route(
+        'delete_comment',
+        '/comments/{id}/delete',
+        factory=comment_factory
+    )
+    config.add_view(
+        delete_comment_view,
+        route_name='delete_comment',
+        xhr=False,
+    )
+    config.add_view(
+        delete_comment_view,
+        route_name='delete_comment',
+        renderer='json',
+        xhr=True,
+    )
 
     # view for single person
     config.add_route(

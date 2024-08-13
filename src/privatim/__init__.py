@@ -265,4 +265,21 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     #     postgresql_using='gin',
     # )
 
+    # Drop all existing comments and related tables
+    context.drop_table('comments_for_consultations_comments')
+    context.drop_table('comments_for_meetings_comments')
+
+    # For simplicity, first drop it, then re-create the comments table.
+    # Base.metadata.create_all() should do the job.
+    context.drop_table('comments')
+
+    context.add_column(
+        'comments',
+        Column('target_id', UUIDStrType, nullable=False)
+    )
+    context.add_column(
+        'comments',
+        Column('target_type', String(50), nullable=False)
+    )
+
     context.commit()

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-10 22:07+0200\n"
+"POT-Creation-Date: 2024-08-13 15:40+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -45,6 +45,18 @@ msgstr "Actions"
 #: src/privatim/layouts/macros.pt
 msgid "Message"
 msgstr "Message"
+
+#: src/privatim/layouts/macros.pt
+msgid "Show context Menu"
+msgstr "Afficher le menu contextuel"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/profile.pt
+msgid "Edit"
+msgstr "Modifier"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+msgid "Delete"
+msgstr "Supprimer"
 
 #: src/privatim/layouts/macros.pt
 msgid "Comments"
@@ -165,10 +177,6 @@ msgstr "Réduire tout"
 msgid "Details"
 msgstr "Des détails"
 
-#: src/privatim/views/meetings.py
-msgid "Delete"
-msgstr "Supprimer"
-
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
 msgid "Attended"
 msgstr "Attendus"
@@ -281,6 +289,18 @@ msgstr ""
 "une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
 "spécial. une lettre majuscule, une lettre minuscule, un chiffre et un "
 "caractère spécial."
+
+#: src/privatim/views/comment.py
+msgid "Comment deleted by user"
+msgstr "[Commentaire supprimé par l'utilisateur]"
+
+#: src/privatim/views/comment.py
+msgid "Successfully deleted comment"
+msgstr "Commentaire supprimé avec succès"
+
+#: src/privatim/views/comment.py
+msgid "Successfully edited comment"
+msgstr "Commentaire modifié avec succès"
 
 #: src/privatim/views/comment.py
 msgid "Successfully added comment"
@@ -512,10 +532,6 @@ msgstr "→ Mot de passe oublié / Activer le compte"
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Photo de profil"
-
-#: src/privatim/views/templates/profile.pt
-msgid "Edit"
-msgstr "Modifier"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Personal information"
@@ -860,34 +876,3 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#~ msgid "Created Meetings"
-#~ msgstr "Sessions créées"
-
-#~ msgid "Created Consultations"
-#~ msgstr "Consultations créées"
-
-#~ msgid "Type"
-#~ msgstr "Variété"
-
-#~ msgid "No results found"
-#~ msgstr "Aucun résultat trouvé"
-
-#~ msgid "Add Link"
-#~ msgstr "Ajouter un lien"
-
-#~ msgid "Remove Link"
-#~ msgstr "Supprimer le lien"
-
-#, python-format
-#~ msgid "Successfully added consultation \"${name}\""
-#~ msgstr "L'ajout de la consultation a été effectué avec succès \"${name}\""
-
-#~ msgid "File Match"
-#~ msgstr "Correspondance de fichier"
-
-#~ msgid "File Content"
-#~ msgstr "Contenu du fichier"
-
-#~ msgid "No Elements Found"
-#~ msgstr "Aucun élément trouvé"
