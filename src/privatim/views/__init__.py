@@ -477,7 +477,6 @@ def includeme(config: 'Configurator') -> None:
         route_name='edit_comment',
         renderer='templates/form.pt',
         xhr=False,
-        permission='edit'
     )
     config.add_view(
         edit_comment_view,
@@ -485,7 +484,6 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='POST',
         xhr=True,
-        permission='edit'
     )
 
     config.add_route(
@@ -496,17 +494,13 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         delete_comment_view,
         route_name='delete_comment',
-        request_method='DELETE',
         xhr=False,
-        permission='delete'
     )
     config.add_view(
         delete_comment_view,
         route_name='delete_comment',
         renderer='json',
-        request_method='DELETE',
         xhr=True,
-        permission='delete'
     )
 
     # view for single person

@@ -2,7 +2,7 @@ from pathlib import Path
 from webtest import Upload
 from privatim.models import User
 from privatim.static import get_default_profile_pic_data
-from tests.shared.utils import create_consultation
+from tests.shared.utils import create_consultation, get_link
 
 
 def test_add_comment(client):
@@ -71,3 +71,34 @@ def test_profile_picture_author_is_rendered_in_comment(client):
     # second comment should have the custom picture
     second_comment_picture = files[1]
     assert second_comment_picture == bytes_profile_pic
+
+
+def test_comment_actions_only_available_to_author(client):
+    consultation = create_consultation()
+    session = client.db
+
+    user2 = User(email='username')
+    session.add(user2)
+    session.flush()
+    user2.set_password('password')
+
+    client.login_admin()
+    session.add(consultation)
+    session.commit()
+    page = client.get(f'/consultation/{consultation.id}')
+
+    page.form['content'] = 'Comment is here'
+    page = page.form.submit().follow()
+    assert page.status_code == 200
+    actions_menu = page.pyquery('.ellipsis-menu')[0]
+
+    # the author should have the links...
+    del_link = get_link(actions_menu, lambda link: '/delete' in link)
+    assert del_link
+
+    # ... any other user should not have it:
+    client.get('/logout')
+    client.login('username', 'password')
+    page = client.get(f'/consultation/{consultation.id}')
+    assert not page.pyquery('.ellipsis-menu')
+

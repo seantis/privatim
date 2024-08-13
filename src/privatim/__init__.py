@@ -270,6 +270,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     context.drop_table('comments_for_meetings_comments')
 
     # For simplicity, first drop it, then re-create the comments table.
+    # Base.metadata.create_all() should do the job.
     context.drop_table('comments')
 
     context.add_column(
