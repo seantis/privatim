@@ -1,5 +1,6 @@
 from privatim.forms.add_comment import CommentForm
-from pyramid.httpexceptions import HTTPFound, HTTPClientError, HTTPNotFound
+from pyramid.httpexceptions import (HTTPFound, HTTPClientError, HTTPNotFound,
+                                    HTTPForbidden)
 from privatim.i18n import _
 from privatim.i18n import translate
 from privatim.models.comment import Comment
@@ -35,10 +36,12 @@ def delete_comment_view(
 
 def edit_comment_view(
         context: Comment, request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+) -> 'RenderDataOrRedirectOrForbidden':
 
     form = CommentForm(context, request)
     session = request.dbsession
+    if context.user_id and context.user_id != request.user.id:
+        return HTTPForbidden()
 
     if request.method == 'POST' and form.validate():
         context.content = maybe_escape(form.content.data)
