@@ -271,7 +271,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
 
     # For simplicity, first drop it, then re-create the comments table.
     # Base.metadata.create_all() should do the job.
-    context.drop_table('comments')
+    # context.drop_table('comments')
 
     context.add_column(
         'comments',
