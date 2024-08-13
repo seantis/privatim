@@ -40,7 +40,11 @@ def test_comment_delete(pg_config):
     db = pg_config.dbsession
     cons = create_consultation()
 
-    comment = Comment('El Commento', User(email='a@b.ch'), target_id=cons.id)
+    comment = Comment(
+        'El Commento',
+        User(email='a@b.ch'),
+        target_id=cons.id
+    )
     cons.comments.append(comment)
     db.add(cons)
     db.add(comment)
@@ -53,8 +57,7 @@ def test_comment_delete(pg_config):
     not_exists = db.scalar(
         select(~exists().where(Comment.content == 'El Commento'))
     )
-    assert not_exists # passes
+    assert not_exists
 
-    # fails:
     cons = db.scalar(select(Consultation).filter(Consultation.id == cons.id))
-    assert cons.comments == []
+    assert 'gelöscht' in cons.comments[0].content.lower()

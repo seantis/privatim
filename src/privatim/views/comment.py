@@ -11,26 +11,22 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.models import Consultation
     from pyramid.interfaces import IRequest
-    from privatim.types import MixedDataOrRedirect
+    from privatim.types import MixedDataOrRedirect, \
+        RenderDataOrRedirectOrForbidden
 
 
 def delete_comment_view(
     context: Comment, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
-    session = request.dbsession
-    model = context.get_model(session)
     assert context.target_type == 'consultations'
-
-    consultation = model
-    # Remove the comment from the consultation's comments list
-    consultation.comments.remove(context)
-
+    context.content = _('Comment deleted by user')
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
-    session.flush()
 
     return HTTPFound(
-        location=request.route_url('consultation', id=model.id)
+        location=request.route_url(
+            'consultation', id=context.get_model(request.dbsession).id
+        )
     )
 
 
