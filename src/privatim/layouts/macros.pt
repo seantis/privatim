@@ -68,7 +68,7 @@
             <a class="comments-actions" type="button"
                      i18n:attributes="title"
                data-bs-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false" i18n:translate=""
+               aria-haspopup="true" aria-expanded="false"
                data-no-caret
                data-bs-toggle="tooltip" data-bs-placement="top" title="Show context Menu"
                data-bs-delay='{"show": 0, "hide": 0}'>
@@ -76,7 +76,7 @@
             </a>
             <ul class="dropdown-menu text-small">
                 <li>
-                    <a class="dropdown-item" href="#" class="d-flx edit-comment-link" data-comment-id="${comment.id}">
+                    <a class="dropdown-item" href="#" class="edit-comment-link" data-comment-id="${comment.id}">
                         <i class="far fa-edit me-2"></i>
                         <span i18n:translate="" class="mb-0">Edit</span>
                     </a>
@@ -85,8 +85,7 @@
                     <hr class="dropdown-divider">
                 </li>
                 <li>
-                    <a class="dropdown-item" href="${request.route_url('delete_comment', id=comment.id)}"
-                       class="d-flex">
+                    <a class="dropdown-item" href="${request.route_url('delete_comment', id=comment.id)}">
                         <i class="far fa-trash me-2"></i>
                         <span i18n:translate="" class="mb-0">Delete</span>
                     </a>

@@ -133,14 +133,28 @@ def copy_agenda_item_view(
 ) -> 'MixedDataOrRedirect':
 
     form = AgendaItemCopyForm(context, request)
+    session = request.dbsession
     assert isinstance(context, Meeting)
 
     target_url = request.route_url('meeting', id=context.id)
     if request.method == 'POST' and form.validate():
+
         destination_str_id = form.copy_to.data
         stmt = select(Meeting).where(Meeting.id == destination_str_id)
-        dest_meeting = request.dbsession.execute(stmt).scalar_one()
-        dest_meeting.agenda_items = context.agenda_items
+        dest_meeting = session.execute(stmt).scalar_one()
+
+        # Create deep copies of agenda items
+        for agenda_item in context.agenda_items:
+            new_item = AgendaItem(
+                title=agenda_item.title,
+                description=agenda_item.description if
+                form.copy_description.data else '',
+                meeting=agenda_item.meeting,
+                position=agenda_item.position
+            )
+            dest_meeting.agenda_items.append(new_item)
+        session.add(dest_meeting)
+        session.flush()
 
         message = _(
             'Successfully copied agenda item "${name}"',

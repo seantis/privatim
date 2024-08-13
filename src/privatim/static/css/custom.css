@@ -408,14 +408,14 @@ input[type="checkbox"]:checked {
 
 /* Custom checkbox styling */
 .form-check-input:checked {
-    background-color: var(--primary-color); /* Matches the checkbox color */
-    border-color: var(--primary-color); /* Matches the checkbox color */
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .form-check-input:focus {
     box-shadow: none;
-
 }
+
 /* https://stackoverflow.com/a/48484022/ */
 /* Prevent having a blue outline (default) everywhere */
 .form-control:focus,

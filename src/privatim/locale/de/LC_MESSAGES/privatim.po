@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-13 15:08+0200\n"
+"POT-Creation-Date: 2024-08-13 15:40+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -51,19 +51,15 @@ msgstr "Nachricht"
 
 #: src/privatim/layouts/macros.pt
 msgid "Show context Menu"
-msgstr ""
+msgstr "Kontextmenü anzeigen"
 
-#: src/privatim/layouts/macros.pt
-msgid "<dynamic element>"
-msgstr ""
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/profile.pt
+msgid "Edit"
+msgstr "Bearbeiten"
 
-#: src/privatim/layouts/macros.pt
-msgid "edit"
-msgstr ""
-
-#: src/privatim/layouts/macros.pt
-msgid "delete"
-msgstr ""
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+msgid "Delete"
+msgstr "Löschen"
 
 #: src/privatim/layouts/macros.pt
 msgid "Comments"
@@ -172,13 +168,17 @@ msgstr "Traktandum bearbeiten"
 msgid "Members"
 msgstr "Mitglieder"
 
+#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
+msgid "Expand All"
+msgstr "Alle ausklappen"
+
+#: src/privatim/views/meetings.py
+msgid "Collapse All"
+msgstr "Alle einklappen"
+
 #: src/privatim/views/meetings.py
 msgid "Details"
 msgstr "Details"
-
-#: src/privatim/views/meetings.py
-msgid "Delete"
-msgstr "Löschen"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
 msgid "Attended"
@@ -297,11 +297,11 @@ msgstr "[Kommentar von Benutzer gelöscht]"
 
 #: src/privatim/views/comment.py
 msgid "Successfully deleted comment"
-msgstr ""
+msgstr "Kommentar erfolgreich gelöscht"
 
 #: src/privatim/views/comment.py
 msgid "Successfully edited comment"
-msgstr ""
+msgstr "Kommentar erfolgreich bearbeitet"
 
 #: src/privatim/views/comment.py
 msgid "Successfully added comment"
@@ -515,6 +515,7 @@ msgid "by"
 msgstr "von "
 
 #: src/privatim/views/templates/activities.pt
+#: src/privatim/forms/agenda_item_form.py
 msgid "Date:"
 msgstr "Datum:"
 
@@ -533,10 +534,6 @@ msgstr "→ Passwort vergessen / Account aktivieren "
 #: src/privatim/views/templates/profile.pt
 msgid "Profile Picture"
 msgstr "Profilbild"
-
-#: src/privatim/views/templates/profile.pt
-msgid "Edit"
-msgstr "Bearbeiten"
 
 #: src/privatim/views/templates/profile.pt
 msgid "Personal information"
@@ -684,7 +681,6 @@ msgid "Title"
 msgstr "Titel"
 
 #: src/privatim/forms/consultation_form.py
-#: src/privatim/forms/agenda_item_form.py
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -719,11 +715,11 @@ msgstr "Kommentar erfassen"
 #: src/privatim/forms/validators.py
 #, python-format
 msgid "The file is too large, please provide a file smaller than {}."
-msgstr ""
+msgstr "Die Datei ist zu gross, bitte eine Datei kleiner als {} bereitstellen."
 
 #: src/privatim/forms/validators.py
 msgid "Files of this type are not supported."
-msgstr ""
+msgstr "Dateien dieses Typs werden nicht unterstützt."
 
 #: src/privatim/forms/validators.py
 msgid "This field is required."
@@ -785,6 +781,10 @@ msgid "A meeting with this name already exists."
 msgstr "Eine Sitzung mit diesem Namen existiert bereits."
 
 #: src/privatim/forms/agenda_item_form.py
+msgid "Potentially Description"
+msgstr "Gegebenenfalls Beschreibung"
+
+#: src/privatim/forms/agenda_item_form.py
 msgid "Select Destionation for Agenda Item"
 msgstr "Ziel für Traktanden auswählen"
 
@@ -797,6 +797,10 @@ msgstr ""
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy to"
 msgstr "Kopieren nach"
+
+#: src/privatim/forms/agenda_item_form.py
+msgid "Copy description aswell"
+msgstr "Beschreibung ebenfalls kopieren"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "No Leader"
@@ -877,30 +881,8 @@ msgstr "Gremium:"
 msgid "Attendees:"
 msgstr "Teilnehmende:"
 
-#~ msgid "Created Meetings"
-#~ msgstr "Sitzungen erstellt"
+#~ msgid "edit"
+#~ msgstr "Bearbeiten"
 
-#~ msgid "Created Consultations"
-#~ msgstr "Vernehmlassungen erstellt"
-
-#~ msgid "Type"
-#~ msgstr "Art"
-
-#~ msgid "No results found"
-#~ msgstr "Keine Resultate gefunden"
-
-#~ msgid "Add Link"
-#~ msgstr "Link einfügen"
-
-#~ msgid "Remove Link"
-#~ msgstr "Link entfernen"
-
-#, python-format
-#~ msgid "Successfully added consultation \"${name}\""
-#~ msgstr "Vernehmlassung \"${name}\" erfolgreich hinzugefügt"
-
-#~ msgid "File Match"
-#~ msgstr "Dateiinhalt"
-
-#~ msgid "File Content"
-#~ msgstr "Dateiinhalt"
+#~ msgid "delete"
+#~ msgstr "Löschen"

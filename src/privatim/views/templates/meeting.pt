@@ -27,8 +27,14 @@
 
             <div class="col-lg-9 mb-4">
 
-                <h2 i18n:translate="">Agenda Items</h2>
-
+                <div class="d-flex justify-content-between align-items-center mb-3" tal:condition="agenda_items">
+                    <h2 i18n:translate="">Agenda Items</h2>
+                    <button class="btn" id="toggleAllItems"
+                            data-expand-text="${expand_all_text}"
+                            data-collapse-text="${collapse_all_text}">
+                        <i class="fas fa-caret-down me-2"></i><span i18n:translate="">Expand All</span>
+                    </button>
+                </div>
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
                 <div class="accordion" id="agenda-items" data-sortable="" data-sortable-url="${sortable_url}">
                         <div data-sortable-id="${item.position}" class="accordion-item handle-for-dragging draggable-item" tal:repeat="item agenda_items">
