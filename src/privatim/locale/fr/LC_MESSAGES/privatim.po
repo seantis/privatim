@@ -292,7 +292,7 @@ msgstr ""
 
 #: src/privatim/views/comment.py
 msgid "Comment deleted by user"
-msgstr "Commentaire supprimé par l'utilisateur"
+msgstr "[Commentaire supprimé par l'utilisateur]"
 
 #: src/privatim/views/comment.py
 msgid "Successfully deleted comment"

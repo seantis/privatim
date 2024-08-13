@@ -74,21 +74,24 @@
                data-bs-delay='{"show": 0, "hide": 0}'>
                 <i class="fas fa-ellipsis-v"></i>
             </a>
-            <div class="dropdown-menu dropdown-secondary">
-                <div>
-                    <a href="#" class="d-flx edit-comment-link" data-comment-id="${comment.id}">
+            <ul class="dropdown-menu text-small">
+                <li>
+                    <a class="dropdown-item" href="#" class="d-flx edit-comment-link" data-comment-id="${comment.id}">
                         <i class="far fa-edit me-2"></i>
-                        <span i18n:translate="" class="mb-0">edit</span>
+                        <span i18n:translate="" class="mb-0">Edit</span>
                     </a>
-                </div>
-                <hr class="dropdown-divider">
-                <div>
-                    <a href="${request.route_url('delete_comment', id=comment.id)}" class="d-flex">
-                        <i class="far fa-dot-circle me-2"></i>
-                        <p i18n:translate="" class="mb-0">delete</p>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item" href="${request.route_url('delete_comment', id=comment.id)}"
+                       class="d-flex">
+                        <i class="far fa-trash me-2"></i>
+                        <span i18n:translate="" class="mb-0">Delete</span>
                     </a>
-                </div>
-            </div>
+                </li>
+            </ul>
         </tal:block>
     </div>
 </metal:block>
