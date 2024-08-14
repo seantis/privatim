@@ -282,4 +282,9 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         Column('target_type', String(50), nullable=False)
     )
 
+    context.add_column(
+        'users',
+        Column('locale', String(32), nullable=True)
+    )
+
     context.commit()

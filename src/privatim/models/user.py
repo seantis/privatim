@@ -18,7 +18,7 @@ from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
 from privatim.orm import Base
-from privatim.orm.meta import UUIDStrPK, str_256, str_128
+from privatim.orm.meta import UUIDStrPK, str_256, str_128, str_32
 
 
 from typing import TYPE_CHECKING
@@ -53,6 +53,7 @@ class User(Base):
     first_name: Mapped[str_256 | None]
     last_name: Mapped[str_256 | None]
     email: Mapped[str_256] = mapped_column(unique=True)
+    locale: Mapped[str_32]
     password: Mapped[str_128 | None]
     mobile_number: Mapped[str_128 | None] = mapped_column(unique=True)
     last_login: Mapped[datetime | None]

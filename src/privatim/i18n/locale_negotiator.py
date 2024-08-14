@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.interfaces import ILocaleNegotiator
 from zope.interface import implementer
 
@@ -26,13 +27,37 @@ class LocaleNegotiator:
     def __call__(self, request: 'IRequest') -> str:
         available = self.available_languages(request)
         default = self.default_language(request)
-        locale: str | None
-        # 1. Use browser's Accept-Language header
+
+        # Store in session if locale name is set explictly
+        locale: str | None = None
+        try:
+            locale_ = request.params.get('set_language', None)
+            if isinstance(locale_, str):
+                locale = locale_
+        except ValueError as e:
+            if not request.exception:
+                raise HTTPBadRequest(str(e)) from None
+
+        if locale and locale in available:
+            request.session['locale_name'] = locale
+            return locale
+
+        # 1. Try to get locale name from the session
+        locale = request.session.get('locale_name', None)
+        if locale and locale in available:
+            return locale
+
+        # 2. Get language from user object
+        user = request.user
+        if user:
+            locale = user.locale
+            if locale and locale in available:
+                return locale
+
+        # 3. Use browser's Accept-Language header
         locale = request.accept_language.lookup(available, default=default)
         if locale and locale in available:
-            # return locale
-            return 'de'
+            return locale
 
-        # 2. Fallback to default language
-        # return default
-        return 'de'
+        # 4. Fallback to default language
+        return default
