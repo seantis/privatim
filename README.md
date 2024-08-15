@@ -102,6 +102,12 @@ This will remove packages that have been manually installed locally
 ###  Filestorage location
 By default, files are managed by sqlalchemy-file and are saved in the ./files directory
 
+### Export Translations
+
+```
+po-to-xls src/privatim/locale/fr/LC_MESSAGES/privatim.po
+```
+
 ### Javascript/Css dependencies
 
 The project includes js/css files.
