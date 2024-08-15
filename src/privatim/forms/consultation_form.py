@@ -12,7 +12,7 @@ from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
                                           SearchableSelectField,
                                           ConstantTextAreaField,
                                           )
-from privatim.forms.validators import FileSizeLimit, ExpectedExtensions
+from privatim.forms.validators import FileSizeLimit, FileExtensionsAllowed
 from privatim.i18n import _, translate
 
 from privatim.models import Tag, SearchableFile
@@ -101,7 +101,7 @@ class ConsultationForm(Form):
         label=_('Documents'),
         validators=[
             validators.Optional(),
-            ExpectedExtensions(['docx', 'doc', 'pdf', 'txt']),
+            FileExtensionsAllowed(['docx', 'doc', 'pdf', 'txt']),
             FileSizeLimit(DEFAULT_UPLOAD_LIMIT)
         ],
         file_class=SearchableFile

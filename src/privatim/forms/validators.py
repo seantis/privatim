@@ -1,9 +1,7 @@
 from cgi import FieldStorage
-from mimetypes import types_map
 
 import humanize
 from wtforms.validators import DataRequired
-from wtforms.validators import Optional
 from wtforms.validators import StopValidation
 from wtforms.validators import ValidationError
 import re
@@ -101,51 +99,6 @@ class WhitelistedMimeType:
 
         if field.data['mimetype'] not in self.whitelist:
             raise ValidationError(field.gettext(self.message))
-
-
-class ExpectedExtensions(WhitelistedMimeType):
-    """ Makes sure an uploaded file has one of the expected extensions. Since
-    extensions are not something we can count on we look up the mimetype of
-    the extension and use that to check.
-
-    Expects an :class:`onegov.form.fields.UploadField` instance.
-
-    Usage::
-
-        ExpectedExtensions(['*'])  # default whitelist
-        ExpectedExtensions(['pdf'])  # makes sure the given file is a pdf
-    """
-
-    def __init__(self, extensions: 'Sequence[str]'):
-        # normalize extensions
-        if len(extensions) == 1 and extensions[0] == '*':
-            mimetypes = None
-        else:
-            mimetypes = {
-                mimetype for ext in extensions
-                # we silently discard any extensions we don't know for now
-                if (mimetype := types_map.get('.' + ext.lstrip('.'), None))
-            }
-        super().__init__(whitelist=mimetypes)
-
-
-class OptionalIf(Optional):
-    """
-    Marks a field optional if another field is set.
-    """
-
-    def __init__(self, check_field: str, strip_whitespace: bool = True):
-        self.check_field = check_field
-        super().__init__(strip_whitespace=strip_whitespace)
-
-    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
-        other_field = form._fields.get(self.check_field)
-
-        if other_field is None:
-            raise Exception(f'no field named "{self.check_field}" in form')
-
-        if bool(other_field.data):
-            super().__call__(form, field)
 
 
 class FileRequired(DataRequired):
