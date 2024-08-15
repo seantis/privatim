@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-
 import pytest
 import transaction
 from pyramid import testing
@@ -230,3 +229,10 @@ def pdf_vemz():
 @pytest.fixture()
 def mtan_tool(session):
     return MTanTool(session)
+
+
+@pytest.fixture()
+def sample_docx_file(tmp_path):
+    filename = 'Spielplan.docx'
+    path = Path(__file__).parent / 'test_files' / filename
+    return path

@@ -1,9 +1,13 @@
+from docx import Document
 from pdftotext import PDF  # type: ignore
+from docx.text.paragraph import Paragraph
+from docx.table import Table
 
 
-from typing import TYPE_CHECKING
+from typing import IO, TYPE_CHECKING, Iterator, Any
 if TYPE_CHECKING:
     from _typeshed import SupportsRead
+    from docx.blkcntnr import BlockItemContainer
 
 
 def word_count(text: str) -> int:
@@ -47,3 +51,31 @@ def extract_pdf_info(
         return ' '.join(text.split())
 
     return len(pages), ' '.join(clean(page) for page in pages).strip()
+
+
+def get_docx_text(content: IO[bytes]) -> str:
+    doc = Document(content)
+    try:
+        text = recursively_iter_block_items(doc)  # type: ignore
+        return '\n'.join(item.text for item in text)
+    except Exception:
+        return ''
+
+
+def recursively_iter_block_items(
+    blockcontainer: 'BlockItemContainer',
+) -> Iterator[Any]:
+    """ Extract text content form docx in the order that it appears. This
+    works for tables as well.
+
+    https://github.com/python-openxml/python-docx/issues/40#issuecomment
+    -1793226714
+
+    """
+    for item in blockcontainer.iter_inner_content():
+        if isinstance(item, Paragraph):
+            yield item
+        elif isinstance(item, Table):
+            for row in item.rows:
+                for cell in row.cells:
+                    yield from recursively_iter_block_items(cell)

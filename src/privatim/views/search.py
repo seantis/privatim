@@ -328,6 +328,26 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
                 result_dict['file_link'] = request.route_url(
                     'download_file', id=file.id
                 )
+                # Determine the icon based on content type
+                if (
+                    file.content_type == 'application/vnd.openxmlformats-'
+                                         'officedocument.wordprocessingml.'
+                                         'document'
+                ):
+                    result_dict['icon_url'] = request.static_url(
+                        'privatim:static/docx.svg'
+                    )
+                    result_dict['icon_alt'] = 'DOCX File Icon'
+                elif file.content_type == 'application/pdf':
+                    result_dict['icon_url'] = request.static_url(
+                        'privatim:static/PDF_file_icon_with_primary_color.svg'
+                    )
+                    result_dict['icon_alt'] = 'PDF File Icon'
+                else:
+                    result_dict['icon_url'] = request.static_url(
+                        'privatim:static/generic_file_icon.svg'
+                    )
+                    result_dict['icon_alt'] = 'Generic File Icon'
 
             if result.type in ['AgendaItem', 'Consultation', 'Meeting']:
                 first_item = next(iter(result_dict['headlines'].items()))

@@ -11,7 +11,7 @@ from sqlalchemy.orm import (
     declared_attr,
 )
 
-from privatim.models.utils import extract_pdf_info, word_count
+from privatim.models.utils import extract_pdf_info, word_count, get_docx_text
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 from privatim.orm.abstract import AbstractFile
 from sqlalchemy import Text, Integer, ForeignKey, Computed, Index
@@ -39,8 +39,7 @@ class GeneralFile(AbstractFile):
 
 class SearchableFile(AbstractFile):
     """
-    A file with the intention of being searchable. Should to be used with
-    SearchableAssociatedFiles.
+    A file with the intention of being searchable.
     """
 
     __tablename__ = 'searchable_files'
@@ -59,7 +58,9 @@ class SearchableFile(AbstractFile):
     # we load massive amounts of text on simple queries)
     extract: Mapped[str | None] = deferred(mapped_column(Text, nullable=True))
 
-    # Add the computed TSVECTOR column
+    # The computed TSVECTOR column.
+    # Note that this doesn't need a manual indexing by application code,
+    # as "GENERATED ALWAYS AS" columns are automatically indexed.
     searchable_text_de_CH: Mapped[TSVECTOR] = mapped_column(
         TSVECTOR,
         Computed(
@@ -79,7 +80,7 @@ class SearchableFile(AbstractFile):
             ),
         )
 
-    # todo: is there a good reason for extract and word_count to be Nullable?
+    # these are supported for pdfs only for now.
     pages_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     word_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
@@ -100,9 +101,8 @@ class SearchableFile(AbstractFile):
         elif content_type.startswith(
             'application/vnd.openxmlformats-officedocument.wordprocessingml'
         ):
-            raise NotImplementedError(
-                'Word document extraction not implemented yet'
-            )
+            docx_text = get_docx_text(BytesIO(content))
+            self.extract = (docx_text or '').strip()
         elif content_type == 'text/plain':
             self.extract = content.decode('utf-8').strip()
             self.pages_count = None  # Not applicable for text files

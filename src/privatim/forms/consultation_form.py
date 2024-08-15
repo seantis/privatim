@@ -11,11 +11,11 @@ from wtforms import validators
 from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
                                           SearchableSelectField,
                                           ConstantTextAreaField,
-                                          UploadMultipleField, )
+                                          )
 from privatim.forms.validators import FileSizeLimit, ExpectedExtensions
 from privatim.i18n import _, translate
 
-from privatim.models import Tag, GeneralFile
+from privatim.models import Tag, SearchableFile
 from privatim.models.consultation import Status
 
 
@@ -97,13 +97,14 @@ class ConsultationForm(Form):
         }
     )
 
-    files = UploadMultipleField(
+    files = UploadMultipleFilesWithORMSupport(
         label=_('Documents'),
         validators=[
             validators.Optional(),
             ExpectedExtensions(['docx', 'doc', 'pdf', 'txt']),
             FileSizeLimit(DEFAULT_UPLOAD_LIMIT)
         ],
+        file_class=SearchableFile
     )
 
     def populate_obj(
