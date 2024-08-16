@@ -16,8 +16,9 @@ def test_working_group_meetings_relationship(session):
     )
 
     users = [
-        User(email='foo@bar.ch'),
-        User(email='schabala@babala.ch'),
+        User(email='foo@bar.ch', first_name='Foo', last_name='Bar'),
+        User(email='schabala@babala.ch', first_name='Schabala',
+             last_name='Babala'),
     ]
     session.add_all(users)
     session.flush()

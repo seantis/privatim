@@ -38,8 +38,8 @@ class User(Base):
     def __init__(
             self,
             email: str,
-            first_name: str | None = None,
-            last_name: str | None = None,
+            first_name: str = '',
+            last_name: str = '',
             groups: list[Group] | None = None,
     ):
         self.id = str(uuid.uuid4())
@@ -50,10 +50,10 @@ class User(Base):
 
     id: Mapped[UUIDStrPK]
 
-    first_name: Mapped[str_256 | None]
-    last_name: Mapped[str_256 | None]
+    first_name: Mapped[str_256]
+    last_name: Mapped[str_256]
     email: Mapped[str_256] = mapped_column(unique=True)
-    locale: Mapped[str_32]
+    locale: Mapped[str_32 | None]
     password: Mapped[str_128 | None]
     mobile_number: Mapped[str_128 | None] = mapped_column(unique=True)
     last_login: Mapped[datetime | None]

@@ -266,3 +266,20 @@ function setupAgendaItemGlobalToggle() {
         observer.observe(tomSelectWrapper, {childList: true, subtree: true});
     });
 })(); // IIFE ends here
+
+
+
+$(function() {
+    $('.upload-field').each(function(index, element) {
+        var upload = $(element).find('input[type="file"]');
+        $(element).find('input[type="radio"]').change(function() {
+            if(this.value === 'keep') {
+                upload.prop('disabled', true);
+                upload.prop('required', false);
+            } else if(this.value === 'replace') {
+                upload.prop('disabled', false);
+                upload.prop('required', true);
+            }
+        }).filter(':checked').change();
+    });
+});

@@ -67,7 +67,7 @@ def test_consultation_tag(session):
 
 def test_consultation_creator_relationship(session):
 
-    creator = User(email='creator@example.com')
+    creator = User(email='creator@example.com', first_name='J', last_name='D')
     session.add(creator)
     session.flush()
 

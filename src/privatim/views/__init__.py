@@ -43,7 +43,8 @@ from privatim.views.password_change import password_change_view
 from privatim.views.password_retrieval import (  # type: ignore
     password_retrieval_view)
 
-from privatim.views.people import people_view, person_view
+from privatim.views.people import people_view, person_view, add_user_view, \
+    edit_user_view, delete_user_view
 from privatim.views.profile import profile_view, add_profile_image_view
 from privatim.views.comment import (
     add_comment_view,
@@ -186,6 +187,48 @@ def includeme(config: 'Configurator') -> None:
         people_view,
         route_name='people',
         renderer='templates/people.pt',
+    )
+    config.add_route('add_user', '/people/add')
+    config.add_view(
+        add_user_view,
+        route_name='add_user',
+        renderer='templates/form.pt',
+    )
+    config.add_route(
+        'edit_user',
+        '/person/{id}/edit',
+        factory=person_factory
+    )
+    config.add_view(
+        edit_user_view,
+        route_name='edit_user',
+        renderer='templates/form.pt',
+        xhr=False
+    )
+    config.add_view(
+        edit_user_view,
+        route_name='edit_user',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'delete_user',
+        '/person/{id}/delete',
+        factory=person_factory
+    )
+    config.add_view(
+        delete_user_view,
+        route_name='delete_user',
+        xhr=False
+    )
+    config.add_view(
+        delete_user_view,
+        route_name='delete_user',
+        renderer='json',
+        request_method='DELETE',
+        xhr=True
     )
 
     # consultations overview

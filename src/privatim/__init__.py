@@ -8,7 +8,8 @@ from privatim import helpers
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed
+from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
+    VARCHAR
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -285,6 +286,32 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     context.add_column(
         'users',
         Column('locale', String(32), nullable=True)
+    )
+
+    # Make name of user not nullable anymore
+    # First, update any existing NULL values to an empty string
+    context.operations.execute(
+        "UPDATE users SET first_name = '' WHERE first_name IS NULL"
+    )
+    context.operations.execute(
+        "UPDATE users SET last_name = '' WHERE last_name IS NULL"
+    )
+
+    # Now, alter the columns to be NOT NULL
+    context.operations.alter_column(
+        'users',
+        'first_name',
+        existing_type=VARCHAR(length=256),
+        nullable=False,
+        server_default='',
+    )
+
+    context.operations.alter_column(
+        'users',
+        'last_name',
+        existing_type=VARCHAR(length=256),
+        nullable=False,
+        server_default='',
     )
 
     context.commit()

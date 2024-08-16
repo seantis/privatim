@@ -5,7 +5,7 @@ from sqlalchemy import select
 def test_set_password(pg_config):
     session = pg_config.dbsession
 
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='J', last_name='D')
     session.add(user)
     session.flush()
     user.set_password('Test123!')
@@ -15,7 +15,7 @@ def test_set_password(pg_config):
 
 def test_user_password_failure(pg_config):
     session = pg_config.dbsession
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='J', last_name='D')
     session.add(user)
     session.flush()
     assert user.check_password('Test123!') is False  # No password set yet
@@ -26,7 +26,7 @@ def test_user_password_failure(pg_config):
 
 def test_user_groups_empty(pg_config):
     session = pg_config.dbsession
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='J', last_name='D')
     session.add(user)
     session.flush()
     assert user.groups == []  # No groups associated initially
@@ -34,7 +34,7 @@ def test_user_groups_empty(pg_config):
 
 def test_user_groups_association(pg_config):
     session = pg_config.dbsession
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='J', last_name='D')
     group = Group(name='Test Group')
 
     user.groups.append(group)
@@ -47,7 +47,7 @@ def test_user_groups_association(pg_config):
 
 def test_user_leading_group_relationship(pg_config):
     session = pg_config.dbsession
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='J', last_name='D')
     group = WorkingGroup(name='Leadership Group')
 
     group.leader = user

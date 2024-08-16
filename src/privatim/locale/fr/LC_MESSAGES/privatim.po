@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-13 15:40+0200\n"
+"POT-Creation-Date: 2024-08-16 13:29+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -188,7 +188,7 @@ msgstr "Absent"
 #: src/privatim/views/meetings.py src/privatim/views/working_groups.py
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
-msgstr "Groupe de travail sur l'édition"
+msgstr "Modifier le comité de Travail"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
@@ -211,6 +211,31 @@ msgstr "Réunion modifiée avec succès."
 #, python-format
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
+
+#: src/privatim/views/people.py
+msgid "List of Persons"
+msgstr "Liste des personnes"
+
+#: src/privatim/views/people.py
+#, python-format
+msgid "Successfully added user ${first_name} ${last_name}"
+msgstr "Utilisateur ${first_name} ${last_name} ajouté avec succès"
+
+#: src/privatim/views/people.py src/privatim/views/templates/people.pt
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+#: src/privatim/views/people.py
+msgid "Successfully updated user."
+msgstr "Utilisateur mis à jour avec succès."
+
+#: src/privatim/views/people.py
+msgid "Edit User"
+msgstr "Modifier l'utilisateur"
+
+#: src/privatim/views/people.py
+msgid "Successfully deleted user."
+msgstr "Utilisateur supprimé avec succès."
 
 #: src/privatim/views/mtan.py
 msgid "Token"
@@ -257,7 +282,7 @@ msgstr "Consultation modifiée avec succès."
 msgid "Successfully deleted consultation."
 msgstr "Consultation supprimée avec succès."
 
-#: src/privatim/views/password_change.py
+#: src/privatim/views/password_change.py src/privatim/forms/user_form.py
 msgid "Email"
 msgstr "E-Mail"
 
@@ -518,6 +543,7 @@ msgid "Date:"
 msgstr "Date:"
 
 #: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+#: src/privatim/forms/user_form.py
 msgid "Filter"
 msgstr "Filtre"
 
@@ -540,10 +566,6 @@ msgstr "Informations personnelles"
 #: src/privatim/views/templates/profile.pt
 msgid "E-Mail-Address"
 msgstr "Adresse e-mail"
-
-#: src/privatim/views/templates/people.pt
-msgid "List of Persons"
-msgstr "Liste des personnes"
 
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
@@ -810,6 +832,22 @@ msgstr "Contact conseil d'administration"
 msgid "Search"
 msgstr "Recherche plein texte"
 
+#: src/privatim/forms/user_form.py
+msgid "A User with this email already exists."
+msgstr "Un utilisateur avec cet e-mail existe déjà."
+
+#: src/privatim/forms/user_form.py
+msgid "First Name"
+msgstr "Prénom"
+
+#: src/privatim/forms/user_form.py
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#: src/privatim/forms/user_form.py
+msgid "Working Groups (multiple selection possible)"
+msgstr "Comités (sélection multiple possible)"
+
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
 msgstr "Fichier téléchargé"
@@ -876,3 +914,6 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Successfully added user."
+#~ msgstr "Utilisateur ajouté avec succès."

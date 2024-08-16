@@ -168,7 +168,7 @@ def client(app, engine):
     client = Client(app)
     client.db = get_session_factory(engine=engine)()
 
-    user = User(email='admin@example.org')
+    user = User(email='admin@example.org', first_name='John', last_name='Doe')
     user.set_password('test')
     client.db.add(user)
     client.user = user

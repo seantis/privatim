@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-13 15:40+0200\n"
+"POT-Creation-Date: 2024-08-16 13:29+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -215,6 +215,31 @@ msgstr "Sitzung erfolgreich bearbeitet."
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Sitzung \"${name}\" erfolgreich gelöscht"
 
+#: src/privatim/views/people.py
+msgid "List of Persons"
+msgstr "Personenverzeichnis"
+
+#: src/privatim/views/people.py
+#, python-format
+msgid "Successfully added user ${first_name} ${last_name}"
+msgstr "Benutzer ${first_name} ${last_name} erfolgreich hinzugefügt"
+
+#: src/privatim/views/people.py src/privatim/views/templates/people.pt
+msgid "Add User"
+msgstr "Benutzer hinzufügen"
+
+#: src/privatim/views/people.py
+msgid "Successfully updated user."
+msgstr "Benutzer erfolgreich bearbeitet."
+
+#: src/privatim/views/people.py
+msgid "Edit User"
+msgstr "Benutzer bearbeiten"
+
+#: src/privatim/views/people.py
+msgid "Successfully deleted user."
+msgstr "Benutzer erfolgreich gelöscht."
+
 #: src/privatim/views/mtan.py
 msgid "Token"
 msgstr "Code"
@@ -260,7 +285,7 @@ msgstr "Vernehmlassung erfolgreich bearbeitet."
 msgid "Successfully deleted consultation."
 msgstr "Vernehmlassung erfolgreich gelöscht."
 
-#: src/privatim/views/password_change.py
+#: src/privatim/views/password_change.py src/privatim/forms/user_form.py
 msgid "Email"
 msgstr "E-Mail"
 
@@ -520,6 +545,7 @@ msgid "Date:"
 msgstr "Datum:"
 
 #: src/privatim/views/templates/activities.pt src/privatim/forms/filter_form.py
+#: src/privatim/forms/user_form.py
 msgid "Filter"
 msgstr "Filter"
 
@@ -542,10 +568,6 @@ msgstr "Persönliche Informationen"
 #: src/privatim/views/templates/profile.pt
 msgid "E-Mail-Address"
 msgstr "E-Mail-Adresse"
-
-#: src/privatim/views/templates/people.pt
-msgid "List of Persons"
-msgstr "Personenverzeichnis"
 
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
@@ -814,6 +836,22 @@ msgstr "Kontakt Vorstand"
 msgid "Search"
 msgstr "Volltextsuche"
 
+#: src/privatim/forms/user_form.py
+msgid "A User with this email already exists."
+msgstr "Ein Benutzer mit dieser E-Mail existiert bereits."
+
+#: src/privatim/forms/user_form.py
+msgid "First Name"
+msgstr "Vorname"
+
+#: src/privatim/forms/user_form.py
+msgid "Last Name"
+msgstr "Nachname"
+
+#: src/privatim/forms/user_form.py
+msgid "Working Groups (multiple selection possible)"
+msgstr "Gremien (Mehrfachauswahl möglich)"
+
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
@@ -880,6 +918,9 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Successfully added user."
+#~ msgstr "Benutzer erfolgreich hinzugefügt."
 
 #~ msgid "edit"
 #~ msgstr "Bearbeiten"

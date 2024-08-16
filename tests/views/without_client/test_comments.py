@@ -42,7 +42,7 @@ def test_comment_delete(pg_config):
 
     comment = Comment(
         'El Commento',
-        User(email='a@b.ch'),
+        User(email='a@b.ch', first_name='john', last_name='Doe'),
         target_id=cons.id
     )
     cons.comments.append(comment)

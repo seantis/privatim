@@ -37,7 +37,7 @@ def test_profile_picture_author_is_rendered_in_comment(client):
     page = page.form.submit().follow()
     assert page.status_code == 200
 
-    user2 = User(email='user1@example.com')
+    user2 = User(email='user1@example.com', first_name='John', last_name='Doe')
     session.add(user2)
     session.flush()
     user2.set_password('test')
@@ -101,4 +101,3 @@ def test_comment_actions_only_available_to_author(client):
     client.login('username', 'password')
     page = client.get(f'/consultation/{consultation.id}')
     assert not page.pyquery('.ellipsis-menu')
-
