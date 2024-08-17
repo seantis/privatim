@@ -25,7 +25,7 @@ class MeetingUserAttendance(Base):
         ForeignKey('meetings.id'), primary_key=True
     )
     user_id: Mapped[UUIDStr] = mapped_column(
-        ForeignKey('users.id'), primary_key=True
+        ForeignKey('users.id', ondelete='SET NULL'), primary_key=True
     )
 
     status: Mapped[AttendanceStatus] = mapped_column(

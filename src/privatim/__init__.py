@@ -154,6 +154,35 @@ def main(
     return Fanstatic(app, versioning=True)
 
 
+def fix_user_constraints_to_work_with_hard_delete(
+        context: 'UpgradeContext'
+) -> None:
+
+    # List of (table_name, column_name, constraint_name) tuples
+    fk_constraints = [
+        ('consultations', 'creator_id', 'fk_consultations_creator_id_users'),
+        ('consultations', 'editor_id', 'fk_consultations_editor_id_users'),
+        ('meetings', 'creator_id', 'fk_meetings_creator_id_users'),
+        # Add all other foreign key constraints here
+    ]
+
+    for table, column, constraint in fk_constraints:
+        # Drop the existing constraint
+        context.operations.drop_constraint(
+            constraint, table, type_='foreignkey'
+        )
+
+        # Recreate the constraint with ON DELETE SET NULL
+        context.operations.create_foreign_key(
+            constraint,
+            table,
+            'users',
+            [column],
+            ['id'],
+            ondelete='SET NULL',
+        )
+
+
 def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
 
     if not context.has_column('consultations', 'creator_id'):
@@ -162,7 +191,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             Column(
                 'creator_id',
                 UUIDStrType,
-                ForeignKey('users.id'),
+                ForeignKey('users.id', ondelete='SET NULL'),
                 nullable=True,
             ),
         )
@@ -200,7 +229,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
             Column(
                 'creator_id',
                 UUIDStrType,
-                ForeignKey('users.id'),
+                ForeignKey('users.id', ondelete='SET NULL'),
                 nullable=True,
             ),
         )
@@ -313,5 +342,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         nullable=False,
         server_default='',
     )
+
+    fix_user_constraints_to_work_with_hard_delete(context)
 
     context.commit()

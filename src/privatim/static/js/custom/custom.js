@@ -2,19 +2,92 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
-    setupCommentEditFlow();
-    makeConsultationsClickable();
+    addEditorForCommentsEdit();
+    makeConsultationsInActivitiesClickable();
     setupAgendaItemGlobalToggle();
-
+    setupDeleteModalForPersonInPeople();
+    autoHideSuccessMesssages('.alert-success');
 });
 
-function makeConsultationsClickable() {
-    // The whole consultation card was previously wrapped in a link before. This worked until we started rendering
-    // user-generated links (as html from the editor) in the description. Nesting Link is not allowed by HTML standard.
+
+function setupDeleteModalForPersonInPeople() {
+    if (window.location.pathname !== '/people') {
+       return;
+    }
+
+    const deleteModal = document.getElementById('delete-xhr');
+    const deleteButtons = document.querySelectorAll('[data-bs-target="#delete-xhr"]');
+    const deleteModalItemTitle = document.getElementById('delete-xhr-item-title');
+    const deleteConfirmButton = deleteModal.querySelector('.btn-danger');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const itemTitle = button.getAttribute('data-item-title');
+            const deleteUrl = button.getAttribute('href');
+
+            if (deleteModalItemTitle) {
+                deleteModalItemTitle.textContent = itemTitle;
+            }
+
+            if (deleteConfirmButton) {
+                deleteConfirmButton.href = deleteUrl;
+            }
+
+            const modal = new bootstrap.Modal(deleteModal);
+            modal.show();
+        });
+    });
+
+    deleteConfirmButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        const deleteUrl = deleteConfirmButton.href;
+        console.log(deleteUrl);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('DELETE', deleteUrl, true);
+        xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // Handle successful deletion
+                        const deletedItemId = deleteUrl.split('/').pop();
+                        const deletedItem = document.getElementById(deletedItemId);
+                        if (deletedItem) {
+                            deletedItem.remove();
+                        }
+                        // Close the modal
+                        bootstrap.Modal.getInstance(deleteModal).hide()
+                    }
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    }
+                } else {
+                    // Handle error
+                    console.error('Deletion failed:', xhr.statusText);
+                }
+            }
+        };
+
+        xhr.send();
+    });
+
+}
+
+function makeConsultationsInActivitiesClickable() {
+    // Nesting links is not allowed by HTML standards. The 'Consultation' activity should still be clickable,
+    // even if it contains a link within the text. This workaround ensures all links function properly.
     if (window.location.href.includes('/consultations')) {
         const cards = document.querySelectorAll('.consultation-card');
         cards.forEach(card => {
             card.addEventListener('click', function (e) {
+                // Safeguard for links inside it (content created by user)
                 if (e.target.tagName !== 'A') {
                     window.location.href = this.dataset.href;
                 }
@@ -85,7 +158,7 @@ function initializePopoversAndTooltips() {
     });
 }
 
-function setupCommentEditFlow() {
+function addEditorForCommentsEdit() {
     document.querySelectorAll('.edit-comment-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -96,8 +169,8 @@ function setupCommentEditFlow() {
             commentContentElement.innerHTML = `
         <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
         <div class="d-flex justify-content-end mt-2 pt-1">
-            <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Cancel</button>
-            <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}" style="margin-left: 1rem;">Save</button>
+            <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Abbrechen</button>
+            <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}" style="margin-left: 1rem;">Speichern</button>
         </div>
       `;
 
@@ -268,7 +341,7 @@ function setupAgendaItemGlobalToggle() {
 })(); // IIFE ends here
 
 
-
+// Makes only sense to show upload field if 'replace' is selected for edit file form. (UploadMultipleFilesWithORMSupport)
 $(function() {
     $('.upload-field').each(function(index, element) {
         var upload = $(element).find('input[type="file"]');
@@ -283,3 +356,21 @@ $(function() {
         }).filter(':checked').change();
     });
 });
+
+
+function autoHideSuccessMesssages(alertSelector, delay = 4000) {
+    const alertElement = document.querySelector('main.main-content .container .alert-success');
+
+    if (alertElement) {
+        setTimeout(() => {
+            alertElement.classList.remove('show');
+            alertElement.addEventListener('transitionend', () => {
+                // Remove the entire alert container to clean up the empty space
+                const alertContainer = alertElement.closest('.container');
+                if (alertContainer) {
+                    alertContainer.remove();
+                }
+            });
+        }, delay);
+    }
+}

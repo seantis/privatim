@@ -35,11 +35,15 @@ class UserForm(Form):
                                for id, name in session.execute(query)]
 
     def validate_email(self, field: EmailField) -> None:
-        if field.data:
-            field.data = field.data.lower()
-        stmt = select(exists().where(User.email == field.data))
-        if self.meta.request.dbsession.scalar(stmt):
-            raise ValidationError(_('A User with this email already exists.'))
+        in_add_mode = self.meta.context is None
+        if in_add_mode:
+            if field.data:
+                field.data = field.data.lower()
+            stmt = select(exists().where(User.email == field.data))
+            if self.meta.request.dbsession.scalar(stmt):
+                raise ValidationError(
+                    _('A User with this email already exists.')
+                )
 
     email = EmailField(
         _('Email'),

@@ -77,7 +77,7 @@ bootstrap_js = js(
 sortable_custom = js('custom/sortable_custom.js', depends=[jquery],
                      renderer=render_js_module)
 
-custom_js = js('custom/custom.js')
+custom_js = js('custom/custom.js', depends=[jquery])
 
 tom_select_css = css('tom-select.min.css')
 tom_select = js('tom_select.complete.min.js')

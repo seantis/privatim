@@ -221,6 +221,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         delete_user_view,
         route_name='delete_user',
+        request_method='DELETE',
         xhr=False
     )
     config.add_view(

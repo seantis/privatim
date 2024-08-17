@@ -58,7 +58,7 @@ class Icon:
         self.style = style
 
     def __call__(self) -> Markup:
-        return Markup('<i class="{} fa-{} aria-hidden="true""></i>').format(
+        return Markup('<i class="{} fa-{}" aria-hidden="true"></i>').format(
             self.style, self.name
         )
 

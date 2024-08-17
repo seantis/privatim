@@ -124,8 +124,7 @@ def meeting_buttons(
             ),
             icon='edit',
             description=_('Edit Meeting'),
-            css_class='btn-sm btn-secondary disabled',   # Edit disabled for
-            # now, not all fields are quite ready for editing
+            css_class='btn-sm btn-secondary',
             modal='#edit-xhr',
         ),
         Button(

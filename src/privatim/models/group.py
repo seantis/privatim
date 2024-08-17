@@ -20,6 +20,11 @@ if TYPE_CHECKING:
     from privatim.types import ACL
 
 # Many-to-many association table for users and groups
+
+# The user record is deleted from the users table.
+# In case of deleted user:
+# All entries in the user_groups association table
+# that reference the deleted user's id should also be deleted (CASCADE).
 user_group_association = Table(
     'user_groups',
     Base.metadata,
@@ -90,7 +95,7 @@ class WorkingGroup(Group):
     )
 
     leader_id: Mapped[UUIDStr | None] = mapped_column(
-        ForeignKey('users.id'), nullable=True
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
     leader: Mapped['User | None'] = relationship(
         'User',

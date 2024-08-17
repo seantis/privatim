@@ -1,0 +1,11 @@
+https://claude.ai/chat/1828145c-f9e3-43fd-932a-afa12bbb260b
+
+
+
+
+          constraint_name          |  table_name   | column_name | foreign_table_name | foreign_column_name | delete_rule
+-----------------------------------+---------------+-------------+--------------------+---------------------+-------------
+ fk_consultations_creator_id_users | consultations | creator_id  | users              | id                  | NO ACTION
+(1 row)
+
+(END)

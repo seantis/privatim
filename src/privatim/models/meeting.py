@@ -189,12 +189,13 @@ class Meeting(Base, SearchableMixin):
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     creator_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('users.id'), nullable=True
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True,
     )
     creator: Mapped[User | None] = relationship(
         'User',
         back_populates='created_meetings',
-        foreign_keys=[creator_id]
+        foreign_keys=[creator_id],
+        passive_deletes=True
     )
 
     # allfällige Beschlüsse

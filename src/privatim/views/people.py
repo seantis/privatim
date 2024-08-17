@@ -4,6 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select
 from markupsafe import Markup
 
+from privatim.controls.controls import Button
 from privatim.forms.user_form import UserForm
 from privatim.i18n import _
 from privatim.utils import strip_p_tags, maybe_escape
@@ -15,21 +16,50 @@ if TYPE_CHECKING:
     from privatim.types import RenderData, RenderDataOrRedirect
 
 
-def people_view(request: 'IRequest') -> 'RenderData':
+def user_buttons(
+        user: User, request: 'IRequest'
+) -> list[Button]:
+    return [
+        Button(
+            url=request.route_url('edit_user', id=user.id),
+            icon='edit',
+            description=_('Edit user'),
+            css_class='btn-sm btn-secondary',
+        ),
+        Button(
+            url=request.route_url('delete_user', id=user.id),
+            icon='trash',
+            description=_('Delete'),
+            css_class='btn-sm btn-outline-danger',
+            modal='#delete-xhr',
+            data_item_title=user.fullname,
+        )
+    ]
 
+
+def people_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
-    people = (
-        session.execute(
-            select(User).order_by(
-                nullslast(User.last_name),
-                nullslast(User.first_name)
-            )
-        ).scalars()
+    stmt = select(User).order_by(
+        nullslast(User.last_name),
+        nullslast(User.first_name)
     )
+    users = session.execute(stmt).scalars().all()
+
+    people_data = []
+    for user in users:
+        buttons = user_buttons(user, request)
+        button_html = Markup('').join(Markup(button()) for button in buttons)
+        people_data.append({
+            'id': user.id,
+            'name': f'{user.first_name} {user.last_name}',
+            'url': request.route_url('person', id=user.id),
+            'buttons': button_html
+        })
 
     return {
+        'delete_title': _('Delete User'),
         'title': _('List of Persons'),
-        'people': people,
+        'people': people_data,
     }
 
 
@@ -104,6 +134,7 @@ def edit_user_view(
 ) -> 'RenderDataOrRedirect':
     form = UserForm(context, request)
     session = request.dbsession
+    target_url = request.route_url('people')
 
     if request.method == 'POST' and form.validate():
         form.populate_obj(context)
@@ -115,10 +146,10 @@ def edit_user_view(
         request.messages.add(message, 'success')
 
         if request.is_xhr:
-            return {'redirect_to': request.route_url('person', id=context.id)}
+            return {'redirect_to': target_url}
         else:
             return HTTPFound(
-                location=request.route_url('person', id=context.id)
+                location=target_url
             )
 
     if not request.POST:
@@ -131,17 +162,25 @@ def edit_user_view(
         return {
             'title': _('Edit User'),
             'form': form,
-            'target_url': request.route_url('edit_user', id=context.id),
+            'target_url': request.route_url('people'),
         }
 
 
 def delete_user_view(
-    context: User, request: 'IRequest'
+    user: User, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-    session.delete(context)
+    session.delete(user)
     session.flush()
 
     message = _('Successfully deleted user.')
     request.messages.add(message, 'success')
-    return HTTPFound(location=request.route_url('people'))
+
+    if request.is_xhr:
+        return {
+            'success': True,
+            'message': message,
+            'redirect_url': request.route_url('people'),
+        }
+    else:
+        return HTTPFound(location=request.route_url('people'))

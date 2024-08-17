@@ -7,7 +7,7 @@ from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_, select
 from privatim.models import SearchableMixin
-from pyramid.authorization import Allow, DENY_ALL, Authenticated
+from pyramid.authorization import Allow, Authenticated
 
 from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
 if TYPE_CHECKING:
@@ -48,8 +48,7 @@ class Comment(Base, SearchableMixin):
     # Author of the comment. Nullable to be somewhat more resilient for
     # deleted users
     user_id: Mapped[UUIDStr] = mapped_column(
-        ForeignKey('users.id'),
-        nullable=True,
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
     user: Mapped['User | None'] = relationship(
         'User',

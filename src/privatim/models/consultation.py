@@ -100,7 +100,7 @@ class Consultation(Base, SearchableMixin):
         secondary_tags: list[Tag] | None = None,
         previous_version: 'Consultation | None' = None,
         searchable_text_de_CH: 'TSVECTOR | None' = None,
-        comments: list['Comment'] | None = None,
+        comments: list[Comment] | None = None,
         is_latest_version: int = 1,
     ):
         self.id = str(uuid.uuid4())
@@ -150,20 +150,22 @@ class Consultation(Base, SearchableMixin):
     # in theory this could be nullable=False, but let's avoid problems with
     # user deletion
     creator_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('users.id'), nullable=True
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
     creator: Mapped['User | None'] = relationship(
         'User',
         back_populates='consultations',
-        foreign_keys=[creator_id]
+        foreign_keys=[creator_id],
+        passive_deletes=True
     )
 
+    editor_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
+    )
     editor: Mapped['User | None'] = relationship(
         'User',
-        foreign_keys='Consultation.editor_id'
-    )
-    editor_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('users.id'), nullable=True
+        foreign_keys='Consultation.editor_id',
+        passive_deletes=True
     )
 
     replaced_by: Mapped['Consultation | None'] = relationship(
@@ -191,7 +193,7 @@ class Consultation(Base, SearchableMixin):
         cascade='all, delete-orphan'
     )
 
-    def add_comment(self, comment: 'Comment') -> None:
+    def add_comment(self, comment: Comment) -> None:
         comment.target_id = self.id
         comment.target_type = self.__tablename__
         self.comments.append(comment)
