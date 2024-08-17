@@ -11,9 +11,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function setupDeleteModalForPersonInPeople() {
+
     if (window.location.pathname !== '/people') {
        return;
     }
+
+    // Update the modal dismissal logic
+    $('#delete-xhr').on('hidden.bs.modal', function (e) {
+        // Ensure the modal backdrop is removed
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+        $('body').css('padding-right', '');
+    });
+
+    // Update the cancel button click handler
+    $('#delete-xhr .btn-secondary').on('click', function(event) {
+        event.preventDefault();
+        var modal = bootstrap.Modal.getInstance(document.getElementById('delete-xhr'));
+        if (modal) {
+            modal.hide();
+        }
+    });
 
     const deleteModal = document.getElementById('delete-xhr');
     const deleteButtons = document.querySelectorAll('[data-bs-target="#delete-xhr"]');
@@ -79,6 +97,7 @@ function setupDeleteModalForPersonInPeople() {
     });
 
 }
+
 
 function makeConsultationsInActivitiesClickable() {
     // Nesting links is not allowed by HTML standards. The 'Consultation' activity should still be clickable,
