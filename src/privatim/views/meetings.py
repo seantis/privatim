@@ -320,7 +320,7 @@ def edit_meeting_view(
 
     assert isinstance(meeting, Meeting)
 
-    target_url = request.route_url('meetings', id=meeting.working_group.id)
+    target_url = request.route_url('meeting', id=meeting.id)
     form = MeetingForm(meeting, request)
     session = request.dbsession
 

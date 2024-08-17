@@ -61,6 +61,7 @@ class MeetingForm(Form):
             _('Add Meeting') if isinstance(context, WorkingGroup) else
             _('Edit meeting')
         )
+        assert isinstance(context, (Meeting, WorkingGroup))
 
         session = request.dbsession
         super().__init__(
@@ -155,11 +156,6 @@ class MeetingForm(Form):
                     }
                 )
         else:
-            if obj is None:
-                # This is erroneously set because WorkingGroup also has name
-                self.name.data = ''
-
-            self.attendance.entries = []
             if formdata is None:
                 return
 
