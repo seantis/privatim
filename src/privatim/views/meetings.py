@@ -208,21 +208,13 @@ def export_meeting_as_pdf_view(
     options = ReportOptions(language=request.locale_name)
     report = MeetingReport(request, meeting, options, renderer).build()
 
-    log.info(f'Original filename: {report.filename}')
-    log.info(f'Report data type: {type(report.data)}')
-    log.info(f'Report data length: {len(report.data)}')
-
     response = Response(report.data)
     response.content_type = 'application/pdf'
 
-    safe_filename = 'meeting_report.pdf'
-
-    log.info(f'Safe filename: {safe_filename}')
-
+    name = translate(_('Meeting Report'))
+    safe_filename = name + '.pdf'
     response.content_disposition = f'attachment; filename="{safe_filename}"'
-
     log.info(f'Content-Disposition: {response.content_disposition}')
-
     return response
 
 
