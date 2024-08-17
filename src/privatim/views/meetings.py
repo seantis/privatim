@@ -1,3 +1,5 @@
+import logging
+
 from markupsafe import Markup
 from pyramid.response import Response
 
@@ -36,6 +38,9 @@ if TYPE_CHECKING:
     from privatim.types import RenderData, XHRDataOrRedirect
     _Q = TypeVar("_Q", bound=Query[Any])
     from privatim.types import MixedDataOrRedirect
+
+
+log = logging.getLogger('privatim.views')
 
 
 def meeting_view(
@@ -191,21 +196,33 @@ def user_list(
 
 
 def export_meeting_as_pdf_view(
-    context: Meeting, request: 'IRequest',
+        context: Meeting, request: 'IRequest',
 ) -> Response:
-
     session = request.dbsession
     meeting_id = context.id
     meeting = session.get(Meeting, meeting_id)
-
     if meeting is None:
         return HTTPNotFound()
+
     renderer = HTMLReportRenderer()
     options = ReportOptions(language=request.locale_name)
     report = MeetingReport(request, meeting, options, renderer).build()
+
+    log.info(f'Original filename: {report.filename}')
+    log.info(f'Report data type: {type(report.data)}')
+    log.info(f'Report data length: {len(report.data)}')
+
     response = Response(report.data)
     response.content_type = 'application/pdf'
-    response.content_disposition = f'inline;filename={report.filename}'
+
+    safe_filename = 'meeting_report.pdf'
+
+    log.info(f'Safe filename: {safe_filename}')
+
+    response.content_disposition = f'attachment; filename="{safe_filename}"'
+
+    log.info(f'Content-Disposition: {response.content_disposition}')
+
     return response
 
 
