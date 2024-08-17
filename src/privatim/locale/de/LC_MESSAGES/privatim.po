@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-16 13:29+0200\n"
+"POT-Creation-Date: 2024-08-17 17:45+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -41,7 +41,7 @@ msgstr "Kontakt"
 msgid "Close"
 msgstr "Schliessen"
 
-#: src/privatim/layouts/action_menu.pt
+#: src/privatim/layouts/action_menu.pt src/privatim/views/templates/people.pt
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -58,6 +58,7 @@ msgid "Edit"
 msgstr "Bearbeiten"
 
 #: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+#: src/privatim/views/people.py src/privatim/views/templates/people.pt
 msgid "Delete"
 msgstr "Löschen"
 
@@ -188,6 +189,10 @@ msgstr "Anwesend"
 msgid "Invited"
 msgstr "Abwesend"
 
+#: src/privatim/views/meetings.py
+msgid "Meeting Report"
+msgstr "Sitzungsbericht"
+
 #: src/privatim/views/meetings.py src/privatim/views/working_groups.py
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
@@ -214,6 +219,14 @@ msgstr "Sitzung erfolgreich bearbeitet."
 #, python-format
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Sitzung \"${name}\" erfolgreich gelöscht"
+
+#: src/privatim/views/people.py
+msgid "Edit user"
+msgstr "Benutzer bearbeiten"
+
+#: src/privatim/views/people.py
+msgid "Delete User"
+msgstr "Benutzer löschen"
 
 #: src/privatim/views/people.py
 msgid "List of Persons"
@@ -400,7 +413,8 @@ msgstr "Mobile Authentifizierung"
 msgid "Submit"
 msgstr "Anmelden"
 
-#: src/privatim/views/templates/form.pt src/privatim/forms/add_comment.py
+#: src/privatim/views/templates/form.pt src/privatim/views/templates/people.pt
+#: src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -572,6 +586,10 @@ msgstr "E-Mail-Adresse"
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
+
+#: src/privatim/views/templates/people.pt
+msgid "Do you really wish to delete \"${item_title}\"?"
+msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Password Retrieval"
@@ -918,12 +936,3 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "Successfully added user."
-#~ msgstr "Benutzer erfolgreich hinzugefügt."
-
-#~ msgid "edit"
-#~ msgstr "Bearbeiten"
-
-#~ msgid "delete"
-#~ msgstr "Löschen"
