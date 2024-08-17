@@ -2,12 +2,13 @@ import uuid
 from datetime import datetime
 
 from sedate import utcnow
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
 from privatim.models.searchable import SearchableMixin
+from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.orm import Base
 
 from privatim.orm.meta import UUIDStrPK
@@ -79,7 +80,7 @@ class Tag(Base):
         return f'<Tag {self.name}>'
 
 
-class Consultation(Base, SearchableMixin):
+class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
 
@@ -229,3 +230,7 @@ class Consultation(Base, SearchableMixin):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+    __table_args__ = (
+        Index('ix_consultations_deleted', 'deleted'),
+    )

@@ -11,6 +11,7 @@ from sqlalchemy.orm import (
     declared_attr,
 )
 
+from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.models.utils import extract_pdf_info, word_count, get_docx_text
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 from privatim.orm.abstract import AbstractFile
@@ -37,7 +38,7 @@ class GeneralFile(AbstractFile):
     }
 
 
-class SearchableFile(AbstractFile):
+class SearchableFile(AbstractFile, SoftDeleteMixin):
     """
     A file with the intention of being searchable.
     """
@@ -78,6 +79,7 @@ class SearchableFile(AbstractFile):
                 'searchable_text_de_CH',
                 postgresql_using='gin'
             ),
+            Index('ix_searchable_files_deleted', 'deleted'),
         )
 
     # these are supported for pdfs only for now.

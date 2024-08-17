@@ -38,8 +38,9 @@ def pg_config(postgresql, monkeypatch):
     config.include('privatim.models')
     config.include('pyramid_chameleon')
     config.include('pyramid_layout')
-    settings = config.get_settings()
 
+
+    settings = config.get_settings()
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
     session_factory = get_session_factory(engine)
@@ -143,11 +144,14 @@ def connection(engine):
 
 @pytest.fixture(scope='function')
 def app_settings(postgresql):
-    yield {'sqlalchemy.url': (
-        f'postgresql+psycopg://{postgresql.info.user}:@'
-        f'{postgresql.info.host}:{postgresql.info.port}'
-        f'/{postgresql.info.dbname}'
-    )}
+    yield {
+        'sqlalchemy.url': (
+            f'postgresql+psycopg://{postgresql.info.user}:@'
+            f'{postgresql.info.host}:{postgresql.info.port}'
+            f'/{postgresql.info.dbname}'
+        ),
+        'pyramid.default_locale_name': 'de',
+    }
 
 
 @pytest.fixture(scope='function')

@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 # In case of deleted user:
 # All entries in the user_groups association table
 # that reference the deleted user's id should also be deleted (CASCADE).
-user_group_association = Table(
+user_group_association: Table = Table(
     'user_groups',
     Base.metadata,
     Column('user_id', UUIDStr,

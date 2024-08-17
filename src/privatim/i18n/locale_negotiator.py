@@ -28,7 +28,7 @@ class LocaleNegotiator:
         available = self.available_languages(request)
         default = self.default_language(request)
 
-        # Store in session if locale name is set explictly
+        # Store in session if locale name is set explicitly
         locale: str | None = None
         try:
             locale_ = request.params.get('set_language', None)

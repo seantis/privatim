@@ -54,6 +54,8 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
+                            <li><a class="dropdown-item" href="${request.route_url('trash')}"><i
+                                    class="fas fa-trash"></i><span i18n:translate=""> Trash</span></a></li>
                             <li><a class="dropdown-item" href="${request.route_url('logout')}" ><i
                                     class="fas fa-sign-out-alt"></i><span i18n:translate=""> Sign out</span></a></li>
                         </ul>

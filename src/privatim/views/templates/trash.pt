@@ -1,0 +1,18 @@
+<metal:block use-macro="main_template"
+             xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:metal="http://xml.zope.org/namespaces/metal"
+         i18n:domain="privatim">
+
+    <div metal:fill-slot="content">
+        <h1>${title}</h1>
+
+        <h2 i18n:translate="">Deleted Items</h2>
+        <ul>
+            <li tal:repeat="item items">
+            ${item.title} (ID: ${item.id}, Type: ${item.type})
+                <a href="${item.restore_url}" class="btn btn-sm btn-primary" i18n:translate="">Restore</a>
+            </li>
+        </ul>
+    </div>
+
+</metal:block>

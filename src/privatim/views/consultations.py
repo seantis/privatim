@@ -283,15 +283,17 @@ def edit_consultation_view(
 
 
 def delete_consultation_view(
-    context: Consultation, request: 'IRequest'
+        context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-    with session.no_consultation_filter():  # type: ignore
-        session.delete(context)
-        session.flush()
-        message = _('Successfully deleted consultation.')
-        if not request.is_xhr:
-            request.messages.add(message, 'success')
+
+    # SoftDeleteCascadeMixin should take care of the files
+    session.delete(context, soft=True)
+    session.flush()
+
+    message = _('Consultation moved to the paper basket')
+    if not request.is_xhr:
+        request.messages.add(message, 'success')
 
     target_url = request.route_url('activities')
     return HTTPFound(location=target_url)

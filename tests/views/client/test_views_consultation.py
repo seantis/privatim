@@ -52,6 +52,7 @@ def test_view_add_and_delete_consultation(client):
     session = client.db
     client.login_admin()
     # test without document upload
+
     page = client.get('/consultations')
     page = page.click('Vernehmlassung Erfassen')
     page.form['title'] = 'test'

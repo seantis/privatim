@@ -11,7 +11,7 @@ from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR, text
+    VARCHAR, text, Boolean, false
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -184,11 +184,13 @@ def fix_user_constraints_to_work_with_hard_delete(
                 op.drop_constraint(constraint, table, type_='foreignkey')
             except (ProgrammingError, SQLAlchemyError) as e:
                 print(
-                    f"Error dropping constraint {constraint} on table {table}: {str(e)}"
+                    f"Error dropping constraint {constraint} on table {table}:"
+                    f" {str(e)}"
                 )
         else:
             print(
-                f"Constraint {constraint} on table {table} doesn't exist, skipping drop"
+                f"Constraint {constraint} on table {table} doesn't exist, "
+                f"skipping drop"
             )
 
         # Recreate the constraint with ON DELETE SET NULL
@@ -203,7 +205,8 @@ def fix_user_constraints_to_work_with_hard_delete(
             )
         except SQLAlchemyError as e:
             print(
-                f"Error creating constraint {constraint} on table {table}: {str(e)}"
+                f"Error creating constraint {constraint} on table {table}: "
+                f"{str(e)}"
             )
 
 
@@ -368,5 +371,19 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     )
 
     fix_user_constraints_to_work_with_hard_delete(context)
+
+    context.operations.create_index(
+        context.operations.f('ix_consultations_deleted'),
+        'consultations',
+        ['deleted'],
+        unique=False,
+    )
+
+    context.operations.create_index(
+        context.operations.f('ix_searchable_files_deleted'),
+        'searchable_files',
+        ['deleted'],
+        unique=False,
+    )
 
     context.commit()

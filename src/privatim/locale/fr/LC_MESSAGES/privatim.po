@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-17 17:45+0200\n"
+"POT-Creation-Date: 2024-08-18 00:06+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -105,6 +105,10 @@ msgstr "Les personnes"
 #: src/privatim/layouts/navbar.pt src/privatim/views/templates/profile.pt
 msgid "Profile"
 msgstr "Profil"
+
+#: src/privatim/layouts/navbar.pt src/privatim/views/trash.py
+msgid "Trash"
+msgstr "Poubelle"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Sign out"
@@ -217,6 +221,18 @@ msgstr "Réunion modifiée avec succès."
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
 
+#: src/privatim/views/trash.py
+msgid "Invalid item type."
+msgstr "Type d'élément invalide."
+
+#: src/privatim/views/trash.py
+msgid "Item restored successfully."
+msgstr "Élément restauré avec succès."
+
+#: src/privatim/views/trash.py
+msgid "Item not found."
+msgstr "Élément non trouvé."
+
 #: src/privatim/views/people.py
 msgid "Edit user"
 msgstr "Modifier l'utilisateur"
@@ -292,8 +308,8 @@ msgid "Successfully edited consultation."
 msgstr "Consultation modifiée avec succès."
 
 #: src/privatim/views/consultations.py
-msgid "Successfully deleted consultation."
-msgstr "Consultation supprimée avec succès."
+msgid "Consultation moved to the paper basket"
+msgstr "Consultation déplacée vers la poubelle"
 
 #: src/privatim/views/password_change.py src/privatim/forms/user_form.py
 msgid "Email"
@@ -588,6 +604,14 @@ msgstr "Aucune personne n'a encore été ajoutée."
 #: src/privatim/views/templates/people.pt
 msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Voulez-vous vraiment supprimer \"${item_title}\"?"
+
+#: src/privatim/views/templates/trash.pt
+msgid "Deleted Items"
+msgstr ""
+
+#: src/privatim/views/templates/trash.pt
+msgid "Restore"
+msgstr "Restaurer"
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Password Retrieval"

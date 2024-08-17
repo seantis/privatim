@@ -1,19 +1,13 @@
-from contextlib import contextmanager
-from sqlalchemy import engine_from_config, event, exists
+from sqlalchemy import engine_from_config
 import zope.sqlalchemy
-from sqlalchemy.orm import (
-    sessionmaker,
-    Session as BaseSession,
-    with_loader_criteria,
-)
-
+from sqlalchemy.orm import sessionmaker
 from .meta import Base
+from privatim.orm.session import FilteredSession
 
 
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
-    from sqlalchemy.orm import ORMExecuteState
 
 
 def get_engine(
@@ -26,81 +20,6 @@ def get_engine(
         prefix,
         pool_pre_ping=True
     )
-
-
-class FilteredSession(BaseSession):
-    """
-    A custom SQLAlchemy Session class that adds WHERE criteria to all
-    occurrences of an entity in all queries (GlobalFilter).
-
-    Ignore models marked as 'deleted' in all queries, so developers don't have
-    to remember this check every time they write a query. This is also done for
-    Consultation versioning so we don't have to worry about accidentally
-    fetching older versions of Consultations. In most cases, we only want the
-    latest version.
-
-    In the rare case where we actually do want the older versions, we can
-    disable the filter as follows:
-
-        with session.no_consultation_filter():
-            all_consultations = session.query(Consultation).all()
-
-    This has been found in the docs:
-    https://docs.sqlalchemy.org/en/20/orm/session_events.html#adding-global-where-on-criteria  # noqa: E501
-    """
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self._disable_consultation_filter = False
-
-        @event.listens_for(self, "do_orm_execute")
-        def _add_filtering_criteria(
-                orm_execute_state: 'ORMExecuteState'
-        ) -> None:
-            if (
-                orm_execute_state.is_select
-                and not orm_execute_state.is_column_load
-                and not orm_execute_state.is_relationship_load
-                and not self._disable_consultation_filter
-            ):
-                from privatim.models.consultation import Consultation
-                from privatim.models.file import SearchableFile
-
-                # Below, an option is added to all SELECT statements that
-                # will limit all queries against Consultation to filter on
-                # is_latest_version == True. The criteria will be applied to
-                # all loads of that class within the scope of the immediate
-                # query. The with_loader_criteria() option by default will
-                # automatically propagate to relationship loaders as well (
-                # lazy loads, selectinloads, etc.)
-                orm_execute_state.statement = (
-                    orm_execute_state.statement.options(
-                        with_loader_criteria(
-                            Consultation,
-                            Consultation.is_latest_version == 1
-                        ),
-
-                        # Files of previously edited consultation are also
-                        # almost never of interest probably
-                        with_loader_criteria(
-                            SearchableFile,
-                            exists().where(
-                                (SearchableFile.consultation_id
-                                 == Consultation.id)
-                                & (Consultation.is_latest_version == 1)
-                            ),
-                        )
-                    )
-                )
-
-    @contextmanager
-    def no_consultation_filter(self):  # type:ignore
-        original_value = self._disable_consultation_filter
-        self._disable_consultation_filter = True
-        try:
-            yield
-        finally:
-            self._disable_consultation_filter = original_value
 
 
 def get_session_factory(engine: 'Engine') -> sessionmaker[FilteredSession]:

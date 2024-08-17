@@ -52,6 +52,7 @@ from privatim.views.comment import (
     delete_comment_view,
 )
 from privatim.views.search import search
+from privatim.views.trash import trash_view, restore_soft_deleted_model_view
 from privatim.views.working_groups import (delete_working_group_view,
                                            add_working_group,
                                            edit_working_group)
@@ -652,4 +653,19 @@ def includeme(config: 'Configurator') -> None:
         search,
         route_name='search',
         renderer='templates/search_results.pt',
+    )
+
+    config.add_route('trash', '/trash')
+    config.add_view(
+        trash_view,
+        route_name='trash',
+        renderer='templates/trash.pt',
+    )
+
+    config.add_route(
+        'restore_soft_deleted_model', '/restore/{item_type}/{item_id}'
+    )
+    config.add_view(
+        restore_soft_deleted_model_view,
+        route_name='restore_soft_deleted_model',
     )

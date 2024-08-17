@@ -10,16 +10,13 @@ EXTRACT_HREF = re.compile(
 
 
 class Client(TestApp):
-    """ A condensed (minimalist) version of the `client`, derived from onegov.
-    """
+    """ A condensed, minimalist version of the `client` as in onegov-cloud. """
 
     skip_n_forms = 1  # skip the 'search' form
 
     def spawn(self):
         """ Spawns a new client that points to the same app.
-
-        All login data / cookies are lost.
-
+        All login data / cookies are lost, but locale is preserved.
         """
 
         return self.__class__(self.app)
