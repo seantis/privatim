@@ -67,3 +67,7 @@ share
 pyvenv.cfg
 
 messages.xlsx
+
+# Translation binaries
+*.mo
+*.pot
