@@ -1,6 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
-
 from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
 from privatim.models import WorkingGroup, User, Meeting
@@ -16,19 +15,39 @@ if TYPE_CHECKING:
 
 
 def working_groups_view(request: 'IRequest') -> 'RenderData':
-    session = request.dbsession
-    stmt = (
-        select(WorkingGroup)
-        .options(joinedload(WorkingGroup.users))
-        .order_by(WorkingGroup.name)
-    )
-    working_groups = session.scalars(stmt).unique().all()
-
-    # Sort users for each working group
-    for group in working_groups:
-        group.users.sort(key=lambda user: user.fullname.lower())
-
-    return {'working_groups': working_groups}
+    return {
+        'working_groups': [
+            {
+                'group': group,
+                'users': [
+                    {
+                        'id': user.id,
+                        'fullname': user.fullname,
+                        'picture_url': (
+                            request.route_url(
+                                'download_file', id=user.profile_pic_id
+                            )
+                            if user.profile_pic_id
+                            else request.static_url(
+                                'privatim:static/default_profile_icon.png'
+                            )
+                        ),
+                        'profile_url': request.route_url('person', id=user.id),
+                    }
+                    for user in sorted(
+                        group.users, key=lambda user: user.fullname.lower()
+                    )
+                ],
+            }
+            for group in request.dbsession.scalars(
+                select(WorkingGroup)
+                .options(joinedload(WorkingGroup.users))
+                .order_by(WorkingGroup.name)
+            )
+            .unique()
+            .all()
+        ]
+    }
 
 
 def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
