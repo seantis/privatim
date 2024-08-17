@@ -1,5 +1,6 @@
 from functools import partial
 from fanstatic import Fanstatic
+from psycopg2 import ProgrammingError
 
 from pyramid.events import BeforeRender
 from sqlalchemy.dialects.postgresql import TSVECTOR
@@ -157,8 +158,6 @@ def main(
 def fix_user_constraints_to_work_with_hard_delete(
         context: 'UpgradeContext'
 ) -> None:
-
-    # List of (table_name, column_name, constraint_name) tuples
     fk_constraints = [
         ('consultations', 'creator_id', 'fk_consultations_creator_id_users'),
         ('consultations', 'editor_id', 'fk_consultations_editor_id_users'),
@@ -167,10 +166,16 @@ def fix_user_constraints_to_work_with_hard_delete(
     ]
 
     for table, column, constraint in fk_constraints:
-        # Drop the existing constraint
-        context.operations.drop_constraint(
-            constraint, table, type_='foreignkey'
-        )
+        # Try to drop the existing constraint, but continue if it doesn't exist
+        try:
+            context.operations.drop_constraint(
+                constraint, table, type_='foreignkey'
+            )
+        except ProgrammingError:
+            print(
+                f"Constraint {constraint} on table {table} "
+                f"doesn't exist, skipping drop"
+            )
 
         # Recreate the constraint with ON DELETE SET NULL
         context.operations.create_foreign_key(
