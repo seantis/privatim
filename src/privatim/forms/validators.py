@@ -136,7 +136,7 @@ class FileExtensionsAllowed:
         self.message = message
 
     def __call__(self, form: 'BaseForm', field: 'Field') -> None:
-        filename = field.data.filename.lower()
+        filename = field.data['filename'].lower()
 
         if any(filename.endswith(ext) for ext in self.extensions):
             return

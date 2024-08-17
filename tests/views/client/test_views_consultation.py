@@ -308,7 +308,8 @@ def test_consultation_delete(client, pdf_vemz):
     page.form['recommendation'] = 'the recommendation'
     page.form['status'] = '1'
     page.form['secondary_tags'] = ['AG', 'ZH']
-    page.form['files'] = Upload(*pdf_vemz)
+    filename, contet = pdf_vemz
+    page.form['files'] = Upload(filename=filename, content=contet)
     page = page.form.submit().follow()
 
     consultation = session.execute(
@@ -356,7 +357,36 @@ def test_consultation_delete(client, pdf_vemz):
     page = page.form.submit().follow()
     assert page.status_code == 200
 
-    # now delete
+    # Delete:
     page = client.get(f'/consultations/{latest_id}/delete')
     page = page.follow()
-    assert 'Vernehmlassung erfolgreich gelöscht' in page
+    assert 'Vernehmlassung in den Papierkorb verschoben' in page
+
+    consultation = session.execute(
+        select(Consultation)
+        .filter_by(description='updated description')
+    ).scalar_one_or_none()
+    assert consultation is None
+
+    # but it is still in db, just soft deleted:
+    with session.no_soft_delete_filter():
+        consultation = session.execute(
+            select(Consultation)
+            .filter_by(description='updated description')
+        ).scalar_one_or_none()
+
+        assert consultation.deleted
+
+    page = client.get('/consultations')
+    assert 'updated description' not in page
+
+    # Restore from trash
+    page = client.get('/trash')
+    page = page.click('Wiederherstellen').follow()
+    assert 'Element erfolgreich wiederhergestellt' in page
+
+    page = client.get('/consultations')
+    assert 'updated description' in page
+
+    session.refresh(consultation)
+    assert not consultation.deleted

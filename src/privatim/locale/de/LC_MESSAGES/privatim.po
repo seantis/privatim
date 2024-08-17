@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 00:06+0200\n"
+"POT-Creation-Date: 2024-08-18 01:01+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -312,7 +312,7 @@ msgstr "Vernehmlassung erfolgreich bearbeitet."
 
 #: src/privatim/views/consultations.py
 msgid "Consultation moved to the paper basket"
-msgstr "Vernehmlassung in den papierkorb verschoben"
+msgstr "Vernehmlassung in den Papierkorb verschoben"
 
 #: src/privatim/views/password_change.py src/privatim/forms/user_form.py
 msgid "Email"
@@ -608,12 +608,26 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/trash.pt
-msgid "Deleted Items"
-msgstr ""
+msgid "Deleted Entries"
+msgstr "Gelöschte Einträge"
+
+#: src/privatim/views/templates/trash.pt
+#: src/privatim/forms/consultation_form.py
+#: src/privatim/forms/agenda_item_form.py
+msgid "Title"
+msgstr "Titel"
+
+#: src/privatim/views/templates/trash.pt
+msgid "Action"
+msgstr "Aktion"
 
 #: src/privatim/views/templates/trash.pt
 msgid "Restore"
 msgstr "Wiederherstellen"
+
+#: src/privatim/views/templates/trash.pt
+msgid "No deleted items found."
+msgstr "Keine gelöschten Elemente gefunden."
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Password Retrieval"
@@ -738,11 +752,6 @@ msgstr "Abgeschlossen"
 #: src/privatim/forms/consultation_form.py
 msgid "In Progress"
 msgstr "in Bearbeitung"
-
-#: src/privatim/forms/consultation_form.py
-#: src/privatim/forms/agenda_item_form.py
-msgid "Title"
-msgstr "Titel"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Description"

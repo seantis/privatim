@@ -222,8 +222,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
 
     def __repr__(self) -> str:
         return (
-            f'<Consultation {self.title}, searchable_text_de_CH: '
-            f'{self.searchable_text_de_CH}>'
+            f'<Consultation {self.title}'
         )
 
     def __acl__(self) -> list['ACL']:

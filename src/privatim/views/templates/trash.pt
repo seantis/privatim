@@ -2,17 +2,42 @@
              xmlns="http://www.w3.org/1999/xhtml"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
+    <div metal:fill-slot="content" class="container mt-4">
+        <h1 class="mb-4">${title}</h1>
+        <h2 class="mb-3" i18n:translate="">Deleted Entries</h2>
 
-    <div metal:fill-slot="content">
-        <h1>${title}</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <colgroup>
+                    <col style="width: 80%;">
+                    <col style="width: 20%;">
+                </colgroup>
+                <thead class="table-light">
+                <tr>
+                    <th i18n:translate="">Title</th>
+                    <th i18n:translate="">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr tal:repeat="item items">
+                    <td>
+                        <a href="${item.model_url}" class="text-decoration-none">
+                                ${item.title}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="${item.restore_url}" class="btn btn-outline-dark">
+                            <i class="far fa-trash-restore me-1"></i>
+                            <span i18n:translate="">Restore</span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <h2 i18n:translate="">Deleted Items</h2>
-        <ul>
-            <li tal:repeat="item items">
-            ${item.title} (ID: ${item.id}, Type: ${item.type})
-                <a href="${item.restore_url}" class="btn btn-sm btn-primary" i18n:translate="">Restore</a>
-            </li>
-        </ul>
+        <div tal:condition="not:items" class="alert alert-info mt-3" role="alert" i18n:translate="">
+            No deleted items found.
+        </div>
     </div>
-
 </metal:block>

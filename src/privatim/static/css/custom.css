@@ -663,8 +663,12 @@ input[type="color"]:focus,
     opacity: 1;
     overflow: hidden;
 }
-
 .alert-success.hiding {
     opacity: 0;
     max-height: 0;
+}
+
+
+.badge.bg-consultation {
+    background-color: #c6acae!important;
 }

@@ -14,37 +14,45 @@ if TYPE_CHECKING:
     from privatim.types import RenderData, RenderDataOrRedirect
     from privatim.models.soft_delete import SoftDeleteMixin
 
+model_map = {
+    'consultation': Consultation,
+    'working_group': WorkingGroup,
+    'meeting': Meeting,
+}
+
 
 class DeletedItemData(TypedDict):
-    """ Somehwat generic data structure for deleted items. """
+    """ Somewhat generic data structure for deleted items. """
     id: str
     title: str
     restore_url: str
-    type: str
-
+    model_url: str
+    item_type: str
 
 
 def generate_deleted_item_data(
     request: 'IRequest', item: 'SoftDeleteMixin', item_type: str
 ) -> DeletedItemData:
-
-    if not hasattr(item, 'id') or not hasattr(item, 'title'):
-        raise ValueError('Item does not have required attributes.')
+    assert hasattr(item, 'id') and hasattr(
+        item, 'title'
+    ), 'Item does not have required attributes.'
 
     return {
         'id': str(item.id),
         'title': getattr(item, 'title', getattr(item, 'name', '')),
+        'model_url': request.route_url(item_type, id=item.id),
         'restore_url': request.route_url(
             'restore_soft_deleted_model', item_type=item_type, item_id=item.id
         ),
-        'type': item_type,
+        'item_type': item_type,
     }
 
 
 def trash_view(request: 'IRequest') -> 'RenderData':
 
-    def get_deleted_items(session: 'FilteredSession',
-            model: Type['SoftDeleteMixin']) -> Sequence['SoftDeleteMixin']:
+    def get_deleted_items(
+        session: 'FilteredSession', model: Type['SoftDeleteMixin']
+    ) -> Sequence['SoftDeleteMixin']:
         with session.no_soft_delete_filter():
             stmt = select(model).filter(model.deleted.is_(True))
             result = session.execute(stmt)
@@ -73,25 +81,24 @@ def restore_soft_deleted_model_view(
     item_type = request.matchdict['item_type']
     item_id = request.matchdict['item_id']
 
-    model_map = {
-        'consultation': Consultation,
-        'working_group': WorkingGroup,
-        'meeting': Meeting,
-    }
-
     model = model_map.get(item_type)
     if not model:
         request.messages.add(_('Invalid item type.'), 'error')
         return HTTPFound(location=request.route_url('trash'))
 
+    target_url = request.route_url('consultation', id=item_id)
+
     with session.no_soft_delete_filter():
         stmt = select(model).filter_by(id=item_id)
         item = session.execute(stmt).scalar_one_or_none()
         if item:
-            item.deleted = False
+            item.revert_soft_delete()
             session.add(item)
+            session.flush()
+            session.refresh(item)
             request.messages.add(_('Item restored successfully.'), 'success')
         else:
             request.messages.add(_('Item not found.'), 'error')
+            return HTTPFound(location=request.route_url('trash'))
 
-    return HTTPFound(location=request.route_url('trash'))
+    return HTTPFound(location=target_url)

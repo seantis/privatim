@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 00:06+0200\n"
+"POT-Creation-Date: 2024-08-18 01:01+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -606,12 +606,26 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Voulez-vous vraiment supprimer \"${item_title}\"?"
 
 #: src/privatim/views/templates/trash.pt
-msgid "Deleted Items"
-msgstr ""
+msgid "Deleted Entries"
+msgstr "Entrées supprimées"
+
+#: src/privatim/views/templates/trash.pt
+#: src/privatim/forms/consultation_form.py
+#: src/privatim/forms/agenda_item_form.py
+msgid "Title"
+msgstr "Titre"
+
+#: src/privatim/views/templates/trash.pt
+msgid "Action"
+msgstr "Action"
 
 #: src/privatim/views/templates/trash.pt
 msgid "Restore"
 msgstr "Restaurer"
+
+#: src/privatim/views/templates/trash.pt
+msgid "No deleted items found."
+msgstr "Aucun élément supprimé trouvé."
 
 #: src/privatim/views/templates/password_retrieval.pt
 msgid "Password Retrieval"
@@ -736,11 +750,6 @@ msgstr "Terminé"
 #: src/privatim/forms/consultation_form.py
 msgid "In Progress"
 msgstr "En cours de traitement"
-
-#: src/privatim/forms/consultation_form.py
-#: src/privatim/forms/agenda_item_form.py
-msgid "Title"
-msgstr "Titre"
 
 #: src/privatim/forms/consultation_form.py
 msgid "Description"

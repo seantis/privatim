@@ -360,18 +360,42 @@ $(function() {
 
 // Vanish the flash message if positive after N seconds automatically.
 function autoHideSuccessMessages(delay = 3000) {
-    const alertElements = document.querySelectorAll('main.main-content .container .alert-success');
-    alertElements.forEach((alertElement, index) => {
+    const successAlerts = document.querySelectorAll('.alert-success');
+
+    successAlerts.forEach((alert) => {
         setTimeout(() => {
-            alertElement.classList.add('hiding');
-            alertElement.addEventListener('transitionend', (event) => {
+            // Start the fade out
+            alert.classList.add('hiding');
+
+            // Listen for the end of the transition
+            alert.addEventListener('transitionend', function handleTransitionEnd(event) {
                 if (event.propertyName === 'opacity') {
-                    const container = alertElement.closest('.container');
+                    // Remove the event listener
+                    alert.removeEventListener('transitionend', handleTransitionEnd);
+
+                    // Find and remove the container
+                    let container = alert.closest('.container');
                     if (container) {
-                        container.remove();
+                        // Check if this container only contained this alert
+                        if (container.children.length === 1 && container.children[0] === alert) {
+                            // If so, remove the entire container
+                            container.remove();
+                        } else {
+                            // Otherwise, just remove the alert
+                            alert.remove();
+                        }
+                    } else {
+                        // If no container found, just remove the alert
+                        alert.remove();
+                    }
+
+                    // Check if we need to remove the p-4 div
+                    let p4Div = document.querySelector('.p-4:empty');
+                    if (p4Div) {
+                        p4Div.remove();
                     }
                 }
-            }, { once: true });
+            });
         }, delay);
     });
 }
