@@ -174,7 +174,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         try:
             exists = conn.execute(text(
                 f"SELECT 1 FROM information_schema.table_constraints "
-                f"WHERE constraint_name = '{constraint}'"
+                f"WHERE constraint_name = '{constraint}'"  # nosec[B608]
             )).scalar()
         except SQLAlchemyError:
             exists = False

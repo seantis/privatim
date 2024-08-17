@@ -16,7 +16,7 @@ def setup_filestorage(settings: Any) -> None:
     Configure storage of static assets
     """
     documents_dir = Path(settings.get('documents_dir', 'uploads'))
-    log.error(f'documents_dir: {documents_dir}')
+    log.info(f'documents_dir: {documents_dir}')
 
     asset_dir = documents_dir / 'assets'
     asset_dir.mkdir(exist_ok=True, parents=True)
