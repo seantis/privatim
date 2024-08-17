@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     makeConsultationsInActivitiesClickable();
     setupAgendaItemGlobalToggle();
     setupDeleteModalForPersonInPeople();
-    autoHideSuccessMesssages('.alert-success');
+    autoHideSuccessMessages();
 });
 
 
@@ -358,19 +358,20 @@ $(function() {
 });
 
 
-function autoHideSuccessMesssages(alertSelector, delay = 4000) {
-    const alertElement = document.querySelector('main.main-content .container .alert-success');
-
-    if (alertElement) {
+// Vanish the flash message if positive after N seconds automatically.
+function autoHideSuccessMessages(delay = 3000) {
+    const alertElements = document.querySelectorAll('main.main-content .container .alert-success');
+    alertElements.forEach((alertElement, index) => {
         setTimeout(() => {
-            alertElement.classList.remove('show');
-            alertElement.addEventListener('transitionend', () => {
-                // Remove the entire alert container to clean up the empty space
-                const alertContainer = alertElement.closest('.container');
-                if (alertContainer) {
-                    alertContainer.remove();
+            alertElement.classList.add('hiding');
+            alertElement.addEventListener('transitionend', (event) => {
+                if (event.propertyName === 'opacity') {
+                    const container = alertElement.closest('.container');
+                    if (container) {
+                        container.remove();
+                    }
                 }
-            });
+            }, { once: true });
         }, delay);
-    }
+    });
 }
