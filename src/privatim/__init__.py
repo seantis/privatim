@@ -4,13 +4,14 @@ from psycopg2 import ProgrammingError
 
 from pyramid.events import BeforeRender
 from sqlalchemy.dialects.postgresql import TSVECTOR
+from sqlalchemy.exc import SQLAlchemyError
 
 from privatim import helpers
 from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR
+    VARCHAR, text
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -158,6 +159,9 @@ def main(
 def fix_user_constraints_to_work_with_hard_delete(
         context: 'UpgradeContext'
 ) -> None:
+    op = context.operations
+    conn = op.get_bind()
+
     fk_constraints = [
         ('consultations', 'creator_id', 'fk_consultations_creator_id_users'),
         ('consultations', 'editor_id', 'fk_consultations_editor_id_users'),
@@ -166,26 +170,41 @@ def fix_user_constraints_to_work_with_hard_delete(
     ]
 
     for table, column, constraint in fk_constraints:
-        # Try to drop the existing constraint, but continue if it doesn't exist
+        # Check if constraint exists
         try:
-            context.operations.drop_constraint(
-                constraint, table, type_='foreignkey'
-            )
-        except ProgrammingError:
+            exists = conn.execute(text(
+                f"SELECT 1 FROM information_schema.table_constraints "
+                f"WHERE constraint_name = '{constraint}'"
+            )).scalar()
+        except SQLAlchemyError:
+            exists = False
+
+        if exists:
+            try:
+                op.drop_constraint(constraint, table, type_='foreignkey')
+            except (ProgrammingError, SQLAlchemyError) as e:
+                print(
+                    f"Error dropping constraint {constraint} on table {table}: {str(e)}"
+                )
+        else:
             print(
-                f"Constraint {constraint} on table {table} "
-                f"doesn't exist, skipping drop"
+                f"Constraint {constraint} on table {table} doesn't exist, skipping drop"
             )
 
         # Recreate the constraint with ON DELETE SET NULL
-        context.operations.create_foreign_key(
-            constraint,
-            table,
-            'users',
-            [column],
-            ['id'],
-            ondelete='SET NULL',
-        )
+        try:
+            op.create_foreign_key(
+                constraint,
+                table,
+                'users',
+                [column],
+                ['id'],
+                ondelete='SET NULL',
+            )
+        except SQLAlchemyError as e:
+            print(
+                f"Error creating constraint {constraint} on table {table}: {str(e)}"
+            )
 
 
 def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
