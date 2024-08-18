@@ -15,10 +15,8 @@ from privatim.testing import DummyRequest
 
 
 from typing import TYPE_CHECKING, Any
-from typing import Callable, Optional
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
-    from lxml.html import HtmlElement
 
 
 class Bunch:
@@ -156,32 +154,3 @@ def hash_file(file_bytes: bytes, hash_algorithm: str = 'sha256') -> str:
     hash_func = hashlib.new(hash_algorithm)
     hash_func.update(file_bytes)
     return hash_func.hexdigest()
-
-
-def get_link(
-    element: 'HtmlElement', predicate: Callable[[str], bool]
-) -> Optional[str]:
-    def check_and_return_link(a_element: 'HtmlElement') -> Optional[str]:
-        href = a_element.get('href')
-        if href and predicate(href):
-            return href
-        return None
-
-    children = element.getchildren()
-
-    if len(children) >= 2:
-        # Check the first <a> element
-        if children[0].tag == 'a':
-            result = check_and_return_link(children[0])
-            if result:
-                return result
-
-        # Search for links in the second element (assuming it's a <div>)
-        second_element = children[1]
-        if second_element.tag == 'div':
-            for a in second_element.findall('.//a'):
-                result = check_and_return_link(a)
-                if result:
-                    return result
-
-    return None  # Return None if no matching link is found

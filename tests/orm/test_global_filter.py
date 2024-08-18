@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Status, Consultation
-from shared.utils import create_consultation
+from tests.shared.utils import create_consultation
 
 
 def test_filtered_session_returns_only_latest_version(session):

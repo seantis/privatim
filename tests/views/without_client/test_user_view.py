@@ -97,6 +97,8 @@ def test_add_user_duplicate_email(pg_config):
 
 
 def test_edit_user_view(pg_config):
+
+    pg_config.add_route('people', '/people')
     pg_config.add_route('person', '/person/{id}')
     pg_config.add_route('edit_user', '/person/{id}/edit')
     db = pg_config.dbsession

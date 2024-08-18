@@ -58,9 +58,9 @@ def test_edit_meeting(client):
     assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
     assert get_attendees(page) == ['Max Müller', 'Alexa Troller']
 
-    # Test the cancel button
+    # Test the cancel button, if cancel edit meeting redirected to the meeting
     page = page.click('Abbrechen')
-    assert f'working_groups/{src_meeting.working_group.id}' in page.request.url
+    assert f'meeting/{src_meeting.id}' in page.request.url
 
     page = client.get(f'/meetings/{src_meeting.id}/edit')
     # Modify the meeting details

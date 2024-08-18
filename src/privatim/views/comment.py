@@ -19,7 +19,7 @@ def delete_comment_view(
     context: Comment, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
     assert context.target_type == 'consultations'
-    context.content = _('Comment deleted by user')
+    context.content = translate(_('Comment deleted by user'))
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
 

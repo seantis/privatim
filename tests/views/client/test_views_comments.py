@@ -2,7 +2,7 @@ from pathlib import Path
 from webtest import Upload
 from privatim.models import User
 from privatim.static import get_default_profile_pic_data
-from tests.shared.utils import create_consultation, get_link
+from tests.shared.utils import create_consultation
 
 
 def test_add_comment(client):
@@ -93,8 +93,10 @@ def test_comment_actions_only_available_to_author(client):
     actions_menu = page.pyquery('.ellipsis-menu')[0]
 
     # the author should have the links...
-    del_link = get_link(actions_menu, lambda link: '/delete' in link)
-    assert del_link
+    ul = actions_menu.getchildren()[1]
+    text = ul.text_content()
+    assert 'Bearbeiten' in text
+    assert 'Löschen' in text
 
     # ... any other user should not have it:
     client.get('/logout')
