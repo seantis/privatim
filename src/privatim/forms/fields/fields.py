@@ -181,7 +181,7 @@ class TomSelectWidget(Select):
         return inline_js + html
 
 
-class SearchableSelectField(SelectMultipleField):
+class SearchableMultiSelectField(SelectMultipleField):
     """
     A multiple select field with tom-select.js support.
 

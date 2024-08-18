@@ -9,7 +9,7 @@ from wtforms.validators import DataRequired
 from wtforms import validators
 
 from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
-                                          SearchableSelectField,
+                                          SearchableMultiSelectField,
                                           ConstantTextAreaField,
                                           )
 from privatim.forms.validators import FileSizeLimit, FileExtensionsAllowed
@@ -86,7 +86,7 @@ class ConsultationForm(Form):
         _('Status'),
         choices=[]
     )
-    secondary_tags = SearchableSelectField(
+    secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
         choices=[('', '')] + CANTONS_SHORT,
         validators=[
@@ -112,9 +112,10 @@ class ConsultationForm(Form):
         obj: 'Consultation',  # type: ignore[override]
     ) -> None:
         session = self.meta.dbsession
+        # todo: add files:
         for name, field in self._fields.items():
             if (
-                isinstance(field, SearchableSelectField)
+                isinstance(field, SearchableMultiSelectField)
                 and field.raw_data is not None
             ):
                 existing_tags = {
