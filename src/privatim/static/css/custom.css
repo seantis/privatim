@@ -680,3 +680,8 @@ input[type="color"]:focus,
     border-radius: 50%;
     object-fit: cover;
 }
+
+.btn-outline-dark:hover {
+    color: green!important;
+    background-color: #b3bbc1;
+}

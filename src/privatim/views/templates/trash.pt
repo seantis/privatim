@@ -20,11 +20,7 @@
                 </thead>
                 <tbody>
                 <tr tal:repeat="item items">
-                    <td>
-                        <a href="${item.model_url}" class="text-decoration-none">
-                                ${item.title}
-                        </a>
-                    </td>
+                    <td>${item.title}</td>
                     <td>
                         <a href="${item.restore_url}" class="btn btn-outline-dark">
                             <i class="far fa-trash-restore me-1"></i>
