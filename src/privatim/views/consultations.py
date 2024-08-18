@@ -220,6 +220,14 @@ def edit_consultation_view(
         )
     elif not request.POST:
         form.process(obj=previous_consultation)
+        form.files = [
+            {
+                'filename': file.filename,
+                'mimetype': file.content_type,
+                'id': file.id
+            }
+            for file in previous_consultation.files
+        ]
 
     session.expunge(next_consultation)
     return {
