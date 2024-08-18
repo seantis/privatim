@@ -5,11 +5,9 @@ from privatim.models import (
     Meeting,
     WorkingGroup,
     User,
-    Tag,
     Consultation,
     AgendaItem,
 )
-from privatim.models.consultation import Status
 from privatim.models.file import SearchableFile
 from privatim.testing import DummyRequest
 
@@ -124,18 +122,13 @@ def create_consultation(documents=None, tags=None, user=None):
         ),
     ]
     user = user or User(email='testuser@example.org')
-    tags = tags or [
-        Tag(name='SZ'),
-        Tag(name='AG'),
-    ]
-
     return Consultation(
         title='Test Consultation',
         description='This is a test consultation',
         recommendation='Some recommendation',
-        status=Status(name='Open'),
+        status='Created',
         files=documents,
-        secondary_tags=tags,
+        secondary_tags=['SZ', 'AG'],
         creator=user
     )
 

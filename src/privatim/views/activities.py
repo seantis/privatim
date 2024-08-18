@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
-from privatim.models import Consultation, Meeting, Tag
+from privatim.models import Consultation, Meeting
 from privatim.models.comment import Comment
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
@@ -43,8 +43,6 @@ def get_activities(session: 'Session') -> list[Any]:
             select(Consultation)
             .options(
                 joinedload(Consultation.creator),
-                joinedload(Consultation.status),
-                joinedload(Consultation.secondary_tags)
             )
             .order_by(Consultation.updated.desc())
         ).scalars().unique()
@@ -152,8 +150,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     if include_consultations:
         consultation_query = select(Consultation).options(
             joinedload(Consultation.creator),
-            joinedload(Consultation.status),
-            joinedload(Consultation.secondary_tags),
         )
         consultation_query = maybe_apply_date_filter(
             consultation_query,
@@ -163,7 +159,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         )
         if canton != 'all':
             consultation_query = consultation_query.filter(
-                Consultation.secondary_tags.any(Tag.name == canton)
+                Consultation.secondary_tags.any(canton)
             )
         activities.extend(
             session.execute(consultation_query).unique().scalars().all()

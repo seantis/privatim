@@ -192,6 +192,7 @@ def sync_meeting_attendance_records(
 
         return False
 
+    assert isinstance(meeting_form.attendees, SearchableMultiSelectField)
     stmt = select(User).where(User.id.in_(
         # FIXME: Does this give the correct result for an empty selection?
         meeting_form.attendees.raw_data or ()

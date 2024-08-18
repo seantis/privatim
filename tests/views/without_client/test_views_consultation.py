@@ -3,8 +3,7 @@ from sqlalchemy import select
 from webob.multidict import MultiDict
 
 from privatim.forms.consultation_form import STATUS_CHOICES
-from privatim.models import Consultation, User, Tag
-from privatim.models.consultation import Status
+from privatim.models import Consultation, User
 from privatim.testing import DummyRequest
 from privatim.views import edit_consultation_view
 
@@ -22,20 +21,15 @@ def test_edit_consultation_view_html_sanitization(pg_config):
     session = pg_config.dbsession
 
     user = User(email='testuser@example.org')
-    tags = [
-        Tag(name='SZ'),
-        Tag(name='AG'),
-    ]
-    status = Status(name='Open')
     previous_consultation = Consultation(
         title='Test Consultation',
         description='This is a test consultation',
         recommendation='Some recommendation',
-        status=status,
-        secondary_tags=tags,
+        status='Open',
+        secondary_tags=['SZ', 'AG'],
         creator=user
     )
-    session.add_all([*tags, status, previous_consultation])
+    session.add(previous_consultation)
 
     session.add(previous_consultation)
     session.flush()
@@ -88,7 +82,7 @@ def test_edit_consultation_view_html_sanitization(pg_config):
     assert new_consultation.evaluation_result == '<a>f</a>'
     assert new_consultation.decision == ('&lt;style&gt;body { display: none; '
                                          '}&lt;/style&gt;Decision')
-    assert new_consultation.status.name == get_status_label('2')
+    assert new_consultation.status == get_status_label('2')
 
     tags_names = sorted([s.name for s in new_consultation.secondary_tags])
     assert tags_names == sorted(['AR', 'BE', 'BL'])

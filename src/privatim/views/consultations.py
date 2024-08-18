@@ -7,13 +7,11 @@ from privatim.controls.controls import Button
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
-from privatim.models.consultation import Status, Tag
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 
 from privatim.models.file import SearchableFile
 from privatim.utils import dictionary_to_binary, flatten_comments
-
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -62,12 +60,12 @@ def consultation_view(
             }
             for doc in context.files
         ],
-        'status_name': context.status.name if context.status else '',
+        'status_name': _(context.status),
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
                                                     request),
-        'secondary_tags': tuple(t.name for t in context.secondary_tags)
+        'secondary_tags': context.secondary_tags
     }
 
 
@@ -116,33 +114,17 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     if request.method == 'POST' and form.validate():
         session = request.dbsession
         user = request.user
-        if form.status.data:
-            status = Status(name=form.status.data)
-            status.name = dict(form.status.choices)[  # type:ignore
-                form.status.data
-            ]
-            session.add(status)
-            session.flush()
-        else:
-            status = None
-
-        if form.secondary_tags.data:
-            tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
-            session.add_all(tags)
-            session.flush()
-        else:
-            tags = None
-
         # Create a new Consultation instance
         assert form.title.data is not None
+        secondary_tags = form.secondary_tags.data or []
         new_consultation = Consultation(
             title=form.title.data,
             description=form.description.data,
             recommendation=form.recommendation.data,
             evaluation_result=form.evaluation_result.data,
             decision=form.decision.data,
-            status=status,
-            secondary_tags=tags,
+            status=form.status.data,
+            secondary_tags=secondary_tags,
             creator=user,
             editor=user,
             is_latest_version=1,
@@ -184,6 +166,7 @@ def create_consultation_copy(
      request: 'IRequest', prev: Consultation
 ) -> Consultation:
     user = request.user
+
     new_consultation = Consultation(
         title=prev.title,
         description=prev.description,

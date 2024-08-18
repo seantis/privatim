@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from sedate import utcnow
-from sqlalchemy import ForeignKey, Integer, Index
+from sqlalchemy import ForeignKey, Integer, Index, ARRAY, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -25,61 +25,6 @@ if TYPE_CHECKING:
     from privatim.models.file import SearchableFile
 
 
-class Status(Base):
-    __tablename__ = 'status'
-
-    def __init__(
-            self,
-            name: str,
-    ):
-        self.id = str(uuid.uuid4())
-        self.name = name
-
-    id: Mapped[UUIDStrPK]
-
-    name: Mapped[str] = mapped_column(nullable=False)
-
-    consultations: Mapped['Consultation'] = relationship(
-        'Consultation',
-        back_populates='status',
-    )
-    consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id', ondelete='CASCADE'),
-        nullable=True,
-    )
-
-    def __repr__(self) -> str:
-        return f'<Status {self.name}>'
-
-
-class Tag(Base):
-
-    __tablename__ = 'secondary_tags'
-
-    def __init__(
-        self,
-        name: str,
-    ):
-        self.id = str(uuid.uuid4())
-        self.name = name
-
-    id: Mapped[UUIDStrPK]
-
-    name: Mapped[str] = mapped_column(nullable=False)
-
-    consultation: Mapped['Consultation'] = relationship(
-        'Consultation', back_populates='secondary_tags',
-    )
-
-    consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id', ondelete='CASCADE'),
-        nullable=True
-    )
-
-    def __repr__(self) -> str:
-        return f'<Tag {self.name}>'
-
-
 class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     """Vernehmlassung (Verfahren der Stellungnahme zu einer öffentlichen
     Frage)"""
@@ -89,34 +34,35 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     def __init__(
         self,
         title: str,
-        creator: 'User',
+        creator: 'User | None' = None,
         description: str | None = None,
         recommendation: str | None = None,
         evaluation_result: str | None = None,
         decision: str | None = None,
         editor: 'User | None' = None,
-        status: Status | None = None,
+        status: str | None = None,
         files: list['SearchableFile'] | None = None,
         replaced_by: 'Consultation | None' = None,
-        secondary_tags: list[Tag] | None = None,
+        secondary_tags: list[str] | None = None,
         previous_version: 'Consultation | None' = None,
         searchable_text_de_CH: 'TSVECTOR | None' = None,
         comments: list[Comment] | None = None,
         is_latest_version: int = 1,
     ):
+
         self.id = str(uuid.uuid4())
         self.title = title
         self.description = description
         self.recommendation = recommendation
         self.evaluation_result = evaluation_result
         self.decision = decision
-        self.creator = creator
+        if creator is not None:
+            self.creator = creator
 
         assert is_latest_version in (0, 1)
-        if status is not None:
-            self.status = status
-        if secondary_tags is not None:
-            self.secondary_tags = secondary_tags
+        if status is None:
+            self.status = 'Created'
+        self.secondary_tags = secondary_tags or []
         if files is not None:
             self.files = files
 
@@ -135,18 +81,15 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     evaluation_result: Mapped[str | None] = mapped_column(nullable=True)
     decision: Mapped[str | None] = mapped_column(nullable=True)
 
-    status: Mapped[Status | None] = relationship(
-        'Status', back_populates='consultations',
-        cascade="all, delete-orphan", )
+    status: Mapped[str] = mapped_column(
+        String(256), nullable=False, default='Created'
+    )
+    secondary_tags: Mapped[list[str]] = mapped_column(
+        ARRAY(String(32)), nullable=False, default=list
+    )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
-
-    secondary_tags: Mapped[list[Tag]] = relationship(
-        'Tag',
-        back_populates='consultation',
-        cascade='all, delete-orphan'
-    )
 
     # in theory this could be nullable=False, but let's avoid problems with
     # user deletion

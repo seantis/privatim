@@ -3,7 +3,6 @@ from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy import select, and_
 
 from privatim.models.comment import Comment
-from privatim.models.consultation import Status
 from privatim.models.file import SearchableFile
 from privatim.orm import get_engine
 from privatim.models import (
@@ -68,7 +67,6 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
         print(f'Already exists {n}')
 
     if not consultation:
-        status = Status(name='Erstellt')
         print(f'Adding {n}')
 
         consultation = Consultation(
@@ -121,7 +119,7 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
             'gegenseitiger Information sicher erbracht '
             'werden. ',
             title=n,
-            status=status,
+            status='Erstellt',
             creator=ueli_buri,
         )
 
@@ -152,7 +150,6 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
         db.add(consultation)
         db.add_all(comments)
 
-        db.add(status)
         db.flush()
 
 
@@ -172,7 +169,6 @@ def add_content_mili(db: 'Session') -> None:
         print(f'Already exists {n}')
     if not consultation:
         print(f'Adding {n}')
-        status = Status(name='Erstellt')
 
         consultation = Consultation(
             title=n,
@@ -208,7 +204,7 @@ def add_content_mili(db: 'Session') -> None:
             'Gesundheitswesen aufgrund zeitgerechter '
             'gegenseitiger Information sicher erbracht '
             'werden. ',
-            status=status,
+            status='Erstellt',
             creator=ueli_buri,
         )
         comments = [
@@ -224,7 +220,6 @@ def add_content_mili(db: 'Session') -> None:
 
         privatim_document_20201223 = get_file()
         consultation.files.append(privatim_document_20201223)
-        db.add(status)
         db.add(privatim_document_20201223)
         db.flush()
 

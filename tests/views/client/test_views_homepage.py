@@ -1,14 +1,11 @@
-from privatim.models import Tag, Consultation
+from privatim.models import Consultation
 from tests.shared.utils import create_consultation, create_meeting
 
 
 def test_filter(client):
     session = client.db
     client.login_admin()
-    tag = Tag(name='ZH')
-    session.add(tag)
-    tags = [tag]
-    cons = create_consultation(tags=tags)
+    cons = create_consultation(tags=['ZH'])
     session.add(cons)
 
     meeting = create_meeting()

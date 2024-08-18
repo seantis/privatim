@@ -3,7 +3,7 @@ from sqlalchemy.orm import selectinload
 
 from privatim.models import User, SearchableFile
 from privatim.models.comment import Comment
-from privatim.models.consultation import Status, Consultation
+from privatim.models.consultation import Consultation
 from sqlalchemy import select, exists, func
 from webtest.forms import Upload
 
@@ -14,7 +14,6 @@ def test_view_consultation(client):
     db = client.db
 
     # add a consultations:
-    status = Status(name='Erstellt')
     consultation = Consultation(
         title='Vernehmlassung zur Interkantonalen Vereinbarung über den '
               'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen  ',
@@ -30,11 +29,10 @@ def test_view_consultation(client):
         'ergeben sich einerseits grundsätzliche; Vorbehalte '
         'und andererseits Hinweise zu einzelnen Bestimmungen des '
                        'Vereinbarungsentwurfs...',
-        status=status,
+        status='Erstellt',
         creator=User(email='test@foo.com')
     )
     db.add(consultation)
-    db.add(status)
     db.commit()
     db.refresh(consultation)
 

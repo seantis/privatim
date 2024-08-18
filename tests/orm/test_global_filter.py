@@ -1,14 +1,14 @@
 from sqlalchemy import select
 from privatim.models import User, SearchableFile
-from privatim.models.consultation import Status, Consultation
+from privatim.models.consultation import Consultation
 from tests.shared.utils import create_consultation
 
 
 def test_filtered_session_returns_only_latest_version(session):
     # Create two versions of a consultation
     user = User(email='test@example.com')
-    status = Status(name='Active')
-    session.add_all([user, status])
+    status = 'Active'
+    session.add(user)
     session.flush()
 
     consultation_v1 = Consultation(
