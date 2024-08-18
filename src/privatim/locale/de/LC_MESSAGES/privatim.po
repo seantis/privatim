@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 05:45+0200\n"
+"POT-Creation-Date: 2024-08-18 06:06+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -66,6 +66,11 @@ msgstr "Löschen"
 #: src/privatim/layouts/macros.pt
 msgid "Comments"
 msgstr "Kommentare"
+
+#: src/privatim/layouts/macros.pt
+#: src/privatim/views/templates/search_results.pt
+msgid "Deleted User"
+msgstr "Gelöschter Benutzer"
 
 #: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
 msgid "Answer"
@@ -466,6 +471,10 @@ msgid "Unknown Creator"
 msgstr "Unbekannter Ersteller"
 
 #: src/privatim/views/templates/meeting.pt
+msgid "Back to Meetings"
+msgstr "Zurück zu den Sitzungen"
+
+#: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr "Datum / Zeit:"
@@ -479,6 +488,10 @@ msgstr "Traktanden"
 #: src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
 msgstr "Traktandum hinzufügen"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Back to Working Groups overviwe"
+msgstr "Zurück zur Übersicht der Arbeitsgruppen"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"

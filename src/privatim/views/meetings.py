@@ -88,6 +88,9 @@ def meeting_view(
         ),
         'agenda_items': agenda_items,
         'sortable_url': data_sortable_url,
+        'navigate_back_up': request.route_url(
+            'meetings', id=context.working_group.id
+        ),
         'expand_all_text': _('Expand All'),
         'collapse_all_text': _('Collapse All'),
     }
@@ -227,6 +230,7 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
         'add_meeting_link': add_meeting_link,
         'leader': leader,
         'chairman_contact': context.chairman_contact,
+        'navigate_back_up': request.route_url('working_groups'),
         'user_list': user_list if context.users else Markup(''),
         'meetings': context.meetings,
     }

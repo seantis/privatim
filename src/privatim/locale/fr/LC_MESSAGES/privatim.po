@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 05:45+0200\n"
+"POT-Creation-Date: 2024-08-18 06:06+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -63,6 +63,11 @@ msgstr "Supprimer"
 #: src/privatim/layouts/macros.pt
 msgid "Comments"
 msgstr "Commentaires"
+
+#: src/privatim/layouts/macros.pt
+#: src/privatim/views/templates/search_results.pt
+msgid "Deleted User"
+msgstr "Utilisateur supprimé"
 
 #: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
 msgid "Answer"
@@ -465,6 +470,10 @@ msgid "Unknown Creator"
 msgstr "Créateur inconnu"
 
 #: src/privatim/views/templates/meeting.pt
+msgid "Back to Meetings"
+msgstr "Retour aux réunions"
+
+#: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr "Date / Heure:"
@@ -478,6 +487,10 @@ msgstr "ordres du jour"
 #: src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
 msgstr "Ajouter un élément de l'ordre du jour"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Back to Working Groups overviwe"
+msgstr "Retour à la vue d'ensemble des comités"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"

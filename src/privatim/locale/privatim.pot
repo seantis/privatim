@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 05:45+0200\n"
+"POT-Creation-Date: 2024-08-18 06:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,6 +64,11 @@ msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
 msgid "Comments"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Deleted User"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt ./src/privatim/forms/add_comment.py
@@ -455,6 +460,10 @@ msgid "Unknown Creator"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
+msgid "Back to Meetings"
+msgstr ""
+
+#: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
 msgid "Date / Time:"
 msgstr ""
@@ -467,6 +476,10 @@ msgstr ""
 #: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_group.pt
+msgid "Back to Working Groups overviwe"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
