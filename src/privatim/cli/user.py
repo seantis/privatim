@@ -32,5 +32,6 @@ def add_user(
             return
 
         user = User(email=email, first_name=first_name, last_name=last_name)
+        user.generate_profile_picture(dbsession)
         user.set_password(password)
         dbsession.add(user)

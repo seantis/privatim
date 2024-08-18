@@ -31,7 +31,7 @@ class UpgradeContext:
 
     def __init__(self, db: 'Session'):
         self.session = db
-        self.engine: 'Engine' = self.session.bind  # type: ignore
+        self.engine: Engine = self.session.bind  # type: ignore
 
         self.operations_connection = db._connection_for_bind(
             self.engine
@@ -51,6 +51,11 @@ class UpgradeContext:
             self.operations.drop_table(table)
             return True
         return False
+
+    def index_exists(self, table_name: str, index_name: str) -> bool:
+        inspector = inspect(self.operations_connection)
+        indexes = inspector.get_indexes(table_name)
+        return any(index['name'] == index_name for index in indexes)
 
     def has_column(self, table: str, column: str) -> bool:
         inspector = inspect(self.operations_connection)

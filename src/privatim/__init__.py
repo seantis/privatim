@@ -53,6 +53,7 @@ def includeme(config: Configurator) -> None:
     ))
     smsdir = settings.get('sms.queue_path', '')
     config.registry.registerUtility(ASPSMSGateway(smsdir))
+
     config.include('pyramid_beaker')
     config.include('pyramid_chameleon')
     config.include('pyramid_layout')
@@ -300,13 +301,16 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
 
     )
 
-    # this needs to be added in the second run
-    context.operations.create_index(
-        'idx_searchable_files_searchable_text_de_CH',
-        'searchable_files',
-        ['searchable_text_de_CH'],
-        postgresql_using='gin',
-    )
+    if not context.index_exists(
+        'searchable_files', 'idx_searchable_files_searchable_text_de_CH'
+    ):
+        # this needs to be added in the second run
+        context.operations.create_index(
+            'idx_searchable_files_searchable_text_de_CH',
+            'searchable_files',
+            ['searchable_text_de_CH'],
+            postgresql_using='gin',
+        )
 
     # Drop all existing comments and related tables
     context.drop_table('comments_for_consultations_comments')
@@ -380,18 +384,26 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         ),
     )
 
-    context.operations.create_index(
-        context.operations.f('ix_consultations_deleted'),
-        'consultations',
-        ['deleted'],
-        unique=False,
-    )
+    if not context.index_exists(
+            'consultations', 'ix_consultations_deleted'
+    ):
+        context.operations.create_index(
+            context.operations.f('ix_consultations_deleted'),
+            'consultations',
+            ['deleted'],
+            unique=False,
+        )
 
-    context.operations.create_index(
-        context.operations.f('ix_searchable_files_deleted'),
-        'searchable_files',
-        ['deleted'],
-        unique=False,
-    )
+    if not context.index_exists(
+        'searchable_files', 'ix_searchable_files_deleted'
+    ):
+        context.operations.create_index(
+            context.operations.f('ix_searchable_files_deleted'),
+            'searchable_files',
+            ['deleted'],
+            unique=False,
+        )
+
+    context.add_column('users', Column('tags', String(255), nullable=True))
 
     context.commit()

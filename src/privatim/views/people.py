@@ -6,7 +6,7 @@ from markupsafe import Markup
 
 from privatim.controls.controls import Button
 from privatim.forms.user_form import UserForm
-from privatim.i18n import _
+from privatim.i18n import _, translate
 from privatim.utils import strip_p_tags, maybe_escape
 from privatim.models import User, WorkingGroup
 
@@ -52,6 +52,7 @@ def people_view(request: 'IRequest') -> 'RenderData':
         people_data.append({
             'id': user.id,
             'name': f'{user.first_name} {user.last_name}',
+            'download_link': user.profile_pic_download_link(request),
             'url': request.route_url('person', id=user.id),
             'buttons': button_html
         })
@@ -91,6 +92,7 @@ def person_view(context: User, request: 'IRequest') -> 'RenderData':
 
     return {
         'user': user,
+        'profile_pic_url': user.profile_pic_download_link(request),
         'meeting_urls': meetings_dict,
         'consultation_urls': consultation_dict
     }
@@ -107,12 +109,15 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         stmt = select(WorkingGroup).where(
             WorkingGroup.id.in_(form.groups.raw_data or ())
         )
+        tags = maybe_escape(form.tags.data)
         user = User(
             email=maybe_escape(form.email.data),
             first_name=maybe_escape(form.first_name.data),
             last_name=maybe_escape(form.last_name.data),
+            tags=tags if tags else '',
             groups=list(session.execute(stmt).scalars().unique())
         )
+        user.generate_profile_picture(session)
         session.add(user)
         session.flush()
 
@@ -174,14 +179,15 @@ def delete_user_view(
     session.flush()
 
     full_name = f'{user.first_name} {user.last_name}'
-    message = _('Successfully deleted user: {full_name}.', mapping={
-        'full_name': full_name}
-                )
-    request.messages.add(message, 'success')
+    message = _(
+        'Successfully deleted user: {full_name}.',
+        mapping={'full_name': full_name}
+    )
+    request.messages.add(translate(message, request.locale_name), 'success')
 
     if request.is_xhr:
         return {
-            'success': message,
+            'success': translate(message, request.locale_name),
             'redirect_url': request.route_url('people'),
         }
     else:

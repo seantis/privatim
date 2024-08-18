@@ -37,12 +37,39 @@
                                         <p class="timeline-info">
                                             <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
                                             <span class="timeline-user">
-                                                <tal:b tal:switch="activity.__class__.__name__">
-                                                    <span tal:case="'Consultation'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
-                                                    <span tal:case="'Meeting'" tal:condition="activity.creator"><span i18n:translate="">by </span>${activity.creator.fullname}</span>
-                                                    <span tal:case="'Comment'" tal:condition="activity.user"><span i18n:translate="">by </span>${activity.user.fullname}</span>
-                                                </tal:b>
+                                            <tal:b tal:switch="activity.__class__.__name__">
+                                                <span tal:case="'Consultation'" tal:condition="activity.creator">
+                                                    <span i18n:translate="">by </span>
+                                                    <img src="${activity.creator.profile_pic_download_link(request)}"
+                                                         alt="${activity.creator.fullname}'s avatar"
+                                                         class="rounded-circle"
+                                                         width="20"
+                                                         height="20"
+                                                         style="vertical-align: middle;">
+                                                        ${activity.creator.fullname}
                                                 </span>
+                                                <span tal:case="'Meeting'" tal:condition="activity.creator">
+                                                    <span i18n:translate="">by </span>
+                                                    <img src="${activity.creator.profile_pic_download_link(request)}"
+                                                         alt="${activity.creator.fullname}'s avatar"
+                                                         class="rounded-circle"
+                                                         width="20"
+                                                         height="20"
+                                                         style="vertical-align: middle;">
+                                                        ${activity.creator.fullname}
+                                                </span>
+                                                <span tal:case="'Comment'" tal:condition="activity.user">
+                                                    <span i18n:translate="">by </span>
+                                                    <img src="${activity.user.profile_pic_download_link(request)}"
+                                                         alt="${activity.user.fullname}'s avatar"
+                                                         class="rounded-circle"
+                                                         width="20"
+                                                         height="20"
+                                                         style="vertical-align: middle;">
+                                                        ${activity.user.fullname}
+                                                </span>
+                                            </tal:b>
+                                        </span>
                                         </p>
                                         <div class="timeline-body">
                                             <tal:b tal:switch="activity.__class__.__name__">

@@ -10,7 +10,7 @@ from privatim.reporting.report import (
     HTMLReportRenderer,
 )
 from privatim.utils import datetime_format, strip_p_tags
-from privatim.controls.controls import Button, Icon, IconStyle
+from privatim.controls.controls import Button
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound,
@@ -134,20 +134,25 @@ def meeting_buttons(meeting: Meeting, request: 'IRequest') -> list[Button]:
 def user_list(
     request: 'IRequest', users: Sequence['MeetingUserAttendance'], title: str
 ) -> Markup:
-    """Returns an HTML list of users with links to their profiles and
-    checkbox on the right, with tooltips."""
+    """ Returns an HTML list of users with profile pictures, links to their
+    profiles, and checkbox on the right, with tooltips."""
     if not users:
         return Markup('')
-
     user_items = tuple(
         Markup(
             '<li class="user-list-item d-flex justify-content-between '
             'align-items-center">'
             '<div class="d-flex align-items-center">'
-            '{} <a href="{}" class="mb-1 ms-2 text-decoration-none">{}</a>'
+            '<div class="profile-pic-container me-2" style="'
+            'width: 24px; height: 24px; overflow: hidden; border-radius: 50%; '
+            'display: flex; justify-content: ctenter; align-items: center;">'
+            '<img src="{}" alt="{} profile picture" style="'
+            'width: 100%; height: 100%; object-fit: cover;">'
+            '</div>'
+            '<a href="{}" class="mb-1 text-decoration-none">{}</a>'
             '</div>'
             '<div class="form-check" data-bs-toggle="tooltip" title="{}">'
-            ' <input class="form-check-input fix-checkbox-in-list" '
+            '<input class="form-check-input fix-checkbox-in-list" '
             'type="checkbox" '
             'value="" '
             'id="attendance-{}" {} disabled>'
@@ -155,7 +160,10 @@ def user_list(
             '</div>'
             '</li>'
         ).format(
-            Icon('user', IconStyle.solid),
+            user.user.profile_pic_download_link(
+                request
+            ),
+            user.user.fullname,
             request.route_url("person", id=user.user_id),
             user.user.fullname,
             (
@@ -237,15 +245,22 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
 
 
 def get_meeting_user_list(
-    context: WorkingGroup, request: 'IRequest', title: str
+        context: WorkingGroup, request: 'IRequest', title: str
 ) -> Markup:
     user_items = tuple(
         Markup(
-            '<li class="user-list-item">{} '
+            '<li class="user-list-item d-flex align-items-center">'
+            '<div class="profile-pic-container mr-2 m-2" style="'
+            'width: 24px; height: 24px; overflow: hidden; border-radius: 50%; '
+            'display: flex; justify-content: center; align-items: center;">'
+            '<img src="{}" alt="{} profile picture" style="'
+            'width: 100%; height: 100%; object-fit: cover;">'
+            '</div>'
             '<a href="{}" class="mb-1 text-decoration-none">{}</a>'
             '</li>'
         ).format(
-            Icon('user', IconStyle.solid),
+            user.profile_pic_download_link(request),
+            user.fullname,
             request.route_url("person", id=user.id),
             user.fullname,
         )

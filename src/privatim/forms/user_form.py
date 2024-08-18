@@ -65,6 +65,11 @@ class UserForm(Form):
         validators=[Optional()],
     )
 
+    tags = StringField(
+        _('Tags'),
+        validators=[Optional(), Length(min=1, max=3)],
+    )
+
     def populate_obj(self, obj: object) -> None:
         for name, field in self._fields.items():
 

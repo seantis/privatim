@@ -1,3 +1,7 @@
+from io import BytesIO
+from PIL import Image
+
+
 from privatim.models import User, WorkingGroup, Group, GeneralFile
 from sqlalchemy import select
 
@@ -113,3 +117,17 @@ def test_user_default_profile_picture(session):
         stored_user_with_custom_pic.profile_pic.filename
         == 'custom_profile_pic.jpg'
     )
+
+
+def test_generate_profile_picture(session):
+    user = User(
+        email='john.doe@example.com', first_name='John', last_name='Doe'
+    )
+    user.generate_profile_picture(session)
+
+    assert isinstance(user.profile_pic, GeneralFile)
+    assert user.profile_pic.filename == f'{user.id}_avatar.png'
+
+    img = Image.open(BytesIO(user.profile_pic.content))
+    assert img.size == (250, 250)
+    assert img.mode == 'RGB'

@@ -53,6 +53,8 @@ email-validator==2.2.0
     # via
     #   privatim (setup.cfg)
     #   privatim
+et-xmlfile==1.1.0
+    # via openpyxl
 fanstatic==1.4
     # via
     #   privatim (setup.cfg)
@@ -81,6 +83,8 @@ idna==3.7
     # via
     #   email-validator
     #   requests
+lxml==5.3.0
+    # via python-docx
 mako==1.3.5
     # via
     #   alembic
@@ -100,6 +104,10 @@ nh3==0.2.18
     # via
     #   privatim (setup.cfg)
     #   privatim
+openpyxl==3.1.5
+    # via
+    #   privatim (setup.cfg)
+    #   privatim
 packaging==24.1
     # via zope-sqlalchemy
 pastedeploy==3.1.0
@@ -112,10 +120,11 @@ phonenumberslite==8.13.42
     # via
     #   privatim (setup.cfg)
     #   privatim
-pillow==10.4.0
+pillow==10.3.0
     # via
     #   privatim (setup.cfg)
     #   privatim
+    #   pyavatar
     #   weasyprint
 plaster==1.1.2
     # via
@@ -126,7 +135,15 @@ plaster-pastedeploy==1.0.1
     #   privatim (setup.cfg)
     #   privatim
     #   pyramid
+polib==1.2.0
+    # via
+    #   privatim (setup.cfg)
+    #   privatim
 psycopg2==2.9.9
+    # via
+    #   privatim (setup.cfg)
+    #   privatim
+pyavatar==0.1.6
     # via
     #   privatim (setup.cfg)
     #   privatim
@@ -177,6 +194,10 @@ pyramid-tm==2.5
     #   privatim
 python-dateutil==2.9.0.post0
     # via arrow
+python-docx==1.1.2
+    # via
+    #   privatim (setup.cfg)
+    #   privatim
 python-magic==0.4.27
     # via
     #   privatim (setup.cfg)
@@ -235,6 +256,7 @@ typing-extensions==4.12.2
     #   privatim (setup.cfg)
     #   alembic
     #   privatim
+    #   python-docx
     #   sqlalchemy
 urllib3==2.2.2
     # via

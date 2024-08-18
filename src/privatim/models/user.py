@@ -1,5 +1,9 @@
 import uuid
 from functools import cached_property
+from random import choice
+
+
+from pyavatar import PyAvatar
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 import bcrypt
@@ -8,28 +12,31 @@ from datetime import timezone
 
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.session import object_session
-from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey, select
+from sqlalchemy.orm import Mapped
 
+from privatim.forms.constants import AVATAR_COLORS
 from privatim.models import Group, WorkingGroup
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models.group import user_group_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128, str_32
+from privatim.models.file import GeneralFile
 
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.models.association_tables import MeetingUserAttendance
     from privatim.types import ACL
+    from sqlalchemy.orm import Session
+    from pyramid.interfaces import IRequest
     from privatim.models import Meeting
     from sqlalchemy import ScalarSelect
     from privatim.models.comment import Comment
     from privatim.models import Consultation
-    from privatim.models.file import GeneralFile
 
 
 class User(Base):
@@ -40,6 +47,7 @@ class User(Base):
             email: str,
             first_name: str = '',
             last_name: str = '',
+            tags: str = '',
             groups: list[Group] | None = None,
     ):
         self.id = str(uuid.uuid4())
@@ -47,6 +55,12 @@ class User(Base):
         self.first_name = first_name
         self.last_name = last_name
         self.groups = groups or []
+        self.tags = tags
+
+        if tags:
+            self.tags = tags
+        else:
+            self.tags = self.generate_default_tags()
 
     id: Mapped[UUIDStrPK]
 
@@ -58,19 +72,55 @@ class User(Base):
     mobile_number: Mapped[str_128 | None] = mapped_column(unique=True)
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
+    tags: Mapped[str_32]
 
     profile_pic_id: Mapped[UUIDStrType | None] = mapped_column(
         ForeignKey('general_files.id', ondelete='SET NULL'),
         nullable=True
     )
-    profile_pic: Mapped['GeneralFile | None'] = relationship(
-        'GeneralFile',
+    profile_pic: Mapped[GeneralFile | None] = relationship(
+        GeneralFile,
         single_parent=True,
         passive_deletes=True,
         cascade='all, delete-orphan'
     )
 
-    # the function of the user in the organization
+    def generate_default_tags(self) -> str:
+        initials = []
+        if self.first_name:
+            initials.append(self.first_name[0].upper())
+        if self.last_name:
+            initials.append(self.last_name[0].upper())
+        return ''.join(initials) if initials else ''
+
+    def generate_profile_picture(self, session: 'Session') -> None:
+        """
+        Generate a profile picture based on user initials.
+        If no name is provided, use the first letter of the email.
+        Uses a predefined color palette for the background.
+        """
+        initials = self.tags
+
+        # Choose a random color from the palette
+        bg_color = choice(AVATAR_COLORS)  # nosec[B311]
+        avatar = PyAvatar(
+            initials, size=250, char_spacing=35, color=bg_color,
+        )
+        general_file = GeneralFile(
+            filename=f'{self.id}_avatar.png',
+            content=avatar.stream()
+        )
+        session.add(general_file)
+        session.flush()  # Flush to get the ID assigned
+        self.profile_pic = general_file
+
+    def profile_pic_download_link(self, request: 'IRequest') -> str:
+        return (
+            request.route_url('download_file', id=self.profile_pic_id)
+            if (self.profile_pic_id)
+            else request.static_url('privatim:static/default_profile_icon.png')
+        )
+
     function: Mapped[str | None]
 
     modified: Mapped[datetime | None] = mapped_column()
@@ -154,7 +204,7 @@ class User(Base):
         return ' '.join(parts)
 
     @property
-    def picture(self) -> 'GeneralFile':
+    def picture(self) -> GeneralFile:
         """ Returns the user's profile picture or the default picture. """
         session = object_session(self)
         assert session is not None

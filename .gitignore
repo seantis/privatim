@@ -71,3 +71,6 @@ messages.xlsx
 # Translation binaries
 *.mo
 *.pot
+
+src/privatim/locale/de/LC_MESSAGES/privatim.mo
+src/privatim/locale/fr/LC_MESSAGES/privatim.mo

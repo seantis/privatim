@@ -673,3 +673,10 @@ input[type="color"]:focus,
 .badge.bg-consultation {
     background-color: #c6acae!important;
 }
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}

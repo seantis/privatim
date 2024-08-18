@@ -57,3 +57,25 @@ CANTONS_SHORT = [
     ('ZG', 'ZG'),
     ('ZH', 'ZH'),
 ]
+
+# Color palette for avatar backgrounds
+AVATAR_COLORS = [
+    '#1abc9c',  # Turquoise
+    '#2ecc71',  # Emerald
+    '#3498db',  # Peter River
+    '#9b59b6',  # Amethyst
+    '#34495e',  # Wet Asphalt
+    '#16a085',  # Green Sea
+    '#27ae60',  # Nephritis
+    '#2980b9',  # Belize Hole
+    '#8e44ad',  # Wisteria
+    '#2c3e50',  # Midnight Blue
+    '#f1c40f',  # Sunflower
+    '#e67e22',  # Carrot
+    '#e74c3c',  # Alizarin
+    '#95a5a6',  # Concrete
+    '#f39c12',  # Orange
+    '#d35400',  # Pumpkin
+    '#c0392b',  # Pomegranate
+    '#7f8c8d',  # Asbestos
+]

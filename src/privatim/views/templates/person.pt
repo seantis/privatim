@@ -3,7 +3,10 @@
              xmlns="http://www.w3.org/1999/xhtml"
              xmlns:metal="http://xml.zope.org/namespaces/metal"
          i18n:domain="privatim">
+
     <div metal:fill-slot="content">
+        <img src="${profile_pic_url}" alt="${user.fullname}'s profile picture"
+             class="profile-pic">
         <h1 id="main-title">${user.fullname}</h1>
         <ul>
             <li>${user.email}</li>
