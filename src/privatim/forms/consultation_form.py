@@ -1,5 +1,3 @@
-from sqlalchemy import select
-
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form
@@ -8,15 +6,14 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
-from privatim.forms.fields.fields import (UploadMultipleFilesWithORMSupport,
-                                          SearchableSelectField,
-                                          ConstantTextAreaField,
-                                          )
+from privatim.forms.fields.fields import (
+    UploadMultipleFilesWithORMSupport,
+    SearchableMultiSelectField,
+    ConstantTextAreaField,
+)
 from privatim.forms.validators import FileSizeLimit, FileExtensionsAllowed
 from privatim.i18n import _, translate
-
-from privatim.models import Tag, SearchableFile
-from privatim.models.consultation import Status
+from privatim.models import SearchableFile
 
 
 from typing import TYPE_CHECKING
@@ -26,11 +23,9 @@ if TYPE_CHECKING:
 
 
 STATUS_CHOICES = [
-    (code, label) for code, label in [
-        ('1', _('Open')),
-        ('2', _('Closed')),
-        ('3', _('In Progress')),
-    ]
+    ('Open', _('Open')),
+    ('Closed', _('Closed')),
+    ('In Progress', _('In Progress')),
 ]
 
 
@@ -84,9 +79,9 @@ class ConsultationForm(Form):
 
     status = SelectField(
         _('Status'),
-        choices=[]
+        choices=[],  # We'll set this in __init__
     )
-    secondary_tags = SearchableSelectField(
+    secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
         choices=[('', '')] + CANTONS_SHORT,
         validators=[
@@ -111,35 +106,6 @@ class ConsultationForm(Form):
         self,
         obj: 'Consultation',  # type: ignore[override]
     ) -> None:
-        session = self.meta.dbsession
+        # todo: add files:
         for name, field in self._fields.items():
-            if (
-                isinstance(field, SearchableSelectField)
-                and field.raw_data is not None
-            ):
-                existing_tags = {
-                    tag.name: tag
-                    for tag in session.execute(
-                        select(Tag).where(Tag.name.in_(field.raw_data))
-                    )
-                    .scalars()
-                    .all()
-                }
-                # Create new tags for those not already existing
-                new_tags = set()
-                for tag_name in field.raw_data:
-                    if tag_name not in existing_tags:
-                        new_tag = Tag(name=tag_name)
-                        session.add(new_tag)
-                        new_tags.add(new_tag)
-                session.flush()
-                # Get all tags (existing + new)
-                all_tags = set(existing_tags.values()).union(new_tags)
-                setattr(obj, name, list(all_tags))
-            elif isinstance(field, SelectField) and field.data is not None:
-                value = dict(field.choices)[field.data]  # type:ignore
-                if (value and obj.status is not None and obj.status.name !=
-                        value):
-                    setattr(obj, name, Status(name=value))
-            else:
-                field.populate_obj(obj, name)
+            field.populate_obj(obj, name)

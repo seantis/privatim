@@ -7,13 +7,11 @@ from privatim.controls.controls import Button
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
-from privatim.models.consultation import Status, Tag
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 
 from privatim.models.file import SearchableFile
-from privatim.utils import dictionary_to_binary, flatten_comments, maybe_escape
-
+from privatim.utils import dictionary_to_binary, flatten_comments
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -62,12 +60,12 @@ def consultation_view(
             }
             for doc in context.files
         ],
-        'status_name': context.status.name if context.status else '',
+        'status_name': _(context.status),
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
                                                     request),
-        'secondary_tags': tuple(t.name for t in context.secondary_tags)
+        'secondary_tags': context.secondary_tags
     }
 
 
@@ -116,33 +114,17 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     if request.method == 'POST' and form.validate():
         session = request.dbsession
         user = request.user
-        if form.status.data:
-            status = Status(name=form.status.data)
-            status.name = dict(form.status.choices)[  # type:ignore
-                form.status.data
-            ]
-            session.add(status)
-            session.flush()
-        else:
-            status = None
-
-        if form.secondary_tags.data:
-            tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
-            session.add_all(tags)
-            session.flush()
-        else:
-            tags = None
-
         # Create a new Consultation instance
         assert form.title.data is not None
+        secondary_tags = form.secondary_tags.data or []
         new_consultation = Consultation(
             title=form.title.data,
             description=form.description.data,
             recommendation=form.recommendation.data,
             evaluation_result=form.evaluation_result.data,
             decision=form.decision.data,
-            status=status,
-            secondary_tags=tags,
+            status=form.status.data,
+            secondary_tags=secondary_tags,
             creator=user,
             editor=user,
             is_latest_version=1,
@@ -151,13 +133,14 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         # Handle file uploads
         if form.files.data:
             for file in form.files.data:
-                new_consultation.files.append(
-                    SearchableFile(
-                        file['filename'],
-                        dictionary_to_binary(file),
-                        content_type=file['mimetype']
+                if file:
+                    new_consultation.files.append(
+                        SearchableFile(
+                            file['filename'],
+                            dictionary_to_binary(file),
+                            content_type=file['mimetype']
+                        )
                     )
-                )
         session.add(new_consultation)
         session.flush()
 
@@ -179,115 +162,78 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     }
 
 
-def create_consultation_from_form(
-        form: ConsultationForm, request: 'IRequest', prev: Consultation
-) -> Consultation | None:
-
-    session = request.dbsession
-    status = Status(name=form.status.data)
-    status.name = dict(form.status.choices)[form.status.data]  # type:ignore
-
-    session.add(status)
-    session.flush()
-    session.refresh(status)
-
-    tags = [Tag(name=n) for n in form.secondary_tags.raw_data or ()]
-    session.add_all(tags)
-    session.flush()
-
+def create_consultation_copy(
+     request: 'IRequest', prev: Consultation
+) -> Consultation:
     user = request.user
-    if not user:
-        return None
 
-    # We create a new list new_files to hold the SearchableFile instances for
-    # the new consultation.
-    # this preserves history
-    previous_files = []
-    for file in prev.files:
-        new_file = SearchableFile(
-            filename=file.filename,
-            content=file.content,
-            content_type=file.content_type
-        )
-        previous_files.append(new_file)
-
-    new_files = []
-    if form.files.data is not None:
-        for new_file_from_form in form.files.data:
-            if new_file_from_form.get('data', None) is not None:
-                new_files.append(SearchableFile(
-                    filename=new_file_from_form['filename'],
-                    content=dictionary_to_binary(new_file_from_form),
-                    content_type=new_file_from_form['mimetype']
-                ))
-
-    seen = set()
-    combined = [*previous_files, *new_files]
-    for f in combined:
-        if f.filename not in seen:
-            seen.add(f.filename)
-
-    combined = [file for file in combined if file.filename in seen]
-
-    assert prev.creator is not None
     new_consultation = Consultation(
-        title=maybe_escape(form.title.data) or prev.title,
-        description=maybe_escape(form.description.data) or prev.description,
-        recommendation=maybe_escape(
-            form.recommendation.data) or prev.recommendation,
-        evaluation_result=maybe_escape(
-            form.evaluation_result.data) or prev.evaluation_result,
-        decision=maybe_escape(form.decision.data) or prev.decision,
-        status=status or prev.status,
-        secondary_tags=tags or prev.secondary_tags,
+        title=prev.title,
+        description=prev.description,
+        recommendation=prev.recommendation,
+        evaluation_result=prev.evaluation_result,
+        decision=prev.decision,
+        status=prev.status,
+        secondary_tags=prev.secondary_tags,
         creator=prev.creator,
         editor=user,
-        files=combined,
+        files=list(prev.files),  # Create a new list to avoid modifying orig
         previous_version=prev,
-        comments=prev.comments,
+        comments=list(prev.comments),  # New list
         is_latest_version=1
     )
+
+    # Update the previous consultation
     prev.is_latest_version = 0
     prev.replaced_by = new_consultation
-    session.add(prev)
+
     return new_consultation
 
 
 def edit_consultation_view(
     previous_consultation: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
-
-    form = ConsultationForm(previous_consultation, request)
-
+    session = request.dbsession
     target_url = request.route_url('activities')  # fallback
-    if request.method == 'POST' and form.validate():
-        form.populate_obj(previous_consultation)
-        session = request.dbsession
-        new_consultation = create_consultation_from_form(
-            form, request, previous_consultation
-        )
-        if new_consultation is None:
-            raise ValueError('Could not create new consultation from form.')
 
-        session.add(new_consultation)
+    # Create a new consultation as a copy of the previous one
+    next_consultation = create_consultation_copy(
+        request, previous_consultation
+    )
+    session.add(next_consultation)
+    # Create the form with the new consultation
+    form = ConsultationForm(next_consultation, request)
+    if request.method == 'POST' and form.validate():
+        # Populate the new consultation with form data
+        form.populate_obj(next_consultation)
+        session.add(next_consultation)
         session.flush()
-        session.refresh(new_consultation)
 
         message = _('Successfully edited consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')
+
         return HTTPFound(
             location=request.route_url(
-                'consultation', id=str(new_consultation.id)
+                'consultation', id=str(next_consultation.id)
             )
         )
     elif not request.POST:
         form.process(obj=previous_consultation)
+        form.files = [
+            {
+                'filename': file.filename,
+                'mimetype': file.content_type,
+                'id': file.id
+            }
+            for file in previous_consultation.files
+        ]
 
+    session.expunge(next_consultation)
     return {
         'form': form,
         'title': _('Edit Consultation'),
-        'target_url': target_url
+        'target_url': target_url,
     }
 
 

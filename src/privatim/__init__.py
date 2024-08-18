@@ -3,6 +3,7 @@ from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
 
 from pyramid.events import BeforeRender
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -405,5 +406,38 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         )
 
     context.add_column('users', Column('tags', String(255), nullable=True))
+
+    context.operations.add_column(
+        'consultations',
+        Column(
+            'status', String(256), nullable=False, server_default='Created'
+        ),
+    )
+    context.operations.add_column(
+        'consultations',
+        Column(
+            'secondary_tags',
+            postgresql.ARRAY(String(32)),
+            nullable=False,
+            server_default='{}',
+        ),
+    )
+
+    # Migrate tags
+    tag_migration = text("""
+        UPDATE consultations c
+        SET secondary_tags = COALESCE(ARRAY(
+            SELECT t.name
+            FROM secondary_tags t
+            WHERE t.consultation_id = c.id
+        ), '{}')
+    """)
+    context.operations_connection.execute(tag_migration)
+
+    # Drop old columns and tables
+    # Drop old columns and tables
+    context.drop_column('consultations', 'status_id')
+    context.drop_table('status')
+    context.drop_table('secondary_tags')
 
     context.commit()

@@ -4,7 +4,6 @@ from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy import select
 
 from privatim.layouts.layout import DEFAULT_TIMEZONE
-from privatim.models.consultation import Status, Tag
 from privatim.models.file import SearchableFile
 from privatim.orm import get_engine
 from privatim.models import (Consultation, User, Meeting, WorkingGroup,
@@ -74,8 +73,6 @@ def add_example_content(
         exit(1)
 
     if not consultation:
-        status = Status(name='In Bearbeitung')
-        tags = [Tag(name=n) for n in ['BS', 'BE', 'AI']]
         consultation = Consultation(
             title=con_name,
             description='Stellungnahme von privatim, Konferenz der '
@@ -87,13 +84,11 @@ def add_example_content(
             '–direktoren (KKJPD) zur Zeit eine Vernehmlassung '
             'durchführt.',
             recommendation='Stellungnahme privatim näher prüfen.',
-            status=status,
-            secondary_tags=tags,
+            status='In Bearbeitung',
+            secondary_tags=['BS', 'BE', 'AI'],
             creator=admin_user,
         )
-        db.add_all(tags)
         db.add(consultation)
-        db.add(status)
         db.flush()
 
     if add_vemz:
@@ -103,8 +98,6 @@ def add_example_content(
             print("To create a Consultation we need a creator (User)")
             exit(1)
 
-        status = Status(name='In Überprüfung')
-        tags = [Tag(name=n) for n in ['AG', 'ZH']]
         here = Path(__file__).parent
         pdfname = 'privatim_Vernehmlassung_VEMZ.pdf'
         pdf = here / 'sample-pdf-for-initialize-db/' / pdfname
@@ -134,13 +127,10 @@ def add_example_content(
             'Bild hinreichend geschützt sind. Vernehmlassungsfrist: '
             '22. Mai 2024 ',
             recommendation='Stellungnahme privatim näher prüfen.',
-            status=status,
-            secondary_tags=tags,
+            secondary_tags=['AG', 'ZH'],
             creator=admin_user
         )
-        db.add_all(tags)
         db.add(consultation)
-        db.add(status)
         db.flush()
 
     if add_meeting:

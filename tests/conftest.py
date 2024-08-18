@@ -7,7 +7,7 @@ from sqlalchemy import engine_from_config
 from privatim import main
 from privatim.file.setup import setup_filestorage
 from privatim.models import User, WorkingGroup
-from privatim.models.consultation import Status, Consultation
+from privatim.models.consultation import Consultation
 from privatim.mtan_tool import MTanTool
 from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import (
@@ -38,7 +38,6 @@ def pg_config(postgresql, monkeypatch):
     config.include('privatim.models')
     config.include('pyramid_chameleon')
     config.include('pyramid_layout')
-
 
     settings = config.get_settings()
     engine = get_engine(settings)
@@ -198,7 +197,6 @@ def mock_requests(monkeypatch):
 
 @pytest.fixture()
 def consultation(session) -> Consultation:
-    status = Status(name='Erstellt')
     consultation = Consultation(
         title='Vernehmlassung zur Interkantonalen Vereinbarung über den '
               'Datenaustausch zum Betrieb gemeinsamer Abfrageplattformen  ',
@@ -214,10 +212,9 @@ def consultation(session) -> Consultation:
                        'ergeben sich einerseits grundsätzliche; Vorbehalte '
                        'und andererseits Hinweise zu einzelnen Bestimmungen '
                        'des Vereinbarungsentwurfs..',
-        status=status,
+        status='Erstellt',
     )
     session.add(consultation)
-    session.add(status)
     session.flush()
     return consultation
 

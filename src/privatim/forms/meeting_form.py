@@ -9,7 +9,7 @@ from wtforms.validators import InputRequired
 from privatim.forms.core import Form
 
 from privatim.forms.fields import TimezoneDateTimeField
-from privatim.forms.fields.fields import SearchableSelectField, \
+from privatim.forms.fields.fields import SearchableMultiSelectField, \
     ConstantTextAreaField
 from privatim.models import User, Meeting
 from privatim.models import WorkingGroup
@@ -90,7 +90,7 @@ class MeetingForm(Form):
         validators=[InputRequired()],
     )
 
-    attendees: SearchableSelectField = SearchableSelectField(
+    attendees: SearchableMultiSelectField = SearchableMultiSelectField(
         label=_('Members'),
         validators=[InputRequired()],
     )
@@ -115,7 +115,7 @@ class MeetingForm(Form):
     def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
 
         for name, field in self._fields.items():
-            if isinstance(field, SearchableSelectField):
+            if isinstance(field, SearchableMultiSelectField):
                 sync_meeting_attendance_records(
                     self,
                     obj,
@@ -123,7 +123,7 @@ class MeetingForm(Form):
                     self.meta.dbsession,
                 )
             elif name == 'attendance':
-                # this is already handled in SearchableSelectField above
+                # this is already handled in SearchableMultiSelectField above
                 pass
             else:
                 field.populate_obj(obj, name)
@@ -192,6 +192,7 @@ def sync_meeting_attendance_records(
 
         return False
 
+    assert isinstance(meeting_form.attendees, SearchableMultiSelectField)
     stmt = select(User).where(User.id.in_(
         # FIXME: Does this give the correct result for an empty selection?
         meeting_form.attendees.raw_data or ()
