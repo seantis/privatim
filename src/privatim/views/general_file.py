@@ -1,5 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
-from privatim.models import GeneralFile
+from privatim.models.file import GeneralFile
 from pyramid.response import Response
 from privatim.i18n import _
 from privatim.i18n import translate

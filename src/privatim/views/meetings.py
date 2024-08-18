@@ -52,26 +52,7 @@ def meeting_view(
     assert isinstance(context, Meeting)
     formatted_time = datetime_format(context.time)
 
-    request.add_action_menu_entries(
-        [
-            (
-                translate(_('Edit Meeting')),
-                request.route_url('edit_meeting', id=context.id),
-            ),
-            (
-                translate(_('Delete Meeting')),
-                request.route_url('delete_meeting', id=context.id),
-            ),
-            (
-                translate(_('Copy Agenda Items')),
-                request.route_url('copy_agenda_item', id=context.id),
-            ),
-            (
-                translate(_('Export meeting protocol')),
-                request.route_url('export_meeting_as_pdf_view', id=context.id),
-            ),
-        ]
-    )
+    request.add_action_menu_entries(meeting_buttons(context, request))
 
     agenda_items = []
     for indx, item in enumerate(context.agenda_items, start=1):
@@ -99,6 +80,7 @@ def meeting_view(
         target_id='{target_id}',
     )
     return {
+        'delete_title': _('Delete meeting'),
         'time': formatted_time,
         'meeting': context,
         'meeting_attendees': user_list(
@@ -111,40 +93,38 @@ def meeting_view(
     }
 
 
-def meeting_buttons(
-    meeting: Meeting, request: 'IRequest'
-) -> list[Button]:
-
+def meeting_buttons(meeting: Meeting, request: 'IRequest') -> list[Button]:
     return [
         Button(
-            title=_('Details'),
-            url=request.route_url('meeting', id=meeting.id),
-            css_class='btn-sm btn-secondary'
-        ),
-        Button(
-            url=(
-                request.route_url(
-                    'edit_meeting', meeting_id=meeting.id
-                )
-            ),
+            url=request.route_url('edit_meeting', id=meeting.id),
             icon='edit',
+            title=_('Edit'),
+            css_class='dropdown-item',
             description=_('Edit Meeting'),
-            css_class='btn-sm btn-secondary',
-            modal='#edit-xhr',
         ),
         Button(
-            url=(
-                request.route_url(
-                    'delete_meeting', id=meeting.id
-                )
-            ),
+            title=_('Copy'),
+            css_class='dropdown-item',
+            url=request.route_url('copy_agenda_item', id=meeting.id),
+            icon='copy',
+            description=translate(_('Copy Agenda Items')),
+        ),
+        Button(
+            title=_('Export'),
+            css_class='dropdown-item',
+            url=request.route_url('export_meeting_as_pdf_view', id=meeting.id),
+            icon='file-export',
+            description=translate(_('Export meeting protocol')),
+        ),
+        Button(
+            url=request.route_url('delete_meeting', id=meeting.id),
             icon='trash',
-            description=_('Delete'),
-            css_class='btn-sm btn-danger',
+            title=_('Delete'),
+            css_class='dropdown-item',
+            description=_('Delete Meeting'),
             modal='#delete-xhr',
-            data_item_title=meeting.name,  # set's the name in "Do you really
-            # wish to delete ${name}?" message
-        )
+            data_item_title=meeting.name,
+        ),
     ]
 
 
@@ -153,12 +133,15 @@ def user_list(
 ) -> Markup:
     """Returns an HTML list of users with links to their profiles and
     checkbox on the right, with tooltips."""
+    if not users:
+        return Markup('')
+
     user_items = tuple(
         Markup(
             '<li class="user-list-item d-flex justify-content-between '
             'align-items-center">'
             '<div class="d-flex align-items-center">'
-            '{} <a href="{}" class="mb-1 ms-2">{}</a>'
+            '{} <a href="{}" class="mb-1 ms-2 text-decoration-none">{}</a>'
             '</div>'
             '<div class="form-check" data-bs-toggle="tooltip" title="{}">'
             ' <input class="form-check-input fix-checkbox-in-list" '
@@ -223,15 +206,7 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
     """Displays the table of meetings a single working group has."""
 
     assert isinstance(context, WorkingGroup)
-
-    request.add_action_menu_entry(
-        translate(_('Edit Working Group')),
-        request.route_url('edit_working_group', id=context.id),
-    )
-    request.add_action_menu_entry(
-        translate(_('Delete Working Group')),
-        request.route_url('delete_working_group', id=context.id),
-    )
+    request.add_action_menu_entries(working_group_buttons(context, request))
 
     add_meeting_link = request.route_url('add_meeting', id=context.id)
     leader = None
@@ -244,10 +219,26 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
         )
     title = translate(_('Participants'))
 
+    user_list = get_meeting_user_list(context, request, title)
+
+    return {
+        'delete_title': _('Delete Working Group'),
+        'title': context.name,
+        'add_meeting_link': add_meeting_link,
+        'leader': leader,
+        'chairman_contact': context.chairman_contact,
+        'user_list': user_list if context.users else Markup(''),
+        'meetings': context.meetings,
+    }
+
+
+def get_meeting_user_list(
+    context: WorkingGroup, request: 'IRequest', title: str
+) -> Markup:
     user_items = tuple(
         Markup(
             '<li class="user-list-item">{} '
-            '<a href="{}" class="mb-1">{}</a>'
+            '<a href="{}" class="mb-1 text-decoration-none">{}</a>'
             '</li>'
         ).format(
             Icon('user', IconStyle.solid),
@@ -266,15 +257,30 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
     </div>
     '''
     ).format(title, Markup('').join(user_items))
+    return user_list
 
-    return {
-        'title': context.name,
-        'add_meeting_link': add_meeting_link,
-        'leader': leader,
-        'chairman_contact': context.chairman_contact,
-        'user_list': user_list,
-        'meetings': context.meetings,
-    }
+
+def working_group_buttons(
+    context: WorkingGroup, request: 'IRequest'
+) -> list[Button]:
+    return [
+        Button(
+            url=request.route_url('edit_working_group', id=context.id),
+            icon='edit',
+            title=_('Edit'),
+            description=_('Edit Working Group'),
+            css_class='dropdown-item',
+        ),
+        Button(
+            url=request.route_url('delete_working_group', id=context.id),
+            icon='trash',
+            title=_('Delete'),
+            description=_('Delete Working Group'),
+            css_class='dropdown-item',
+            modal='#delete-xhr',
+            data_item_title=context.name,
+        ),
+    ]
 
 
 def add_meeting_view(
@@ -376,10 +382,13 @@ def delete_meeting_view(
         mapping={'name': name}
     )
 
-    if request.is_xhr:
-        return {'success': translate(message, request.locale_name)}
-
     request.messages.add(message, 'success')
+    if request.is_xhr:
+        return {
+            'success': translate(message, request.locale_name),
+            'redirect_url': request.route_url('meetings', id=working_group_id),
+        }
+
     return HTTPFound(
         location=request.route_url('meetings', id=working_group_id),
     )

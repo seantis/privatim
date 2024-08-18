@@ -12,9 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function setupDeleteModalForPersonInPeople() {
 
-    if (window.location.pathname !== '/people') {
-       return;
-    }
+    var active_popover = null;
+    var popover_timeout = null;
 
     // Update the modal dismissal logic
     $('#delete-xhr').on('hidden.bs.modal', function (e) {
@@ -34,6 +33,11 @@ function setupDeleteModalForPersonInPeople() {
     });
 
     const deleteModal = document.getElementById('delete-xhr');
+
+    if (!deleteModal){
+        return;
+    }
+
     const deleteButtons = document.querySelectorAll('[data-bs-target="#delete-xhr"]');
     const deleteModalItemTitle = document.getElementById('delete-xhr-item-title');
     const deleteConfirmButton = deleteModal.querySelector('.btn-danger');
@@ -57,6 +61,7 @@ function setupDeleteModalForPersonInPeople() {
         });
     });
 
+
     deleteConfirmButton.addEventListener('click', (event) => {
         event.preventDefault();
         const csrfToken = document.querySelector('input[name="csrf_token"]').value;
@@ -74,13 +79,6 @@ function setupDeleteModalForPersonInPeople() {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        // Handle successful deletion
-                        const deletedItemId = deleteUrl.split('/').pop();
-                        const deletedItem = document.getElementById(deletedItemId);
-                        if (deletedItem) {
-                            deletedItem.remove();
-                        }
-                        // Close the modal
                         bootstrap.Modal.getInstance(deleteModal).hide()
                     }
                     if (response.redirect_url) {
@@ -89,6 +87,7 @@ function setupDeleteModalForPersonInPeople() {
                 } else {
                     // Handle error
                     console.error('Deletion failed:', xhr.statusText);
+                    console.error(xhr.status);
                 }
             }
         };
@@ -138,32 +137,7 @@ function handleProfilePicFormSubmission() {
         }
     });
 
-    document.getElementById('deletePhotoLink').addEventListener('click', function (event) {
-        event.preventDefault();
-
-        const deleteUrl = this.getAttribute('href');
-        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', deleteUrl, true);
-        xhr.setRequestHeader('X-CSRF-Token', csrfToken);
-        xhr.setRequestHeader('Accept', 'application/json');
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.redirect_url) {
-                        window.location.href = response.redirect_url;
-                    }
-                }
-            }
-        };
-        xhr.send();
-    });
 }
-
 
 function initializePopoversAndTooltips() {
     // https://getbootstrap.com/docs/5.0/components/popovers/#example-enable-popovers-everywhere

@@ -57,14 +57,17 @@
                     <tbody>
                     <tr tal:repeat="meeting meetings">
                         <td>
-                            <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1">${meeting.name}</a>
+                            <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1 text-decoration-none">${meeting.name}</a>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
+
+    <tal:block metal:fill-slot="modals">
+        <metal:block use-macro="layout.macros['the-modals']" tal:define="delete_title delete_title"></metal:block>
+    </tal:block>
 
 </metal:block>

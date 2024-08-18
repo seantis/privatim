@@ -1,28 +1,28 @@
+from functools import cache
 from sqlalchemy import Boolean
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
     object_session,
-    DeclarativeMeta,
 )
 from privatim.orm import Base
-from sqlalchemy.orm import declarative_mixin, declared_attr
 from sqlalchemy.orm import declarative_mixin, Mapper, Session
 
 
-from typing import Any, TypeVar, TYPE_CHECKING, cast
-
+from typing import TypeVar, TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.orm import DeclarativeBase
+
 
 T = TypeVar('T', bound='DeclarativeBase')
 
 
 @declarative_mixin
 class SoftDeleteMixin:
-
     deleted: Mapped[bool] = mapped_column(
-        Boolean, default=False, nullable=False
+        Boolean,
+        default=False,
+        nullable=False,
     )
 
     def _toggle_soft_delete(self, is_delete: bool) -> None:
@@ -32,8 +32,7 @@ class SoftDeleteMixin:
 
         self.deleted = is_delete
 
-        cls = cast(DeclarativeMeta, self.__class__)
-        mapper: Mapper = cast(Any, cls).__mapper__  # type: ignore
+        mapper: Mapper = self.__class__.__mapper__  # type: ignore
 
         for rel in mapper.relationships:
             if 'delete' in rel.cascade:
@@ -52,6 +51,7 @@ class SoftDeleteMixin:
         self._toggle_soft_delete(False)
 
 
+@cache
 def all_soft_delete_models() -> tuple[type[SoftDeleteMixin], ...]:
     """Retrieve all models inheriting from SoftDeleteMixin."""
     model_classes = set()
@@ -61,4 +61,3 @@ def all_soft_delete_models() -> tuple[type[SoftDeleteMixin], ...]:
             if issubclass(cls, SoftDeleteMixin):
                 model_classes.add(cls)
     return tuple(model_classes)
-

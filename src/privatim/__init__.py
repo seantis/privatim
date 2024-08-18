@@ -7,11 +7,10 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.exc import SQLAlchemyError
 
 from privatim import helpers
-from privatim.layouts.action_menu import ActionMenuEntry
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR, text, Boolean, false
+    VARCHAR, text
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -30,6 +29,7 @@ __version__ = '0.0.0'
 
 from typing import Any, TYPE_CHECKING, Iterable
 if TYPE_CHECKING:
+    from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
     from pyramid.interfaces import IRequest
@@ -85,36 +85,22 @@ def includeme(config: Configurator) -> None:
     config.add_request_method(profile_pic, 'profile_pic', property=True)
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
-    def add_action_menu_entry(
+    def add_action_menu_entries(
         request: 'IRequest',
-        title: str,
-        url: str,
+        entries: Iterable['Button'],
     ) -> None:
-        """  The entries are temporarily stored on the request object. They are
-        then retrieved in action_menu.py
+        """
+        Add multiple Button entries to the action menu.
         """
         if not hasattr(request, 'action_menu_entries'):
             request.action_menu_entries = []
-        request.action_menu_entries.append(ActionMenuEntry(title, url))
-
-    config.add_request_method(
-        lambda request: partial(add_action_menu_entry, request),
-        'add_action_menu_entry',
-        reify=True
-    )
-
-    def add_action_menu_entries(
-        request: 'IRequest',
-        entries: Iterable[tuple[str, str]],
-    ) -> None:
-        if not hasattr(request, 'action_menu_entries'):
-            request.action_menu_entries = []
-        for title, url in entries:
-            request.action_menu_entries.append(ActionMenuEntry(title, url))
+        request.action_menu_entries.extend(entries)
 
     config.add_request_method(
         lambda request: partial(add_action_menu_entries, request),
-        'add_action_menu_entries', reify=True)
+        'add_action_menu_entries',
+        reify=True,
+    )
 
 
 def add_renderer_globals(event: BeforeRender) -> None:

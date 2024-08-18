@@ -70,7 +70,7 @@
                     <ul class="list-group list-group-flush">
                         <li tal:repeat="item documents" class="list-group-item">
                             <a href="${item.download_url}"
-                               class="text-decoration-none document-link" target="_blank" rel="noopener noreferrer">
+                               class="ntext-decoration-one document-link" target="_blank" rel="noopener noreferrer">
                                     <span class="icon-container">
                                         <i tal:condition="python:'pdf' in item.doc_content_type"
                                                 class="fas fa-file-pdf"></i>
@@ -107,4 +107,10 @@
         <!-- Sidebar End-->
 
     </div>
+
+
+    <tal:block metal:fill-slot="modals">
+        <metal:block use-macro="layout.macros['the-modals']" tal:define="delete_title delete_title"></metal:block>
+    </tal:block>
+
 </metal:block>

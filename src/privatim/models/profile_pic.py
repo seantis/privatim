@@ -6,12 +6,12 @@ from sqlalchemy import select
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
-    from privatim.models import GeneralFile
+    from privatim.models.file import GeneralFile
 
 
 @cache
 def get_or_create_default_profile_pic(session: 'Session') -> 'GeneralFile':
-    from privatim.models import GeneralFile
+    from privatim.models.file import GeneralFile
     stmt = select(GeneralFile).where(
         GeneralFile.filename == 'default_profile_picture.png'
     )

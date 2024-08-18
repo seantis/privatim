@@ -64,4 +64,10 @@
             </div>
         </div>
     </tal:block>
+
+
+    <tal:block metal:fill-slot="modals">
+        <metal:block use-macro="layout.macros['the-modals']" tal:define="delete_title delete_title"></metal:block>
+    </tal:block>
+
 </metal:block>

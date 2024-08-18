@@ -1,7 +1,7 @@
+from privatim.forms.search_form import SearchForm
+
+
 from typing import TYPE_CHECKING
-
-from ..forms.search_form import SearchForm
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from ..types import RenderData

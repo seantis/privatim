@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload
 from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
 from privatim.models import WorkingGroup, User, Meeting
-from privatim.i18n import _, translate
+from privatim.i18n import _
 from privatim.utils import maybe_escape
 
 
@@ -80,7 +80,7 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
         if not request.is_xhr:
             request.messages.add(message, 'success')
         if request.is_xhr:
-            return {'redirect_to': target_url}
+            return {'redirect_url': target_url}
         else:
             return HTTPFound(location=target_url)
     if request.is_xhr:
@@ -126,12 +126,9 @@ def edit_working_group(
             'Successfully updated working group "${name}"',
             mapping={'name': form.name.data},
         )
-        if not request.is_xhr:
-            request.messages.add(message, 'success')
-        if request.is_xhr:
-            return {'redirect_to': target_url}
-        else:
-            return HTTPFound(location=target_url)
+        request.messages.add(message, 'success')
+        return HTTPFound(location=target_url)
+
     elif not request.POST:
         form.process(obj=group)
         form.users.data = [str(user.id) for user in group.users]
@@ -151,33 +148,38 @@ def delete_working_group_view(
 ) -> 'XHRDataOrRedirect':
     assert isinstance(context, WorkingGroup)
     deleted_working_group_name = context.name
+    target_url = request.route_url('working_groups')
 
     session = request.dbsession
-    meetings_exist_stmt = select(
+    meetings_exist = session.execute(select(
         exists().where(Meeting.working_group_id == context.id)
-    )
-    meetings_exist = session.execute(meetings_exist_stmt).scalar()
-
-    if meetings_exist:
+    )).scalar()
+    if not meetings_exist:
+        session.delete(context)
+        session.flush()
+        msg = _(
+            'Successfully deleted working group "${name}"',
+            mapping={
+                'name': deleted_working_group_name,
+            },
+        )
+        request.messages.add(msg, 'success')
+        if request.is_xhr:
+            return {
+                'success': msg,
+                'redirect_url': target_url,
+            }
+    else:
         warning_message = _(
             'Cannot delete working group "${name}" because it has associated '
             'meetings. Please delete all meetings first.',
             mapping={'name': deleted_working_group_name},
         )
+        request.messages.add(warning_message, 'warning')
 
         if request.is_xhr:
-            return {'error': translate(warning_message, request.locale_name)}
-        request.messages.add(warning_message, 'warning')
-        return HTTPFound(location=request.route_url('working_groups'))
-
-    session.delete(context)
-    session.flush()
-    success_message = _(
-        'Successfully deleted working group "${name}"',
-        mapping={'name': deleted_working_group_name},
-    )
-
-    if request.is_xhr:
-        return {'success': translate(success_message, request.locale_name)}
-    request.messages.add(success_message, 'success')
+            return {
+                'success':  False,
+                'redirect_url': request.route_url('working_groups')
+            }
     return HTTPFound(location=request.route_url('working_groups'))

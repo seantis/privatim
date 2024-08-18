@@ -287,4 +287,27 @@
 
 
 
+
+<tal:block metal:define-macro="the-modals">
+    <div class="modal fade" id="delete-xhr" tabindex="-1" aria-labelledby="delete-xhr-title" aria-hidden="true" tal:condition="exists:delete_title">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${delete_title}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" i18n:translate="">
+                    Do you really wish to delete "<span id="delete-xhr-item-title" i18n:name="item_title">%{item_title}</span>"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" i18n:translate>Cancel</button>
+                        <a class="btn btn-danger" href="#" data-csrf-token="${layout.csrf_token()}" i18n:translate>Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</tal:block>
+
+
 </html>

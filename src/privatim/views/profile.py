@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPForbidden, HTTPFound, HTTPClientError
 from privatim.controls.controls import Button
 from privatim.i18n import _
 from privatim import authenticated_user
-from privatim.models import GeneralFile
+from privatim.models.file import GeneralFile
 
 
 from typing import TYPE_CHECKING
@@ -19,24 +19,32 @@ def profile_view(request: 'IRequest') -> 'RenderData':
         description=_('Upload a photo...'),
         icon='upload',
         css_class='dropdown-item',
-        id='uploadPhotoLink'
+        id='uploadPhotoLink',
     )
-    delete_profile_pic_url = request.route_url(
-        'delete_general_file',
-        id=user.picture.id,
-        _query={'target_url': 'profile'},
+    data_item_title = (
+        user.profile_pic.filename
+        if user.profile_pic else _('the profile picture')
     )
+
     delete_profile_pic = Button(
         title=_('Delete photo'),
-        url=delete_profile_pic_url,
+        url=(
+            request.route_url(
+                'delete_general_file',
+                id=user.picture.id,
+                _query={'target_url': 'profile'},
+            )
+        ),
         description=_('Delete photo'),
         icon='trash',
-        data_item_title='test',
+        data_item_title=data_item_title,
+        modal='#delete-xhr',
         css_class='dropdown-item',
-        id='deletePhotoLink'
+        id='deletePhotoLink',
     )
     return {
         'user': user,
+        'delete_title': _('Delete photo'),
         'delete_profile_picture_button': delete_profile_pic(),
         'upload_profile_picture_button': upload_profile_pic(),
     }

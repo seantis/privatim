@@ -2,11 +2,13 @@ import os
 import logging
 from markupsafe import Markup
 from sqlalchemy import select
+
+from privatim.controls.controls import Button
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
 from privatim.models.consultation import Status, Tag
-from privatim.i18n import _, translate
+from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 
 from privatim.models.file import SearchableFile
@@ -25,20 +27,27 @@ def consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
 
-    request.add_action_menu_entries(
-        [
-            (
-                translate(_('Edit Consultation')),
-                request.route_url('edit_consultation', id=context.id),
-            ),
-            (
-                translate(_('Delete Consultation')),
-                request.route_url('delete_consultation', id=context.id),
-            ),
-        ]
-    )
+    request.add_action_menu_entries([
+        Button(
+            title=_('Edit'),
+            url=request.route_url('edit_consultation', id=context.id),
+            icon='edit',
+            description=_('Edit Consultation'),
+            css_class='dropdown-item',
+        ),
+        Button(
+            url=request.route_url('delete_consultation', id=context.id),
+            icon='trash',
+            title=_('Delete'),
+            description=_('Delete Consultation'),
+            css_class='dropdown-item',
+            modal='#delete-xhr',
+            data_item_title=context.title,
+        ),
+    ])
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     return {
+        'delete_title': _('Delete Consultation'),
         'title': Markup(context.title),
         '_id': context.id,
         'description': Markup(context.description),
@@ -286,14 +295,18 @@ def delete_consultation_view(
         context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
+    target_url = request.route_url('activities')
 
-    # SoftDeleteCascadeMixin should take care of the files
+    # SoftDeleteMixin should take care of the files
     session.delete(context, soft=True)
     session.flush()
 
     message = _('Consultation moved to the paper basket')
-    if not request.is_xhr:
-        request.messages.add(message, 'success')
+    request.messages.add(message, 'success')
+    if request.is_xhr:
+        return {
+            'success': message,
+            'redirect_url': request.route_url('activities'),
+        }
 
-    target_url = request.route_url('activities')
     return HTTPFound(location=target_url)

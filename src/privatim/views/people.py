@@ -32,7 +32,7 @@ def user_buttons(
             description=_('Delete'),
             css_class='btn-sm btn-outline-danger',
             modal='#delete-xhr',
-            data_item_title=user.fullname,
+            data_item_title=_('User ${name}', mapping={'name': user.fullname})
         )
     ]
 
@@ -146,7 +146,7 @@ def edit_user_view(
         request.messages.add(message, 'success')
 
         if request.is_xhr:
-            return {'redirect_to': target_url}
+            return {'redirect_url': target_url}
         else:
             return HTTPFound(
                 location=target_url
@@ -173,13 +173,15 @@ def delete_user_view(
     session.delete(user)
     session.flush()
 
-    message = _('Successfully deleted user.')
+    full_name = f'{user.first_name} {user.last_name}'
+    message = _('Successfully deleted user: {full_name}.', mapping={
+        'full_name': full_name}
+                )
     request.messages.add(message, 'success')
 
     if request.is_xhr:
         return {
-            'success': True,
-            'message': message,
+            'success': message,
             'redirect_url': request.route_url('people'),
         }
     else:

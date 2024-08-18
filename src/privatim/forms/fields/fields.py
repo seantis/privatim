@@ -15,14 +15,9 @@ from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
 from privatim.forms.widgets.widgets import UploadWidget, UploadMultipleWidget
 from privatim.i18n import _, translate
-from privatim.utils import (
-    binary_to_dictionary,
-    dictionary_to_binary,
-    path_to_filename,
-    get_supported_image_mime_types,
-)
+
 from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
-from privatim.models import GeneralFile
+from privatim.models.file import GeneralFile
 from operator import itemgetter
 from markupsafe import Markup
 
@@ -62,11 +57,6 @@ if TYPE_CHECKING:
 
 else:
     UploadMultipleBase = FieldList
-
-
-EXCLUDED_IMAGE_TYPES = {'application/pdf'}
-IMAGE_MIME_TYPES = get_supported_image_mime_types() - EXCLUDED_IMAGE_TYPES
-IMAGE_MIME = IMAGE_MIME_TYPES | {'image/svg+xml'}
 
 
 __all__ = [
@@ -277,17 +267,14 @@ class UploadField(FileField):
     def data(self, value: 'FileDict') -> None:
         self._data = value
 
-    @property
-    def is_image(self) -> bool:
-        if not self.data:
-            return False
-        return self.data.get('mimetype') in IMAGE_MIME
-
     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
 
         if not valuelist:
             self.data = {}
             return
+
+        from privatim.utils import binary_to_dictionary
+        from privatim.utils import dictionary_to_binary
 
         if len(valuelist) == 4:
             # resend_upload
@@ -320,6 +307,10 @@ class UploadField(FileField):
         self, field_storage: 'RawFormValue'
     ) -> 'StrictFileDict | FileDict':
 
+        from privatim.utils import (
+            binary_to_dictionary,
+            path_to_filename,
+        )
         self.file = getattr(
             field_storage, 'file', getattr(field_storage, 'stream', None)
         )

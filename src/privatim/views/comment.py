@@ -50,8 +50,7 @@ def edit_comment_view(
         data['message'] = translate(message, request.locale_name)
         if request.is_xhr:
             return {
-                'success': True,
-                'message': translate(message, request.locale_name),
+                'success': translate(message, request.locale_name),
                 'content': context.content
             }
 

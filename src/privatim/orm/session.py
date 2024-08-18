@@ -1,6 +1,5 @@
 from contextlib import contextmanager
-from sqlalchemy import event, false
-from privatim.models.soft_delete import all_soft_delete_models
+from sqlalchemy import event
 from sqlalchemy.orm import Session as BaseSession, with_loader_criteria
 
 
@@ -77,6 +76,7 @@ class FilteredSession(BaseSession):
 
                 # Analogous to the above: soft delete.
                 # Accumulate soft delete criteria for all models.
+                from privatim.models.soft_delete import all_soft_delete_models
                 if not self._disable_soft_delete_filter:
                     soft_delete_criteria = [
                         with_loader_criteria(

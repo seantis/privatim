@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from sqlalchemy import ScalarSelect
     from privatim.models.comment import Comment
     from privatim.models import Consultation
-    from privatim.models import GeneralFile
+    from privatim.models.file import GeneralFile
 
 
 class User(Base):

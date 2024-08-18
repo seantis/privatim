@@ -1,7 +1,5 @@
 import base64
 import gzip
-from functools import lru_cache
-from PIL import Image
 import magic
 from io import BytesIO
 
@@ -98,40 +96,6 @@ def dictionary_to_binary(dictionary: 'LaxFileDict') -> bytes:
 
     with gzip.GzipFile(fileobj=BytesIO(data), mode='r') as f:
         return f.read()
-
-
-@lru_cache(maxsize=1)
-def get_supported_image_mime_types() -> set[str]:
-    """ Queries PIL for *all* locally supported mime types.
-
-    Adapted from:
-    https://github.com/python-pillow/Pillow/issues/1182#issuecomment-90572583
-
-    """
-
-    # Make sure all supported formats are registered.
-    Image.init()
-
-    # Not all PIL formats register a mime type, fill in the blanks ourselves.
-    supported_types = {
-        'image/bmp',
-        'image/x-bmp',
-        'image/x-MS-bmp',
-        'image/x-icon',
-        'image/x-ico',
-        'image/x-win-bitmap',
-        'image/x-pcx',
-        'image/x-portable-pixmap',
-        'image/x-tga'
-    }
-
-    for mime in Image.MIME.values():
-
-        # exclude pdfs, postscripts and the like
-        if not mime.startswith('application/'):
-            supported_types.add(mime)
-
-    return supported_types
 
 
 @overload

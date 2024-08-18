@@ -289,7 +289,7 @@ def includeme(config: 'Configurator') -> None:
     # viewing a working_group is like viewing all meetings (same thing)
     config.add_route(
         'meetings',
-        '/working_groups/{id}/meetings/view',
+        '/working_groups/{id}/meetings/',
         factory=working_group_factory
     )
     config.add_view(

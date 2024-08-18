@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 01:01+0200\n"
+"POT-Creation-Date: 2024-08-18 05:45+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -53,12 +53,13 @@ msgstr "Nachricht"
 msgid "Show context Menu"
 msgstr "Kontextmenü anzeigen"
 
-#: src/privatim/layouts/macros.pt src/privatim/views/templates/profile.pt
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+#: src/privatim/views/consultations.py src/privatim/views/templates/profile.pt
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
-#: src/privatim/views/people.py src/privatim/views/templates/people.pt
+#: src/privatim/views/people.py src/privatim/views/consultations.py
 msgid "Delete"
 msgstr "Löschen"
 
@@ -85,6 +86,15 @@ msgstr "K"
 #: src/privatim/layouts/macros.pt
 msgid "URL"
 msgstr "URL"
+
+#: src/privatim/layouts/macros.pt
+msgid "Do you really wish to delete \"${item_title}\"?"
+msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/form.pt
+#: src/privatim/forms/add_comment.py
+msgid "Cancel"
+msgstr "Abbrechen"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"
@@ -122,6 +132,10 @@ msgid "Upload a photo..."
 msgstr "Foto hochladen..."
 
 #: src/privatim/views/profile.py
+msgid "the profile picture"
+msgstr "das Profilbild"
+
+#: src/privatim/views/profile.py
 msgid "Delete photo"
 msgstr "Foto löschen"
 
@@ -148,25 +162,13 @@ msgstr "Anmeldung fehlgeschlagen."
 msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Sitzung bearbeiten"
-
-#: src/privatim/views/meetings.py
-msgid "Delete Meeting"
-msgstr "Sitzung löschen"
-
-#: src/privatim/views/meetings.py
-msgid "Copy Agenda Items"
-msgstr "Traktanden kopieren"
-
-#: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Protokoll drucken"
-
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traktandum bearbeiten"
+
+#: src/privatim/views/meetings.py
+msgid "Delete meeting"
+msgstr "Sitzung löschen"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
 #: src/privatim/forms/working_group_forms.py
@@ -182,8 +184,28 @@ msgid "Collapse All"
 msgstr "Alle einklappen"
 
 #: src/privatim/views/meetings.py
-msgid "Details"
-msgstr "Details"
+msgid "Edit Meeting"
+msgstr "Sitzung bearbeiten"
+
+#: src/privatim/views/meetings.py
+msgid "Copy"
+msgstr "Kopieren"
+
+#: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Traktanden kopieren"
+
+#: src/privatim/views/meetings.py
+msgid "Export"
+msgstr "Exportieren"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Protokoll drucken"
+
+#: src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr "Sitzung löschen"
 
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
 msgid "Attended"
@@ -197,18 +219,18 @@ msgstr "Abwesend"
 msgid "Meeting Report"
 msgstr "Sitzungsbericht"
 
-#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Gremium bearbeiten"
+#: src/privatim/views/meetings.py
+msgid "Participants"
+msgstr "Mitwirkende"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
 msgstr "Gremium löschen"
 
-#: src/privatim/views/meetings.py
-msgid "Participants"
-msgstr "Mitwirkende"
+#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Gremium bearbeiten"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -241,6 +263,11 @@ msgid "Edit user"
 msgstr "Benutzer bearbeiten"
 
 #: src/privatim/views/people.py
+#, python-format
+msgid "User ${name}"
+msgstr "Benutzer ${name}"
+
+#: src/privatim/views/people.py
 msgid "Delete User"
 msgstr "Benutzer löschen"
 
@@ -266,8 +293,9 @@ msgid "Edit User"
 msgstr "Benutzer bearbeiten"
 
 #: src/privatim/views/people.py
-msgid "Successfully deleted user."
-msgstr "Benutzer erfolgreich gelöscht."
+#, python-format
+msgid "Successfully deleted user: {full_name}."
+msgstr "Benutzer {full_name} erfolgreich gelöscht."
 
 #: src/privatim/views/mtan.py
 msgid "Token"
@@ -378,17 +406,17 @@ msgstr "Gremium \"${name}\" erfolgreich bearbeitet"
 
 #: src/privatim/views/working_groups.py
 #, python-format
+msgid "Successfully deleted working group \"${name}\""
+msgstr "Gremium \"${name}\" erfolgreich gelöscht"
+
+#: src/privatim/views/working_groups.py
+#, python-format
 msgid ""
 "Cannot delete working group \"${name}\" because it has associated meetings. "
 "Please delete all meetings first."
 msgstr ""
 "Das Gremium \"${name}\" kann nicht gelöscht werden, da sie über zugehörige "
 "Sitzungen verfügt. Bitte löschen Sie zuerst alle Besprechungen."
-
-#: src/privatim/views/working_groups.py
-#, python-format
-msgid "Successfully deleted working group \"${name}\""
-msgstr "Gremium \"${name}\" erfolgreich gelöscht"
 
 #: src/privatim/views/agenda_items.py
 #, python-format
@@ -428,11 +456,6 @@ msgstr "Mobile Authentifizierung"
 #: src/privatim/views/templates/mtan_setup.pt
 msgid "Submit"
 msgstr "Anmelden"
-
-#: src/privatim/views/templates/form.pt src/privatim/views/templates/people.pt
-#: src/privatim/forms/add_comment.py
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: src/privatim/views/templates/form.pt
 msgid "Save"
@@ -602,10 +625,6 @@ msgstr "E-Mail-Adresse"
 #: src/privatim/views/templates/people.pt
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
-
-#: src/privatim/views/templates/people.pt
-msgid "Do you really wish to delete \"${item_title}\"?"
-msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 
 #: src/privatim/views/templates/trash.pt
 msgid "Deleted Entries"
