@@ -10,7 +10,7 @@ from privatim import helpers
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR, text
+    VARCHAR, text, Boolean
 from email.headerregistry import Address
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -301,12 +301,12 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     )
 
     # this needs to be added in the second run
-    # context.operations.create_index(
-    #     'idx_searchable_files_searchable_text_de_CH',
-    #     'searchable_files',
-    #     ['searchable_text_de_CH'],
-    #     postgresql_using='gin',
-    # )
+    context.operations.create_index(
+        'idx_searchable_files_searchable_text_de_CH',
+        'searchable_files',
+        ['searchable_text_de_CH'],
+        postgresql_using='gin',
+    )
 
     # Drop all existing comments and related tables
     context.drop_table('comments_for_consultations_comments')
@@ -357,6 +357,28 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     )
 
     fix_user_constraints_to_work_with_hard_delete(context)
+
+    # Add 'deleted' column to 'consultations' table
+    context.add_column(
+        'consultations',
+        Column(
+            'deleted',
+            Boolean,
+            nullable=False,
+            server_default='false',
+        ),
+    )
+
+    # Add 'deleted' column to 'searchable_files' table
+    context.add_column(
+        'searchable_files',
+        Column(
+            'deleted',
+            Boolean,
+            nullable=False,
+            server_default='false',
+        ),
+    )
 
     context.operations.create_index(
         context.operations.f('ix_consultations_deleted'),
