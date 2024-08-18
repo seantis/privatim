@@ -106,7 +106,7 @@ class PyAvatar:
     :type capitalize: bool
 
     Usage::
-      >>> from pyavatar import PyAvatar
+      >>> from privatim.pyavatar import PyAvatar
       >>> avatar = PyAvatar("smallwat3r", size=250)
       >>> avatar.color
       (191, 91, 81)

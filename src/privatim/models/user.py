@@ -2,8 +2,7 @@ import uuid
 from functools import cached_property
 from random import choice
 
-
-from pyavatar import PyAvatar
+from privatim.pyavatar import PyAvatar
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 import bcrypt
