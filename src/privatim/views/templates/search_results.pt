@@ -66,8 +66,9 @@
                                              height="60"
                                         />
                                         <div>
-                                            <h6 class="fw-bold text-primary mb-1">
-                                                <a href="${request.route_url('person', id=comment.user.id)}">${comment.user.fullname}</a>
+                                            <h6 class="fw-bold text-primary mb-1" >
+                                                <a href="${request.route_url('person', id=comment.user.id)}" tal:condition="comment.user">${comment.user.fullname}</a>
+                                                <a href="#" tal:condition="not comment.user" i18n:translate="">Deleted User</a>
                                             </h6>
                                             <p class="text-muted small mb-0">${layout.format_date(comment.created, 'relative')}</p>
                                         </div>
