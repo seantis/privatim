@@ -62,6 +62,7 @@ class MeetingForm(Form):
             _('Edit meeting')
         )
         assert isinstance(context, (Meeting, WorkingGroup))
+        self.context = context
 
         session = request.dbsession
         super().__init__(
@@ -156,8 +157,10 @@ class MeetingForm(Form):
                     }
                 )
         else:
-            if formdata is None:
-                return
+
+            # pre-fill  users
+            if isinstance(self.context, WorkingGroup):
+                self.attendees.data = [e.id for e in self.context.users]
 
             attendee_ids = self.attendees.data or []
             session = self.meta.dbsession

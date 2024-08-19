@@ -1,10 +1,57 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from sqlalchemy import select
 from sedate import utcnow
 from sqlalchemy.orm import selectinload
 
 from privatim.models import User, WorkingGroup, Meeting
 from privatim.utils import fix_utc_to_local_time
+
+
+def get_pre_filled_content_on_searchable_field(page, field='attendees'):
+    """
+    Get a list of items that were pre-populated in the
+    SearchableSelectMultipleField.
+
+    It accesses the 'options' list from the specific nested structure
+    in form_fields."""
+    form_fields = page.form.fields
+    attendees_options = form_fields[field][0].__dict__['options']
+    return [entry[2] for entry in attendees_options if entry[1]]
+
+
+def test_add_meeting_pre_populated(client):
+    users = [
+        User(email='max@example.org', first_name='Max', last_name='Müller'),
+        User(
+            email='alexa@example.org',
+            first_name='Alexa',
+            last_name='Troller',
+        ),
+        User(email='kurt@example.org', first_name='Kurt', last_name='Huber'),
+    ]
+    for user in users:
+        user.set_password('test')
+        client.db.add(user)
+    client.db.commit()
+
+    working_group = WorkingGroup(name='Test Group', leader=users[0])
+    working_group.users.extend(users)
+    client.db.add(working_group)
+    client.db.commit()
+    stmt = select(WorkingGroup.id).where(WorkingGroup.name == 'Test Group')
+    group_id = client.db.execute(stmt).scalars().first()
+
+    client.login_admin()
+    page = client.get(f'/working_groups/{group_id}/add')
+
+    # People from Working Group are in form for adding meeting
+    pre_filled = get_pre_filled_content_on_searchable_field(page)
+    assert ['Max Müller', 'Alexa Troller', 'Kurt Huber'] == pre_filled
+    page.form['name'] = 'Weekly Meeting'
+    page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')
+    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page = page.form.submit().follow()
+    assert 'Weekly Meeting' in page
 
 
 def test_edit_meeting(client):
@@ -44,19 +91,11 @@ def test_edit_meeting(client):
     page = client.get(f'/meetings/{src_meeting.id}/edit')
     assert page.status_code == 200
 
-    def get_attendees(page, field='attendees'):
-        """
-        Get a list of items that were pre-populated.
-
-        It accesses the 'options' list from the specific nested structure
-        in form_fields."""
-        form_fields = page.form.fields
-        attendees_options = form_fields[field][0].__dict__['options']
-        return [entry[2] for entry in attendees_options if entry[1]]
-
     # form should be filled
     assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
-    assert get_attendees(page) == ['Max Müller', 'Alexa Troller']
+    assert get_pre_filled_content_on_searchable_field(page) == [
+        'Max Müller', 'Alexa Troller'
+    ]
 
     # Test the cancel button, if cancel edit meeting redirected to the meeting
     page = page.click('Abbrechen')
