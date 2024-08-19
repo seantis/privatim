@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 06:06+0200\n"
+"POT-Creation-Date: 2024-08-19 13:45+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -559,7 +559,7 @@ msgstr "Documents"
 msgid "Status"
 msgstr "Statut"
 
-#: src/privatim/views/templates/consultation.pt
+#: src/privatim/views/templates/consultation.pt src/privatim/forms/user_form.py
 msgid "Tags"
 msgstr "Tags"
 
@@ -772,7 +772,7 @@ msgid "Zürich"
 msgstr "Zurich"
 
 #: src/privatim/forms/consultation_form.py
-msgid "Open"
+msgid "Created"
 msgstr "Créé"
 
 #: src/privatim/forms/consultation_form.py
@@ -997,3 +997,6 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Open"
+#~ msgstr "Créé"

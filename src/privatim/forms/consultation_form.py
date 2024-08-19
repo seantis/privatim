@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 
 STATUS_CHOICES = [
-    ('Open', _('Open')),
+    ('Created', _('Created')),
     ('Closed', _('Closed')),
     ('In Progress', _('In Progress')),
 ]

@@ -7,7 +7,7 @@ from privatim.controls.controls import Button
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
-from privatim.i18n import _
+from privatim.i18n import _, translate
 from pyramid.httpexceptions import HTTPFound
 
 from privatim.models.file import SearchableFile
@@ -60,7 +60,7 @@ def consultation_view(
             }
             for doc in context.files
         ],
-        'status_name': _(context.status),
+        'status_name': translate(_(context.status)),
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
@@ -220,14 +220,6 @@ def edit_consultation_view(
         )
     elif not request.POST:
         form.process(obj=previous_consultation)
-        form.files = [
-            {
-                'filename': file.filename,
-                'mimetype': file.content_type,
-                'id': file.id
-            }
-            for file in previous_consultation.files
-        ]
 
     session.expunge(next_consultation)
     return {

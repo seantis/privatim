@@ -64,7 +64,7 @@ def test_view_add_and_delete_consultation(client):
     page.form['recommendation'] = 'the recommendation'
     page.form['evaluation_result'] = 'the evaluation result'
     page.form['decision'] = 'the decision'
-    page.form['status'] = '1'
+    page.form['status'] = 'Created'
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload('Test.txt', b'File content.')
     page = page.form.submit().follow()
@@ -135,7 +135,7 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page.form['title'] = 'test'
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
-    page.form['status'] = '1'
+    page.form['status'] = 'Created'
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload(*pdf_vemz)
     page = page.form.submit().follow()
@@ -165,7 +165,7 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page.form['title'] = 'updated title'
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
-    page.form['status'] = '2'
+    page.form['status'] = 'In Progress'
     page.form['secondary_tags'] = ['BE', 'LU']
     page.form['files'] = Upload(
         'UpdatedTest.txt',
@@ -216,7 +216,7 @@ def test_edit_consultation_without_files(client):
     page.form['title'] = 'test'
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
-    page.form['status'] = '1'
+    page.form['status'] = 'Created'
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form.submit().follow()
 
@@ -237,7 +237,7 @@ def test_edit_consultation_without_files(client):
     page.form['recommendation'] = 'updated recommendation'
     page.form['evaluation_result'] = 'evaluation result'
     page.form['decision'] = 'decision'
-    page.form['status'] = '2'
+    page.form['status'] = 'In Progress'
     page.form['secondary_tags'] = ['BE', 'LU']
     page = page.form.submit().follow()
     assert page.status_code == 200
@@ -304,7 +304,7 @@ def test_consultation_delete(client, pdf_vemz):
     page.form['title'] = 'test'
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
-    page.form['status'] = '1'
+    page.form['status'] = 'Created'
     page.form['secondary_tags'] = ['AG', 'ZH']
     filename, contet = pdf_vemz
     page.form['files'] = Upload(filename=filename, content=contet)
@@ -335,7 +335,7 @@ def test_consultation_delete(client, pdf_vemz):
     page.form['title'] = 'updated title'
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
-    page.form['status'] = '2'
+    page.form['status'] = 'In Progress'
     page.form['secondary_tags'] = ['BE', 'LU']
     page.form['files'] = Upload(
         'UpdatedTest.txt',

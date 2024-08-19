@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-18 06:06+0200\n"
+"POT-Creation-Date: 2024-08-19 13:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -551,6 +551,7 @@ msgid "Status"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
+#: ./src/privatim/forms/user_form.py
 msgid "Tags"
 msgstr ""
 
@@ -763,7 +764,7 @@ msgid "Zürich"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
-msgid "Open"
+msgid "Created"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py

@@ -27,7 +27,7 @@ def test_search_with_client(client, pdf_vemz):
     page.form['recommendation'] = 'the recommendation'
     page.form['evaluation_result'] = 'the evaluation result'
     page.form['decision'] = 'the decision'
-    page.form['status'] = '1'
+    page.form['status'] = 'Created'
     page.form['secondary_tags'] = ['AG', 'ZH']
     pdf_name, pdf_bytes = pdf_vemz
     page.form['files'] = Upload(pdf_name, pdf_bytes)

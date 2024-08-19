@@ -55,7 +55,7 @@ def test_edit_consultation_view_html_sanitization(pg_config):
                     'decision',
                     '<style>body { display: none; }</style>Decision',
                 ),
-                ('status', '2'),
+                ('status', 'Created'),
                 ('secondary_tags', 'AR'),
                 ('secondary_tags', 'BE'),
                 ('secondary_tags', 'BL'),
@@ -82,10 +82,11 @@ def test_edit_consultation_view_html_sanitization(pg_config):
     assert new_consultation.evaluation_result == '<a>f</a>'
     assert new_consultation.decision == ('&lt;style&gt;body { display: none; '
                                          '}&lt;/style&gt;Decision')
-    assert new_consultation.status == get_status_label('2')
+    assert new_consultation.status == 'Created'
 
-    tags_names = sorted([s.name for s in new_consultation.secondary_tags])
-    assert tags_names == sorted(['AR', 'BE', 'BL'])
+    assert sorted(new_consultation.secondary_tags) == sorted(
+        ['AR', 'BE', 'BL']
+    )
 
     # Check that the previous consultation has been updated
     assert previous_consultation.is_latest_version == 0
