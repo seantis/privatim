@@ -473,6 +473,7 @@ class UploadFileWithORMSupport(UploadField):
 
     def populate_obj(self, obj: object, name: str) -> None:
 
+        # this is called upon form submission. So inserting the file works
         if not getattr(self, 'action', None):
             return
 

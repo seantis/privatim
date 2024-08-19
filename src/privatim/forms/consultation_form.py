@@ -106,6 +106,11 @@ class ConsultationForm(Form):
         self,
         obj: 'Consultation',  # type: ignore[override]
     ) -> None:
-        # todo: add files:
         for name, field in self._fields.items():
+            # if (name == 'files'
+            #         and isinstance(field, UploadMultipleFilesWithORMSupport)):
+            #     for subfield in field:
+            #         subfield.populate_obj(obj, name)
+
+
             field.populate_obj(obj, name)

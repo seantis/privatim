@@ -191,22 +191,27 @@ def create_consultation_copy(
 
 
 def edit_consultation_view(
-    previous_consultation: Consultation, request: 'IRequest'
+    previous: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
-    target_url = request.route_url('activities')  # fallback
+    target_url = request.route_url('consultation', id=previous.id)
 
     # Create a new consultation as a copy of the previous one
-    next_consultation = create_consultation_copy(
-        request, previous_consultation
+    breakpoint()  # len (files == 2) (expected)
+    next = create_consultation_copy(
+        request, previous
     )
-    session.add(next_consultation)
+    breakpoint()  # len(previous.files) == 0 (not expected)
+    session.add(next)
+    assert len(previous.files) == len(next.files)
+    assert len(previous.comments) == len(next.comments)
+
     # Create the form with the new consultation
-    form = ConsultationForm(next_consultation, request)
+    form = ConsultationForm(next, request)
     if request.method == 'POST' and form.validate():
         # Populate the new consultation with form data
-        form.populate_obj(next_consultation)
-        session.add(next_consultation)
+        form.populate_obj(next)
+        session.add(next)
         session.flush()
 
         message = _('Successfully edited consultation.')
@@ -215,21 +220,13 @@ def edit_consultation_view(
 
         return HTTPFound(
             location=request.route_url(
-                'consultation', id=str(next_consultation.id)
+                'consultation', id=str(next.id)
             )
         )
     elif not request.POST:
-        form.process(obj=previous_consultation)
-        form.files = [
-            {
-                'filename': file.filename,
-                'mimetype': file.content_type,
-                'id': file.id
-            }
-            for file in previous_consultation.files
-        ]
+        form.process(obj=previous)
 
-    session.expunge(next_consultation)
+    session.expunge(next)
     return {
         'form': form,
         'title': _('Edit Consultation'),
