@@ -76,7 +76,7 @@
             </a>
             <ul class="dropdown-menu text-small">
                 <li>
-                    <a class="dropdown-item" href="#" class="edit-comment-link" data-comment-id="${comment.id}">
+                    <a href="#" class="dropdown-item edit-comment-link" data-comment-id="${comment.id}">
                         <i class="far fa-edit me-2"></i>
                         <span i18n:translate="" class="mb-0">Edit</span>
                     </a>
