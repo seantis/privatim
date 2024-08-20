@@ -1,5 +1,4 @@
-import pytest
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, undefer
 
 from privatim.models import User, SearchableFile
 from privatim.models.comment import Comment
@@ -123,8 +122,7 @@ def test_view_add_and_delete_consultation(client):
     assert session.scalar(searchable_file_stmt) is None
 
 
-@pytest.mark.skip('need to re-write to not use client test')
-def test_edit_consultation_with_files(client, pdf_vemz):
+def test_edit_consultation_with_files(client, pdf_vemz, pdf_full_text):
 
     session = client.db
     client.login_admin()
@@ -135,18 +133,17 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page.form['title'] = 'test'
     page.form['description'] = 'the description'
     page.form['recommendation'] = 'the recommendation'
-    page.form['status'] = '1'
     page.form['secondary_tags'] = ['AG', 'ZH']
     page.form['files'] = Upload(*pdf_vemz)
     page = page.form.submit().follow()
 
-    consultation = session.execute(
+    added_consultation = session.execute(
         select(Consultation)
         .options(selectinload(Consultation.files))
         .filter_by(description='the description')
     ).scalar_one()
 
-    updated_file = consultation.files[0]
+    updated_file = added_consultation.files[0]
     assert (
         'datenschutzbeauftragt'
         in updated_file.searchable_text_de_CH
@@ -155,7 +152,7 @@ def test_edit_consultation_with_files(client, pdf_vemz):
             updated_file.extract)
 
     # assert we are redirected to the just created consultation:
-    consultation_id = consultation.id
+    consultation_id = added_consultation.id
     assert f'consultation/{str(consultation_id)}' in page.request.url
 
     # navigate to the edit page
@@ -165,44 +162,86 @@ def test_edit_consultation_with_files(client, pdf_vemz):
     page.form['title'] = 'updated title'
     page.form['description'] = 'updated description'
     page.form['recommendation'] = 'updated recommendation'
-    page.form['status'] = '2'
     page.form['secondary_tags'] = ['BE', 'LU']
-    page.form['files'] = Upload(
-        'UpdatedTest.txt',
-        b'Updated file ' b'content.'
-    )
+    # the file form is a little bit more complex, as there is also the
+    # associated radio button for 'keep', 'delete', 'replace'. But,
+    # this is just adding more files, not modifying anything
+    page.form['files'] = Upload(*pdf_full_text)
     page = page.form.submit().follow()
     assert page.status_code == 200
-    with session.no_consultation_filter():
-        # there should be a total 2 Consultation objects in the db
-        count_stmt = select(func.count(Consultation.id))
-        assert session.execute(count_stmt).scalar() == 2
 
-    consultation = session.execute(
+    updated_consultation = session.execute(
         select(Consultation)
-        .options(selectinload(Consultation.files)).filter_by(
-            is_latest_version=1)
+        .options(
+            selectinload(Consultation.files).options(
+                undefer(SearchableFile.extract)
+            )
+        )
+        .filter_by(is_latest_version=1)
     ).scalar_one()
-    consultation_id = consultation.id
-    assert consultation.title == 'updated title'
-    assert consultation.description == 'updated description'
-    assert consultation.recommendation == 'updated recommendation'
 
-    updated_file = consultation.files[0]
-    # assert 'Updated file' in updated_file.searchable_text_de_CH
-    assert 'Updated file' in updated_file.extract
+    consultation_id = updated_consultation.id
+    assert updated_consultation.title == 'updated title'
+    assert updated_consultation.description == 'updated description'
+    assert updated_consultation.recommendation == 'updated recommendation'
+
+    updated_file = next(
+        (f for f in updated_consultation.files
+         if f.filename == 'fulltext_search.pdf'),
+        None
+    )
+    assert 'full' in updated_file.searchable_text_de_CH
+    assert 'text' in updated_file.searchable_text_de_CH
+    assert 'full text search' in updated_file.extract
 
     assert f'consultation/{str(consultation_id)}' in page.request.url
     page = client.get(f'/consultation/{str(consultation_id)}')
     assert 'updated description' in page
 
-    # todo: assert tags, status
-    # todo: test replaced_by and previous!
-
     # check the file link
     href = page.pyquery('a.document-link')[0].get('href')
     resp = client.get(href)
     assert resp.status_code == 200
+
+    with session.no_consultation_filter():
+        # Ensure we're working with a clean session
+        session.expunge_all()
+
+        # Fetch both consultations
+        consultations = session.execute(
+            select(Consultation)
+            .options(
+                selectinload(Consultation.replaced_by),
+                selectinload(Consultation.previous_version),
+            )
+        ).scalars().all()
+
+        # there should be a total 2 Consultation objects in the db
+        assert len(consultations) == 2, (
+            "Expected 2 consultations, got {}").format(
+            len(consultations)
+        )
+
+        # Sort consultations by is_latest_version (1 should be the
+        # newer version)
+        consultations.sort(key=lambda c: c.is_latest_version, reverse=True)
+        newer, older = consultations
+
+        print(f"Newer consultation: {newer}")
+        print(f"Older consultation: {older}")
+
+        print(f"Newer previous_version: {newer.previous_version}")
+        print(f"Older replaced_by: {older.replaced_by}")
+
+        assert newer.previous_version == older
+        assert older.replaced_by == newer
+
+        # Check if the relationships are properly set in the database
+        session.refresh(newer)
+        session.refresh(older)
+
+        assert newer.previous_version == older
+        assert older.replaced_by == newer
 
 
 def test_edit_consultation_without_files(client):

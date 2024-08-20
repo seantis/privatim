@@ -112,21 +112,22 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         passive_deletes=True
     )
 
+    replaced_by_id: Mapped[UUIDStrType] = mapped_column(
+        ForeignKey('consultations.id', ondelete='CASCADE'),
+        nullable=True
+    )
+
     replaced_by: Mapped['Consultation | None'] = relationship(
         'Consultation',
         back_populates='previous_version',
-        foreign_keys='Consultation.replaced_consultation_id',
+        foreign_keys=[replaced_by_id],
         remote_side='Consultation.id',
         cascade='all, delete'
-    )
-    replaced_consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id', ondelete='CASCADE'),
-        nullable=True
     )
     previous_version: Mapped['Consultation | None'] = relationship(
         'Consultation',
         back_populates='replaced_by',
-        foreign_keys=[replaced_consultation_id],
+        foreign_keys='Consultation.replaced_by_id',
         cascade='all, delete'
     )
 

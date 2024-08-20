@@ -228,6 +228,14 @@ def pdf_vemz():
 
 
 @pytest.fixture()
+def pdf_full_text():
+    filename = 'fulltext_search.pdf'
+    path = Path(__file__).parent / 'views/client/test_files' / filename
+    with open(path, 'rb') as f:
+        yield filename, f.read()
+
+
+@pytest.fixture()
 def mtan_tool(session):
     return MTanTool(session)
 

@@ -162,71 +162,54 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     }
 
 
-def create_consultation_copy(
-     request: 'IRequest', prev: Consultation
-) -> Consultation:
-    user = request.user
-
-    new_consultation = Consultation(
-        title=prev.title,
-        description=prev.description,
-        recommendation=prev.recommendation,
-        evaluation_result=prev.evaluation_result,
-        decision=prev.decision,
-        status=prev.status,
-        secondary_tags=prev.secondary_tags,
-        creator=prev.creator,
-        editor=user,
-        files=list(prev.files),  # Create a new list to avoid modifying orig
-        previous_version=prev,
-        comments=list(prev.comments),  # New list
-        is_latest_version=1
-    )
-
-    # Update the previous consultation
-    prev.is_latest_version = 0
-    prev.replaced_by = new_consultation
-
-    return new_consultation
-
-
 def edit_consultation_view(
     previous: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
     target_url = request.route_url('consultation', id=previous.id)
-
-    # Create a new consultation as a copy of the previous one
-    breakpoint()  # len (files == 2) (expected)
-    next = create_consultation_copy(
-        request, previous
+    # Create a new consultation (copy)
+    next_cons = Consultation(
+        title=previous.title,
+        description=previous.description,
+        recommendation=previous.recommendation,
+        evaluation_result=previous.evaluation_result,
+        decision=previous.decision,
+        status=previous.status,
+        secondary_tags=previous.secondary_tags,
+        creator=previous.creator,
+        editor=request.user,
+        files=list(previous.files),
+        previous_version=previous,
+        comments=list(previous.comments),  # New list
+        is_latest_version=1,
     )
-    breakpoint()  # len(previous.files) == 0 (not expected)
-    session.add(next)
-    assert len(previous.files) == len(next.files)
-    assert len(previous.comments) == len(next.comments)
+    session.add(next_cons)
+    assert len(previous.comments) == len(next_cons.comments)
 
     # Create the form with the new consultation
-    form = ConsultationForm(next, request)
+    form = ConsultationForm(next_cons, request)
     if request.method == 'POST' and form.validate():
-        # Populate the new consultation with form data
-        form.populate_obj(next)
-        session.add(next)
-        session.flush()
 
+        # Populate the new consultation with form data
+        form.populate_obj(next_cons)
+        session.add(next_cons)
+
+        # Update the previous consultation
+        previous.is_latest_version = 0
+        previous.replaced_by = next_cons
+        session.add(previous)
+        session.flush()
         message = _('Successfully edited consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')
 
         return HTTPFound(
             location=request.route_url(
-                'consultation', id=str(next.id)
+                'consultation', id=str(next_cons.id)
             )
         )
-    elif not request.POST:
-        form.process(obj=previous)
 
-    session.expunge(next)
+    session.expunge(next_cons)
     return {
         'form': form,
         'title': _('Edit Consultation'),
