@@ -36,7 +36,7 @@ class ConsultationForm(Form):
         self._title = _('Edit Consultation')
         session = request.dbsession
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={
                 'context': context,
@@ -101,11 +101,3 @@ class ConsultationForm(Form):
         ],
         file_class=SearchableFile
     )
-
-    def populate_obj(
-        self,
-        obj: 'Consultation',  # type: ignore[override]
-    ) -> None:
-        # todo: add files:
-        for name, field in self._fields.items():
-            field.populate_obj(obj, name)
