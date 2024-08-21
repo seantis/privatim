@@ -95,7 +95,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 if request.GET.get('end_date')
                 else None
             )
-            form.canton.data = request.GET.get('canton', 'all')
         else:
             # Default GET response, show everything, no filter.
             form.consultation.data = True
@@ -120,7 +119,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             'end_date': (
                 form.end_date.data.isoformat() if form.end_date.data else ''
             ),
-            'canton': form.canton.data,
         }
         return HTTPFound(
             location=request.route_url('activities', _query=query_params)
@@ -131,7 +129,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     include_comments = form.comment.data
     start_date = form.start_date.data
     end_date = form.end_date.data
-    canton = form.canton.data
 
     start_datetime = (
         datetime.combine(start_date, time.min, tzinfo=ZoneInfo("UTC"))
@@ -157,10 +154,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             end_datetime,
             Consultation.updated,
         )
-        if canton != 'all':
-            consultation_query = consultation_query.filter(
-                Consultation.secondary_tags.any(canton)
-            )
         activities.extend(
             session.execute(consultation_query).unique().scalars().all()
         )

@@ -5,6 +5,7 @@ from tests.shared.utils import create_consultation, create_meeting
 def test_filter(client):
     session = client.db
     client.login_admin()
+    # Add a meeting and a consultation
     cons = create_consultation(tags=['ZH'])
     session.add(cons)
 
@@ -12,8 +13,6 @@ def test_filter(client):
     session.add(meeting)
     session.commit()
 
-    # test the filter by tags (cantons)
-    # this one has no tags, should not appear in filter
     cons = Consultation(
         title='2nd Consultation',
         creator=client.user
@@ -24,11 +23,10 @@ def test_filter(client):
 
     page = client.get('/activities')
     form = page.forms['filter_activities']
-    form['canton'] = 'ZH'
     form['consultation'] = True
     form['meeting'] = False
     form['comment'] = False
-    page = form.submit().follow()
+    form.submit().follow()
 
     page = client.get('/activities')
 
@@ -41,6 +39,35 @@ def test_filter(client):
     form['comment'] = False
     form.submit().follow()
     page = client.get('/activities')
+    assert 'Powerpoint Parade' in page
+
+    # Test comment filter
+
+    page = client.get(f'/consultation/{cons.id}')
+    page.form['content'] = 'What an interesting thought'
+    page.form.submit()
+    page = client.get('/activities')
+    assert 'What an interesting thought' in page
+
+    form['consultation'] = True
+    form['meeting'] = True
+    form['comment'] = False
+    page = form.submit().follow()
+    assert 'What an interesting thought' not in page
+    assert 'Test Consultation' in page
+    assert '2nd Consultation' in page
+    assert 'Powerpoint Parade' in page
+
+    # Test all filters enabled
+    page = client.get('/activities')
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = True
+    form['comment'] = True
+    page = form.submit().follow()
+    assert 'What an interesting thought' in page
+    assert 'Test Consultation' in page
+    assert '2nd Consultation' in page
     assert 'Powerpoint Parade' in page
 
 

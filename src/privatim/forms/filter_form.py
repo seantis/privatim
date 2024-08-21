@@ -1,6 +1,4 @@
-from wtforms import SelectField, DateField
-
-from privatim.forms.constants import cantons_named
+from wtforms import DateField
 from privatim.forms.core import Form
 from wtforms.validators import Optional
 
@@ -22,12 +20,6 @@ class FilterForm(Form):
         self._title = _('Filter')
         session = request.dbsession
         super().__init__(request.POST, meta={'dbsession': session})
-
-    canton: SelectField = SelectField(
-        _('Canton'),
-        choices=[('all', _('all'))] + cantons_named,
-        validators=[Optional()],
-    )
 
     consultation: CheckboxField = CheckboxField(
         _('Consultation'),
