@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-21 19:41+0200\n"
+"POT-Creation-Date: 2024-08-21 22:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -551,7 +551,6 @@ msgid "Status"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
-#: ./src/privatim/forms/user_form.py
 msgid "Tags"
 msgstr ""
 
@@ -834,14 +833,6 @@ msgid "This field is read only."
 msgstr ""
 
 #: ./src/privatim/forms/filter_form.py
-msgid "Canton"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "all"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr ""
 
@@ -919,6 +910,12 @@ msgstr ""
 
 #: ./src/privatim/forms/user_form.py
 msgid "Working Groups (multiple selection possible)"
+msgstr ""
+
+#: ./src/privatim/forms/user_form.py
+msgid ""
+"Abbreviation (optional). If left blank, the first letter of the first name "
+"and surname will be used."
 msgstr ""
 
 #: ./src/privatim/forms/widgets/widgets.py

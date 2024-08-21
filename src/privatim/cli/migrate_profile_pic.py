@@ -24,8 +24,8 @@ def main(config_uri: str) -> None:
         users = dbsession.query(User).all()
         for user in users:
             # Generate tags if not present
-            if not user.tags:
-                user.tags = (
+            if not user.abbrev:
+                user.abbrev = (
                     user.first_name[:1] + user.last_name[:1]
                 ).upper() or user.email[:2].upper()
 

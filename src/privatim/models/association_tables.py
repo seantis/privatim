@@ -17,7 +17,7 @@ class AttendanceStatus(PyEnum):
 
 
 class MeetingUserAttendance(Base):
-    """ Stores the people of a meeting and if they attened."""
+    """ Stores the people of a meeting and if they attended."""
 
     __tablename__ = 'meetings_users_attendance'
 

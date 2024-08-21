@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
 
 class UserForm(Form):
-    """userform with username, first name, lastname, group"""
 
     def __init__(
         self,
@@ -29,10 +28,16 @@ class UserForm(Form):
             obj=context,
             meta={'context': context, 'request': request},
         )
-        query = (select(WorkingGroup.id, WorkingGroup.name).
-                 order_by(WorkingGroup.name))
-        self.groups.choices = [(str(id), name)
-                               for id, name in session.execute(query)]
+        self.groups.choices = [
+            (str(id), name)
+            for id, name in session.execute(
+                (
+                    select(WorkingGroup.id, WorkingGroup.name).order_by(
+                        WorkingGroup.name
+                    )
+                )
+            )
+        ]
 
     def validate_email(self, field: EmailField) -> None:
         in_add_mode = self.meta.context is None
@@ -65,8 +70,11 @@ class UserForm(Form):
         validators=[Optional()],
     )
 
-    tags = StringField(
-        _('Tags'),
+    abbrev = StringField(
+        _(
+            'Abbreviation (optional). If left blank, the first letter of the '
+            'first name and surname will be used.'
+        ),
         validators=[Optional(), Length(min=1, max=3)],
     )
 

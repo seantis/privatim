@@ -109,12 +109,12 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         stmt = select(WorkingGroup).where(
             WorkingGroup.id.in_(form.groups.raw_data or ())
         )
-        tags = maybe_escape(form.tags.data)
+        tags = maybe_escape(form.abbrev.data)
         user = User(
             email=maybe_escape(form.email.data),
             first_name=maybe_escape(form.first_name.data),
             last_name=maybe_escape(form.last_name.data),
-            tags=tags if tags else '',
+            abbrev=tags if tags else '',
             groups=list(session.execute(stmt).scalars().unique())
         )
         user.generate_profile_picture(session)

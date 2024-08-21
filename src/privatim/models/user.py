@@ -2,6 +2,8 @@ import uuid
 from functools import cached_property
 from random import choice
 
+from sedate import utcnow
+
 from privatim.pyavatar import PyAvatar
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -46,7 +48,7 @@ class User(Base):
             email: str,
             first_name: str = '',
             last_name: str = '',
-            tags: str = '',
+            abbrev: str = '',
             groups: list[Group] | None = None,
     ):
         self.id = str(uuid.uuid4())
@@ -54,12 +56,12 @@ class User(Base):
         self.first_name = first_name
         self.last_name = last_name
         self.groups = groups or []
-        self.tags = tags
+        self.abbrev = abbrev
 
-        if tags:
-            self.tags = tags
+        if abbrev:
+            self.abbrev = abbrev
         else:
-            self.tags = self.generate_default_tags()
+            self.abbrev = self.generate_default_abbreviation()
 
     id: Mapped[UUIDStrPK]
 
@@ -71,7 +73,7 @@ class User(Base):
     mobile_number: Mapped[str_128 | None] = mapped_column(unique=True)
     last_login: Mapped[datetime | None]
     last_password_change: Mapped[datetime | None]
-    tags: Mapped[str_32]
+    abbrev: Mapped[str_32]
 
     profile_pic_id: Mapped[UUIDStrType | None] = mapped_column(
         ForeignKey('general_files.id', ondelete='SET NULL'),
@@ -84,7 +86,7 @@ class User(Base):
         cascade='all, delete-orphan'
     )
 
-    def generate_default_tags(self) -> str:
+    def generate_default_abbreviation(self) -> str:
         initials = []
         if self.first_name:
             initials.append(self.first_name[0].upper())
@@ -98,12 +100,10 @@ class User(Base):
         If no name is provided, use the first letter of the email.
         Uses a predefined color palette for the background.
         """
-        initials = self.tags
-
         # Choose a random color from the palette
         bg_color = choice(AVATAR_COLORS)  # nosec[B311]
         avatar = PyAvatar(
-            initials, size=250, char_spacing=35, color=bg_color,
+            self.abbrev, size=250, char_spacing=35, color=bg_color,
         )
         general_file = GeneralFile(
             filename=f'{self.id}_avatar.png',
@@ -120,7 +120,8 @@ class User(Base):
             else request.static_url('privatim:static/default_profile_icon.png')
         )
 
-    modified: Mapped[datetime | None] = mapped_column()
+    created: Mapped[datetime] = mapped_column(default=utcnow)
+    updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     # the groups this user is part of
     groups: Mapped[list[Group]] = relationship(
@@ -196,12 +197,24 @@ class User(Base):
             return False
 
     @cached_property
+    def fullname_without_abbrev(self) -> str:
+        parts = []
+        if self.first_name:
+            parts.append(self.first_name)
+        if self.last_name:
+            parts.append(self.last_name)
+        if not parts:
+            return self.email
+        return ' '.join(parts)
+
+    @cached_property
     def fullname(self) -> str:
         parts = []
         if self.first_name:
             parts.append(self.first_name)
         if self.last_name:
             parts.append(self.last_name)
+        parts.append('(' + self.abbrev + ')')
         if not parts:
             return self.email
         return ' '.join(parts)

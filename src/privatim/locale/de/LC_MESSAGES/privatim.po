@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-21 19:41+0200\n"
+"POT-Creation-Date: 2024-08-21 22:45+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -559,7 +559,7 @@ msgstr "Dokumente"
 msgid "Status"
 msgstr "Status"
 
-#: src/privatim/views/templates/consultation.pt src/privatim/forms/user_form.py
+#: src/privatim/views/templates/consultation.pt
 msgid "Tags"
 msgstr "Tags"
 
@@ -845,14 +845,6 @@ msgid "This field is read only."
 msgstr "Dieses Feld ist schreibgeschützt."
 
 #: src/privatim/forms/filter_form.py
-msgid "Canton"
-msgstr "Kanton"
-
-#: src/privatim/forms/filter_form.py
-msgid "all"
-msgstr "Alle"
-
-#: src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Vernehmlassung"
 
@@ -933,6 +925,14 @@ msgstr "Nachname"
 #: src/privatim/forms/user_form.py
 msgid "Working Groups (multiple selection possible)"
 msgstr "Gremien (Mehrfachauswahl möglich)"
+
+#: src/privatim/forms/user_form.py
+msgid ""
+"Abbreviation (optional). If left blank, the first letter of the first name "
+"and surname will be used."
+msgstr ""
+"Kürzel (Optional). Falls leer gelassen, wird der Anfangsbuchstabe des "
+"Vornamens und Nachnamens verwendet."
 
 #: src/privatim/forms/widgets/widgets.py
 msgid "Uploaded file"

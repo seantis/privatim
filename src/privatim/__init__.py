@@ -444,4 +444,23 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         ),
     )
 
+    context.operations.alter_column(
+        'users',
+        'tags',
+        new_column_name='abbrev'
+    )
+    context.operations.alter_column(
+        'users',
+        'modified',
+        new_column_name='updated'
+    )
+    context.add_column(
+        'users',
+        Column(
+            'created',
+            TIMESTAMP(timezone=False),
+            server_default=func.now()
+        )
+    )
+
     context.commit()
