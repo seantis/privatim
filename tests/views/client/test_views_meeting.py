@@ -5,18 +5,7 @@ from sqlalchemy.orm import selectinload
 
 from privatim.models import User, WorkingGroup, Meeting
 from privatim.utils import fix_utc_to_local_time
-
-
-def get_pre_filled_content_on_searchable_field(page, field='attendees'):
-    """
-    Get a list of items that were pre-populated in the
-    SearchableSelectMultipleField.
-
-    It accesses the 'options' list from the specific nested structure
-    in form_fields."""
-    form_fields = page.form.fields
-    attendees_options = form_fields[field][0].__dict__['options']
-    return [entry[2] for entry in attendees_options if entry[1]]
+from tests.shared.utils import get_pre_filled_content_on_searchable_field
 
 
 def test_add_meeting_pre_populated(client):
@@ -45,7 +34,9 @@ def test_add_meeting_pre_populated(client):
     page = client.get(f'/working_groups/{group_id}/add')
 
     # People from Working Group are in form for adding meeting
-    pre_filled = get_pre_filled_content_on_searchable_field(page)
+    pre_filled = get_pre_filled_content_on_searchable_field(
+        page, field_id='attendees'
+    )
     assert ['Max Müller', 'Alexa Troller', 'Kurt Huber'] == pre_filled
     page.form['name'] = 'Weekly Meeting'
     page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')

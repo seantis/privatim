@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import select
 
 from privatim.models import User, WorkingGroup, Meeting
+from shared.utils import get_pre_filled_content_on_searchable_field
 
 
 def test_view_add_working_group(client):
@@ -187,19 +188,15 @@ def test_view_delete_working_group_with_meetings(client):
 
 
 def test_edit_working_group(client):
-    kurt = (
-        User(
-            email='kurt@example.org',
-            first_name='Kurt',
-            last_name='Huber',
-        )
+    kurt = User(
+        email='kurt@example.org',
+        first_name='Kurt',
+        last_name='Huber',
     )
-    max = (
-        User(
-            email='max@example.org',
-            first_name='Max',
-            last_name='Müller',
-        )
+    max = User(
+        email='max@example.org',
+        first_name='Max',
+        last_name='Müller',
     )
     users = [kurt, max]
     for user in users:
@@ -226,6 +223,7 @@ def test_edit_working_group(client):
 
     # Edit the working group
     page = client.get(f'/working_groups/edit/{group_id}')
+
     page.form['name'] = 'Updated Working Group'
     page.form['chairman'].select(text='Kurt Huber')
     page.form['leader'].select(text='Kurt Huber')

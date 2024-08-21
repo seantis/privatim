@@ -136,7 +136,6 @@ def create_consultation(documents=None, tags=None, user=None):
 class CustomDummyRequest(DummyRequest):
     """ Make `static_url` work for the cases we need it to work."""
     def static_url(self, path: str) -> str:
-        # Assuming the input path has a prefix "privatim:static/"
         prefix = 'privatim:static/'
         if path.startswith(prefix):
             path = path[len(prefix):]
@@ -147,3 +146,15 @@ def hash_file(file_bytes: bytes, hash_algorithm: str = 'sha256') -> str:
     hash_func = hashlib.new(hash_algorithm)
     hash_func.update(file_bytes)
     return hash_func.hexdigest()
+
+
+def get_pre_filled_content_on_searchable_field(page, field_id):
+    """
+    Get a list of items that were pre-populated in the
+    SearchableMultiSelectField.
+
+    It accesses the 'options' list from the specific nested structure
+    in form_fields."""
+    form_fields = page.form.fields
+    attendees_options = form_fields[field_id][0].__dict__['options']
+    return [entry[2] for entry in attendees_options if entry[1]]
