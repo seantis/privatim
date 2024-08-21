@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-19 13:45+0200\n"
+"POT-Creation-Date: 2024-08-21 19:41+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -224,7 +224,7 @@ msgstr "Abwesend"
 msgid "Meeting Report"
 msgstr "Sitzungsbericht"
 
-#: src/privatim/views/meetings.py
+#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
 msgid "Participants"
 msgstr "Mitwirkende"
 
@@ -491,20 +491,19 @@ msgstr "Traktandum hinzufügen"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Back to Working Groups overviwe"
-msgstr "Zurück zur Übersicht der Arbeitsgruppen"
+msgstr "Zurück zur Übersicht der Gremien"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Working Group"
 msgstr "Gremium"
 
 #: src/privatim/views/templates/working_group.pt
-#: src/privatim/forms/working_group_forms.py
-msgid "Leader"
-msgstr "Leiter"
+msgid "Leader:"
+msgstr "Leiter:"
 
 #: src/privatim/views/templates/working_group.pt
-msgid "Chairman Contact"
-msgstr "Kontakt Vorstand"
+msgid "Contact Chairman:"
+msgstr "Kontakt Vorstand:"
 
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/meeting_form.py
@@ -908,8 +907,8 @@ msgid "Copy description aswell"
 msgstr "Beschreibung ebenfalls kopieren"
 
 #: src/privatim/forms/working_group_forms.py
-msgid "No Leader"
-msgstr "Kein Leiter"
+msgid "Leader"
+msgstr "Leiter"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
@@ -989,6 +988,10 @@ msgstr "Auswählen"
 msgid "No Users Found"
 msgstr "Keine Benutzer gefunden"
 
+#: src/privatim/forms/fields/fields.py
+msgid "Remove this item"
+msgstr "Dieses Element entfernen"
+
 #: src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
@@ -1001,6 +1004,3 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "Open"
-#~ msgstr "Erstellt"

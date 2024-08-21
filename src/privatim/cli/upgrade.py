@@ -15,7 +15,8 @@ from privatim.models import get_session_factory
 from privatim.orm import Base
 
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
+
 if TYPE_CHECKING:
     from sqlalchemy import Column as _Column
     from sqlalchemy import Engine
@@ -92,16 +93,38 @@ class UpgradeContext:
         foreign_keys = inspector.get_foreign_keys(table)
         return any(fk['name'] == constraint_name for fk in foreign_keys)
 
-    def create_foreign_key(self, source_table: str, referent_table: str,
-                           source_column: str, referent_column: str,
-                           constraint_name: str) -> bool:
+    def create_foreign_key(
+        self,
+        constraint_name: Optional[str],
+        source_table: str,
+        referent_table: str,
+        local_cols: list[str],
+        remote_cols: list[str],
+        *,
+        onupdate: Optional[str] = None,
+        ondelete: Optional[str] = None,
+        deferrable: Optional[bool] = None,
+        initially: Optional[str] = None,
+        match: Optional[str] = None,
+        source_schema: Optional[str] = None,
+        referent_schema: Optional[str] = None,
+        **dialect_kw: Any,
+    ) -> bool:
         if self.has_table(source_table) and self.has_table(referent_table):
             self.operations.create_foreign_key(
                 constraint_name,
                 source_table,
                 referent_table,
-                [source_column],
-                [referent_column]
+                local_cols,
+                remote_cols,
+                onupdate=onupdate,
+                ondelete=ondelete,
+                deferrable=deferrable,
+                initially=initially,
+                match=match,
+                source_schema=source_schema,
+                referent_schema=referent_schema,
+                **dialect_kw
             )
             return True
         return False

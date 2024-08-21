@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-19 13:45+0200\n"
+"POT-Creation-Date: 2024-08-21 19:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -222,6 +222,7 @@ msgid "Meeting Report"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
+#: ./src/privatim/views/templates/working_group.pt
 msgid "Participants"
 msgstr ""
 
@@ -487,12 +488,11 @@ msgid "Working Group"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Leader"
+msgid "Leader:"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
-msgid "Chairman Contact"
+msgid "Contact Chairman:"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
@@ -894,7 +894,7 @@ msgid "Copy description aswell"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
-msgid "No Leader"
+msgid "Leader"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
@@ -973,6 +973,10 @@ msgstr ""
 
 #: ./src/privatim/forms/fields/fields.py
 msgid "No Users Found"
+msgstr ""
+
+#: ./src/privatim/forms/fields/fields.py
+msgid "Remove this item"
 msgstr ""
 
 #: ./src/privatim/reporting/report.py

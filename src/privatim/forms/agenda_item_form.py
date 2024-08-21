@@ -34,7 +34,7 @@ class AgendaItemForm(Form):
         )
 
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={'context': context, 'request': request},
         )
@@ -103,7 +103,7 @@ class AgendaItemCopyForm(Form):
         self._title = _('Select Destionation for Agenda Item')
 
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={'context': context, 'request': request},
         )

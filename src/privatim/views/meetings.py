@@ -145,7 +145,7 @@ def user_list(
             '<div class="d-flex align-items-center">'
             '<div class="profile-pic-container me-2" style="'
             'width: 24px; height: 24px; overflow: hidden; border-radius: 50%; '
-            'display: flex; justify-content: ctenter; align-items: center;">'
+            'display: flex; justify-content: center; align-items: center;">'
             '<img src="{}" alt="{} profile picture" style="'
             'width: 100%; height: 100%; object-fit: cover;">'
             '</div>'
@@ -219,29 +219,34 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
     assert isinstance(context, WorkingGroup)
     request.add_action_menu_entries(working_group_buttons(context, request))
 
-    add_meeting_link = request.route_url('add_meeting', id=context.id)
-    leader = None
-    if context.leader is not None:
-        leader = Markup(
-            '<a href="{}" class="mb-1">{}</a>'.format(
-                request.route_url("person", id=context.leader.id),
-                context.leader.fullname,
-            )
-        )
-    title = translate(_('Participants'))
-
-    user_list = get_meeting_user_list(context, request, title)
-
-    return {
-        'delete_title': _('Delete Working Group'),
+    chairman = context.chairman
+    base_dict = {
         'title': context.name,
-        'add_meeting_link': add_meeting_link,
-        'leader': leader,
-        'chairman_contact': context.chairman_contact,
+        'users': [
+            {
+                'profile_pic': user.profile_pic_download_link(request),
+                'fullname': user.fullname,
+                'url': request.route_url("person", id=user.id),
+            } for user in sorted(context.users, key=lambda user: user.fullname)
+        ],
+        'participants': translate(_('Participants')),
+        'delete_title': _('Delete Working Group'),
+        'leader': context.leader or '',
+        'chairman': chairman,
+        'add_meeting_link': request.route_url('add_meeting', id=context.id),
         'navigate_back_up': request.route_url('working_groups'),
-        'user_list': user_list if context.users else Markup(''),
         'meetings': context.meetings,
+        'request': request
     }
+
+    chairman_dict = {}
+    if chairman is not None:
+        chairman_dict = {
+            'chairman_profile': chairman.profile_pic_download_link(request),
+            'chairman_fullname': chairman.fullname,
+            'chairman_link': request.route_url('person', id=chairman.id),
+        }
+    return {**base_dict, **chairman_dict}
 
 
 def get_meeting_user_list(
@@ -371,10 +376,6 @@ def edit_meeting_view(
         if not request.is_xhr:
             request.messages.add(message, 'success')
         return HTTPFound(location=request.route_url('meeting', id=meeting.id))
-
-    elif not request.POST:
-        form.process(obj=meeting)
-        form.attendees.data = [str(user.id) for user in meeting.attendees]
 
     return {
         'form': form,

@@ -138,6 +138,7 @@ class TomSelectWidget(Select):
         not_found_message = self.translations.get(
             'not_found', translate(_('No Users Found'))
         )
+        remove_message = translate(_('Remove this item'))
 
         # We handle translations on the backend and inject them into
         # JavaScript. We use this approach here just because this allows to
@@ -153,6 +154,11 @@ class TomSelectWidget(Select):
                 let element = document.getElementById(uniqueId);
                 if (element) {{
                     let settings = {{
+                        plugins: {{
+                            remove_button:{{
+                                title:'{remove_message}',
+                            }}
+                        }},
                         render: {{
                             option: function (data, escape) {{
                                 return '<div>' + escape(data.text) + '</div>';
@@ -198,6 +204,27 @@ class SearchableMultiSelectField(SelectMultipleField):
     ):
         super().__init__(label, **kwargs)
         self.widget = TomSelectWidget(multiple=True, translations=translations)
+
+    def __call__(self, **kwargs: Any) -> Any:
+        tom_select.need()
+        return super().__call__(**kwargs)
+
+
+class SearchableSelectField(SelectMultipleField):
+    """
+    A select field with tom-select.js support.
+    """
+
+    def __init__(
+            self,
+            label: str,
+            translations: dict[str, str] | None = None,
+            **kwargs: Any
+    ):
+        super().__init__(label, **kwargs)
+        self.widget = TomSelectWidget(
+            multiple=False, translations=translations
+        )
 
     def __call__(self, **kwargs: Any) -> Any:
         tom_select.need()

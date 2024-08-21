@@ -407,13 +407,18 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
 
     context.add_column('users', Column('tags', String(255), nullable=True))
 
-    context.operations.add_column(
+    # Drop old columns and tables
+    # context.drop_column('consultations', 'status_id')
+    # context.drop_table('status')
+    # context.drop_table('secondary_tags')
+
+    context.add_column(
         'consultations',
         Column(
             'status', String(256), nullable=False, server_default='Created'
         ),
     )
-    context.operations.add_column(
+    context.add_column(
         'consultations',
         Column(
             'secondary_tags',
@@ -423,21 +428,20 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         ),
     )
 
-    # Migrate tags
-    tag_migration = text("""
-        UPDATE consultations c
-        SET secondary_tags = COALESCE(ARRAY(
-            SELECT t.name
-            FROM secondary_tags t
-            WHERE t.consultation_id = c.id
-        ), '{}')
-    """)
-    context.operations_connection.execute(tag_migration)
+    context.drop_column('users', 'function')
 
-    # Drop old columns and tables
-    # Drop old columns and tables
-    context.drop_column('consultations', 'status_id')
-    context.drop_table('status')
-    context.drop_table('secondary_tags')
+    # Drop the existing chairman_contact column
+    context.drop_column('working_groups', 'chairman_contact')
+
+    # Add the new chairman_id column as a foreign key to users
+    context.add_column(
+        'working_groups',
+        Column(
+            'chairman_id',
+            UUIDStrType,
+            ForeignKey('users.id', ondelete='SET NULL'),
+            nullable=True,
+        ),
+    )
 
     context.commit()

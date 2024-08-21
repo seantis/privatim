@@ -66,12 +66,15 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
             leader = session.get(User, leader_id)
         if leader is not None and leader not in users:
             users.append(leader)
+
         group = WorkingGroup(
             name=maybe_escape(form.name.data),
             leader=leader,
             users=users,
-            chairman_contact=maybe_escape(form.chairman_contact.data),
         )
+        if form.chairman.data:
+            group.chairman_id = form.chairman.data
+
         session.add(group)
         message = _(
             'Successfully added working group "${name}"',
@@ -103,7 +106,6 @@ def edit_working_group(
 
     if request.method == 'POST' and form.validate():
         group.name = maybe_escape(form.name.data)
-        group.chairman_contact = maybe_escape(form.chairman_contact.data)
 
         # Update leader
         leader_id = form.leader.data
@@ -118,7 +120,17 @@ def edit_working_group(
         users = list(session.execute(stmt).scalars().all())
         if group.leader is not None and group.leader not in users:
             users.append(group.leader)
+
         group.users = users
+        chairman_stmt = select(User).where(
+            User.id.in_(form.chairman.data)
+        )
+        chairman_or_none = session.execute(chairman_stmt).scalar_one_or_none()
+
+        # somehow this does not make chairman display
+        if chairman_or_none:
+            group.chairman = chairman_or_none
+
         session.add(group)
         session.flush()
 
@@ -128,10 +140,6 @@ def edit_working_group(
         )
         request.messages.add(message, 'success')
         return HTTPFound(location=target_url)
-
-    elif not request.POST:
-        form.process(obj=group)
-        form.users.data = [str(user.id) for user in group.users]
 
     if request.is_xhr:
         return {'errors': form.errors}

@@ -18,7 +18,7 @@ class CommentForm(Form):
     ) -> None:
         self._title = _('Add Comment')
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={'context': context, 'request': request},
         )
@@ -44,7 +44,7 @@ class NestedCommentForm(Form):
     ) -> None:
         self._title = _('Answer')
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={'context': context, 'request': request},
         )

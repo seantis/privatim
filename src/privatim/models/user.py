@@ -120,8 +120,6 @@ class User(Base):
             else request.static_url('privatim:static/default_profile_icon.png')
         )
 
-    function: Mapped[str | None]
-
     modified: Mapped[datetime | None] = mapped_column()
 
     # the groups this user is part of
@@ -129,6 +127,18 @@ class User(Base):
         'Group',
         secondary=user_group_association,
         back_populates='users',
+    )
+
+    leading_groups: Mapped[list[WorkingGroup]] = relationship(
+        'WorkingGroup',
+        back_populates='leader',
+        foreign_keys='WorkingGroup.leader_id'
+    )
+
+    chaired_groups: Mapped[list[WorkingGroup]] = relationship(
+        'WorkingGroup',
+        back_populates='chairman',
+        foreign_keys='WorkingGroup.chairman_id'
     )
 
     meeting_attendance: Mapped[list['MeetingUserAttendance']] = relationship(
@@ -152,12 +162,6 @@ class User(Base):
             .filter(MeetingUserAttendance.user_id == cls.id)
             .scalar_subquery()
         )
-
-    # the groups this user is a leader of
-    leading_groups: Mapped[list[WorkingGroup]] = relationship(
-        'WorkingGroup',
-        back_populates='leader',
-    )
 
     comments: Mapped[list['Comment']] = relationship(
         'Comment', back_populates='user',

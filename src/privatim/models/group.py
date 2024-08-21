@@ -75,23 +75,23 @@ class WorkingGroup(Group):
             self,
             name: str,
             leader: 'User | None' = None,
-            meetings: list['Meeting'] | None = None,
             users: list['User'] | None = None,
-            chairman_contact: str | None = None
+            meetings: list['Meeting'] | None = None,
+            chairman: 'User | None' = None,
     ):
         self.id = str(uuid.uuid4())
         self.name = name
         self.leader = leader
-        self.meetings = meetings if meetings is not None else []
         self.users = users if users is not None else []
-        self.chairman_contact = chairman_contact
+        self.meetings = meetings if meetings is not None else []
+        self.chairman = chairman
 
     __mapper_args__ = {
         'polymorphic_identity': 'working_group',
     }
 
     id: Mapped[UUIDStrPK] = mapped_column(
-         ForeignKey('groups.id'), primary_key=True
+        ForeignKey('groups.id'), primary_key=True
     )
 
     leader_id: Mapped[UUIDStr | None] = mapped_column(
@@ -99,15 +99,24 @@ class WorkingGroup(Group):
     )
     leader: Mapped['User | None'] = relationship(
         'User',
+        foreign_keys=[leader_id],
         back_populates='leading_groups',
     )
 
-    meetings: Mapped[list['Meeting']] = relationship(
-        'Meeting', back_populates='working_group'
+    chairman_id: Mapped[UUIDStr | None] = mapped_column(
+        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
+    )
+    chairman: Mapped['User | None'] = relationship(
+        'User',
+        foreign_keys=[chairman_id],
+        back_populates='chaired_groups',
     )
 
-    # Kontakt Vorstand
-    chairman_contact: Mapped[str | None] = mapped_column(nullable=True)
+    meetings: Mapped[list['Meeting']] = relationship(
+        'Meeting',
+        back_populates='working_group',
+        cascade="all, delete-orphan"
+    )
 
     def __acl__(self) -> list['ACL']:
         return [

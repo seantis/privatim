@@ -22,16 +22,40 @@
 
             <!--?           Display basic info about the group. -->
             <div class="text-start resource-collection">
-                <p tal:condition="leader">
-                    <span class="fw-bold" i18n:translate="">Leader</span>: <i class="fas fa-user user-list-item"></i>${leader}
-                </p>
-                    ${user_list}
 
-                <p tal:condition="chairman_contact">
-                    <span class="fw-bold" i18n:translate="">Chairman Contact</span>: <i
-                        class=""></i>${chairman_contact}
-                </p>
+                <div class="d-flex align-items-center" tal:condition="leader">
+                    <span class="fw-bold me-2 pe-3" i18n:translate="">Leader:</span>
+                    <span class="d-flex align-items-center">
+                        <img src="${leader.profile_pic_download_link(request)}"
+                             alt="${leader.first_name} ${leader.last_name} 's avatar"
+                             class="rounded-circle me-2" width="24" height="24">
+                        <a href="" class="mb-0 text-decoration-none">${leader.fullname}</a>
+                    </span>
+                </div>
 
+                <div class="d-flex align-items-center" tal:condition="chairman">
+                    <span class="fw-bold me-2 pe-3" i18n:translate="">Contact Chairman:</span>
+                    <span class="d-flex align-items-center">
+                        <img src="${chairman_profile}" class="rounded-circle me-2" width="24" height="24"
+                             alt="${chairman.first_name} ${chairman.last_name} 's avatar">
+                        <a href="${chairman_link}" class="mb-0 text-decoration-none">${chairman_fullname}</a>
+                    </span>
+                </div>
+
+<!--?                Display the users of the group-->
+                <div class="generic-user-list-container">
+                    <p>
+                        <span class="fw-bold" i18n:translate="">Participants</span>:
+                    </p>
+                    <ul class="generic-user-list">
+                        <li tal:repeat="user users" class="user-list-item d-flex align-items-center">
+                            <div class="profile-pic-container mr-2 m-2">
+                                <img src="${user.profile_pic}" alt="${user.fullname} profile picture">
+                            </div>
+                            <a href="${user.url}" class="mb-1 text-decoration-none">${user.fullname}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 

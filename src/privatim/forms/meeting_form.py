@@ -66,7 +66,7 @@ class MeetingForm(Form):
 
         session = request.dbsession
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             obj=context,
             meta={
                 'context': context,
@@ -114,7 +114,6 @@ class MeetingForm(Form):
                 ))
 
     def populate_obj(self, obj: Meeting) -> None:  # type:ignore[override]
-
         for name, field in self._fields.items():
             if isinstance(field, SearchableMultiSelectField):
                 sync_meeting_attendance_records(
@@ -130,49 +129,53 @@ class MeetingForm(Form):
                 field.populate_obj(obj, name)
 
     def process(
-            self,
-            formdata: '_MultiDictLike | None' = None,
-            obj: object | None = None,
-            data: 'Mapping[str, Any] | None' = None,
-            extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
-            **kwargs: Any
+        self,
+        formdata: '_MultiDictLike | None' = None,
+        obj: object | None = None,
+        data: 'Mapping[str, Any] | None' = None,
+        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        **kwargs: Any
     ) -> None:
         super().process(formdata, obj, **kwargs)
         if isinstance(obj, Meeting):
-            self.attendance.entries = []
-            records = obj.sorted_attendance_records
-            for attendance_record in (
-                self.meta.dbsession.execute(records).unique().scalars().all()
-            ):
-                self.attendance.append_entry(
-                    {
-                        'user_id': str(attendance_record.user_id),
-                        'fullname': attendance_record.user.fullname,
-                        'status': (
-                            True
-                            if attendance_record.status
-                            == AttendanceStatus.ATTENDED
-                            else False
-                        ),
-                    }
-                )
+            self.handle_process_edit(obj)
         else:
+            if obj is not None:
+                self.handle_process_add(obj)  # type:ignore[arg-type]
 
-            # pre-fill  users
-            if isinstance(self.context, WorkingGroup):
-                self.attendees.data = [e.id for e in self.context.users]
+    def handle_process_edit(self, obj: Meeting) -> None:
+        if obj and hasattr(obj, 'attendees'):
+            self.attendees.data = [str(user.id) for user in obj.attendees]
 
-            attendee_ids = self.attendees.data or []
-            session = self.meta.dbsession
+        self.attendance.entries = []
+        records = obj.sorted_attendance_records
+        for attendance_record in (
+            self.meta.dbsession.execute(records).unique().scalars().all()
+        ):
+            status = (True
+                      if attendance_record.status == AttendanceStatus.ATTENDED
+                      else False)
+            self.attendance.append_entry(
+                {
+                    'user_id': str(attendance_record.user_id),
+                    'fullname': attendance_record.user.fullname,
+                    'status': status
+                }
+            )
 
-            for attendee_id in attendee_ids:
-                user = session.get(User, attendee_id)
-                if user:
-                    self.attendance.append_entry({
-                        'user_id': str(user.id),
-                        'fullname': user.fullname,
-                        'status': AttendanceStatus.INVITED,
-                    })
+    def handle_process_add(self, obj: WorkingGroup) -> None:
+        # pre-fill the users with users of working group
+
+        assert isinstance(obj, WorkingGroup)
+        self.attendees.data = [e.id for e in obj.users]
+
+        attendee_ids = self.attendees.data or []
+        for attendee_id in attendee_ids:
+            user = self.meta.dbsession.get(User, attendee_id)
+            if user:
+                self.attendance.append_entry(
+                    {'user_id': str(user.id), 'fullname': user.fullname,
+                        'status': AttendanceStatus.INVITED, })
 
 
 def sync_meeting_attendance_records(

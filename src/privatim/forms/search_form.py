@@ -17,7 +17,7 @@ class SearchForm(Form):
     ) -> None:
         session = request.dbsession
         super().__init__(
-            request.POST,
+            request.POST if request.POST else None,
             meta={
                 'dbsession': session
             }
