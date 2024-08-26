@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 21:18+0200\n"
+"POT-Creation-Date: 2024-08-26 22:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,14 @@ msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
 msgid "About us"
+msgstr ""
+
+#: ./src/privatim/layouts/footer.pt
+msgid "Version"
+msgstr ""
+
+#: ./src/privatim/layouts/footer.pt
+msgid "Version of the software (Git revision number)"
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -98,6 +106,10 @@ msgstr ""
 #: ./src/privatim/layouts/macros.pt ./src/privatim/views/templates/form.pt
 #: ./src/privatim/forms/add_comment.py
 msgid "Cancel"
+msgstr ""
+
+#: ./src/privatim/layouts/navbar.pt
+msgid "Testsystem"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt ./src/privatim/views/activities.py

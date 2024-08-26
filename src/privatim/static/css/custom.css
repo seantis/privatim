@@ -716,3 +716,8 @@ input[type="color"]:focus,
 .user-list-item a {
     text-decoration: none;
 }
+
+.testBadge {
+    background-color: #f8b44f;
+    font-size: 1.6rem;
+}

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 21:18+0200\n"
+"POT-Creation-Date: 2024-08-26 22:14+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -31,6 +31,14 @@ msgstr "<b>fett</b>"
 #: src/privatim/layouts/footer.pt
 msgid "About us"
 msgstr "Über uns "
+
+#: src/privatim/layouts/footer.pt
+msgid "Version"
+msgstr "Version"
+
+#: src/privatim/layouts/footer.pt
+msgid "Version of the software (Git revision number)"
+msgstr "Version der Software (Git-Revision)"
 
 #: src/privatim/layouts/footer.pt
 msgid "Contact"
@@ -100,6 +108,10 @@ msgstr "Möchten Sie \"${item_title}\" wirklich löschen?"
 #: src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: src/privatim/layouts/navbar.pt
+msgid "Testsystem"
+msgstr "Testsystem"
 
 #: src/privatim/layouts/navbar.pt src/privatim/views/activities.py
 msgid "Activities"

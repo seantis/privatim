@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupAgendaItemGlobalToggle();
     setupDeleteModalForPersonInPeople();
     autoHideSuccessMessages();
+    addTestSystemBadge();
 });
 
 
@@ -24,7 +25,7 @@ function setupDeleteModalForPersonInPeople() {
     });
 
     // Update the cancel button click handler
-    $('#delete-xhr .btn-secondary').on('click', function(event) {
+    $('#delete-xhr .btn-secondary').on('click', function (event) {
         event.preventDefault();
         var modal = bootstrap.Modal.getInstance(document.getElementById('delete-xhr'));
         if (modal) {
@@ -34,7 +35,7 @@ function setupDeleteModalForPersonInPeople() {
 
     const deleteModal = document.getElementById('delete-xhr');
 
-    if (!deleteModal){
+    if (!deleteModal) {
         return;
     }
 
@@ -160,7 +161,7 @@ function initializePopoversAndTooltips() {
 function addEditorForCommentsEdit() {
     // For each comment, attach a listener for edit button to swap out the <p> tag with an editor to allow inline editing of comment.
     document.querySelectorAll('.edit-comment-link').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const commentId = this.dataset.commentId;
             const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
@@ -174,12 +175,12 @@ function addEditorForCommentsEdit() {
         </div>
       `;
 
-            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function() {
+            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function () {
                 const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
                 saveCommentEdit(commentId, editedContent);
             });
 
-            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function() {
+            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function () {
                 commentContentElement.innerHTML = originalContent;
             });
         });
@@ -198,7 +199,7 @@ function saveCommentEdit(commentId, editedContent) {
     xhr.setRequestHeader('X-CSRF-Token', csrfToken);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status >= 200 && xhr.status < 300) {
                 try {
@@ -217,7 +218,7 @@ function saveCommentEdit(commentId, editedContent) {
         }
     };
 
-    xhr.onerror = function() {
+    xhr.onerror = function () {
         console.error('Network error occurred while updating comment');
     };
 
@@ -243,7 +244,7 @@ function setupCommentAnswerField() {
 
 function setupAgendaItemGlobalToggle() {
     if (!window.location.href.includes('/meeting')) {
-       return;
+        return;
     }
 
     const toggleBtn = document.getElementById('toggleAllItems');
@@ -357,14 +358,14 @@ function listenForChangesInAttendees() {
 
 
 // Makes only sense to show upload field if 'replace' is selected for edit file form. (UploadMultipleFilesWithORMSupport)
-$(function() {
-    $('.upload-field').each(function(index, element) {
+$(function () {
+    $('.upload-field').each(function (index, element) {
         var upload = $(element).find('input[type="file"]');
-        $(element).find('input[type="radio"]').change(function() {
-            if(this.value === 'keep') {
+        $(element).find('input[type="radio"]').change(function () {
+            if (this.value === 'keep') {
                 upload.prop('disabled', true);
                 upload.prop('required', false);
-            } else if(this.value === 'replace') {
+            } else if (this.value === 'replace') {
                 upload.prop('disabled', false);
                 upload.prop('required', true);
             }
@@ -414,4 +415,11 @@ function autoHideSuccessMessages() {
             });
         }, delay);
     });
+}
+
+function addTestSystemBadge() {
+    const testBadge = document.getElementById('testBadge');
+    if (window.location.href.includes('test')) {
+        testBadge.style.display = 'inline-block';
+    }
 }

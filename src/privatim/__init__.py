@@ -13,6 +13,8 @@ from pyramid_beaker import session_factory_from_settings
 from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
     VARCHAR, text, Boolean
 from email.headerregistry import Address
+
+from privatim.git_info import get_git_revision_hash
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
@@ -84,7 +86,9 @@ def includeme(config: Configurator) -> None:
             return ''
         return request.route_url('download_file', id=user.picture.id)
 
+    # todo: this can be cached:
     config.add_request_method(profile_pic, 'profile_pic', property=True)
+
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
     def add_action_menu_entries(

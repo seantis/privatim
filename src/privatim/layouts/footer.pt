@@ -2,7 +2,7 @@
 <footer class="footer py-5 mt-auto" i18n:domain="privatim">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-6 col-md">
+            <div class="col-md-4">
                 <!-- Heading -->
                 <h5 i18n:translate="" class="text-uppercase mb-md-3">
                     About us
@@ -10,6 +10,19 @@
                 <ul class="list-unstyled">
                     <li>© ${layout.year} <a href="https://privatim.ch">privatim</a></li>
                 </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5 i18n:translate="" class="text-uppercase mb-md-3">
+                    Version
+                </h5>
+                <span tal:condition="h.git_revision"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" i18n:attributes="title"
+                        title="Version of the software (Git revision number)">
+                    <span>Versionsnummer:</span>
+                    <span>
+                            ${h.git_revision}
+                    </span>
+                </span>
             </div>
 
             <div class="col-6 col-md">
