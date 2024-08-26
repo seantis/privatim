@@ -65,11 +65,16 @@ class WorkingGroupForm(Form):
             **kwargs: Any
     ) -> None:
         super().process(formdata, obj, data, **kwargs)
-        if obj is not None:
-            assert isinstance(obj, WorkingGroup)
-            # For the SearchableMultiSelectField we always need to assign
-            # the data manually, since there is no 1:1 Mapping
-            if hasattr(obj, 'users'):
-                self.users.data = [str(user.id) for user in obj.users]
-            if hasattr(obj, 'leader'):
-                self.leader.data = str(obj.leader.id) if obj.leader else '0'
+        if obj is None:
+            return None
+        assert isinstance(obj, WorkingGroup)
+        # For the SearchableMultiSelectField we always need to assign
+        # the data manually, since there is no 1:1 Mapping
+        self.users.data = [str(user.id) for user in obj.users]
+
+        # Without this, the form is not pre-filled in edit
+        if obj.leader:
+            self.leader.data = str(obj.leader.id)
+
+        if (chairman := getattr(obj, 'chairman', None)) is not None:
+            self.chairman.data = chairman.id
