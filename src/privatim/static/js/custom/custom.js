@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
-     listenForChangesInAttendees();
+    listenForChangesInAttendees();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
     addEditorForCommentsEdit();
@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function setupDeleteModalForPersonInPeople() {
-
     var active_popover = null;
     var popover_timeout = null;
 
@@ -67,7 +66,6 @@ function setupDeleteModalForPersonInPeople() {
         event.preventDefault();
         const csrfToken = document.querySelector('input[name="csrf_token"]').value;
         const deleteUrl = deleteConfirmButton.href;
-        console.log(deleteUrl);
 
         const xhr = new XMLHttpRequest();
         xhr.open('DELETE', deleteUrl, true);
@@ -297,7 +295,10 @@ function listenForChangesInAttendees() {
     }
 
     function addAttendee(userId, name) {
+        // need to make sure that the × character is not part of the inserted name!
+
         const existingAttendee = document.querySelector(`input[value="${userId}"]`);
+        // prevent adding duplicates
         if (existingAttendee) {
             return;
         }
@@ -327,7 +328,7 @@ function listenForChangesInAttendees() {
                     if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
                         const userId = node.getAttribute('data-value');
                         const name = node.textContent;
-                        addAttendee(userId, name);
+                        addAttendee(userId, name.replace('×', ''));
                     }
                 });
                 mutation.removedNodes.forEach((node) => {
@@ -341,6 +342,17 @@ function listenForChangesInAttendees() {
     });
 
     observer.observe(tomSelectWrapper, {childList: true, subtree: true});
+
+    // Remove attendance rows with value="", inappropriately returned by the backend in case of form errors.
+    // I can't find an elegant way to prevent this on the backend side.
+    // This is reciprocal with MeetingForm.process()
+    const attendanceRows = document.querySelectorAll('.attendance-row');
+    attendanceRows.forEach(row => {
+        const fullnameInput = row.querySelector('input[id^="attendance-"][id$="-fullname"]');
+        if (fullnameInput && fullnameInput.value.trim() === '') {
+            row.remove();
+        }
+    });
 }
 
 
@@ -362,7 +374,8 @@ $(function() {
 
 
 // Vanish the flash message if positive after N seconds automatically.
-function autoHideSuccessMessages(delay = 3000) {
+function autoHideSuccessMessages() {
+    const delay = 3000;
     const successAlerts = document.querySelectorAll('.alert-success');
 
     successAlerts.forEach((alert) => {

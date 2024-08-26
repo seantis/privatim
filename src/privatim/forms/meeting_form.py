@@ -164,9 +164,8 @@ class MeetingForm(Form):
             )
 
     def handle_process_add(self, obj: WorkingGroup) -> None:
-        # pre-fill the users with users of working group
-
         assert isinstance(obj, WorkingGroup)
+        # pre-fill the users with users of working group
         self.attendees.data = [e.id for e in obj.users]
 
         attendee_ids = self.attendees.data or []
@@ -174,8 +173,12 @@ class MeetingForm(Form):
             user = self.meta.dbsession.get(User, attendee_id)
             if user:
                 self.attendance.append_entry(
-                    {'user_id': str(user.id), 'fullname': user.fullname,
-                        'status': AttendanceStatus.INVITED, })
+                    {
+                        'user_id': str(user.id),
+                        'fullname': user.fullname,
+                        'status': AttendanceStatus.INVITED,
+                    }
+                )
 
 
 def sync_meeting_attendance_records(

@@ -37,10 +37,14 @@ def test_add_meeting_pre_populated(client):
     pre_filled = get_pre_filled_content_on_searchable_field(
         page, field_id='attendees'
     )
-    assert ['Max Müller', 'Alexa Troller', 'Kurt Huber'] == pre_filled
+    assert [
+        'Max Müller (MM)', 'Alexa Troller (AT)', 'Kurt Huber (KH)',
+    ] == pre_filled
     page.form['name'] = 'Weekly Meeting'
     page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['attendees'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
     assert 'Weekly Meeting' in page
 
@@ -84,8 +88,11 @@ def test_edit_meeting(client):
 
     # form should be filled
     assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
-    assert get_pre_filled_content_on_searchable_field(page) == [
-        'Max Müller', 'Alexa Troller'
+    assert get_pre_filled_content_on_searchable_field(
+        page, field_id='attendees'
+    ) == [
+        'Max Müller (MM)',
+        'Alexa Troller (AT)',
     ]
 
     # Test the cancel button, if cancel edit meeting redirected to the meeting
@@ -97,7 +104,8 @@ def test_edit_meeting(client):
     new_meeting_time = meeting_time + timedelta(days=1)
     page.form['name'] = 'Updated Meeting'
     page.form['time'] = new_meeting_time.strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['attendees'].select_multiple(texts=['Kurt Huber (KH)',
+                                                  'Max Müller (MM)'])
     page = page.form.submit().follow()
     assert 'Dieses Feld wird benötigt' not in page
 

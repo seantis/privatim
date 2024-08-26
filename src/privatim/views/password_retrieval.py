@@ -67,10 +67,10 @@ def mail_retrieval(email: str, request: 'IRequest') -> None:
     mailer = request.registry.getUtility(IMailer)
     mailer.send_template(
         sender=None,  # This mail doesn't need a reply-to
-        receivers=Address(user.fullname, addr_spec=user.email),
+        receivers=Address(user.fullname_without_abbrev, addr_spec=user.email),
         template='password-reset',
         data={
-            'name': user.fullname,
+            'name': user.fullname_without_abbrev,
             'action_url': request.route_url(
                 'password_change',
                 _query={'token': token_obj.token}
