@@ -5,6 +5,10 @@
 
     <div metal:fill-slot="content">
 
+        <a href="${navigate_back_up}" class="text-decoration-none" role="button" tabindex="1">
+            <i class="fa fa-arrow-left me-2"></i><span i18n:translate="">Back to Consultations</span>
+        </a>
+
         <div class="row mb-3">
             <div class="col-md-8">
                 <h1 id="main-title" tal:content="title"></h1>

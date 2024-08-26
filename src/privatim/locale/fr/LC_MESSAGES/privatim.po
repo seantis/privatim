@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 21:11+0200\n"
+"POT-Creation-Date: 2024-08-26 21:18+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -505,6 +505,11 @@ msgid "Contact Chairman:"
 msgstr "Contact conseil d'administration:"
 
 #: src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr "Réunions"
+
+#: src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/meeting_form.py
 msgid "Add Meeting"
 msgstr "Ajouter une session"
@@ -516,11 +521,6 @@ msgid ""
 msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
 
 #: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/person.pt
-msgid "Meetings"
-msgstr "Réunions"
-
-#: src/privatim/views/templates/working_group.pt
 #: src/privatim/views/templates/profile.pt
 #: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
 #: src/privatim/forms/working_group_forms.py
@@ -530,6 +530,10 @@ msgstr "Nom"
 #: src/privatim/views/templates/working_group.pt
 msgid "Date and Time"
 msgstr "Date et heure"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Back to Consultations"
+msgstr "Retour aux consultations"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"

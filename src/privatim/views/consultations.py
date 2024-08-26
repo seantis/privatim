@@ -52,6 +52,7 @@ def consultation_view(
         'recommendation': Markup(context.recommendation),
         'evaluation_result': Markup(context.evaluation_result),
         'decision': Markup(context.decision),
+
         'documents': [
             {
                 'display_filename': trim_filename(doc.filename),
@@ -65,7 +66,8 @@ def consultation_view(
         'nested_comment_form': NestedCommentForm(context, request),
         'flattened_comments_tree': flatten_comments(top_level_comments,
                                                     request),
-        'secondary_tags': context.secondary_tags
+        'secondary_tags': context.secondary_tags,
+        'navigate_back_up': request.route_url('consultations')
     }
 
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 21:11+0200\n"
+"POT-Creation-Date: 2024-08-26 21:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -496,6 +496,11 @@ msgid "Contact Chairman:"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/person.pt
+msgid "Meetings"
+msgstr ""
+
+#: ./src/privatim/views/templates/working_group.pt
 #: ./src/privatim/forms/meeting_form.py
 msgid "Add Meeting"
 msgstr ""
@@ -504,11 +509,6 @@ msgstr ""
 msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
-msgstr ""
-
-#: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/views/templates/person.pt
-msgid "Meetings"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
@@ -521,6 +521,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt
 msgid "Date and Time"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Back to Consultations"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
