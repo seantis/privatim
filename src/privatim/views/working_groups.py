@@ -10,6 +10,7 @@ from privatim.utils import maybe_escape
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
+    from sqlalchemy.orm import Session
     from privatim.types import (RenderData, RenderDataOrRedirect,
                                 XHRDataOrRedirect)
 
@@ -104,36 +105,26 @@ def edit_working_group(
     form = WorkingGroupForm(group, request)
     session = request.dbsession
 
+    def update_user_role(session: 'Session', user_id: str) -> User | None:
+        if user_id and user_id != '0':
+            return session.get(User, user_id)
+        return None
+
     if request.method == 'POST' and form.validate():
         group.name = maybe_escape(form.name.data)
-
-        # Update leader
-        leader_id = form.leader.data
-        leader_id = None if leader_id == '0' else leader_id
-        if leader_id is not None and leader_id != '0':
-            group.leader = session.get(User, leader_id)
-        else:
-            group.leader = None
+        group.leader = update_user_role(session, form.leader.data)
+        group.chairman = update_user_role(session, form.chairman.data)
 
         # Update members
         stmt = select(User).where(User.id.in_(form.users.raw_data or ()))
         users = list(session.execute(stmt).scalars().all())
         if group.leader is not None and group.leader not in users:
             users.append(group.leader)
-
-        group.users = users
-        chairman_stmt = select(User).where(
-            User.id.in_(form.chairman.data)
-        )
-        chairman_or_none = session.execute(chairman_stmt).scalar_one_or_none()
-
-        # somehow this does not make chairman display
-        if chairman_or_none:
-            group.chairman = chairman_or_none
+        if group.chairman is not None and group.chairman not in users:
+            users.append(group.chairman)
 
         session.add(group)
         session.flush()
-
         message = _(
             'Successfully updated working group "${name}"',
             mapping={'name': form.name.data},
