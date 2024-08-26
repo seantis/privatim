@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
+     listenForChangesInAttendees();
     handleProfilePicFormSubmission();
     setupCommentAnswerField();
     addEditorForCommentsEdit();
@@ -151,7 +152,15 @@ function initializePopoversAndTooltips() {
     });
 }
 
+/**
+ * Enables inline editing for comments.
+ *
+ * Attaches click listeners to elements with the `.edit-comment-link` class. When clicked, replaces the comment's content
+ * with a textarea for editing.
+ * Assumes `data-comment-id` attributes on edit links and IDs of format `#comment-content-{commentId}` for comments.
+ */
 function addEditorForCommentsEdit() {
+    // For each comment, attach a listener for edit button to swap out the <p> tag with an editor to allow inline editing of comment.
     document.querySelectorAll('.edit-comment-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -276,62 +285,63 @@ function setupAgendaItemGlobalToggle() {
 }
 
 
-(function () {
-    document.addEventListener('DOMContentLoaded', function () {
-        const tomSelectWrapper = document.querySelector('.ts-wrapper');
-        const attendanceList = document.querySelector('.attendance-list');
+function listenForChangesInAttendees() {
+    // Synchronize Attendees and Attendance fields
+    // Dynamically update the Attendance field when Attendees are added
+    // This ensures consistency before form submission
+    const tomSelectWrapper = document.querySelector('.ts-wrapper');
+    const attendanceList = document.querySelector('.attendance-list');
 
-        if (!tomSelectWrapper || !attendanceList) {
+    if (!tomSelectWrapper || !attendanceList) {
+        return;
+    }
+
+    function addAttendee(userId, name) {
+        const existingAttendee = document.querySelector(`input[value="${userId}"]`);
+        if (existingAttendee) {
             return;
         }
 
-        function addAttendee(userId, name) {
-            const existingAttendee = document.querySelector(`input[value="${userId}"]`);
-            if (existingAttendee) {
-                return;
-            }
-
-            const newIndex = attendanceList.children.length - 1; // -1 for header
-            const newRow = document.createElement('div');
-            newRow.className = 'attendance-row';
-            newRow.innerHTML = `
+        const newIndex = attendanceList.children.length - 1; // -1 for header
+        const newRow = document.createElement('div');
+        newRow.className = 'attendance-row';
+        newRow.innerHTML = `
             <input class="hidden no-white-background" id="attendance-${newIndex}-user_id" name="attendance-${newIndex}-user_id" type="hidden" value="${userId}">
             <span class="attendee-name"><input class="form-control no-white-background" disabled="disabled" id="attendance-${newIndex}-fullname" name="attendance-${newIndex}-fullname" type="text" value="${name}"></span>
             <span class="attendee-status"><input checked class="no-white-background" id="attendance-${newIndex}-status" name="attendance-${newIndex}-status" type="checkbox" value="y"></span>
         `;
-            attendanceList.appendChild(newRow);
-        }
+        attendanceList.appendChild(newRow);
+    }
 
-        function removeAttendee(userId) {
-            const rowToRemove = document.querySelector(`input[value="${userId}"]`).closest('.attendance-row');
-            if (rowToRemove) {
-                rowToRemove.remove();
+    function removeAttendee(userId) {
+        const rowToRemove = document.querySelector(`input[value="${userId}"]`).closest('.attendance-row');
+        if (rowToRemove) {
+            rowToRemove.remove();
+        }
+    }
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
+                        const userId = node.getAttribute('data-value');
+                        const name = node.textContent;
+                        addAttendee(userId, name);
+                    }
+                });
+                mutation.removedNodes.forEach((node) => {
+                    if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
+                        const userId = node.getAttribute('data-value');
+                        removeAttendee(userId);
+                    }
+                });
             }
-        }
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList') {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
-                            const userId = node.getAttribute('data-value');
-                            const name = node.textContent;
-                            addAttendee(userId, name);
-                        }
-                    });
-                    mutation.removedNodes.forEach((node) => {
-                        if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('item')) {
-                            const userId = node.getAttribute('data-value');
-                            removeAttendee(userId);
-                        }
-                    });
-                }
-            });
         });
-
-        observer.observe(tomSelectWrapper, {childList: true, subtree: true});
     });
-})(); // IIFE ends here
+
+    observer.observe(tomSelectWrapper, {childList: true, subtree: true});
+}
 
 
 // Makes only sense to show upload field if 'replace' is selected for edit file form. (UploadMultipleFilesWithORMSupport)
