@@ -61,22 +61,21 @@
 
 
         <div class="col-lg-9 mb-4">
-
-            <div class="text-end mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0" i18n:translate="">Meetings</h2>
                 <a href="${add_meeting_link}"
                    class="btn btn-primary" role="button" tabindex="1">
-                    <i class="fa fa-plus-circle me-2"></i><span i18n:translate=""> Add Meeting</span>
+                    <i class="fa fa-plus-circle me-2"></i><span i18n:translate="">Add Meeting</span>
                 </a>
             </div>
-            <div class="table-responsive">
 
+            <div class="table-responsive">
                 <tal:b tal:condition="not:meetings">
                     <p class="lead" i18n:translate="">Here you can add meetings in the context of a working group. Click
                         "Add meeting" to get started.</p>
                 </tal:b>
 
-                <h2 class="pb-3" i18n:translate="">Meetings</h2>
-                <table class="table align-middle mb-0 rounded-table">
+                <table class="table align-middle mb-0 mt-4 rounded-table">
                     <thead class="bg-light">
                     <tr>
                         <th class="col-8" i18n:translate="">Name</th>
