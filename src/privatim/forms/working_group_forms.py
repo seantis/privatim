@@ -66,10 +66,10 @@ class WorkingGroupForm(Form):
     ) -> None:
         super().process(formdata, obj, data, **kwargs)
         if obj is not None:
+            assert isinstance(obj, WorkingGroup)
+            # For the SearchableMultiSelectField we always need to assign
+            # the data manually, since there is no 1:1 Mapping
             if hasattr(obj, 'users'):
                 self.users.data = [str(user.id) for user in obj.users]
             if hasattr(obj, 'leader'):
                 self.leader.data = str(obj.leader.id) if obj.leader else '0'
-            if hasattr(obj, 'chairman'):
-                _id = obj.chairman.id
-                self.chairman.data = str(_id) if obj.chairman else '0'
