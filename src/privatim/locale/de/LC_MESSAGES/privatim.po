@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-21 22:45+0200\n"
+"POT-Creation-Date: 2024-08-26 21:11+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -527,6 +527,10 @@ msgstr "Sitzungen"
 #: src/privatim/forms/working_group_forms.py
 msgid "Name"
 msgstr "Name"
+
+#: src/privatim/views/templates/working_group.pt
+msgid "Date and Time"
+msgstr "Datum und Zeit"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"

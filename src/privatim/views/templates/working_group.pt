@@ -75,17 +75,21 @@
                         "Add meeting" to get started.</p>
                 </tal:b>
 
-                <h2 i18n:translate="">Meetings</h2>
-                <table class="table align-middle mb-0 rounded-table ">
+                <h2 class="pb-3" i18n:translate="">Meetings</h2>
+                <table class="table align-middle mb-0 rounded-table">
                     <thead class="bg-light">
                     <tr>
-                        <th class="col-7" i18n:translate="">Name</th>
+                        <th class="col-8" i18n:translate="">Name</th>
+                        <th class="col-4" i18n:translate="">Date and Time</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr tal:repeat="meeting meetings">
                         <td>
                             <a href="${request.route_url('meeting', id=meeting.id)}" class="mb-1 text-decoration-none">${meeting.name}</a>
+                        </td>
+                        <td>
+                            <span class="timeline-date">${layout.format_date(meeting.time, 'date')}, ${layout.format_date(meeting.time, 'time')}</span>
                         </td>
                     </tr>
                     </tbody>
