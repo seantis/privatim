@@ -3,17 +3,25 @@ from sqlalchemy import nullslast
 from sqlalchemy.orm import selectinload
 from sqlalchemy.future import select
 from markupsafe import Markup
+import logging
 
 from privatim.controls.controls import Button
 from privatim.forms.user_form import UserForm
 from privatim.i18n import _, translate
+from privatim.security_policy import PasswordException
 from privatim.utils import strip_p_tags, maybe_escape
 from privatim.models import User, WorkingGroup
 
 from typing import TYPE_CHECKING
+
+from privatim.views.password_retrieval import mail_retrieval
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData, RenderDataOrRedirect
+
+
+logger = logging.getLogger('privatim.people')
 
 
 def user_buttons(
@@ -121,9 +129,25 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         session.add(user)
         session.flush()
 
-        message = _('Successfully added user ${first_name} ${last_name}',
-                    mapping={'first_name': user.first_name,
-                             'last_name': user.last_name})
+        try:
+            mail_retrieval(user.email, request)
+            logger.info(f'Password retrieval mail sent to "{user.email}"')
+        except PasswordException as e:
+            logger.warning(
+                f'[{request.client_addr}] password retrieval: {str(e)}'
+            )
+        message = _(
+            'Successfully added user ${first_name} ${last_name}.'
+            'An email has been sent to the requested account with further '
+            'information.',
+            mapping = (
+                {
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                },
+            )
+        )
+
         request.messages.add(message, 'success')
         return HTTPFound(target_url)
 
