@@ -19,13 +19,14 @@ PostgresSQL is required. Sqlite won't work. Version needs to be >=12.
 Create the PostgreSQL database:
 ```
 sudo -u postgres bash -c "psql <<EOF
-CREATE USER dev WITH PASSWORD 'postgres' LOGIN NOINHERIT;
+CREATE USER dev WITH PASSWORD 'devpassword' LOGIN NOINHERIT;
 ALTER USER dev WITH SUPERUSER;
 CREATE DATABASE privatim;
 GRANT ALL PRIVILEGES ON DATABASE privatim TO dev;
 EOF"
-
-
+```
+If you've already built onegov one time, you can skip the user creation.
+```
 git clone git@github.com:seantis/privatim.git
 cd privatim
 python3 -m venv venv
@@ -37,7 +38,7 @@ cp development.ini.example development.ini
 - Add a user
 
 ```
-add_user --email admin@example.org --password test  development.ini
+add_user --email admin@example.org --password test --first_name Jane --last_name Dane development.ini
 ```
 
 - Load default data into the database using a script (optional).

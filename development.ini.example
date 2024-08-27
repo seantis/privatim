@@ -22,7 +22,7 @@ pyramid.available_languages =
     # pyramid_debugtoolbar
 
 # sqlalchemy.url = sqlite:///%(here)s/privatim.sqlite
-sqlalchemy.url = postgresql://dev:postgres@localhost:5432/privatim
+sqlalchemy.url = postgresql://dev:devpassword@localhost:5432/privatim
 
 auth.password_only = true
 
