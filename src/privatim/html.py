@@ -47,7 +47,7 @@ SANE_HTML_TAGS = [
 
 # html attributes allowed by bleach
 SANE_HTML_ATTRS = {
-    'a': ['href', 'title'],
+    'a': ['href', 'title', 'target'],
     'abbr': ['title', ],
     'acronym': ['title', ],
     'img': ['src', 'alt', 'title']
@@ -65,5 +65,4 @@ def sanitize_html(html: str | None) -> Markup:
     from it.
 
     """
-
     return Markup(cleaner.clean(html or ''))

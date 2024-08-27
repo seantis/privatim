@@ -10,6 +10,36 @@ import Link from 'https://esm.sh/@tiptap/extension-link@2.4.0';
 
 const editors = [];
 
+class CustomLink extends Link {
+    get schema() {
+        return {
+            attrs: {
+                href: {
+                    default: null,
+                },
+                target: {
+                    default: null,
+                }
+            },
+            inclusive: false,
+            parseDOM: [
+                {
+                    tag: 'a[href]',
+                    getAttrs: dom => ({
+                        href: dom.getAttribute('href'),
+                        target: dom.getAttribute('target')
+                    }),
+                },
+            ],
+            toDOM: node => ['a', {
+                ...node.attrs,
+                target: '__blank',
+                rel: 'noopener noreferrer nofollow',
+            }, 0],
+        };
+    }
+}
+
 document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
     const element = wrapper.querySelector('.element');
     const inputId = element.id.replace('-editor', '');
@@ -22,7 +52,7 @@ document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
             proseMirror.focus();
         });
     });
-
+    // The actual bubble menu structure is defined in macros.pt/render_editor
     if (!bubbleMenu) {
         return;
     }
@@ -36,17 +66,8 @@ document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         element: element,
         extensions: [
             StarterKit,
-            // Document,
-            // Paragraph,
-            // Text,
-            // Code,
-            Link.configure({
-                openOnClick: false,
+            CustomLink.configure({
                 linkOnPaste: true,
-                HTMLAttributes: {
-                    rel: 'noopener noreferrer nofollow',
-                    target: '_blank',
-                },
             }),
             BubbleMenu.configure({
                 element: bubbleMenu,
