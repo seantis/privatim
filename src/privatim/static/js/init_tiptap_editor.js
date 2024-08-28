@@ -10,35 +10,18 @@ import Link from 'https://esm.sh/@tiptap/extension-link@2.4.0';
 
 const editors = [];
 
-class CustomLink extends Link {
-    get schema() {
-        return {
-            attrs: {
-                href: {
-                    default: null,
-                },
-                target: {
-                    default: null,
-                }
-            },
-            inclusive: false,
-            parseDOM: [
-                {
-                    tag: 'a[href]',
-                    getAttrs: dom => ({
-                        href: dom.getAttribute('href'),
-                        target: dom.getAttribute('target')
-                    }),
-                },
-            ],
-            toDOM: node => ['a', {
-                ...node.attrs,
-                target: '__blank',
-                rel: 'noopener noreferrer nofollow',
-            }, 0],
-        };
-    }
-}
+
+const CustomLink = Link.configure({
+    openOnClick: true,
+    linkOnPaste: true,
+    autolink: true,
+    HTMLAttributes: {
+        target: '_blank',
+        rel: 'noopener noreferrer nofollow',
+        class: null
+    },
+});
+
 
 document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
     const element = wrapper.querySelector('.element');
@@ -67,7 +50,12 @@ document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         extensions: [
             StarterKit,
             CustomLink.configure({
+                openOnClick: false,
                 linkOnPaste: true,
+                HTMLAttributes: {
+                    rel: 'noopener noreferrer nofollow',
+                    target: '_blank',
+                },
             }),
             BubbleMenu.configure({
                 element: bubbleMenu,
