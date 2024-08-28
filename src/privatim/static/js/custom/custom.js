@@ -99,20 +99,44 @@ function setupDeleteModalForPersonInPeople() {
 
 
 function makeConsultationsInActivitiesClickable() {
-    // Nesting links is not allowed by HTML standards. The 'Consultation' activity should still be clickable,
-    // even if it contains a link within the text. This workaround ensures all links function properly.
+    // Ensure that the entire consultation card is clickable, even if clicked on a link within it,
+    // still redirect to the consultation page.
+
     if (window.location.href.includes('/consultations')) {
         const cards = document.querySelectorAll('.consultation-card');
         cards.forEach(card => {
-            card.addEventListener('click', function (e) {
-                // Safeguard for links inside it (content created by user)
-                if (e.target.tagName !== 'A') {
-                    window.location.href = this.dataset.href;
+            const consultationUrl = card.dataset.href;
+
+            // Find all links within the card
+            const links = card.querySelectorAll('a');
+
+            // Modify behavior for all links within the card
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = consultationUrl;
+                });
+
+                // Remove target attribute to prevent opening in new tab
+                link.removeAttribute('target');
+
+                // Optional: Change cursor to pointer to indicate clickability
+                link.style.cursor = 'pointer';
+            });
+
+            // Make the entire card clickable
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName.toLowerCase() !== 'a') {
+                    e.preventDefault();
+                    window.location.href = consultationUrl;
                 }
             });
         });
     }
 }
+
+
 
 function handleProfilePicFormSubmission() {
     // Manually submit the form in profile picture view.
