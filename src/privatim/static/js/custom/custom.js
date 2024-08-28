@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupDeleteModalForPersonInPeople();
     autoHideSuccessMessages();
     addTestSystemBadge();
+    fixCSSonProfilePage();
 });
 
 
@@ -112,7 +113,7 @@ function makeConsultationsInActivitiesClickable() {
 
             // Modify behavior for all links within the card
             links.forEach(link => {
-                link.addEventListener('click', function(e) {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     window.location.href = consultationUrl;
@@ -126,7 +127,7 @@ function makeConsultationsInActivitiesClickable() {
             });
 
             // Make the entire card clickable
-            card.addEventListener('click', function(e) {
+            card.addEventListener('click', function (e) {
                 if (e.target.tagName.toLowerCase() !== 'a') {
                     e.preventDefault();
                     window.location.href = consultationUrl;
@@ -135,7 +136,6 @@ function makeConsultationsInActivitiesClickable() {
         });
     }
 }
-
 
 
 function handleProfilePicFormSubmission() {
@@ -445,5 +445,26 @@ function addTestSystemBadge() {
     const testBadge = document.getElementById('testBadge');
     if (window.location.href.includes('test')) {
         testBadge.style.display = 'inline-block';
+    }
+}
+
+
+function fixCSSonProfilePage() {
+    const currentUrl = window.location.href;
+    const profilePath = '/profile';
+    const reloadKey = 'profilePageReloaded';
+
+    if (currentUrl.includes(profilePath) && !localStorage.getItem(reloadKey)) {
+        localStorage.setItem(reloadKey, 'true');
+
+        // Invalidate the cache for CSS by appending a random query parameter
+        const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+        cssLinks.forEach(link => {
+            const href = link.href;
+            link.href = `${href}?_=${new Date().getTime()}`;
+        });
+
+        // Perform a hard reload
+        window.location.reload(true);
     }
 }
