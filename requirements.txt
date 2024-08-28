@@ -124,7 +124,6 @@ pillow==10.3.0
     # via
     #   privatim (setup.cfg)
     #   privatim
-    #   pyavatar
     #   weasyprint
 plaster==1.1.2
     # via
@@ -140,10 +139,6 @@ polib==1.2.0
     #   privatim (setup.cfg)
     #   privatim
 psycopg2==2.9.9
-    # via
-    #   privatim (setup.cfg)
-    #   privatim
-pyavatar==0.1.6
     # via
     #   privatim (setup.cfg)
     #   privatim

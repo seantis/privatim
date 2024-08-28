@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 22:14+0200\n"
+"POT-Creation-Date: 2024-08-28 10:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -292,7 +292,9 @@ msgstr ""
 
 #: ./src/privatim/views/people.py
 #, python-format
-msgid "Successfully added user ${first_name} ${last_name}"
+msgid ""
+"Successfully added user ${first_name} ${last_name}.An email has been sent to "
+"the requested account with further information."
 msgstr ""
 
 #: ./src/privatim/views/people.py ./src/privatim/views/templates/people.pt
@@ -445,7 +447,7 @@ msgstr ""
 
 #: ./src/privatim/views/agenda_items.py
 #, python-format
-msgid "Successfully copied agenda item \"${name}\""
+msgid "Successfully copied agenda items from \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/password_retrieval.py
@@ -889,7 +891,7 @@ msgid "Potentially Description"
 msgstr ""
 
 #: ./src/privatim/forms/agenda_item_form.py
-msgid "Select Destionation for Agenda Item"
+msgid "Source"
 msgstr ""
 
 #: ./src/privatim/forms/agenda_item_form.py
@@ -897,7 +899,7 @@ msgid "No valid destination meetings available."
 msgstr ""
 
 #: ./src/privatim/forms/agenda_item_form.py
-msgid "Copy to"
+msgid "Copy agenda items from meeting"
 msgstr ""
 
 #: ./src/privatim/forms/agenda_item_form.py

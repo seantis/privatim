@@ -176,14 +176,13 @@ def test_edit_meeting(client):
 
 
 def test_copy_agenda_items_without_description(client):
-
     client.login_admin()
     users = [
         User(email='max@example.org', first_name='Max', last_name='Müller'),
         User(
             email='alexa@example.org',
             first_name='Alexa',
-            last_name='Troller',
+            last_name='Troller'
         ),
         User(email='kurt@example.org', first_name='Kurt', last_name='Huber'),
     ]
@@ -197,8 +196,10 @@ def test_copy_agenda_items_without_description(client):
     client.db.add(working_group)
 
     meeting_time = fix_utc_to_local_time(utcnow())
+
+    # Create source meeting with agenda items
     src_meeting = Meeting(
-        name='Initial Meeting',
+        name='Source Meeting',
         time=meeting_time,
         attendees=users[:2],
         working_group=working_group,
@@ -207,8 +208,13 @@ def test_copy_agenda_items_without_description(client):
     client.db.commit()
     client.db.refresh(src_meeting)
 
-    # copy Agenda Items
-    # need to first create another meeting to copy to
+    # Add agenda item to source meeting
+    page = client.get(f'/meetings/{src_meeting.id}/add')
+    page.form['title'] = 'Agenda item'
+    page.form['description'] = 'description'
+    page.form.submit().follow()
+
+    # Create destination meeting (this will be our context)
     dest_meeting = Meeting(
         name='Destination Meeting',
         time=meeting_time,
@@ -219,25 +225,20 @@ def test_copy_agenda_items_without_description(client):
     client.db.commit()
     client.db.refresh(dest_meeting)
 
-    page = client.get(f'/meetings/{src_meeting.id}/add')
-    page.form['title'] = 'Agenda item'
-    page.form['description'] = 'description'
-    page.form.submit().follow()
-
-    page = client.get(f'/meetings/{src_meeting.id}/copy_agenda_item')
-    page.form['copy_to'] = page.form['copy_to'].options[0][0]
+    # Copy agenda items from source to destination
+    page = client.get(f'/meetings/{dest_meeting.id}/copy_agenda_item')
+    page.form['copy_from'] = str(src_meeting.id)
     page.form['copy_description'] = False
     page.form.submit().follow()
 
     # Verify the agenda item was copied
     stmt = (
         select(Meeting)
-        .options(
-            selectinload(Meeting.agenda_items)
-        )
+        .options(selectinload(Meeting.agenda_items))
         .where(Meeting.id == dest_meeting.id)
     )
     dest_updated = client.db.scalars(stmt).unique().one()
+    assert len(dest_updated.agenda_items) == 1
     assert dest_updated.agenda_items[0].title == 'Agenda item'
     # Description wasn't copied
     assert dest_updated.agenda_items[0].description == ''

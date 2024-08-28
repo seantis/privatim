@@ -128,44 +128,42 @@ def delete_agenda_item_view(
 
 
 def copy_agenda_item_view(
-        context: Meeting,
-        request: 'IRequest'
+    context: Meeting, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
-
     form = AgendaItemCopyForm(context, request)
     session = request.dbsession
     assert isinstance(context, Meeting)
 
     target_url = request.route_url('meeting', id=context.id)
     if request.method == 'POST' and form.validate():
+        source_meeting_id = form.copy_from.data
+        stmt = select(Meeting).where(Meeting.id == source_meeting_id)
+        source_meeting = session.execute(stmt).scalar_one()
 
-        destination_str_id = form.copy_to.data
-        stmt = select(Meeting).where(Meeting.id == destination_str_id)
-        dest_meeting = session.execute(stmt).scalar_one()
-
-        # Create deep copies of agenda items
-        for agenda_item in context.agenda_items:
-            new_item = AgendaItem(
+        # Create deep copies of agenda items from the source meeting to the
+        # context meeting
+        for agenda_item in source_meeting.agenda_items:
+            new_item = AgendaItem.create(
+                session,
                 title=agenda_item.title,
-                description=agenda_item.description if
-                form.copy_description.data else '',
-                meeting=agenda_item.meeting,
-                position=agenda_item.position
+                description=(
+                    agenda_item.description
+                    if form.copy_description.data
+                    else ''
+                ),
+                meeting=context,
             )
-            dest_meeting.agenda_items.append(new_item)
-        session.add(dest_meeting)
-        session.flush()
+            session.add(new_item)
 
+        session.flush()
         message = _(
-            'Successfully copied agenda item "${name}"',
-            mapping={'name': dest_meeting.name}
+            'Successfully copied agenda items from "${name}"',
+            mapping={'name': source_meeting.name},
         )
         if request.is_xhr:
             return {'success': translate(message, request.locale_name)}
         request.messages.add(message, 'success')
-        return HTTPFound(
-            location=request.route_url('meeting', id=dest_meeting.id),
-        )
+        return HTTPFound(location=target_url)
 
     return {
         'form': form,

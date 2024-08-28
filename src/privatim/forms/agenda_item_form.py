@@ -10,7 +10,7 @@ from privatim.forms.core import Form
 from privatim.forms.fields.fields import ConstantTextAreaField
 from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _, translate
-from privatim.models import Meeting
+from privatim.models import Meeting, WorkingGroup
 from privatim.utils import datetime_format
 
 from typing import TYPE_CHECKING, Any
@@ -55,7 +55,7 @@ class AgendaItemForm(Form):
 
 class MeetingRadioRenderer(ListWidget):
     def __call__(
-        self, field: RadioField, **kwargs: Any  # type:ignore[override]
+            self, field: RadioField, **kwargs: Any  # type:ignore[override]
     ) -> Markup:
         kwargs.setdefault('id', field.id)
         kwargs.setdefault('class', 'list-group')
@@ -71,7 +71,6 @@ class MeetingRadioRenderer(ListWidget):
                 html_list.append(f'{translated} {date}')
                 html_list.append('</small>')
             html_list.append('</li>')
-
         html_list.append(f'</{self.html_tag}>')
         return Markup(''.join(html_list))
 
@@ -100,7 +99,7 @@ class AgendaItemCopyForm(Form):
         request: 'IRequest',
     ) -> None:
 
-        self._title = _('Select Destionation for Agenda Item')
+        self._title = _('Source')
 
         super().__init__(
             request.POST if request.POST else None,
@@ -108,29 +107,22 @@ class AgendaItemCopyForm(Form):
             meta={'context': context, 'request': request},
         )
 
-        stmt = (
-            select(Meeting)
-            .where(Meeting.id != context.id)
-            .order_by(Meeting.time.desc())
-        )
-        available_meetings: list[Meeting] = list(
-            request.dbsession.execute(stmt).scalars().all()
-        )
-        self.copy_to.choices = [
+        available_meetings: list[Meeting] = context.working_group.meetings
+        self.copy_from.choices = [
             (str(meeting.id), meeting.name, {'time': meeting.time})
             for meeting in available_meetings
         ]
 
         if not available_meetings:
-            assert isinstance(self.copy_to.validators, list)
-            self.copy_to.validators.append(
+            assert isinstance(self.copy_from.validators, list)
+            self.copy_from.validators.append(
                 lambda form, field: ValidationError(
                     _('No valid destination meetings available.')
                 )
             )
 
-    copy_to = RadioField(
-        label=_('Copy to'),
+    copy_from = RadioField(
+        label=_('Copy agenda items from meeting'),
         validators=[validators.DataRequired()],
         widget=MeetingRadioRenderer(),
     )

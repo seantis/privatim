@@ -44,7 +44,7 @@ add_user --email admin@example.org --password test --first_name Jane --last_name
 - Load default data into the database using a script (optional).
 
 ```
-initialize_db development.ini
+add_content development.ini
 ```
 
 ### Run dev server

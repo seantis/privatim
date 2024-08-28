@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-26 22:14+0200\n"
+"POT-Creation-Date: 2024-08-28 10:51+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -291,8 +291,11 @@ msgstr "Liste des personnes"
 
 #: src/privatim/views/people.py
 #, python-format
-msgid "Successfully added user ${first_name} ${last_name}"
-msgstr "Utilisateur ${first_name} ${last_name} ajouté avec succès"
+msgid ""
+"Successfully added user ${first_name} ${last_name}.An email has been sent to "
+"the requested account with further information."
+msgstr "L'utilisateur ${first_name} ${last_name} a été ajouté avec succès. "
+"Un e-mail a été envoyé au compte demandé avec des informations complémentaires. "
 
 #: src/privatim/views/people.py src/privatim/views/templates/people.pt
 msgid "Add User"
@@ -451,8 +454,8 @@ msgstr "Élément de l'ordre du jour supprimé avec succès \"${titre}\""
 
 #: src/privatim/views/agenda_items.py
 #, python-format
-msgid "Successfully copied agenda item \"${name}\""
-msgstr "Élément de l'ordre du jour copié avec succès \"${nom}\""
+msgid "Successfully copied agenda items from \"${name}\""
+msgstr "Éléments de l'ordre du jour copiés avec succès de \"${nom}\""
 
 #: src/privatim/views/password_retrieval.py
 msgid ""
@@ -899,16 +902,16 @@ msgid "Potentially Description"
 msgstr "Description potentielle"
 
 #: src/privatim/forms/agenda_item_form.py
-msgid "Select Destionation for Agenda Item"
-msgstr "Sélectionnez la destination pour l'élément de l'ordre du jour"
+msgid "Source"
+msgstr "Source"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "No valid destination meetings available."
 msgstr "Aucune réunion de destination valide disponible."
 
 #: src/privatim/forms/agenda_item_form.py
-msgid "Copy to"
-msgstr "Copier vers"
+msgid "Copy agenda items from meeting"
+msgstr "Copier les éléments de l'ordre du jour de la réunion"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy description aswell"
@@ -1020,9 +1023,3 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#~ msgid "Canton"
-#~ msgstr "Canton"
-
-#~ msgid "all"
-#~ msgstr "tous"

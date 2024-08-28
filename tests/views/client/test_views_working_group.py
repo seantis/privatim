@@ -1,8 +1,6 @@
 from datetime import datetime
 from sqlalchemy import select
-
 from privatim.models import User, WorkingGroup, Meeting
-from shared.utils import get_pre_filled_content_on_searchable_field
 
 
 def test_view_add_working_group(client):
