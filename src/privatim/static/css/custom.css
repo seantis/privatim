@@ -78,10 +78,6 @@
     url('/static/fonts/dm-serif-display-v5-latin-ext_latin-italic.woff') format('woff');
 }
 
-body {
-    font-family: "DM Sans", sans-serif;
-}
-
 :root {
     --primary-color: #FF545F; /* privatim's primary color used globally*/
     --hover-color: rgba(149, 43, 50, 0.8); /* hover = primary but darker */
