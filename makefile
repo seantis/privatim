@@ -34,6 +34,11 @@ compile: in_virtual_env
 run: in_virtual_env
 	pserve --reload development.ini
 
+e2e: in_virtual_env
+	pytest tests/ -m "e2e" -vv \
+		--browser chromium --browser firefox \
+		--retries 3
+
 in_virtual_env:
 	@if python -c 'import sys; (hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)) and sys.exit(1) or sys.exit(0)'; then \
 		echo "An active virtual environment is required"; exit 1; \

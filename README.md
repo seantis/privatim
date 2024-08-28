@@ -96,8 +96,6 @@ This will remove packages that have been manually installed locally
 
     uv pip sync requirements.txt test_requirements.txt
 
-
-
 ## Miscellaneous
 
 ###  Filestorage location

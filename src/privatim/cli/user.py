@@ -31,6 +31,11 @@ def add_user(
             click.echo(f"User with email {email} already exists.")
             return
 
+        if not first_name or not last_name:
+            click.echo("First name and last name are required.")
+            return
+
+
         user = User(email=email, first_name=first_name, last_name=last_name)
         user.generate_profile_picture(dbsession)
         user.set_password(password)
