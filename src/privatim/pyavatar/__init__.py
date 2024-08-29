@@ -85,9 +85,9 @@ class SupportedPixelRange(IntEnum):
 
 
 _DEFAULT_IMAGE_SIZE = 120
-_DEFAULT_FILEPATH = f"{os.getcwd()}/avatar.png"
+_DEFAULT_FILEPATH = f'{os.getcwd()}/avatar.png'
 _DEFAULT_FONT_FILEPATH = os.path.join(
-    os.path.dirname(__file__), "font/Lora.ttf"
+    os.path.dirname(__file__), 'font/dm-sans-v6-latin-ext_latin-regular.otf'
 )
 
 _HexColor: TypeAlias = str
