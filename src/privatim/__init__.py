@@ -90,6 +90,9 @@ def includeme(config: Configurator) -> None:
 
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
+    rev = settings.get('git_revision', '')
+    config.add_request_method(lambda r: rev, 'git_revision', reify=True)
+
     def add_action_menu_entries(
         request: 'IRequest',
         entries: Iterable['Button'],
