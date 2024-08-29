@@ -1,4 +1,3 @@
-# type: ignore
 import logging
 from email.headerregistry import Address
 from typing import TYPE_CHECKING
@@ -84,6 +83,7 @@ def password_retrieval_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     form = PasswordRetrievalForm(formdata=request.POST)
     if 'email' in request.POST and form.validate():
         try:
+            assert isinstance(form.email.data, str)
             email = form.email.data.lower()
             mail_retrieval(email, request)
             logger.info(f'Password retrieval mail sent to "{email}"')
@@ -92,12 +92,12 @@ def password_retrieval_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 f'[{request.client_addr}] password retrieval: {str(e)}'
             )
 
-        request.messages.add(_(
+        msg = _(
             'An email has been sent to the requested account with further '
             'information. If you do not receive an email then please '
-            'confirm you have entered the correct email address.',
-            'success'
-        ))
+            'confirm you have entered the correct email address.'
+        )
+        request.messages.add(msg, 'success')
         return HTTPFound(location=request.route_url('login'))
 
     return {'form': form}
