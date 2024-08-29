@@ -87,10 +87,6 @@ class Comment(Base, SearchableMixin):
         viewonly=True
     )
 
-    __mapper_args__ = {
-        'polymorphic_on': target_type,
-    }
-
     def get_model(self, session: 'Session') -> 'Consultation':
         """ Get the model which the comment is part of. """
 
