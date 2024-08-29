@@ -229,40 +229,42 @@ def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
     return False
 
 
-def get_previous_versions(
-    session: 'FilteredSession', consultation: Consultation, limit: int = 5
-) -> Sequence[Consultation]:
-    """Returns all previous versions of a consultation"""
-
-    query = text(
-        """
-    WITH RECURSIVE version_chain AS (
-        SELECT id, replaced_consultation_id, 0 as depth
-        FROM consultations
-        WHERE replaced_consultation_id = :start_id
-        UNION ALL
-        SELECT c.id, c.replaced_consultation_id, vc.depth + 1
-        FROM consultations c
-        JOIN version_chain vc ON c.replaced_consultation_id = vc.id
-    )
-    SELECT c.*, vc.depth
-    FROM consultations c
-    JOIN version_chain vc ON c.id = vc.id
-    ORDER BY vc.depth
+def get_previous_versions(session, consultation, limit=5):
     """
-    )
-    result = session.execute(query, {'start_id': consultation.id})
-    versions = list(result.all())
-    version_ids = (
-        [x for x in versions[0] if isinstance(x, UUID)]
-        if versions[:limit]
-        else []
-    )
-    stmt = (
-        select(Consultation)
-        .where(Consultation.id.in_(version_ids))
-        .options(joinedload(Consultation.creator))
-    )
+    Returns the previous versions of a consultation.
+
+    Traverse the consultation history and return the previous versions.
+    An unfortunate addition of complexity seems to be necessary, because the
+     """
+
     with session.no_consultation_filter():
-        previous_versions = session.execute(stmt).scalars().all()
-        return previous_versions
+        query = text(
+            """
+        WITH RECURSIVE versions AS (
+            SELECT id, replaced_consultation_id
+            FROM consultations
+            WHERE id = :id
+            UNION ALL
+            SELECT c.id, c.replaced_consultation_id
+            FROM consultations c
+            JOIN versions v ON c.replaced_consultation_id = v.id
+        )
+        SELECT id FROM versions
+        WHERE id != :id AND replaced_consultation_id IS NOT NULL
+        LIMIT :limit
+        """
+        )
+        version_ids = (
+            session.execute(query, {'id': consultation.id, 'limit': limit})
+            .scalars()
+            .all()
+        )
+        return (
+            session.execute(
+                select(Consultation)
+                .where(Consultation.id.in_(version_ids))
+                .options(joinedload(Consultation.creator))
+            )
+            .scalars()
+            .all()
+        )
