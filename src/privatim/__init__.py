@@ -14,7 +14,6 @@ from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
     VARCHAR, text, Boolean
 from email.headerregistry import Address
 
-from privatim.git_info import get_git_revision_hash
 from privatim.mail import PostmarkMailer
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 

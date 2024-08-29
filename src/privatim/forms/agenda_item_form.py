@@ -1,5 +1,4 @@
 from markupsafe import Markup
-from sqlalchemy import select
 from wtforms import validators
 from wtforms.fields.choices import RadioField
 from wtforms.fields.simple import TextAreaField
@@ -10,7 +9,7 @@ from privatim.forms.core import Form
 from privatim.forms.fields.fields import ConstantTextAreaField
 from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _, translate
-from privatim.models import Meeting, WorkingGroup
+from privatim.models import Meeting
 from privatim.utils import datetime_format
 
 from typing import TYPE_CHECKING, Any
