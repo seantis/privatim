@@ -88,13 +88,13 @@ All dependencies:
 
 ## Upgrade local environment
 
-    uv pip install -r requirements.txt -r test_requirements.txt
+    uv pip install -r requirements.txt
 
 ## Sync local environment with CI/Production
 
 This will remove packages that have been manually installed locally
 
-    uv pip sync requirements.txt test_requirements.txt
+    uv pip sync requirements.txt
 
 
 
