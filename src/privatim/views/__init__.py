@@ -40,8 +40,7 @@ from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
 from privatim.views.meetings import meetings_view
 from privatim.views.password_change import password_change_view
-from privatim.views.password_retrieval import (  # type: ignore
-    password_retrieval_view)
+from privatim.views.password_retrieval import password_retrieval_view
 
 from privatim.views.people import people_view, person_view, add_user_view, \
     edit_user_view, delete_user_view

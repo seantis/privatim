@@ -27,8 +27,10 @@ def test_view_add_working_group(client):
     assert page.status_code == 200
 
     page.form['name'] = 'Test Group'
-    page.form['chairman'].select(text='Max Müller')
-    page.form['users'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['chairman'].select(text='Max Müller (MM)')
+    page.form['users'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
     page = page.click("Test Group")
 
@@ -42,8 +44,10 @@ def test_view_add_working_group(client):
 
     page = client.get('/working_groups/add')
     page.form['name'] = 'Test Group2'
-    page.form['users'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
-    page.form['leader'].select(text='Vintonio Avaldi')
+    page.form['users'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
+    page.form['leader'].select(text='Vintonio Avaldi (VA)')
     page = page.form.submit().follow()
     page = page.click("Test Group2")
 
@@ -83,8 +87,10 @@ def test_view_add_working_group_with_meeting_and_leader(client):
     assert page.status_code == 200
 
     page.form['name'] = 'Test Group'
-    page.form['leader'].select(text='Alexa Troller')
-    page.form['users'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['leader'].select(text='Alexa Troller (AT)')
+    page.form['users'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
 
     assert page.status_code == 200
@@ -92,16 +98,20 @@ def test_view_add_working_group_with_meeting_and_leader(client):
 
     stmt = select(WorkingGroup).where(WorkingGroup.name == 'Test Group')
     group = client.db.execute(stmt).scalars().first()
-    assert group.leader.fullname == 'Alexa Troller'
+    assert group.leader.fullname == 'Alexa Troller (AT)'
 
     member_names = sorted({member.fullname for member in group.users})
-    assert set(member_names) == {'Alexa Troller', 'Kurt Huber', 'Max Müller'}
+    assert set(member_names) == {
+        'Alexa Troller (AT)', 'Kurt Huber (KH)', 'Max Müller (MM)'
+    }
 
     # test add_meeting
     page = client.get(f'/working_groups/{group.id}/add')
     page.form['name'] = 'Weekly Meeting'
     page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['attendees'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
 
     assert 'Weekly Meeting' in page
@@ -142,8 +152,10 @@ def test_view_delete_working_group_with_meetings(client):
     assert page.status_code == 200
 
     page.form['name'] = 'Test Group'
-    page.form['leader'].select(text='Alexa Troller')
-    page.form['users'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['leader'].select(text='Alexa Troller (AT)')
+    page.form['users'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
 
     assert page.status_code == 200
@@ -151,12 +163,14 @@ def test_view_delete_working_group_with_meetings(client):
 
     stmt = select(WorkingGroup).where(WorkingGroup.name == 'Test Group')
     group = client.db.execute(stmt).scalars().first()
-    assert group.leader.fullname == 'Alexa Troller'
+    assert group.leader.fullname == 'Alexa Troller (AT)'
 
     page = client.get(f'/working_groups/{group.id}/add')
     page.form['name'] = 'Weekly Meeting'
     page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['attendees'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
 
     assert 'Weekly Meeting' in page
@@ -191,12 +205,12 @@ def test_edit_working_group(client):
         first_name='Kurt',
         last_name='Huber',
     )
-    max = User(
+    maxm = User(
         email='max@example.org',
         first_name='Max',
         last_name='Müller',
     )
-    users = [kurt, max]
+    users = [kurt, maxm]
     for user in users:
         user.set_password('test')
         client.db.add(user)
@@ -208,13 +222,21 @@ def test_edit_working_group(client):
     # Create a new working group
     page = client.get('/working_groups/add')
     page.form['name'] = 'TestXY'
-    page.form['chairman'].select(text='Max Müller')
-    page.form['leader'].select(text='Max Müller')
-    page.form['users'].select_multiple(texts=['Kurt Huber', 'Max Müller'])
+    page.form['chairman'].select(text='Max Müller (MM)')
+    page.form['leader'].select(text='Max Müller (MM)')
+    page.form['users'].select_multiple(
+        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
+    )
     page = page.form.submit().follow()
     page = page.click('TestXY')
-    for name in ['Kurt Huber', 'Max Müller']:
+    for name in ['Kurt Huber (KH)', 'Max Müller (MM)']:
         assert name in page
+
+    group = session.execute(select(WorkingGroup)).unique().scalar_one()
+    assert group.name == 'TestXY'
+    assert group.chairman == maxm
+    assert group.leader == maxm
+    assert group.chairman == maxm
 
     # Get the id of the newly created working group
     group_id = session.execute(select(WorkingGroup.id)).scalar_one()
@@ -223,23 +245,26 @@ def test_edit_working_group(client):
     page = client.get(f'/working_groups/edit/{group_id}')
 
     page.form['name'] = 'Updated Working Group'
-    page.form['chairman'].select(text='Kurt Huber')
-    page.form['leader'].select(text='Kurt Huber')
-    page.form['users'].select_multiple(texts=['Max Müller'])
+    page.form['chairman'].select(text='Kurt Huber (KH)')
+    page.form['leader'].select(text='Kurt Huber (KH)')
+    page.form['users'].select_multiple(texts=['Max Müller (MM)'])
     page = page.form.submit().follow()
 
     assert page.status_code == 200
 
     # Verify the changes in the database
+    session.reset()
     stmt = select(WorkingGroup).where(WorkingGroup.id == group_id)
     updated_group = session.execute(stmt).unique().scalar_one()
+    updated_group = session.execute(select(WorkingGroup)).unique().scalar_one()
 
     assert updated_group.name == 'Updated Working Group'
-    assert updated_group.chairman.email == 'max@example.org'
-    assert updated_group.leader == kurt
-    assert updated_group.chairman == kurt
+    assert updated_group.chairman.email == 'kurt@example.org'
+    assert updated_group.leader.email == 'kurt@example.org'
+    assert updated_group.chairman.email == 'kurt@example.org'
 
     # Check if the changes are reflected on the page
     page = client.get(f'/working_groups/{group_id}/meetings/')
     assert 'Updated Working Group' in page
-    assert 'max@example.org' in page
+    assert 'Kurt Huber (KH)' in page
+    assert 'Max Müller (MM)' in page

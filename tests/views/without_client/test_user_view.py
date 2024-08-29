@@ -9,7 +9,8 @@ from privatim.views.people import (
 )
 
 
-def test_add_user_view(pg_config):
+def test_add_user_view(pg_config, mailer):
+    pg_config.add_route('password_change', '/password_change')
     pg_config.add_route('people', '/people')
     pg_config.add_route('add_user', '/people/add')
 
@@ -40,7 +41,8 @@ def test_add_user_view(pg_config):
     assert new_user.groups[0].name == 'Test Group'
 
 
-def test_add_user_duplicate_email(pg_config):
+def test_add_user_duplicate_email(pg_config, mailer):
+    pg_config.add_route('password_change', '/password_change')
     pg_config.add_route('people', '/people')
     db = pg_config.dbsession
 

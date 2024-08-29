@@ -139,12 +139,10 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             'Successfully added user ${first_name} ${last_name}.'
             'An email has been sent to the requested account with further '
             'information.',
-            mapping = (
-                {
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                },
-            )
+            mapping={
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            },
         )
 
         request.messages.add(message, 'success')

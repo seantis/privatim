@@ -49,7 +49,9 @@ class SMSDeliveryTrick(Trick):
         if self.delivery is None:
             return
 
-        if not self.in_smsdir(event.src_path):
+        src_path = str(event.src_path)
+
+        if not self.in_smsdir(src_path):
             return
 
-        self.delivery._send_message(event.src_path)
+        self.delivery._send_message(src_path)

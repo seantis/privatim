@@ -1,4 +1,4 @@
-import subprocess
+import subprocess  # nosec
 from typing import Optional
 
 _git_revision_hash: Optional[str] = None
@@ -9,7 +9,7 @@ def get_git_revision_hash() -> Optional[str]:
     if _git_revision_hash is None:
         try:
             _git_revision_hash = (
-                subprocess.check_output(
+                subprocess.check_output(  # nosec
                     ['/usr/bin/git', 'rev-parse', '--short', 'HEAD'],
                     shell=False,
                     stderr=subprocess.DEVNULL

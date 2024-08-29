@@ -131,9 +131,9 @@ def test_edit_meeting(client):
     page.form['description'] = 'description'
     page.form.submit().follow()
 
-    page = client.get(f'/meetings/{src_meeting.id}/copy_agenda_item')
-    # Copy to dest_meeting, which is the only option, so this works
-    page.form['copy_to'] = page.form['copy_to'].options[0][0]
+    page = client.get(f'/meetings/{dest_meeting.id}/copy_agenda_item')
+    # Copy from src_meeting, which is the only option, so this works
+    page.form['copy_from'] = page.form['copy_from'].options[0][0]
     page.form['copy_description'] = True
     page.form.submit().follow()
 
