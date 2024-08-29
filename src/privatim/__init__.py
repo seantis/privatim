@@ -85,7 +85,7 @@ def includeme(config: Configurator) -> None:
             return ''
         return request.route_url('download_file', id=user.picture.id)
 
-    # todo: this can be cached:
+    # todo: this can probably be cached:
     config.add_request_method(profile_pic, 'profile_pic', property=True)
 
     config.add_request_method(MessageQueue, 'messages', reify=True)

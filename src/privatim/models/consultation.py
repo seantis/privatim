@@ -89,6 +89,10 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
+
+    # fixme: Remove updated.
+    #  technically, we don't need this anymore, as we create a new instance of
+    # Consultation every time in edit view.
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
     # in theory this could be nullable=False, but let's avoid problems with

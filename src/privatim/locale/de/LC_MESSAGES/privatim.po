@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-29 15:52+0200\n"
+"POT-Creation-Date: 2024-08-29 21:48+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -483,6 +483,7 @@ msgid "Save"
 msgstr "Speichern"
 
 #: src/privatim/views/templates/consultations.pt
+#: src/privatim/views/templates/consultation.pt
 #: src/privatim/views/templates/activities.pt
 msgid "by"
 msgstr "von "
@@ -587,6 +588,10 @@ msgstr "Status"
 #: src/privatim/views/templates/consultation.pt
 msgid "Tags"
 msgstr "Tags"
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Changes"
+msgstr "Änderungen"
 
 #: src/privatim/views/templates/search_results.pt
 msgid "Search Results"

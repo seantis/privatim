@@ -1,24 +1,28 @@
 import base64
 import gzip
+from uuid import UUID
+
 import magic
 from io import BytesIO
 
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import select, text
+from sqlalchemy.orm import DeclarativeBase, joinedload
 
+from privatim.models import Consultation
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable
-
+from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
+    from privatim.orm import FilteredSession
     from privatim.models.comment import Comment
     from pyramid.interfaces import IRequest
     from typing import TypedDict
@@ -223,3 +227,42 @@ def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
             return True
 
     return False
+
+
+def get_previous_versions(
+    session: 'FilteredSession', consultation: Consultation, limit: int = 5
+) -> Sequence[Consultation]:
+    """Returns all previous versions of a consultation"""
+
+    query = text(
+        """
+    WITH RECURSIVE version_chain AS (
+        SELECT id, replaced_consultation_id, 0 as depth
+        FROM consultations
+        WHERE replaced_consultation_id = :start_id
+        UNION ALL
+        SELECT c.id, c.replaced_consultation_id, vc.depth + 1
+        FROM consultations c
+        JOIN version_chain vc ON c.replaced_consultation_id = vc.id
+    )
+    SELECT c.*, vc.depth
+    FROM consultations c
+    JOIN version_chain vc ON c.id = vc.id
+    ORDER BY vc.depth
+    """
+    )
+    result = session.execute(query, {'start_id': consultation.id})
+    versions = list(result.all())
+    version_ids = (
+        [x for x in versions[0] if isinstance(x, UUID)]
+        if versions[:limit]
+        else []
+    )
+    stmt = (
+        select(Consultation)
+        .where(Consultation.id.in_(version_ids))
+        .options(joinedload(Consultation.creator))
+    )
+    with session.no_consultation_filter():
+        previous_versions = session.execute(stmt).scalars().all()
+        return previous_versions

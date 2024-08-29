@@ -107,6 +107,22 @@
 
                 </div>
             </div>
+
+            <div class="card mb-4" tal:condition="previous_versions">
+                <div class="card-body claude-element">
+                    <h5 class="card-title" i18n:translate="">Changes</h5>
+                    <ul class="previous-versions">
+                        <li tal:repeat="version previous_versions">
+                            <span>${layout.format_date(version.created, 'date')} ${layout.format_date(version.created, 'time')}</span>
+                            <span i18n:translate="">by</span>
+                            <span>${version.creator.fullname}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+
         </div>
         <!-- Sidebar End-->
 
