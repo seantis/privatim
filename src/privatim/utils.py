@@ -1,7 +1,5 @@
 import base64
 import gzip
-from uuid import UUID
-
 import magic
 from io import BytesIO
 
@@ -19,6 +17,7 @@ from privatim.layouts.layout import DEFAULT_TIMEZONE
 from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from privatim.models.user import User
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
@@ -229,13 +228,20 @@ def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
     return False
 
 
-def get_previous_versions(session, consultation, limit=5):
+def get_previous_versions(
+    session: 'FilteredSession', consultation: Consultation, limit: int = 5
+) -> Sequence[Consultation]:
     """
     Returns the previous versions of a consultation.
 
-    Traverse the consultation history and return the previous versions.
-    An unfortunate addition of complexity seems to be necessary, because the
-     """
+    This function is more complex than it should be, unfortunately. It seems
+    necessary, though. Take a quick glance at the unused function
+    simple_get_previous_versions (found below); it looks reasonable.
+
+    However, it doesn't work in some cases.
+    Consultation.previous_version would return None — it really wasn't.
+    Thus, we need to resort to low-level stuff.
+    """
 
     with session.no_consultation_filter():
         query = text(
@@ -259,12 +265,64 @@ def get_previous_versions(session, consultation, limit=5):
             .scalars()
             .all()
         )
-        return (
-            session.execute(
-                select(Consultation)
-                .where(Consultation.id.in_(version_ids))
-                .options(joinedload(Consultation.creator))
+        try:
+            return (
+                session.execute(
+                    select(Consultation)
+                    .where(Consultation.id.in_(version_ids))
+                    .options(joinedload(Consultation.creator))
+                )
+                .scalars()
+                .all()
             )
-            .scalars()
-            .all()
+        except Exception:
+            return []
+
+
+class ConsultationVersion:
+    def __init__(self, created: 'datetime', editor: 'User | None', title: str):
+        self.created = created
+        self.editor = editor
+        self.title = title
+
+    def __repr__(self) -> str:
+        editor_repr = (
+            f"User(id='{self.editor.id}', email='{self.editor.email}')"
+            if self.editor
+            else None
         )
+        return (
+            f"ConsultationVersion(created={self.created}, "
+            f"editor={editor_repr}, title='{self.title}')"
+        )
+
+
+def simple_get_previous_versions(
+    session: 'FilteredSession',
+    latest_consultation_id: str,
+    limit: int | None = 5,
+) -> list[ConsultationVersion]:
+    """Not used currently."""
+    with session.no_consultation_filter():
+        # Fetch the latest version of the consultation
+        latest_consultation = session.get(Consultation, latest_consultation_id)
+
+        if not latest_consultation:
+            return []
+
+        versions = []
+        current_version = (
+            latest_consultation.previous_version
+        )  # Skip the latest version
+        count = 0
+        while current_version and (limit is None or count < limit):
+            versions.append(
+                ConsultationVersion(
+                    created=current_version.created,
+                    editor=current_version.editor,
+                    title=current_version.title,
+                )
+            )
+            current_version = current_version.previous_version
+            count += 1
+        return versions
