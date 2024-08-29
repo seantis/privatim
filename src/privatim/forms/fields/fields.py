@@ -496,7 +496,12 @@ class UploadFileWithORMSupport(UploadField):
         assert self.file is not None
         self.file.seek(0)
         assert self.filename is not None
-        return SearchableFile(filename=self.filename, content=self.file.read())
+
+        return SearchableFile(
+            filename=self.filename,
+            content=self.file.read(),
+            content_type=self.data['mimetype'] if self.data else None,
+        )
 
     def populate_obj(self, obj: object, name: str) -> None:
 
@@ -528,7 +533,7 @@ class UploadFileWithORMSupport(UploadField):
             self.data = {
                 'filename': value.filename,
                 'size': size,
-                'mimetype': value.content_type
+                'mimetype': value.file.content_type
             }
         else:
             super().process_data(value)

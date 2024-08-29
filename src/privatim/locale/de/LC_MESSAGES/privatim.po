@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-28 10:51+0200\n"
+"POT-Creation-Date: 2024-08-29 15:52+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -75,7 +75,7 @@ msgstr "Löschen"
 msgid "Comments"
 msgstr "Kommentare"
 
-#: src/privatim/layouts/macros.pt
+#: src/privatim/layouts/macros.pt src/privatim/views/consultations.py
 #: src/privatim/views/templates/search_results.pt
 msgid "Deleted User"
 msgstr "Gelöschter Benutzer"
@@ -391,7 +391,7 @@ msgid ""
 "Password must have minimal length of 8 characters, contain one upper case "
 "letter, one lower case letter, one digit and one special character."
 msgstr ""
-"Das Passwort muss mindestens 8 Zeichen lang sein und einen Großbuchstaben, "
+"Das Passwort muss mindestens 8 Zeichen lang sein und einen Grossbuchstaben, "
 "einen Kleinbuchstaben, eine Ziffer und ein Sonderzeichen enthalten."
 
 #: src/privatim/views/comment.py
@@ -483,8 +483,9 @@ msgid "Save"
 msgstr "Speichern"
 
 #: src/privatim/views/templates/consultations.pt
-msgid "Unknown Creator"
-msgstr "Unbekannter Ersteller"
+#: src/privatim/views/templates/activities.pt
+msgid "by"
+msgstr "von "
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Back to Meetings"
@@ -623,10 +624,6 @@ msgstr "Sitzung geplant"
 #: src/privatim/views/templates/activities.pt
 msgid "Comment Added"
 msgstr "Kommentar hinzugefügt"
-
-#: src/privatim/views/templates/activities.pt
-msgid "by"
-msgstr "von "
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/forms/agenda_item_form.py
@@ -1028,3 +1025,10 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#, python-format
+#~ msgid "Successfully deleted user: ${full_name}."
+#~ msgstr "Benutzer ${full_name} erfolgreich gelöscht."
+
+#~ msgid "Unknown Creator"
+#~ msgstr "Unbekannter Ersteller"

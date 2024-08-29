@@ -1,6 +1,8 @@
 import uuid
 from io import BytesIO
+import logging
 
+import magic
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy_file import File
 from sqlalchemy.orm import (
@@ -11,6 +13,7 @@ from sqlalchemy.orm import (
     declared_attr,
 )
 
+from privatim.forms.validators import word_mimetypes, DEFAULT_DOCX_MIME
 from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.models.utils import extract_pdf_info, word_count, get_docx_text
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
@@ -18,7 +21,10 @@ from privatim.orm.abstract import AbstractFile
 from sqlalchemy import Text, Integer, ForeignKey, Computed, Index
 
 
-from typing import TYPE_CHECKING
+logger = logging.getLogger('privatim.models.file')
+
+
+from typing import TYPE_CHECKING  # noqa:E402
 if TYPE_CHECKING:
     from privatim.models import Consultation
 
@@ -71,6 +77,13 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         nullable=True
     )
 
+    @property
+    def content_type(self) -> str:
+        if self.file:
+            return self.file.content_type
+        else:
+            return ''
+
     @declared_attr  # type:ignore[arg-type]
     def __table_args__(cls) -> tuple[Index, ...]:
         return (
@@ -92,25 +105,31 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         self.id = str(uuid.uuid4())
         self.filename = filename
 
+        content_type = self.maybe_handle_octet_stream(
+            content, content_type, filename
+        )
+
         if content_type is None:
-            content_type = self.get_content_type(filename)
+            content_type = self.get_content_type(content)
 
         if content_type == 'application/pdf':
             pages, extract = extract_pdf_info(BytesIO(content))
             self.extract = (extract or '').strip()
             self.pages_count = pages
             self.word_count = word_count(extract)
-        elif content_type.startswith(
-            'application/vnd.openxmlformats-officedocument.wordprocessingml'
-        ):
-            docx_text = get_docx_text(BytesIO(content))
-            self.extract = (docx_text or '').strip()
+        elif content_type in word_mimetypes:
+            self.extract = (get_docx_text(BytesIO(content)) or '').strip()
         elif content_type == 'text/plain':
             self.extract = content.decode('utf-8').strip()
             self.pages_count = None  # Not applicable for text files
             self.word_count = word_count(content.decode('utf-8'))
+        elif content_type == 'application/octet-stream':
+            self.extract = content.decode('utf-8').strip()
+            self.pages_count = None  # Not applicable for text files
+            self.word_count = word_count(content.decode('utf-8'))
         else:
-            raise ValueError(f'Unsupported file type: {self.content_type}')
+            logger.info(f'Unsupported file type: {content_type}')
+            raise ValueError(f'Unsupported file type: {content_type}')
 
         self.file = File(
             content=content,
@@ -118,18 +137,45 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
             content_type=content_type,
         )
 
+    def maybe_handle_octet_stream(
+            self,
+            content: bytes,
+            content_type: str | None,
+            filename: str
+    ) -> str | None:
+        """ Tries to determine the actual file if the content type is
+        advertised by the request is 'application/octet-stream'. """
+        if content_type is None:
+            return None
+
+        if content_type and content_type == 'application/octet-stream':
+            logger.info(
+                f'Got octet-stream from form file upload.'
+                f'Filename' f'={filename}'
+            )
+            #  Saw this happen with a docx if uploading in field 'additional
+            #  file'
+            content_type = self.get_content_type(content)
+
+            # Fallback to filename guess:
+            if content_type == 'application/octet-stream':
+                extension = filename.lower().split('.')[-1]
+                if extension == 'pdf':
+                    content_type = 'application/pdf'
+                elif extension in ['docx', 'doc', 'docm']:
+                    content_type = DEFAULT_DOCX_MIME
+                elif extension == 'txt':
+                    content_type = 'text/plain'
+                else:
+                    raise ValueError(f'Unsupported file type: {extension}')
+        return content_type
+
     @staticmethod
-    def get_content_type(filename: str) -> str:
+    def get_content_type(content: bytes) -> str:
         """
-        Determine the content type based on the file extension.
+        Determine the content type of a file using libmagic.
         """
-        extension = filename.lower().split('.')[-1]
-        if extension == 'pdf':
-            return 'application/pdf'
-        elif extension in ['docx', 'doc', 'docm']:
-            return ('application/vnd.openxmlformats-officedocument'
-                    '.multiprocessing.document')
-        elif extension == 'txt':
-            return 'text/plain'
-        else:
-            raise ValueError(f'Unsupported file type: {extension}')
+
+        mime = magic.Magic(mime=True)
+        file_type = mime.from_buffer(content)
+        return file_type

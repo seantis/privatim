@@ -29,10 +29,6 @@ class AbstractFile(Base):
     def content(self) -> bytes:
         return self.file.file.read()
 
-    @property
-    def content_type(self) -> str:
-        return self.file.content_type
-
     def __acl__(self) -> list['ACL']:
         return [
             (Allow, Authenticated, ['view']),

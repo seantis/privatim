@@ -30,6 +30,15 @@ password_regex = re.compile(
     r'^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[\W]).*$'
 )
 
+DEFAULT_DOCX_MIME = ('application/vnd.openxmlformats-officedocument'
+                     '.wordprocessingml.document')
+word_mimetypes = {
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+    'application/vnd.ms-word.document.macroEnabled.12',
+    'application/vnd.ms-word.template.macroEnabled.12',
+}
+
 
 class FileSizeLimit:
     """ Makes sure an uploaded file is not bigger than the given number of

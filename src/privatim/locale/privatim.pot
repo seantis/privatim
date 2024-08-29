@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-28 10:51+0200\n"
+"POT-Creation-Date: 2024-08-29 15:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: ./src/privatim/layouts/macros.pt
+#: ./src/privatim/layouts/macros.pt ./src/privatim/views/consultations.py
 #: ./src/privatim/views/templates/search_results.pt
 msgid "Deleted User"
 msgstr ""
@@ -471,7 +471,8 @@ msgid "Save"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultations.pt
-msgid "Unknown Creator"
+#: ./src/privatim/views/templates/activities.pt
+msgid "by"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
@@ -610,10 +611,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
 msgid "Comment Added"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "by"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt

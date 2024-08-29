@@ -96,9 +96,8 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             'creator_pic_id': _cons.creator.picture.id if _cons.creator else
             None,
             'title': Markup(_cons.title),
-            'creator': _cons.creator,
-            'has_creator': _cons.creator is not None,
-            'fullname': _cons.creator.fullname if _cons.creator else None,
+            'display_name':  _cons.creator.fullname if _cons.creator
+            else _('Deleted User'),
             'description': Markup(_cons.description),
             'created': _cons.created
         } for _cons in session.scalars(stmt).unique().all()

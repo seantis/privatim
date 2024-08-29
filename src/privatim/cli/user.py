@@ -35,7 +35,6 @@ def add_user(
             click.echo("First name and last name are required.")
             return
 
-
         user = User(email=email, first_name=first_name, last_name=last_name)
         user.generate_profile_picture(dbsession)
         user.set_password(password)

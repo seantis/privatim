@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-28 10:51+0200\n"
+"POT-Creation-Date: 2024-08-29 15:52+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -72,7 +72,7 @@ msgstr "Supprimer"
 msgid "Comments"
 msgstr "Commentaires"
 
-#: src/privatim/layouts/macros.pt
+#: src/privatim/layouts/macros.pt src/privatim/views/consultations.py
 #: src/privatim/views/templates/search_results.pt
 msgid "Deleted User"
 msgstr "Utilisateur supprimé"
@@ -294,8 +294,9 @@ msgstr "Liste des personnes"
 msgid ""
 "Successfully added user ${first_name} ${last_name}.An email has been sent to "
 "the requested account with further information."
-msgstr "L'utilisateur ${first_name} ${last_name} a été ajouté avec succès. "
-"Un e-mail a été envoyé au compte demandé avec des informations complémentaires. "
+msgstr ""
+"L'utilisateur ${first_name} ${last_name} a été ajouté avec succès. Un e-mail "
+"a été envoyé au compte demandé avec des informations complémentaires. "
 
 #: src/privatim/views/people.py src/privatim/views/templates/people.pt
 msgid "Add User"
@@ -481,8 +482,9 @@ msgid "Save"
 msgstr "Sauver"
 
 #: src/privatim/views/templates/consultations.pt
-msgid "Unknown Creator"
-msgstr "Créateur inconnu"
+#: src/privatim/views/templates/activities.pt
+msgid "by"
+msgstr "de "
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Back to Meetings"
@@ -620,10 +622,6 @@ msgstr "Réunion prévue"
 #: src/privatim/views/templates/activities.pt
 msgid "Comment Added"
 msgstr "Commentaire ajouté"
-
-#: src/privatim/views/templates/activities.pt
-msgid "by"
-msgstr "de "
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/forms/agenda_item_form.py
@@ -1023,3 +1021,10 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#, python-format
+#~ msgid "Successfully deleted user: ${full_name}."
+#~ msgstr "Utilisateur supprimé avec succès: ${full_name}."
+
+#~ msgid "Unknown Creator"
+#~ msgstr "Créateur inconnu"

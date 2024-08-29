@@ -11,10 +11,11 @@ from privatim.i18n import _, translate
 from privatim.security_policy import PasswordException
 from privatim.utils import strip_p_tags, maybe_escape
 from privatim.models import User, WorkingGroup
-from privatim.views.password_retrieval import mail_retrieval
-
 
 from typing import TYPE_CHECKING
+
+from privatim.views.password_retrieval import mail_retrieval
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData, RenderDataOrRedirect

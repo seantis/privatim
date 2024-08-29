@@ -73,7 +73,8 @@ def mail_retrieval(email: str, request: 'IRequest') -> None:
             'action_url': request.route_url(
                 'password_change',
                 _query={'token': token_obj.token}
-            )
+            ),
+            'product_name': 'privatim',
         },
         tag='password-reset',
     )
