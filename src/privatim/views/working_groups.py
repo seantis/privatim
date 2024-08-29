@@ -51,6 +51,12 @@ def working_groups_view(request: 'IRequest') -> 'RenderData':
     }
 
 
+def get_user(session: 'Session', user_id: str) -> User | None:
+    if user_id and user_id != '0':
+        return session.get(User, user_id)
+    return None
+
+
 def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
     form = WorkingGroupForm(None, request)
     target_url = request.route_url('working_groups')
@@ -58,23 +64,20 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.users.raw_data or ()))
         users = list(session.execute(stmt).scalars().all())
-        leader_id = form.leader.data
-        leader_id = None if leader_id == '0' else leader_id
-        leader = None
+        leader = get_user(session, form.leader.data)
 
         # Leader is also part of members even if not explicitly set
-        if leader_id is not None and leader_id != '0':
-            leader = session.get(User, leader_id)
         if leader is not None and leader not in users:
             users.append(leader)
+
+        chairman = get_user(session, form.chairman.data)
 
         group = WorkingGroup(
             name=maybe_escape(form.name.data),
             leader=leader,
+            chairman=chairman,
             users=users,
         )
-        if form.chairman.data:
-            group.chairman_id = form.chairman.data
 
         session.add(group)
         message = _(
@@ -105,15 +108,10 @@ def edit_working_group(
     form = WorkingGroupForm(group, request)
     session = request.dbsession
 
-    def update_user_role(session: 'Session', user_id: str) -> User | None:
-        if user_id and user_id != '0':
-            return session.get(User, user_id)
-        return None
-
     if request.method == 'POST' and form.validate():
         group.name = maybe_escape(form.name.data)
-        group.leader = update_user_role(session, form.leader.data)
-        group.chairman = update_user_role(session, form.chairman.data)
+        group.leader = get_user(session, form.leader.data)
+        group.chairman = get_user(session, form.chairman.data)
 
         # Update members
         stmt = select(User).where(User.id.in_(form.users.raw_data or ()))
@@ -122,9 +120,8 @@ def edit_working_group(
             users.append(group.leader)
         if group.chairman is not None and group.chairman not in users:
             users.append(group.chairman)
+        group.users = users
 
-        session.add(group)
-        session.flush()
         message = _(
             'Successfully updated working group "${name}"',
             mapping={'name': form.name.data},
