@@ -110,7 +110,7 @@ def create_meeting_with_agenda_items(
 
 
 def create_consultation(
-        session, documents=None, tags=None, user=None, previous_version=None
+        documents=None, tags=None, user=None, previous_version=None
 ):
     documents = documents or [
         SearchableFile(
@@ -135,8 +135,6 @@ def create_consultation(
         creator=user,
         previous_version=previous_version,
     )
-    session.add(consultation)
-    session.flush()
     return consultation
 
 
