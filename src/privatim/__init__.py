@@ -26,8 +26,6 @@ from privatim.security import authenticated_user
 from privatim.security_policy import SessionSecurityPolicy
 from privatim.sms.sms_gateway import ASPSMSGateway
 
-__version__ = '0.0.0'
-
 
 from typing import Any, TYPE_CHECKING, Iterable
 
