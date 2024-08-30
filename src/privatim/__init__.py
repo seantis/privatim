@@ -30,6 +30,9 @@ __version__ = '0.0.0'
 
 
 from typing import Any, TYPE_CHECKING, Iterable
+
+from subscribers import register_subscribers
+
 if TYPE_CHECKING:
     from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
@@ -68,6 +71,8 @@ def includeme(config: Configurator) -> None:
     # wtforms 3.0 ships with its own translations
     config.add_translation_dirs('wtforms:locale')
 
+    register_subscribers(config)
+
     session_factory = session_factory_from_settings(settings)
     config.set_session_factory(session_factory)
 
@@ -85,7 +90,7 @@ def includeme(config: Configurator) -> None:
             return ''
         return request.route_url('download_file', id=user.picture.id)
 
-    # todo: this can be cached:
+    # todo: this can probably be cached:
     config.add_request_method(profile_pic, 'profile_pic', property=True)
 
     config.add_request_method(MessageQueue, 'messages', reify=True)
@@ -351,7 +356,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     )
 
     # Now, alter the columns to be NOT NULL
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'first_name',
         existing_type=VARCHAR(length=256),
@@ -359,7 +364,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         server_default='',
     )
 
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'last_name',
         existing_type=VARCHAR(length=256),
@@ -450,12 +455,12 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         ),
     )
 
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'tags',
         new_column_name='abbrev'
     )
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'modified',
         new_column_name='updated'

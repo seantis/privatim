@@ -15,7 +15,7 @@ from privatim.models import get_session_factory
 from privatim.orm import Base
 
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Literal, Union
 
 if TYPE_CHECKING:
     from sqlalchemy import Column as _Column
@@ -70,16 +70,41 @@ class UpgradeContext:
         return False
 
     def alter_column(
-        self, table_name: str, column: str, new_column_name: str
+        self,
+        table_name: str,
+        column_name: str,
+        *,
+        nullable: Optional[bool] = None,
+        comment: Union[str, Literal[False], None] = False,
+        server_default: Any = False,
+        new_column_name: Optional[str] = None,
+        **kw: Any,
     ) -> bool:
-        if self.has_table(table_name):
-            if (not self.has_column(table_name, new_column_name) and
-                    self.has_column(table_name, column)):
-                self.operations.alter_column(
-                    table_name, column, new_column_name=new_column_name
-                )
-                return True
-        return False
+        if not self.has_table(table_name):
+            return False
+
+        column_exists = self.has_column(table_name, column_name)
+        new_column_exists = new_column_name and self.has_column(
+            table_name, new_column_name
+        )
+
+        if not column_exists and not new_column_exists:
+            return False
+
+        if new_column_name and new_column_exists:
+            return False
+
+        # Proceed with alteration
+        self.operations.alter_column(
+            table_name,
+            column_name,
+            nullable=nullable,
+            comment=comment,
+            server_default=server_default,
+            new_column_name=new_column_name,
+            **kw,
+        )
+        return True
 
     def drop_column(self, table: str, name: str) -> bool:
         if self.has_table(table):

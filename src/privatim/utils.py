@@ -6,19 +6,22 @@ from io import BytesIO
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import select, text
+from sqlalchemy.orm import DeclarativeBase, joinedload
 
+from privatim.models import Consultation
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable
-
+from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
 if TYPE_CHECKING:
     from collections.abc import Mapping
+    from privatim.models.user import User
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
+    from privatim.orm import FilteredSession
     from privatim.models.comment import Comment
     from pyramid.interfaces import IRequest
     from typing import TypedDict
@@ -223,3 +226,103 @@ def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
             return True
 
     return False
+
+
+def get_previous_versions(
+    session: 'FilteredSession', consultation: Consultation, limit: int = 5
+) -> Sequence[Consultation]:
+    """
+    Returns the previous versions of a consultation.
+
+    This function is more complex than it should be, unfortunately. It seems
+    necessary, though. Take a quick glance at the unused function
+    simple_get_previous_versions (found below); it looks reasonable.
+
+    However, it doesn't work in some cases.
+    Consultation.previous_version would return None — it really wasn't.
+    Thus, we need to resort to low-level stuff.
+    """
+
+    with session.no_consultation_filter():
+        query = text(
+            """
+        WITH RECURSIVE versions AS (
+            SELECT id, replaced_consultation_id
+            FROM consultations
+            WHERE id = :id
+            UNION ALL
+            SELECT c.id, c.replaced_consultation_id
+            FROM consultations c
+            JOIN versions v ON c.replaced_consultation_id = v.id
+        )
+        SELECT id FROM versions
+        WHERE id != :id AND replaced_consultation_id IS NOT NULL
+        LIMIT :limit
+        """
+        )
+        version_ids = (
+            session.execute(query, {'id': consultation.id, 'limit': limit})
+            .scalars()
+            .all()
+        )
+        try:
+            return (
+                session.execute(
+                    select(Consultation)
+                    .where(Consultation.id.in_(version_ids))
+                    .options(joinedload(Consultation.creator))
+                )
+                .scalars()
+                .all()
+            )
+        except Exception:
+            return []
+
+
+class ConsultationVersion:
+    def __init__(self, created: 'datetime', editor: 'User | None', title: str):
+        self.created = created
+        self.editor = editor
+        self.title = title
+
+    def __repr__(self) -> str:
+        editor_repr = (
+            f"User(id='{self.editor.id}', email='{self.editor.email}')"
+            if self.editor
+            else None
+        )
+        return (
+            f"ConsultationVersion(created={self.created}, "
+            f"editor={editor_repr}, title='{self.title}')"
+        )
+
+
+def simple_get_previous_versions(
+    session: 'FilteredSession',
+    latest_consultation_id: str,
+    limit: int | None = 5,
+) -> list[ConsultationVersion]:
+    """Not used currently."""
+    with session.no_consultation_filter():
+        # Fetch the latest version of the consultation
+        latest_consultation = session.get(Consultation, latest_consultation_id)
+
+        if not latest_consultation:
+            return []
+
+        versions = []
+        current_version = (
+            latest_consultation.previous_version
+        )  # Skip the latest version
+        count = 0
+        while current_version and (limit is None or count < limit):
+            versions.append(
+                ConsultationVersion(
+                    created=current_version.created,
+                    editor=current_version.editor,
+                    title=current_version.title,
+                )
+            )
+            current_version = current_version.previous_version
+            count += 1
+        return versions

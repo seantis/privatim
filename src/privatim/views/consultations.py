@@ -1,30 +1,35 @@
 import os
-import logging
 from markupsafe import Markup
 from sqlalchemy import select
-
 from privatim.controls.controls import Button
 from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
-from privatim.i18n import _, translate
+from privatim.i18n import _
+from privatim.i18n import translate
 from pyramid.httpexceptions import HTTPFound
-
+import logging
 from privatim.models.file import SearchableFile
-from privatim.utils import dictionary_to_binary, flatten_comments
+from privatim.utils import (
+    dictionary_to_binary,
+    flatten_comments,
+    get_previous_versions,
+)
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
 
-log = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)
 
 
 def consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
-
+    session = request.dbsession
     request.add_action_menu_entries([
         Button(
             title=_('Edit'),
@@ -44,6 +49,7 @@ def consultation_view(
         ),
     ])
     top_level_comments = (c for c in context.comments if c.parent_id is None)
+    previous_versions = get_previous_versions(session, context)
     return {
         'delete_title': _('Delete Consultation'),
         'title': context.title,
@@ -52,7 +58,15 @@ def consultation_view(
         'recommendation': Markup(context.recommendation),
         'evaluation_result': Markup(context.evaluation_result),
         'decision': Markup(context.decision),
-
+        'previous_versions': [
+            {
+                'created': version.created,
+                'editor_name': version.editor.fullname
+                if version.editor
+                else None
+            }
+            for version in previous_versions
+        ],
         'documents': [
             {
                 'display_filename': trim_filename(doc.filename),
@@ -64,10 +78,11 @@ def consultation_view(
         'status_name': translate(_(context.status)),
         'consultation_comment_form': CommentForm(context, request),
         'nested_comment_form': NestedCommentForm(context, request),
-        'flattened_comments_tree': flatten_comments(top_level_comments,
-                                                    request),
+        'flattened_comments_tree': flatten_comments(
+            top_level_comments, request
+        ),
         'secondary_tags': context.secondary_tags,
-        'navigate_back_up': request.route_url('consultations')
+        'navigate_back_up': request.route_url('consultations'),
     }
 
 

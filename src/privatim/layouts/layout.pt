@@ -8,23 +8,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Austauschplattform privatim</title>
-<!--?
 
-XXX Patch TipTap
-This fixes the error "Error: Looks like multiple versions of prosemirror-model were loaded"
-
-From this comment:
-https://github.com/ueberdosis/tiptap/issues/577#issuecomment-2129331646
-
-
--->
-    <script type="importmap">
-        {
-          "imports": {
-            "https://esm.sh/v135/prosemirror-model@1.20.0/es2022/prosemirror-model.mjs": "https://esm.sh/v135/prosemirror-model@1.19.3/es2022/prosemirror-model.mjs"
-          }
-        }
-    </script>
 </head>
 
 <body class="d-flex flex-column h-100">

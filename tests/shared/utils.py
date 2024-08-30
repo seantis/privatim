@@ -109,8 +109,9 @@ def create_meeting_with_agenda_items(
     return meeting
 
 
-def create_consultation(documents=None, tags=None, user=None):
-
+def create_consultation(
+        documents=None, tags=None, user=None, previous_version=None
+):
     documents = documents or [
         SearchableFile(
             filename='document1.txt',
@@ -121,16 +122,20 @@ def create_consultation(documents=None, tags=None, user=None):
             content=b'Content of Document 2',
         ),
     ]
-    user = user or User(email='testuser@example.org')
-    return Consultation(
+
+    if user is None:
+        user = User(email='testuser@example.org')
+
+    consultation = Consultation(
         title='Test Consultation',
         description='This is a test consultation',
         recommendation='Some recommendation',
-        status='Created',
         files=documents,
-        secondary_tags=['SZ', 'AG'],
-        creator=user
+        secondary_tags=tags or ['SZ, AG'],
+        creator=user,
+        previous_version=previous_version,
     )
+    return consultation
 
 
 class CustomDummyRequest(DummyRequest):

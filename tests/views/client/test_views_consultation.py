@@ -1,10 +1,11 @@
 from sqlalchemy.orm import selectinload, undefer
-
 from privatim.models import User, SearchableFile
 from privatim.models.comment import Comment
 from privatim.models.consultation import Consultation
 from sqlalchemy import select, exists, func
 from webtest.forms import Upload
+
+from privatim.utils import get_previous_versions
 
 
 def test_view_consultation(client):
@@ -427,3 +428,54 @@ def test_consultation_delete(client, pdf_vemz):
 
     session.refresh(consultation)
     assert not consultation.deleted
+
+
+def test_display_previous_versions(client):
+    # Create a user that will be reused
+    session = client.db
+    client.login_admin()
+    user = User(email='testuser@example.org')
+    session.add(user)
+    session.flush()
+
+    # create 3 consultation
+    num_versions = 3
+    page = client.get('/consultations')
+    page = page.click('Vernehmlassung Erfassen')
+    page.form['title'] = 'My Cons 0'
+    page = page.form.submit().follow()
+
+    for i in range(num_versions - 1):
+        page = page.click('Bearbeiten')
+        page.form['title'] = f'My Cons {i+1}'
+        page = page.form.submit().follow()
+
+    # Assert they were created
+    with session.no_consultation_filter():
+        consultations = (
+            session.execute(
+                (select(Consultation).order_by(Consultation.created.asc()))
+            )
+            .scalars()
+            .all()
+        )
+    titles = [c.title for c in consultations]
+    assert ['My Cons 0', 'My Cons 1', 'My Cons 2'] == titles
+    assert len(consultations) == 3
+
+    # Test get_previous_version separately
+    latest = [c for c in consultations if c.is_latest_version][0]
+    # Get the previous versions of latest
+    previous_versions = get_previous_versions(session, latest)
+    assert len(previous_versions) == num_versions - 1
+    for i in range(len(previous_versions) - 1):
+        assert previous_versions[i].created >= previous_versions[i + 1].created
+
+    # test the view
+    page = client.get(f'/consultation/{latest.id}')
+    page.pyquery('.previous-versions')
+
+    # check author is set in previous versions
+    assert 'John Doe' in ''.join(
+        e.text_content().strip() for e in page.pyquery('ul.previous-versions')
+    )
