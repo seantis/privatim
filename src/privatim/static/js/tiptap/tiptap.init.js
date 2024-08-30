@@ -1,16 +1,5 @@
 const editors = [];
 
-//
-// const CustomLink = window.Link.configure({
-//     openOnClick: true,
-//     linkOnPaste: true,
-//     autolink: true,
-//     HTMLAttributes: {
-//         target: '_blank',
-//         rel: 'noopener noreferrer nofollow',
-//         class: null
-//     },
-// });
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -24,7 +13,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const { Editor, StarterKit, BubbleMenu, Link } = window.tiptap;
 
+    const CustomLink = Link.configure({
+        openOnClick: true,
+        linkOnPaste: true,
+        autolink: true,
+        HTMLAttributes: {
+            target: '_blank',
+            rel: 'noopener noreferrer nofollow',
+            class: null
+        },
+    });
 
+    // Hide all bubble menus initially
+    document.querySelectorAll('.bubble-menu').forEach(menu => {
+        menu.style.display = 'none';
+    });
     document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         console.log('setting up an editor');
 
