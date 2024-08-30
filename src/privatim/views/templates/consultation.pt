@@ -108,7 +108,7 @@
                 </div>
             </div>
 
-            <div class="card mb-4" tal:condition="previous_versions">
+            <div class="card mb-4 mt-4" tal:condition="previous_versions">
                 <div class="card-body claude-element">
                     <h5 class="card-title cons-sidebar-title" i18n:translate="">Changes</h5>
                     <ul class="previous-versions">
