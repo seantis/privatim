@@ -5,7 +5,6 @@ from io import BytesIO
 
 from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
-from markupsafe import escape
 from sqlalchemy.orm import DeclarativeBase
 
 from privatim.models.profile_pic import get_or_create_default_profile_pic
@@ -184,12 +183,6 @@ def flatten_comments(
         }
 
     return [process_comment(comment) for comment in top_level_comments]
-
-
-def maybe_escape(value: str | None) -> str:
-    if value is None:
-        return ''
-    return escape(value)
 
 
 def strip_p_tags(text: str) -> str:

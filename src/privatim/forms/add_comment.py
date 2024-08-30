@@ -1,7 +1,8 @@
-from wtforms import validators
-from wtforms import TextAreaField, SubmitField
 from privatim.forms.core import Form
+from privatim.forms.fields.fields import ConstantTextAreaField
 from privatim.i18n import _
+from wtforms import SubmitField
+from wtforms import validators
 
 
 from typing import TYPE_CHECKING
@@ -11,10 +12,11 @@ if TYPE_CHECKING:
 
 
 class CommentForm(Form):
+
     def __init__(
-            self,
-            context: 'Incomplete',
-            request: 'IRequest',
+        self,
+        context: 'Incomplete',
+        request: 'IRequest',
     ) -> None:
         self._title = _('Add Comment')
         super().__init__(
@@ -23,7 +25,7 @@ class CommentForm(Form):
             meta={'context': context, 'request': request},
         )
 
-    content = TextAreaField(
+    content = ConstantTextAreaField(
         _('Comment'),
         validators=[validators.InputRequired()],
         render_kw={
@@ -37,10 +39,11 @@ class CommentForm(Form):
 
 
 class NestedCommentForm(Form):
+
     def __init__(
-            self,
-            context: 'Incomplete',
-            request: 'IRequest',
+        self,
+        context: 'Incomplete',
+        request: 'IRequest',
     ) -> None:
         self._title = _('Answer')
         super().__init__(
@@ -49,7 +52,7 @@ class NestedCommentForm(Form):
             meta={'context': context, 'request': request},
         )
 
-    content = TextAreaField(
+    content = ConstantTextAreaField(
         _('Comment'),
         validators=[validators.InputRequired()],
         render_kw={

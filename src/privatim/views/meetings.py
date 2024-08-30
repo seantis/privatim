@@ -9,7 +9,7 @@ from privatim.reporting.report import (
     ReportOptions,
     HTMLReportRenderer,
 )
-from privatim.utils import datetime_format, strip_p_tags
+from privatim.utils import datetime_format
 from privatim.controls.controls import Button
 from pyramid.httpexceptions import (
     HTTPFound,
@@ -17,7 +17,6 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPMethodNotAllowed,
 )
-from privatim.utils import maybe_escape
 from sqlalchemy import select
 
 from privatim.utils import fix_utc_to_local_time
@@ -59,8 +58,7 @@ def meeting_view(
         agenda_items.append(
             {
                 'title': Markup(
-                    '<strong>{}.</strong> {}'.format(indx, Markup(
-                        strip_p_tags(item.title)))
+                    '<strong>{}.</strong> {}'.format(indx, item.title)
                 ),
                 'description': Markup(item.description),
                 'id': item.id,
@@ -320,10 +318,11 @@ def add_meeting_view(
     if request.method == 'POST' and form.validate():
         stmt = select(User).where(User.id.in_(form.attendees.raw_data or ()))
         attendees = list(session.execute(stmt).scalars().all())
-        assert form.time.data is not None
+        assert form.name.data
+        assert form.time.data
         time = fix_utc_to_local_time(form.time.data)
         meeting = Meeting(
-            name=maybe_escape(form.name.data),
+            name=form.name.data,
             time=time,
             attendees=attendees,
             working_group=context,
@@ -366,7 +365,7 @@ def edit_meeting_view(
     if request.method == 'POST' and form.validate():
         form.populate_obj(meeting)
         assert form.time.data is not None
-        meeting.name = maybe_escape(meeting.name)
+        meeting.name = meeting.name
 
         meeting.time = fix_utc_to_local_time(form.time.data)
 

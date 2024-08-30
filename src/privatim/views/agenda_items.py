@@ -1,7 +1,6 @@
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import select
 
-from privatim.utils import maybe_escape
 from privatim.forms.agenda_item_form import AgendaItemForm, AgendaItemCopyForm
 from privatim.i18n import _
 from privatim.i18n import translate
@@ -32,10 +31,12 @@ def add_agenda_item_view(
     form = AgendaItemForm(context, request)
     session = request.dbsession
     if request.method == 'POST' and form.validate():
+        assert form.title.data
+        desc = form.description.data if form.description.data else ''
         agenda_item = AgendaItem.create(
             session,
-            title=maybe_escape(form.title.data),
-            description=maybe_escape(form.description.data),
+            title=form.title.data,
+            description=desc,
             meeting=context
         )
         session.add(agenda_item)
@@ -77,7 +78,7 @@ def edit_agenda_item_view(
         form.populate_obj(agenda_item)
         if request.is_xhr:
             data = {
-                'name': maybe_escape(agenda_item.title),
+                'name': agenda_item.title,
             }
             session.flush()
             session.refresh(agenda_item)

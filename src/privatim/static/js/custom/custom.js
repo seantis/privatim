@@ -189,7 +189,9 @@ function addEditorForCommentsEdit() {
             e.preventDefault();
             const commentId = this.dataset.commentId;
             const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
-            const originalContent = commentContentElement.textContent.trim();
+            var originalContent = commentContentElement.textContent.trim();
+            // Escape HTML
+            originalContent = $('<div>').text(originalContent).html();
 
             commentContentElement.innerHTML = `
         <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
@@ -229,7 +231,8 @@ function saveCommentEdit(commentId, editedContent) {
                 try {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        document.querySelector(`#comment-content-${commentId}`).innerHTML = response.content;
+                        const content = $('<div>').text(response.content).html();
+                        document.querySelector(`#comment-content-${commentId}`).innerHTML = content;
                     } else {
                         console.error('Error updating comment:', response.message || 'Unknown error');
                     }

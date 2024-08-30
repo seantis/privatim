@@ -39,7 +39,8 @@ class AgendaItemForm(Form):
         )
 
     title = ConstantTextAreaField(
-        label=_('Title'), validators=[validators.DataRequired()],
+        label=_('Title'),
+        validators=[validators.DataRequired()],
         render_kw={'rows': 3}
     )
     description = TextAreaField(
@@ -53,8 +54,9 @@ class AgendaItemForm(Form):
 
 
 class MeetingRadioRenderer(ListWidget):
+
     def __call__(
-            self, field: RadioField, **kwargs: Any  # type:ignore[override]
+        self, field: RadioField, **kwargs: Any  # type:ignore[override]
     ) -> Markup:
         kwargs.setdefault('id', field.id)
         kwargs.setdefault('class', 'list-group')
@@ -92,6 +94,7 @@ class MeetingRadioRenderer(ListWidget):
 
 
 class AgendaItemCopyForm(Form):
+
     def __init__(
         self,
         context: Meeting,

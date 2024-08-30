@@ -2,7 +2,7 @@ import pytest
 from webob.multidict import MultiDict
 
 from privatim.models.utils import get_docx_text
-from privatim.utils import maybe_escape, attendance_status
+from privatim.utils import attendance_status
 
 
 def test_analyze_docx(sample_docx_file):
@@ -11,12 +11,6 @@ def test_analyze_docx(sample_docx_file):
     assert 'Standup Philosophy & Drums' in docx_txt
     assert 'Ich habe Interesse an 2 Tickets:' in docx_txt
     assert 'Sa 18.01.' in docx_txt
-
-
-def test_maybe_escape():
-    assert maybe_escape(None) == ''
-    assert maybe_escape('<') == '&lt;'
-    assert maybe_escape('>') == '&gt;'
 
 
 @pytest.fixture

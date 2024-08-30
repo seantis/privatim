@@ -46,7 +46,7 @@ def consultation_view(
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     return {
         'delete_title': _('Delete Consultation'),
-        'title': Markup(context.title),
+        'title': context.title,
         '_id': context.id,
         'description': Markup(context.description),
         'recommendation': Markup(context.recommendation),
@@ -95,7 +95,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             '_id': _cons.id,
             'creator_pic_id': _cons.creator.picture.id if _cons.creator else
             None,
-            'title': Markup(_cons.title),
+            'title': _cons.title,
             'display_name':  _cons.creator.fullname if _cons.creator
             else _('Deleted User'),
             'description': Markup(_cons.description),

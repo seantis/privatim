@@ -4,7 +4,6 @@ from pyramid.httpexceptions import (HTTPFound, HTTPClientError, HTTPNotFound,
 from privatim.i18n import _
 from privatim.i18n import translate
 from privatim.models.comment import Comment
-from privatim.utils import maybe_escape
 
 
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ def delete_comment_view(
 
 
 def edit_comment_view(
-        context: Comment, request: 'IRequest'
+    context: Comment, request: 'IRequest'
 ) -> 'RenderDataOrRedirectOrForbidden':
 
     form = CommentForm(context, request)
@@ -40,7 +39,8 @@ def edit_comment_view(
         return HTTPForbidden()
 
     if request.method == 'POST' and form.validate():
-        context.content = maybe_escape(form.content.data)
+        assert form.content.data
+        context.content = form.content.data
         message = _('Successfully edited comment')
         request.messages.add(message, 'success')
         data = {
@@ -60,7 +60,7 @@ def edit_comment_view(
 
 
 def add_comment_view(
-        context: 'Consultation', request: 'IRequest'
+    context: 'Consultation', request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
 
     form = CommentForm(context, request)
@@ -91,7 +91,7 @@ def add_comment_view(
     if request.method == 'POST' and form.validate():
         assert form.content.data is not None
         comment = Comment(
-            content=maybe_escape(form.content.data),
+            content=form.content.data,
             user=request.user,
             parent=parent,
             target_id=context.id

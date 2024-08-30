@@ -16,7 +16,6 @@ from privatim.models.association_tables import MeetingUserAttendance
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
-from privatim.utils import maybe_escape
 from privatim.models.user import User
 
 
@@ -73,8 +72,8 @@ class AgendaItem(Base, SearchableMixin):
         )
         new_position = 0 if max_position is None else max_position + 1
         new_agenda_item = cls(
-            title=maybe_escape(title),
-            description=maybe_escape(description),
+            title=title,
+            description=description,
             meeting=meeting,
             position=new_position,
         )

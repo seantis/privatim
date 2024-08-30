@@ -1,8 +1,9 @@
 from sqlalchemy import select
-from wtforms import StringField, SelectField
+from wtforms import SelectField
 from privatim.forms.core import Form
 from wtforms.validators import DataRequired
 
+from privatim.forms.fields.fields import ConstantTextAreaField
 from privatim.forms.fields.fields import SearchableMultiSelectField
 from privatim.i18n import _
 from privatim.models import User
@@ -44,25 +45,27 @@ class WorkingGroupForm(Form):
         self.users.choices = user_choices
         self.chairman.choices = [('0', '-')] + user_choices
 
-    name: StringField = StringField(_('Name'), validators=[DataRequired()])
+    name = ConstantTextAreaField(
+        _('Name'), validators=[DataRequired()]
+    )
 
-    leader: SelectField = SelectField(_('Leader'))
+    leader = SelectField(_('Leader'))
 
-    users: SearchableMultiSelectField = SearchableMultiSelectField(
+    users = SearchableMultiSelectField(
         _('Members'), validators=[DataRequired()]
     )
 
-    chairman: SelectField = SelectField(
+    chairman = SelectField(
         _('Contact Chairman')
     )
 
     def process(
-            self,
-            formdata:      '_MultiDictLike | None' = None,
-            obj:           object | None = None,
-            data:          'Mapping[str, Any] | None' = None,
-            extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
-            **kwargs: Any
+        self,
+        formdata: '_MultiDictLike | None' = None,
+        obj: object | None = None,
+        data: 'Mapping[str, Any] | None' = None,
+        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        **kwargs: Any
     ) -> None:
         super().process(formdata, obj, data, **kwargs)
         if obj is None:

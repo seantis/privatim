@@ -4,7 +4,6 @@ from privatim.forms.working_group_forms import WorkingGroupForm
 from sqlalchemy import select, exists
 from privatim.models import WorkingGroup, User, Meeting
 from privatim.i18n import _
-from privatim.utils import maybe_escape
 
 
 from typing import TYPE_CHECKING
@@ -72,8 +71,9 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
 
         chairman = get_user(session, form.chairman.data)
 
+        assert form.name.data
         group = WorkingGroup(
-            name=maybe_escape(form.name.data),
+            name=form.name.data,
             leader=leader,
             chairman=chairman,
             users=users,
@@ -109,7 +109,8 @@ def edit_working_group(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        group.name = maybe_escape(form.name.data)
+        assert form.name.data
+        group.name = form.name.data
         group.leader = get_user(session, form.leader.data)
         group.chairman = get_user(session, form.chairman.data)
 

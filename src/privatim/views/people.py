@@ -9,7 +9,7 @@ from privatim.controls.controls import Button
 from privatim.forms.user_form import UserForm
 from privatim.i18n import _, translate
 from privatim.security_policy import PasswordException
-from privatim.utils import strip_p_tags, maybe_escape
+from privatim.utils import strip_p_tags
 from privatim.models import User, WorkingGroup
 
 from typing import TYPE_CHECKING
@@ -86,14 +86,14 @@ def person_view(context: User, request: 'IRequest') -> 'RenderData':
 
     meetings_dict = [
         {
-            'name': Markup(strip_p_tags(meeting.name)),
+            'name': strip_p_tags(meeting.name),
             'url': request.route_url('meeting', id=meeting.id)
         } for meeting in user.meetings
     ]
 
     consultation_dict = [
         {
-            'title': Markup(strip_p_tags(consultation.title)),
+            'title': strip_p_tags(consultation.title),
             'url': request.route_url('consultation', id=consultation.id)
         } for consultation in user.consultations
     ]
@@ -117,11 +117,14 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         stmt = select(WorkingGroup).where(
             WorkingGroup.id.in_(form.groups.raw_data or ())
         )
-        tags = maybe_escape(form.abbrev.data)
+        tags = form.abbrev.data
+        assert form.email.data
+        assert form.first_name.data
+        assert form.last_name.data
         user = User(
-            email=maybe_escape(form.email.data),
-            first_name=maybe_escape(form.first_name.data),
-            last_name=maybe_escape(form.last_name.data),
+            email=form.email.data,
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
             abbrev=tags if tags else '',
             groups=list(session.execute(stmt).scalars().unique())
         )
