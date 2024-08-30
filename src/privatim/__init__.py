@@ -30,6 +30,9 @@ __version__ = '0.0.0'
 
 
 from typing import Any, TYPE_CHECKING, Iterable
+
+from subscribers import register_subscribers
+
 if TYPE_CHECKING:
     from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
@@ -67,6 +70,8 @@ def includeme(config: Configurator) -> None:
     config.add_translation_dirs('privatim:locale')
     # wtforms 3.0 ships with its own translations
     config.add_translation_dirs('wtforms:locale')
+
+    register_subscribers(config)
 
     session_factory = session_factory_from_settings(settings)
     config.set_session_factory(session_factory)
