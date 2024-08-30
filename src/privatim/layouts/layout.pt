@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
-         i18n:domain="privatim"
-      class="h-100">
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="privatim"
+      lang="${layout.locale_name()}"
+      class="h-100"
+      data_sentry_dsn="${layout.sentry_dsn()}">
+
 
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <tal:block tal:condition="layout.sentry_dsn()">
+        <script type="text/javascript" src="${layout.static_url('privatim:static/js/bundle.min.js')}"></script>
+        <script type="text/javascript" src="${layout.static_url('privatim:static/js/sentry.js')}"></script>
+    </tal:block>
+
     <title>Austauschplattform privatim</title>
 
 </head>

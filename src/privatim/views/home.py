@@ -21,6 +21,6 @@ class SentryWorks(Exception):
     pass
 
 
-def test_sentry_view(request: 'IRequest') -> HTTPFound:
+def sentry_test_view(request: 'IRequest') -> HTTPFound:
     # test sentry working:
     raise SentryWorks('Test Sentry')

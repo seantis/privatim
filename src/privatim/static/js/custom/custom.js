@@ -1,3 +1,11 @@
+function testSentry() {
+    class SentryWorksInJavascript extends Error {}
+
+    if (window.location.href.includes('/trash')) {
+        throw SentryWorksInJavascript();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     listenForChangesInAttendees();
@@ -10,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     autoHideSuccessMessages();
     addTestSystemBadge();
     fixCSSonProfilePage();
+    testSentry();
 });
 
 
