@@ -15,7 +15,9 @@ def default_csp_directives(request: 'IRequest') -> dict[str, str]:
         "frame-ancestors": "'none'",
         "img-src":  "'self' data: blob:",
         "object-src": "'self'",
-        "script-src": "'self' blob: resource:",
+        # enable one inline script by hash TomSelectWidget
+        "script-src": "'self' blob: resource: "
+                      "'sha256-V1F76Rpg0OFOeNZAMAgQoR2STCnYJj8IyDvTdgzYHpQ='",
         "style-src": "'self' 'unsafe-inline'",
     }
 

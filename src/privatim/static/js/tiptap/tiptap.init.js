@@ -24,10 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     });
 
-    // Hide all bubble menus initially
-    document.querySelectorAll('.bubble-menu').forEach(menu => {
-        menu.style.display = 'none';
-    });
     document.querySelectorAll('.tiptap-wrapper').forEach((wrapper) => {
         console.log('setting up an editor');
 

@@ -145,6 +145,8 @@ class TomSelectWidget(Select):
         # use the existing i18n translation in python. There are only a few
         # default messages in Tom Select. Implementing frontend
         # i18n translations for just two messages would be overkill.
+
+        # You need to change Hash in cps_header.py if you change this
         inline_js = Markup(f"""
         <script type="text/javascript">
         (function() {{
