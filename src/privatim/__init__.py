@@ -351,7 +351,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
     )
 
     # Now, alter the columns to be NOT NULL
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'first_name',
         existing_type=VARCHAR(length=256),
@@ -359,7 +359,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         server_default='',
     )
 
-    context.operations.alter_column(
+    context.alter_column(
         'users',
         'last_name',
         existing_type=VARCHAR(length=256),
