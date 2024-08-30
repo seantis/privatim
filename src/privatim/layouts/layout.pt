@@ -6,7 +6,7 @@
       i18n:domain="privatim"
       lang="${layout.locale_name()}"
       class="h-100"
-      data_sentry_dsn="${layout.sentry_dsn()}">
+      data-sentry-dsn="${layout.sentry_dsn()}">
 
 
 <head>
