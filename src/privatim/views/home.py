@@ -15,3 +15,12 @@ def home_view(request: 'IRequest') -> HTTPFound:
             else request.route_url('login')
         )
     )
+
+
+class SentryWorks(Exception):
+    pass
+
+
+def test_sentry_view(request: 'IRequest') -> HTTPFound:
+    # test sentry working:
+    raise SentryWorks('Test Sentry')

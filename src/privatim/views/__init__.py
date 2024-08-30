@@ -28,7 +28,7 @@ from privatim.views.general_file import (
     delete_general_file_view,
 )
 from privatim.views.forbidden import forbidden_view
-from privatim.views.home import home_view
+from privatim.views.home import home_view, test_sentry_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.mtan import mtan_view, mtan_setup_view
@@ -667,4 +667,13 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         restore_soft_deleted_model_view,
         route_name='restore_soft_deleted_model',
+    )
+
+    config.add_route('testsentry', '/testsentry')
+    config.add_view(
+        test_sentry_view,
+        route_name='testsentry',
+        renderer='json',
+        require_csrf=False,
+        permission=NO_PERMISSION_REQUIRED,
     )
