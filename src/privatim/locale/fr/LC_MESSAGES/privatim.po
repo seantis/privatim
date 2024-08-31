@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-29 21:48+0200\n"
+"POT-Creation-Date: 2024-08-31 19:01+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -184,8 +184,7 @@ msgstr "Traiter un point de l'ordre du jour"
 msgid "Delete meeting"
 msgstr "Supprimer la réunion"
 
-#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
+#: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Membres"
 
@@ -828,10 +827,6 @@ msgstr "Décision"
 msgid "Cantons"
 msgstr "Les cantons"
 
-#: src/privatim/forms/consultation_form.py
-msgid "Choose a canton..."
-msgstr "Choisissez un canton..."
-
 #: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Commentaire"
@@ -891,6 +886,10 @@ msgstr "Modifier la réunion"
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
 msgstr "Date / heure"
+
+#: src/privatim/forms/meeting_form.py
+msgid "Guests (Members are added by default)"
+msgstr "Invités (Les membres sont ajoutés par défaut)"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Attendance"
@@ -1006,14 +1005,6 @@ msgstr "Format du ${number_type} invalide"
 msgid "Select..."
 msgstr "Sélectionner..."
 
-#: src/privatim/forms/fields/fields.py
-msgid "No Users Found"
-msgstr "Aucun utilisateur trouvé"
-
-#: src/privatim/forms/fields/fields.py
-msgid "Remove this item"
-msgstr "Supprimer cet élément"
-
 #: src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
@@ -1026,6 +1017,15 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Choose a canton..."
+#~ msgstr "Choisissez un canton..."
+
+#~ msgid "No Users Found"
+#~ msgstr "Aucun utilisateur trouvé"
+
+#~ msgid "Remove this item"
+#~ msgstr "Supprimer cet élément"
 
 #, python-format
 #~ msgid "Successfully deleted user: ${full_name}."

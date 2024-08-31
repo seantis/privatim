@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-29 21:48+0200\n"
+"POT-Creation-Date: 2024-08-31 19:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,8 +184,7 @@ msgstr ""
 msgid "Delete meeting"
 msgstr ""
 
-#: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr ""
 
@@ -818,10 +817,6 @@ msgstr ""
 msgid "Cantons"
 msgstr ""
 
-#: ./src/privatim/forms/consultation_form.py
-msgid "Choose a canton..."
-msgstr ""
-
 #: ./src/privatim/forms/add_comment.py ./src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr ""
@@ -878,6 +873,10 @@ msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
 msgid "Time"
+msgstr ""
+
+#: ./src/privatim/forms/meeting_form.py
+msgid "Guests (Members are added by default)"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
@@ -990,14 +989,6 @@ msgstr ""
 
 #: ./src/privatim/forms/fields/fields.py
 msgid "Select..."
-msgstr ""
-
-#: ./src/privatim/forms/fields/fields.py
-msgid "No Users Found"
-msgstr ""
-
-#: ./src/privatim/forms/fields/fields.py
-msgid "Remove this item"
 msgstr ""
 
 #: ./src/privatim/reporting/report.py

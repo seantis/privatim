@@ -130,3 +130,11 @@ def setup_docx_scenario(pdf_to_search, session):
     consultation = create_consultation(documents=documents)
     session.add(consultation)
     session.flush()
+
+
+# test search no longer in consultations which are soft deleted
+
+# test search does not search in SearchableFiles which are not attached to
+# any Consultation
+
+# test duplicates are filtered

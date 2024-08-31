@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-29 21:48+0200\n"
+"POT-Creation-Date: 2024-08-31 19:01+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -187,8 +187,7 @@ msgstr "Traktandum bearbeiten"
 msgid "Delete meeting"
 msgstr "Sitzung löschen"
 
-#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
+#: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
 msgid "Members"
 msgstr "Mitglieder"
 
@@ -830,10 +829,6 @@ msgstr "Beschluss"
 msgid "Cantons"
 msgstr "Kantone"
 
-#: src/privatim/forms/consultation_form.py
-msgid "Choose a canton..."
-msgstr "Kanton auswählen..."
-
 #: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
 msgid "Comment"
 msgstr "Kommentar"
@@ -893,6 +888,10 @@ msgstr "Sitzung bearbeiten"
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
 msgstr "Datum / Uhrzeit"
+
+#: src/privatim/forms/meeting_form.py
+msgid "Guests (Members are added by default)"
+msgstr "Gäste (Mitglieder werden standardmässig hinzugefügt)"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Attendance"
@@ -1010,14 +1009,6 @@ msgstr "Ungültige ${number_type}"
 msgid "Select..."
 msgstr "Auswählen"
 
-#: src/privatim/forms/fields/fields.py
-msgid "No Users Found"
-msgstr "Keine Benutzer gefunden"
-
-#: src/privatim/forms/fields/fields.py
-msgid "Remove this item"
-msgstr "Dieses Element entfernen"
-
 #: src/privatim/reporting/report.py
 #, python-format
 msgid "Protocol of meeting ${title}"
@@ -1030,6 +1021,15 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Choose a canton..."
+#~ msgstr "Kanton auswählen..."
+
+#~ msgid "No Users Found"
+#~ msgstr "Keine Benutzer gefunden"
+
+#~ msgid "Remove this item"
+#~ msgstr "Dieses Element entfernen"
 
 #, python-format
 #~ msgid "Successfully deleted user: ${full_name}."

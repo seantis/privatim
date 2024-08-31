@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.orm import load_only
 from wtforms import StringField, validators
@@ -74,12 +76,25 @@ class MeetingForm(Form):
                 'request': request
             }
         )
-
-        query = select(User).options(
-            load_only(User.id, User.first_name, User.last_name)
+        group_id_condition = (
+            UUID(context.working_group.id)
+            if isinstance(context, Meeting)
+            else UUID(context.id)
         )
-        users = session.execute(query).scalars().all()
-        self.attendees.choices = [(str(u.id), u.fullname) for u in users]
+        guest_users = (
+            session.execute(
+                select(User)
+                .options(load_only(User.id, User.first_name, User.last_name))
+                .filter(
+                    ~User.groups.any(WorkingGroup.id == group_id_condition)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        self.attendees.choices = [
+            (str(u.id), f"{u.first_name} {u.last_name}") for u in guest_users
+        ]
 
     name: ConstantTextAreaField = ConstantTextAreaField(
         label=_('Name'), validators=[InputRequired()]
@@ -92,8 +107,8 @@ class MeetingForm(Form):
     )
 
     attendees: SearchableMultiSelectField = SearchableMultiSelectField(
-        label=_('Members'),
-        validators=[InputRequired()],
+        label=_('Guests (Members are added by default)'),
+        validators=[validators.Optional()],
     )
 
     attendance = FieldList(
@@ -123,7 +138,7 @@ class MeetingForm(Form):
                     self.meta.dbsession,
                 )
             elif name == 'attendance':
-                # this is already handled in SearchableMultiSelectField above
+                # this is already handled in sync_meeting_attendance_records
                 pass
             else:
                 field.populate_obj(obj, name)
@@ -137,20 +152,19 @@ class MeetingForm(Form):
         **kwargs: Any
     ) -> None:
         super().process(formdata, obj, **kwargs)
-        if isinstance(obj, Meeting):
-            self.handle_process_edit(obj)
-        else:
-            if obj is not None:
+        if obj is None:
+            return
+        if not formdata:
+            if isinstance(obj, Meeting):
+                self.handle_process_edit(obj)
+            else:
                 self.handle_process_add(obj)  # type:ignore[arg-type]
 
     def handle_process_edit(self, obj: Meeting) -> None:
-        if obj and hasattr(obj, 'attendees'):
-            self.attendees.data = [str(user.id) for user in obj.attendees]
-
         self.attendance.entries = []
         records = obj.sorted_attendance_records
         for attendance_record in (
-            self.meta.dbsession.execute(records).unique().scalars().all()
+          self.meta.dbsession.execute(records).unique().scalars().all()
         ):
             status = (True
                       if attendance_record.status == AttendanceStatus.ATTENDED
@@ -182,7 +196,7 @@ class MeetingForm(Form):
 
 
 def sync_meeting_attendance_records(
-    meeting_form: MeetingForm,
+    form: MeetingForm,
     obj: Meeting,
     post_data: 'GetDict',
     session: 'Session',
@@ -191,7 +205,7 @@ def sync_meeting_attendance_records(
     for each user and map it to MeetingUserAttendance."""
 
     def find_attendance_in_form(user_id: str) -> bool:
-        for f in meeting_form._fields.get('attendance', ()):  # type:ignore
+        for f in form._fields.get('attendance', ()):  # type:ignore
             if f.user_id.data == user_id:
                 # XXX this is kind of crude, but I couldn't find a way to do
                 # it otherwise. Request.POST is somehow is not mapped to the
@@ -201,16 +215,23 @@ def sync_meeting_attendance_records(
 
         return False
 
-    assert isinstance(meeting_form.attendees, SearchableMultiSelectField)
-    stmt = select(User).where(User.id.in_(
-        # FIXME: Does this give the correct result for an empty selection?
-        meeting_form.attendees.raw_data or ()
-    ))
-    users = session.execute(stmt).scalars().all()
-    # Clear existing attendance records
+    assert isinstance(form.attendees, SearchableMultiSelectField)
+
+    # Extract user IDs and statuses from the attendance FieldList
+    attendance_data = {
+        entry.data['user_id']: entry.data['status']
+        for entry in form.attendance.entries
+    }
+    # Get user IDs from the attendees field
+    attendee_ids = set(form.attendees.data or [])
+
+    # Combine user IDs from attendance and attendees, removing duplicates
+    all_user_ids = set(attendance_data.keys()) | attendee_ids
+
+    stmt = select(User).where(User.id.in_(all_user_ids))
+    users_for_edited_meeting = session.execute(stmt).scalars().all()
     obj.attendance_records = []
-    # Create new attendance records
-    for user in users:
+    for user in users_for_edited_meeting:
         actual_status = AttendanceStatus.INVITED
         if find_attendance_in_form(user.id) is True:
             actual_status = AttendanceStatus.ATTENDED

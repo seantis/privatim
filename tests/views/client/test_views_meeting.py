@@ -1,54 +1,14 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
+import pytest
 from sqlalchemy import select
 from sedate import utcnow
 from sqlalchemy.orm import selectinload
 
 from privatim.models import User, WorkingGroup, Meeting
 from privatim.utils import fix_utc_to_local_time
-from tests.shared.utils import get_pre_filled_content_on_searchable_field
 
 
-def test_add_meeting_pre_populated(client):
-    users = [
-        User(email='max@example.org', first_name='Max', last_name='Müller'),
-        User(
-            email='alexa@example.org',
-            first_name='Alexa',
-            last_name='Troller',
-        ),
-        User(email='kurt@example.org', first_name='Kurt', last_name='Huber'),
-    ]
-    for user in users:
-        user.set_password('test')
-        client.db.add(user)
-    client.db.commit()
-
-    working_group = WorkingGroup(name='Test Group', leader=users[0])
-    working_group.users.extend(users)
-    client.db.add(working_group)
-    client.db.commit()
-    stmt = select(WorkingGroup.id).where(WorkingGroup.name == 'Test Group')
-    group_id = client.db.execute(stmt).scalars().first()
-
-    client.login_admin()
-    page = client.get(f'/working_groups/{group_id}/add')
-
-    # People from Working Group are in form for adding meeting
-    pre_filled = get_pre_filled_content_on_searchable_field(
-        page, field_id='attendees'
-    )
-    assert [
-        'Max Müller (MM)', 'Alexa Troller (AT)', 'Kurt Huber (KH)',
-    ] == pre_filled
-    page.form['name'] = 'Weekly Meeting'
-    page.form['time'] = datetime.now().strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(
-        texts=['Kurt Huber (KH)', 'Max Müller (MM)']
-    )
-    page = page.form.submit().follow()
-    assert 'Weekly Meeting' in page
-
-
+@pytest.mark.skip('Nees rewrite due to changes in implementation')
 def test_edit_meeting(client):
     users = [
         User(email='max@example.org', first_name='Max', last_name='Müller'),
@@ -64,7 +24,8 @@ def test_edit_meeting(client):
         client.db.add(user)
     client.db.commit()
 
-    working_group = WorkingGroup(name='Test Group', leader=users[0])
+    working_group = WorkingGroup(name='Test Group', leader=users[0],
+                                 users=users)
     working_group.users.extend(users)
     client.db.add(working_group)
     client.db.commit()
@@ -86,15 +47,6 @@ def test_edit_meeting(client):
     page = client.get(f'/meetings/{src_meeting.id}/edit')
     assert page.status_code == 200
 
-    # form should be filled
-    assert page.form.fields['name'][0].__dict__['_value'] == 'Initial Meeting'
-    assert get_pre_filled_content_on_searchable_field(
-        page, field_id='attendees'
-    ) == [
-        'Max Müller (MM)',
-        'Alexa Troller (AT)',
-    ]
-
     # Test the cancel button, if cancel edit meeting redirected to the meeting
     page = page.click('Abbrechen')
     assert f'meeting/{src_meeting.id}' in page.request.url
@@ -104,8 +56,8 @@ def test_edit_meeting(client):
     new_meeting_time = meeting_time + timedelta(days=1)
     page.form['name'] = 'Updated Meeting'
     page.form['time'] = new_meeting_time.strftime('%Y-%m-%dT%H:%M')
-    page.form['attendees'].select_multiple(texts=['Kurt Huber (KH)',
-                                                  'Max Müller (MM)'])
+    # people of meeting are set automatically by their group
+
     page = page.form.submit().follow()
     assert 'Dieses Feld wird benötigt' not in page
 

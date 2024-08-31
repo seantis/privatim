@@ -17,14 +17,12 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPMethodNotAllowed,
 )
-from sqlalchemy import select
-
 from privatim.utils import fix_utc_to_local_time
 from privatim.forms.meeting_form import (
     MeetingForm,
     sync_meeting_attendance_records,
 )
-from privatim.models import Meeting, User, WorkingGroup
+from privatim.models import Meeting, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
 
@@ -316,19 +314,25 @@ def add_meeting_view(
 
     target_url = request.route_url('meetings', id=context.id)
     if request.method == 'POST' and form.validate():
-        stmt = select(User).where(User.id.in_(form.attendees.raw_data or ()))
-        attendees = list(session.execute(stmt).scalars().all())
         assert form.name.data
         assert form.time.data
         time = fix_utc_to_local_time(form.time.data)
+
         meeting = Meeting(
             name=form.name.data,
             time=time,
-            attendees=attendees,
+            attendees=[],  # sync_meeting_attendance_records will handle this
             working_group=context,
             creator=request.user
         )
+        # Manually setting this. The working_group.users should always be
+        # part people who attend the meeting.
+        # The form is used to select guests on the frontend
+        attendees_set = set(form.attendees.data or [])
+        context_users_set = {str(user.id) for user in context.users}
+        form.attendees.data = list(attendees_set | context_users_set)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
+
         session.add(meeting)
         session.flush()
         message = _(
