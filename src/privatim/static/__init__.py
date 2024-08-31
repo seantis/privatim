@@ -77,10 +77,12 @@ bootstrap_js = js(
 sortable_custom = js('custom/sortable_custom.js', depends=[jquery],
                      renderer=render_js_module)
 
-custom_js = js('custom/custom.js', depends=[jquery])
 
 tom_select_css = css('tom-select.min.css')
-tom_select = js('tom_select.complete.min.js')
+tom_select_js = js('tom_select.complete.min.js')
+init_tom_select_js = js('init-tom-select.js')
+
+custom_js = js('custom/custom.js', depends=[jquery])
 
 bundle_js = js('tiptap.bundle.min.js')
 init_tiptap_editor = js(

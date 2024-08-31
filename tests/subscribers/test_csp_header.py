@@ -20,7 +20,6 @@ def test_csp_header(pg_config):
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
         "script-src 'self' blob: resource: "
-        "'sha256-wSu+A0D5LTY7IrsHQxOp9Ulz/skwI6R6Rbppxjht7Yg='; "
         "style-src 'self' 'unsafe-inline'"
     )
 
@@ -42,7 +41,6 @@ def test_csp_header_sentry(pg_config):
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
         "script-src 'self' blob: resource: "
-        "'sha256-wSu+A0D5LTY7IrsHQxOp9Ulz/skwI6R6Rbppxjht7Yg='; "
         "style-src 'self' 'unsafe-inline'; "
         "report-uri https://sentry.io/api/22/security/?sentry_key=aa"
     )
@@ -64,7 +62,6 @@ def test_csp_header_sentry(pg_config):
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
         "script-src 'self' blob: resource: "
-        "'sha256-wSu+A0D5LTY7IrsHQxOp9Ulz/skwI6R6Rbppxjht7Yg='; "
         "style-src 'self' 'unsafe-inline'; "
         "report-uri https://sentry.io/api/22/security/?sentry_key=aa"
     )

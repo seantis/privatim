@@ -4,7 +4,7 @@ import sedate
 from sqlalchemy import select
 
 from privatim.models.file import SearchableFile
-from privatim.static import tom_select
+from privatim.static import tom_select_js
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
@@ -14,16 +14,16 @@ from wtforms.fields.simple import FileField, TextAreaField
 from wtforms.widgets.core import Select
 from werkzeug.datastructures import MultiDict
 from privatim.forms.widgets.widgets import UploadWidget, UploadMultipleWidget
-from privatim.i18n import _, translate
+from privatim.i18n import _
 
 from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
 from privatim.models.file import GeneralFile
 from operator import itemgetter
-from markupsafe import Markup
 
 
 from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
 if TYPE_CHECKING:
+    from markupsafe import Markup
     from sqlalchemy.orm import Session
     from wtforms.fields.choices import SelectFieldBase
     from collections.abc import Sequence
@@ -119,74 +119,19 @@ class TomSelectWidget(Select):
     def __init__(
         self,
         multiple: bool = False,
-        translations: dict[str, str] | None = None,
     ) -> None:
         super().__init__(multiple=multiple)
-        self.translations = translations or {}
 
-    def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> Markup:
+    def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> 'Markup':
         if not kwargs.get('class'):
             kwargs['class'] = 'searchable-select'
         else:
             kwargs['class'] += ' searchable-select'
 
-        placeholder = self.translations.get('not_found', _('Select...'))
+        placeholder = _('Select...')
         kwargs['placeholder_'] = placeholder
         kwargs['autocomplete_'] = 'off'
-
-        html = super(TomSelectWidget, self).__call__(field, **kwargs)
-        not_found_message = self.translations.get(
-            'not_found', translate(_('No Users Found'))
-        )
-        remove_message = translate(_('Remove this item'))
-
-        # We handle translations on the backend and inject them into
-        # JavaScript. We use this approach here just because this allows to
-        # use the existing i18n translation in python. There are only a few
-        # default messages in Tom Select. Implementing frontend
-        # i18n translations for just two messages would be overkill.
-
-        # You need to change Hash in cps_header.py if you change this
-        inline_js = Markup(f"""
-        <script type="text/javascript">
-        (function() {{
-            function initializeSearchableSelect(
-                uniqueId, translatedNotFound
-                ) {{
-                let element = document.getElementById(uniqueId);
-                if (element) {{
-                    let settings = {{
-                        plugins: {{
-                            remove_button:{{
-                                title:'{remove_message}',
-                            }}
-                        }},
-                        render: {{
-                            option: function (data, escape) {{
-                                return '<div>' + escape(data.text) + '</div>';
-                            }},
-                            no_results: function (data, escape) {{
-                                return '<div class="no-results">' +
-                                translatedNotFound + ' "'
-                                + escape(data.input) + '"</div>';
-                            }},
-                        }},
-                    }};
-                    new TomSelect(element, settings);
-                }}
-            }}
-            /* This schedules the initialization to happen on the next
-            animation frame, which is typically very soon after the DOM is
-            ready. DOMContentLoaded would take too long.
-            */
-            requestAnimationFrame(function() {{
-                initializeSearchableSelect('{field.id}',
-                 '{not_found_message}');
-            }});
-        }})();
-        </script>
-        """)
-        return inline_js + html
+        return super(TomSelectWidget, self).__call__(field, **kwargs)
 
 
 class SearchableMultiSelectField(SelectMultipleField):
@@ -201,14 +146,13 @@ class SearchableMultiSelectField(SelectMultipleField):
     def __init__(
         self,
         label: str,
-        translations: dict[str, str] | None = None,
         **kwargs: Any
     ):
         super().__init__(label, **kwargs)
-        self.widget = TomSelectWidget(multiple=True, translations=translations)
+        self.widget = TomSelectWidget(multiple=True)
 
     def __call__(self, **kwargs: Any) -> Any:
-        tom_select.need()
+        tom_select_js.need()
         return super().__call__(**kwargs)
 
 
@@ -220,16 +164,15 @@ class SearchableSelectField(SelectMultipleField):
     def __init__(
             self,
             label: str,
-            translations: dict[str, str] | None = None,
             **kwargs: Any
     ):
         super().__init__(label, **kwargs)
         self.widget = TomSelectWidget(
-            multiple=False, translations=translations
+            multiple=False
         )
 
     def __call__(self, **kwargs: Any) -> Any:
-        tom_select.need()
+        tom_select_js.need()
         return super().__call__(**kwargs)
 
 

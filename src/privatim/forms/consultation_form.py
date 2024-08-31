@@ -87,9 +87,6 @@ class ConsultationForm(Form):
         validators=[
             validators.Optional(),
         ],
-        translations={
-            'placeholder': translate(_('Choose a canton...')),
-        }
     )
 
     files = UploadMultipleFilesWithORMSupport(
