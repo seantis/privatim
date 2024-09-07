@@ -25,7 +25,7 @@ CREATE DATABASE privatim;
 GRANT ALL PRIVILEGES ON DATABASE privatim TO dev;
 EOF"
 ```
-If you've already built onegov one time, you can skip the user creation.
+If you've already built onegov one time, you can skip the db user creation.
 ```
 git clone git@github.com:seantis/privatim.git
 cd privatim
@@ -41,11 +41,13 @@ cp development.ini.example development.ini
 add_user --email admin@example.org --password test --first_name Jane --last_name Dane development.ini
 ```
 
-- Load default data into the database using a script (optional).
+
+### Load default data into the database using a script (optional).
 
 ```
 add_content development.ini
 ```
+
 
 ### Run dev server
 
@@ -53,27 +55,67 @@ add_content development.ini
 make run
 ```
 
-
 ## Run the project's tests
 
 ```
 pytest -n auto
 ```
 
-
 - Login at http://localhost:6543 with admin@example.org / test
+
+
+
+Setup JavaScript toolchain (optional)
+===================================
+
+1. Install nvm [from here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script)
+
+2. Restart your terminal or run:
+   ```
+   source ~/.bashrc
+   ```
+
+3. Install and use Node.js v18:
+   ```
+   nvm install 18
+   nvm use 18
+   ```
+
+<details>
+<summary>Set default Node.js version (click to expand)</summary>
+
+This will set the default to be the most current version of node:
+```
+nvm alias default node
+```
+and then you'll need to run:
+```
+nvm use default
+```
+</details>
+
+4. Verify installation:
+   ```
+   node --version # should return some version of v18
+   ```
+
+5. Build the frontend:
+
+   ```
+   make frontend
+   ```
 
 
 # Manage dependencies
 
-We use `uv` to manage dependencies. However, you don't need to directly interact with `uv`. Generally you can just use `make install`, `make update` and `make compile` if you've added new dependencies. The `make compile` commands generates the `requirements.txt` and `test_requirements.txt` which is then used in production.
+. The `make compile` commands generates the `requirements.txt`. If you add a new dependency to `setup.cfg`, you need to run `make compile` to update the `requirements.txt` file.
 
 
 ## Regenerate requirements files based on new dependencies
 
     ./requirements/compile.sh
 
-This generates `requirements.txt` and `test_requirements.txt` based on the dependencies in setup.cfg`.
+This generates `requirements.txt` based on the dependencies in setup.cfg`.
 This is used by puppet and the CI to install the dependencies on the server.
 
 ## Upgrade dependencies to latest version

@@ -1,3 +1,5 @@
+TIPTAP_DIR ?= src/privatim/static/js/tiptap
+
 install: ensure_uv
 	# install requirements
 	uv pip install -e '.[test,mypy,dev]' --config-settings editable_mode=compat
@@ -37,7 +39,10 @@ run: in_virtual_env
 e2e: in_virtual_env
 	pytest tests/ -m "e2e" -vv \
 		--browser chromium --browser firefox \
-		--retries 3
+		--retries 3$
+
+frontend:
+	cd $(TIPTAP_DIR) && ./tiptap.sh
 
 in_virtual_env:
 	@if python -c 'import sys; (hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)) and sys.exit(1) or sys.exit(0)'; then \
