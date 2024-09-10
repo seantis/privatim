@@ -251,41 +251,6 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
     return {**base_dict, **chairman_dict}
 
 
-def get_meeting_user_list(
-        context: WorkingGroup, request: 'IRequest', title: str
-) -> Markup:
-    user_items = tuple(
-        Markup(
-            '<li class="user-list-item d-flex align-items-center">'
-            '<div class="profile-pic-container mr-2 m-2" style="'
-            'width: 24px; height: 24px; overflow: hidden; border-radius: 50%; '
-            'display: flex; justify-content: center; align-items: center;">'
-            '<img src="{}" alt="{} profile picture" style="'
-            'width: 100%; height: 100%; object-fit: cover;">'
-            '</div>'
-            '<a href="{}" class="mb-1 text-decoration-none">{}</a>'
-            '</li>'
-        ).format(
-            user.profile_pic_download_link(request),
-            user.fullname,
-            request.route_url("person", id=user.id),
-            user.fullname,
-        )
-        for user in sorted(context.users, key=lambda user: user.fullname)
-    )
-    user_list = Markup(
-        '''
-    <div class="generic-user-list-container">
-        <p>
-            <span class="fw-bold">{}:</span>
-        </p>
-        <ul class="generic-user-list">{}</ul>
-    </div>
-    '''
-    ).format(title, Markup('').join(user_items))
-    return user_list
-
-
 def working_group_buttons(
     context: WorkingGroup, request: 'IRequest'
 ) -> list[Button]:
