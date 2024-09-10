@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-09-10 10:36+0200\n"
+"POT-Creation-Date: 2024-09-10 11:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,6 +153,30 @@ msgstr ""
 
 #: ./src/privatim/views/profile.py
 msgid "Delete photo"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "No file uploaded"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Invalid file upload"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Uploaded file is empty"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "File size exceeds 5MB limit"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Invalid file type. Allowed types are png, jpg, jpeg, gif"
+msgstr ""
+
+#: ./src/privatim/views/profile.py
+msgid "Invalid image file"
 msgstr ""
 
 #: ./src/privatim/views/profile.py

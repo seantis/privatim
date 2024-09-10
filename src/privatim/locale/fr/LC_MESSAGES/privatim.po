@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-09-10 10:36+0200\n"
+"POT-Creation-Date: 2024-09-10 11:47+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -152,6 +152,30 @@ msgstr "l'image de profil"
 #: src/privatim/views/profile.py
 msgid "Delete photo"
 msgstr "Supprimer la photo"
+
+#: src/privatim/views/profile.py
+msgid "No file uploaded"
+msgstr "Aucun fichier téléchargé"
+
+#: src/privatim/views/profile.py
+msgid "Invalid file upload"
+msgstr "Téléchargement de fichier invalide"
+
+#: src/privatim/views/profile.py
+msgid "Uploaded file is empty"
+msgstr "Le fichier téléchargé est vide"
+
+#: src/privatim/views/profile.py
+msgid "File size exceeds 5MB limit"
+msgstr "La taille du fichier dépasse la limite de 5 Mo"
+
+#: src/privatim/views/profile.py
+msgid "Invalid file type. Allowed types are png, jpg, jpeg, gif"
+msgstr "Type de fichier invalide. Les types autorisés sont png, jpg, jpeg, gif"
+
+#: src/privatim/views/profile.py
+msgid "Invalid image file"
+msgstr "Fichier image invalide"
 
 #: src/privatim/views/profile.py
 msgid "Successfully updated profile picture"
