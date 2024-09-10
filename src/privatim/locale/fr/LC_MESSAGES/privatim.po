@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-31 19:01+0200\n"
+"POT-Creation-Date: 2024-09-10 10:36+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -181,8 +181,8 @@ msgid "Edit Agenda Item"
 msgstr "Traiter un point de l'ordre du jour"
 
 #: src/privatim/views/meetings.py
-msgid "Delete meeting"
-msgstr "Supprimer la réunion"
+msgid "Delete Agenda Item"
+msgstr "Supprimer un point de l'ordre du jour"
 
 #: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
 msgid "Members"
@@ -499,6 +499,10 @@ msgstr "Date / Heure:"
 #: src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr "ordres du jour"
+
+#: src/privatim/views/templates/meeting.pt
+msgid "Reorder item"
+msgstr "Déplacer un élément"
 
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/forms/agenda_item_form.py
@@ -1017,6 +1021,9 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Delete meeting"
+#~ msgstr "Supprimer la réunion"
 
 #~ msgid "Choose a canton..."
 #~ msgstr "Choisissez un canton..."

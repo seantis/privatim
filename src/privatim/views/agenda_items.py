@@ -108,7 +108,6 @@ def delete_agenda_item_view(
 
     assert isinstance(context, AgendaItem)
     title = context.title
-    meeting = context.meeting
 
     session = request.dbsession
     session.delete(context)
@@ -119,13 +118,16 @@ def delete_agenda_item_view(
         mapping={'name': title}
     )
 
+    target_url = request.route_url('meeting', id=context.meeting.id)
     if request.is_xhr:
-        return {'success': translate(message, request.locale_name)}
+        return {
+            'success': translate(message, request.locale_name),
+            'name': 'test',
+            'redirect_url': target_url
+        }
 
     request.messages.add(message, 'success')
-    return HTTPFound(
-        location=request.route_url('meeting', id=meeting.id),
-    )
+    return HTTPFound(location=target_url)
 
 
 def copy_agenda_item_view(

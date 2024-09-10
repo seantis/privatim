@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-08-31 19:01+0200\n"
+"POT-Creation-Date: 2024-09-10 10:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -181,7 +181,7 @@ msgid "Edit Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
-msgid "Delete meeting"
+msgid "Delete Agenda Item"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/working_group_forms.py
@@ -487,6 +487,10 @@ msgstr ""
 #: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
+msgstr ""
+
+#: ./src/privatim/views/templates/meeting.pt
+msgid "Reorder item"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt

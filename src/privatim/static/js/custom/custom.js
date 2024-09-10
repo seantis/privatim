@@ -6,14 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     addEditorForCommentsEdit();
     makeConsultationsInActivitiesClickable();
     setupAgendaItemGlobalToggle();
-    setupDeleteModalForPersonInPeople();
+    setupDeleteModalListeners();
     autoHideSuccessMessages();
     addTestSystemBadge();
     fixCSSonProfilePage();
 });
 
 
-function setupDeleteModalForPersonInPeople() {
+function setupDeleteModalListeners() {
     var active_popover = null;
     var popover_timeout = null;
 
@@ -269,6 +269,7 @@ function setupCommentAnswerField() {
     }
 }
 
+// Expand / collapse all Agenda Items
 function setupAgendaItemGlobalToggle() {
     if (!window.location.href.includes('/meeting')) {
         return;

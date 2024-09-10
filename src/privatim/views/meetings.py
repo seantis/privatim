@@ -45,18 +45,17 @@ def meeting_view(
         request: 'IRequest'
 ) -> 'RenderData':
     """ Displays a single meeting. """
-
     assert isinstance(context, Meeting)
     formatted_time = datetime_format(context.time)
-
     request.add_action_menu_entries(meeting_buttons(context, request))
-
     agenda_items = []
     for indx, item in enumerate(context.agenda_items, start=1):
         agenda_items.append(
             {
                 'title': Markup(
-                    '<strong>{}.</strong> {}'.format(indx, item.title)
+                    '<strong>{}.</strong> {}'.format(
+                        indx, Markup.escape(item.title)
+                    )
                 ),
                 'description': Markup(item.description),
                 'id': item.id,
@@ -65,6 +64,13 @@ def meeting_view(
                     url=request.route_url('edit_agenda_item', id=item.id),
                     icon='edit',
                     description=_('Edit Agenda Item'),
+                ),
+                'delete_btn': Button(
+                    url=request.route_url('delete_agenda_item', id=item.id),
+                    icon='trash',
+                    description=_('Delete Agenda Item'),
+                    modal='#delete-xhr',
+                    data_item_title=item.title,
                 ),
             }
         )
@@ -76,7 +82,7 @@ def meeting_view(
         target_id='{target_id}',
     )
     return {
-        'delete_title': _('Delete meeting'),
+        'delete_title': _('Delete'),
         'time': formatted_time,
         'meeting': context,
         'meeting_attendees': user_list(
