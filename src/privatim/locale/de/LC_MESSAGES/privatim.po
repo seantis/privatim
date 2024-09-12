@@ -544,7 +544,7 @@ msgstr "Gremium"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Leader:"
-msgstr "Leiter:"
+msgstr "Leitung:"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Contact Chairman:"
@@ -953,7 +953,7 @@ msgstr "Beschreibung ebenfalls kopieren"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Leader"
-msgstr "Leiter"
+msgstr "Leitung"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
@@ -1049,22 +1049,3 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
-
-#~ msgid "Delete meeting"
-#~ msgstr "Sitzung löschen"
-
-#~ msgid "Choose a canton..."
-#~ msgstr "Kanton auswählen..."
-
-#~ msgid "No Users Found"
-#~ msgstr "Keine Benutzer gefunden"
-
-#~ msgid "Remove this item"
-#~ msgstr "Dieses Element entfernen"
-
-#, python-format
-#~ msgid "Successfully deleted user: ${full_name}."
-#~ msgstr "Benutzer ${full_name} erfolgreich gelöscht."
-
-#~ msgid "Unknown Creator"
-#~ msgstr "Unbekannter Ersteller"

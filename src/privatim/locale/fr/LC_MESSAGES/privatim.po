@@ -230,11 +230,11 @@ msgstr "Copier"
 
 #: src/privatim/views/meetings.py
 msgid "Copy Agenda Items"
-msgstr "Copier les éléments de l'ordre du jour"
+msgstr "Copier les points de l'ordre du jour"
 
 #: src/privatim/views/meetings.py
 msgid "Export"
-msgstr "Imprimer"
+msgstr "Exporter"
 
 #: src/privatim/views/meetings.py
 msgid "Export meeting protocol"
@@ -250,7 +250,7 @@ msgstr "Attendus"
 
 #: src/privatim/views/meetings.py
 msgid "Invited"
-msgstr "Absent"
+msgstr "Présent"
 
 #: src/privatim/views/meetings.py
 msgid "Meeting Report"
@@ -267,7 +267,7 @@ msgstr "Supprimer le comité"
 #: src/privatim/views/meetings.py src/privatim/views/working_groups.py
 #: src/privatim/forms/working_group_forms.py
 msgid "Edit Working Group"
-msgstr "Modifier le comité de Travail"
+msgstr "Modifier le comité"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -360,28 +360,28 @@ msgstr "Échec de la vérification"
 
 #: src/privatim/views/consultations.py src/privatim/forms/consultation_form.py
 msgid "Edit Consultation"
-msgstr "Modifier la consultation"
+msgstr "Modifier la procédure de consultation"
 
 #: src/privatim/views/consultations.py
 msgid "Delete Consultation"
-msgstr "Supprimer la consultation"
+msgstr "Supprimer la procédure de consultation"
 
 #: src/privatim/views/consultations.py
 msgid "Successfully added consultation"
-msgstr "Consultation ajoutée avec succès"
+msgstr "Procédure de consultation ajoutée avec succès"
 
 #: src/privatim/views/consultations.py
 #: src/privatim/views/templates/consultations.pt
 msgid "Add Consultation"
-msgstr "Ajouter une consultation"
+msgstr "Ajouter une procédure de consultation"
 
 #: src/privatim/views/consultations.py
 msgid "Successfully edited consultation."
-msgstr "Consultation modifiée avec succès."
+msgstr "Procédure de consultation modifiée avec succès."
 
 #: src/privatim/views/consultations.py
 msgid "Consultation moved to the paper basket"
-msgstr "Consultation déplacée vers la poubelle"
+msgstr "Procédure de consultation déplacée vers la poubelle"
 
 #: src/privatim/views/password_change.py src/privatim/forms/user_form.py
 msgid "Email"
@@ -498,7 +498,7 @@ msgstr "Authentification mobile"
 #: src/privatim/views/templates/mtan.pt
 #: src/privatim/views/templates/mtan_setup.pt
 msgid "Submit"
-msgstr "Envoyer"
+msgstr "Se connecter"
 
 #: src/privatim/views/templates/form.pt
 msgid "Save"
@@ -522,7 +522,7 @@ msgstr "Date / Heure:"
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
-msgstr "ordres du jour"
+msgstr "Ordre du jour "
 
 #: src/privatim/views/templates/meeting.pt
 msgid "Reorder item"
@@ -531,7 +531,7 @@ msgstr "Déplacer un élément"
 #: src/privatim/views/templates/meeting.pt
 #: src/privatim/forms/agenda_item_form.py
 msgid "Add Agenda Item"
-msgstr "Ajouter un élément de l'ordre du jour"
+msgstr "Ajouter un point de l'ordre du jour"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Back to Working Groups overviwe"
@@ -543,7 +543,7 @@ msgstr "Comité"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Leader:"
-msgstr "Chef de file:"
+msgstr "Direction:"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Contact Chairman:"
@@ -557,13 +557,13 @@ msgstr "Réunions"
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/forms/meeting_form.py
 msgid "Add Meeting"
-msgstr "Ajouter une session"
+msgstr "Ajouter une réunion"
 
 #: src/privatim/views/templates/working_group.pt
 msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
-msgstr "Ici, vous pouvez ajouter des sessions dans le contexte d'un comité."
+msgstr "Ici, vous pouvez ajouter des réunions dans le contexte d'un comité."
 
 #: src/privatim/views/templates/working_group.pt
 #: src/privatim/views/templates/profile.pt
@@ -578,7 +578,7 @@ msgstr "Date et heure"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Back to Consultations"
-msgstr "Retour aux consultations"
+msgstr "Retour aux procédures de consultation"
 
 #: src/privatim/views/templates/consultation.pt
 msgid "Description:"
@@ -645,7 +645,7 @@ msgstr "Changer le mot de passe"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Consultation Added"
-msgstr "Consultation ajoutée"
+msgstr "Procédure de consultation ajoutée"
 
 #: src/privatim/views/templates/activities.pt
 msgid "Meeting Scheduled"
@@ -893,7 +893,7 @@ msgstr "Ce champ est en lecture seule."
 
 #: src/privatim/forms/filter_form.py
 msgid "Consultation"
-msgstr "Consultation"
+msgstr "Procédures de consultation"
 
 #: src/privatim/forms/filter_form.py
 msgid "Meeting"
@@ -941,7 +941,7 @@ msgstr "Aucune réunion de destination valide disponible."
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy agenda items from meeting"
-msgstr "Copier les éléments de l'ordre du jour de la réunion"
+msgstr "Copier les points de l'ordre du jour de la réunion"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "Copy description aswell"
@@ -953,7 +953,7 @@ msgstr "Chef de file"
 
 #: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
-msgstr "Contact conseil d'administration"
+msgstr "Direction"
 
 #: src/privatim/forms/search_form.py
 msgid "Search"
@@ -1045,22 +1045,3 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
-
-#~ msgid "Delete meeting"
-#~ msgstr "Supprimer la réunion"
-
-#~ msgid "Choose a canton..."
-#~ msgstr "Choisissez un canton..."
-
-#~ msgid "No Users Found"
-#~ msgstr "Aucun utilisateur trouvé"
-
-#~ msgid "Remove this item"
-#~ msgstr "Supprimer cet élément"
-
-#, python-format
-#~ msgid "Successfully deleted user: ${full_name}."
-#~ msgstr "Utilisateur supprimé avec succès: ${full_name}."
-
-#~ msgid "Unknown Creator"
-#~ msgstr "Créateur inconnu"
