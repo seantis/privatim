@@ -14,9 +14,7 @@ MacOS:
 brew update && brew install postgresql poppler python libpq weasyprint
 ```
 
-PostgresSQL is required. Sqlite won't work. Version needs to be >=12.
-
-Create the PostgreSQL database:
+Create the PostgreSQL (Version >=12) database:
 ```
 sudo -u postgres bash -c "psql <<EOF
 CREATE USER dev WITH PASSWORD 'devpassword' LOGIN NOINHERIT;
@@ -25,7 +23,7 @@ CREATE DATABASE privatim;
 GRANT ALL PRIVILEGES ON DATABASE privatim TO dev;
 EOF"
 ```
-If you've already built onegov one time, you can skip the db user creation.
+
 ```
 git clone git@github.com:seantis/privatim.git
 cd privatim
@@ -33,30 +31,20 @@ python3 -m venv venv
 source venv/bin/activate
 make install
 cp development.ini.example development.ini
-```
 
-- Add a user
-
-```
+# Add a user
 add_user --email admin@example.org --password test --first_name Jane --last_name Dane development.ini
-```
 
-
-### Load default data into the database using a script (optional).
-
-```
+# Load default data into the database using a script (optional).
 add_content development.ini
 ```
 
-
-### Run dev server
-
+### Run dev server:
 ```
 make run
 ```
 
 ## Run the project's tests
-
 ```
 pytest -n auto
 ```
@@ -67,6 +55,7 @@ pytest -n auto
 
 Setup JavaScript toolchain (optional)
 ===================================
+Currently only used for the Editor.
 
 1. Install nvm [from here](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script)
 
@@ -108,15 +97,14 @@ nvm use default
 
 # Manage dependencies
 
-. The `make compile` commands generates the `requirements.txt`. If you add a new dependency to `setup.cfg`, you need to run `make compile` to update the `requirements.txt` file.
-
+If you add a new dependency to `setup.cfg`, you need to run `make compile` to update the `requirements.txt` file.
+The `make compile` commands generates a `requirements.txt`.
+This is then used by puppet and also the CI to install the dependencies.
 
 ## Regenerate requirements files based on new dependencies
 
     ./requirements/compile.sh
 
-This generates `requirements.txt` based on the dependencies in setup.cfg`.
-This is used by puppet and the CI to install the dependencies on the server.
 
 ## Upgrade dependencies to latest version
 
@@ -141,17 +129,19 @@ This will remove packages that have been manually installed locally
 ## Miscellaneous
 
 ###  Filestorage location
-By default, files are managed by sqlalchemy-file and are saved in the ./files directory
+By default, files are managed by sqlalchemy-file and are saved in the `files/` directory (relative to the repository root).
 
 ### Export Translations
 
 ```
+pip install poxls
 po-to-xls src/privatim/locale/fr/LC_MESSAGES/privatim.po
 ```
+Will generate the `xlsx` file in the current working dir.
 
 ### Javascript/Css dependencies
 
-The project includes js/css files.
+Here we track all the statically included JavaScript assets.
 If you need to update them, you can find the sources in the following locations:
 
 ###  Tom Select
