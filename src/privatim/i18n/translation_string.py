@@ -1,20 +1,18 @@
 from functools import update_wrapper
-from typing import Any
-from typing import Literal
-from typing import overload
 
 import translationstring
 from markupsafe import Markup
 from markupsafe import escape
-
 from .core import translate
 
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Literal, overload
 if TYPE_CHECKING:
-    from markupsafe import HasHTML
     from typing import Protocol
     from typing_extensions import Self
+
+    class HasHTML(Protocol):
+        def __html__(self, /) -> str: ...
 
     class TStrCallable(Protocol):
         @overload
@@ -98,7 +96,7 @@ class TranslationMarkup(TranslationString):
         if default is None:
             _default = None
         else:
-            _default = Markup(default)  # noqa: MS001
+            _default = Markup(default)
 
         # NOTE: We prepare everything in the mapping with escape
         #       because interpolate uses re.sub, which is not
@@ -110,25 +108,25 @@ class TranslationMarkup(TranslationString):
             _mapping = {k: escape(v) for k, v in mapping.items()}
 
         if not isinstance(msgid, str) and hasattr(msgid, '__html__'):
-            msgid = Markup(msgid)  # noqa: MS001
+            msgid = Markup(msgid)
 
         elif isinstance(msgid, translationstring.TranslationString):
             domain = domain or msgid.domain and msgid.domain[:]
             context = context or msgid.context and msgid.context[:]
-            _default = _default or Markup(msgid.default)  # noqa: MS001
+            _default = _default or Markup(msgid.default)
             if msgid.mapping:
                 if _mapping:
                     for k, v in msgid.mapping.items():
                         _mapping.setdefault(k, escape(v))
                 else:
                     _mapping = {k: escape(v) for k, v in msgid.mapping.items()}
-            msgid = Markup(str(msgid))  # noqa: MS001
+            msgid = Markup(str(msgid))
 
         instance: Self = str.__new__(cls, msgid)
         instance.domain = domain
         instance.context = context
         if _default is None:
-            _default = Markup(msgid)  # noqa: MS001
+            _default = Markup(msgid)
         instance.default = _default
 
         instance.mapping = _mapping
@@ -142,8 +140,8 @@ class TranslationMarkup(TranslationString):
 
     def interpolate(self, translated: str | None = None) -> Markup:
         if translated is not None:
-            translated = Markup(translated)  # noqa: MS001
-        return Markup(super().interpolate(translated))  # noqa: MS001
+            translated = Markup(translated)
+        return Markup(super().interpolate(translated))
 
     @classmethod
     def escape(cls, s: Any) -> 'Self':
@@ -160,7 +158,7 @@ class TranslationMarkup(TranslationString):
         return cls(escape(s))
 
     def translated(self, language: str | None = None) -> Markup:
-        return Markup(translate(self, language))  # noqa: MS001
+        return Markup(translate(self, language))
 
 
 def TranslationStringFactory(factory_domain: str) -> 'TStrCallable':
@@ -251,7 +249,7 @@ def _dugettext_policy(
             # we don't want it to get interpolated into Markup
             and not type(tstring) is TranslationString
     ):
-        return Markup(translated)  # noqa: MS001
+        return Markup(translated)
     return translated
 
 
