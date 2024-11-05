@@ -24,27 +24,6 @@ if TYPE_CHECKING:
 logger = logging.getLogger('privatim.people')
 
 
-def user_buttons(
-        user: User, request: 'IRequest'
-) -> list[Button]:
-    return [
-        Button(
-            url=request.route_url('edit_user', id=user.id),
-            icon='edit',
-            description=_('Edit user'),
-            css_class='btn-sm btn-secondary',
-        ),
-        Button(
-            url=request.route_url('delete_user', id=user.id),
-            icon='trash',
-            description=_('Delete'),
-            css_class='btn-sm btn-outline-danger',
-            modal='#delete-xhr',
-            data_item_title=_('User ${name}', mapping={'name': user.fullname})
-        )
-    ]
-
-
 def people_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
     stmt = select(User).order_by(
@@ -55,7 +34,24 @@ def people_view(request: 'IRequest') -> 'RenderData':
 
     people_data = []
     for user in users:
-        buttons = user_buttons(user, request)
+        buttons = [
+            Button(
+                url=request.route_url('edit_user', id=user.id),
+                icon='edit',
+                description=_('Edit user'),
+                css_class='btn-sm btn-secondary',
+            ),
+            Button(
+                url=request.route_url('delete_user', id=user.id),
+                icon='trash',
+                description=_('Delete'),
+                css_class='btn-sm btn-outline-danger',
+                modal='#delete-xhr',
+                data_item_title=_(
+                    'User ${name}', mapping={'name': user.fullname},
+                ),
+            ),
+        ]
         button_html = Markup('').join(Markup(button()) for button in buttons)
         people_data.append({
             'id': user.id,

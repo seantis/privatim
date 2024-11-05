@@ -28,7 +28,6 @@ from privatim.sms.sms_gateway import ASPSMSGateway
 
 
 from typing import Any, TYPE_CHECKING, Iterable
-
 from subscribers import register_subscribers
 
 if TYPE_CHECKING:
@@ -101,7 +100,8 @@ def includeme(config: Configurator) -> None:
         entries: Iterable['Button'],
     ) -> None:
         """
-        Add multiple Button entries to the action menu.
+        Action menus are a list of buttons that are displayed in the top right.
+        The attribute is stored on the request (dynamically).
         """
         if not hasattr(request, 'action_menu_entries'):
             request.action_menu_entries = []
