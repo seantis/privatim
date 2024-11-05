@@ -38,7 +38,7 @@ from privatim.views.meetings import (add_meeting_view,
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
-from privatim.views.meetings import meetings_view
+from privatim.views.meetings import working_group_view
 from privatim.views.password_change import password_change_view
 from privatim.views.password_retrieval import password_retrieval_view
 
@@ -292,7 +292,7 @@ def includeme(config: 'Configurator') -> None:
         factory=working_group_factory
     )
     config.add_view(
-        meetings_view,
+        working_group_view,
         route_name='meetings',
         renderer='templates/working_group.pt',
     )

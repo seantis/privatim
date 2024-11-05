@@ -215,8 +215,9 @@ def export_meeting_as_pdf_view(
     return response
 
 
-# alias working_group_view
-def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
+def working_group_view(
+    context: WorkingGroup, request: 'IRequest'
+) -> 'RenderData':
     """Displays the table of meetings a single working group has."""
 
     assert isinstance(context, WorkingGroup)
@@ -254,6 +255,7 @@ def meetings_view(context: WorkingGroup, request: 'IRequest') -> 'RenderData':
         'participants': translate(_('Participants')),
         'delete_title': _('Delete Working Group'),
         'leader': context.leader or '',
+        'leader_link': request.route_url('person', id=context.leader_id),
         'chairman': chairman,
         'add_meeting_link': request.route_url('add_meeting', id=context.id),
         'navigate_back_up': request.route_url('working_groups'),
