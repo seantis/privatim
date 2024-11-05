@@ -18,7 +18,6 @@ from privatim.models.comment import Comment
 
 from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
-    from sqlalchemy.dialects.postgresql import TSVECTOR
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
@@ -45,7 +44,6 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         replaced_by: 'Consultation | None' = None,
         secondary_tags: list[str] | None = None,
         previous_version: 'Consultation | None' = None,
-        searchable_text_de_CH: 'TSVECTOR | None' = None,
         comments: list[Comment] | None = None,
         is_latest_version: int = 1,
     ):
@@ -69,7 +67,6 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         self.editor = editor
         self.replaced_by = replaced_by
         self.previous_version = previous_version
-        self.searchable_text_de_CH = searchable_text_de_CH
         if comments is not None:
             self.comments = comments
         self.is_latest_version = is_latest_version
