@@ -30,10 +30,8 @@ def people_view(request: 'IRequest') -> 'RenderData':
         nullslast(User.last_name),
         nullslast(User.first_name)
     )
-    users = session.execute(stmt).scalars().all()
-
     people_data = []
-    for user in users:
+    for user in session.execute(stmt).scalars():
         buttons = [
             Button(
                 url=request.route_url('edit_user', id=user.id),
@@ -55,7 +53,7 @@ def people_view(request: 'IRequest') -> 'RenderData':
         button_html = Markup('').join(Markup(button()) for button in buttons)
         people_data.append({
             'id': user.id,
-            'name': f'{user.first_name} {user.last_name}',
+            'name': f'{user.last_name} {user.first_name}',
             'download_link': user.profile_pic_download_link(request),
             'url': request.route_url('person', id=user.id),
             'buttons': button_html
