@@ -196,8 +196,7 @@ def export_meeting_as_pdf_view(
         context: Meeting, request: 'IRequest',
 ) -> Response:
     session = request.dbsession
-    meeting_id = context.id
-    meeting = session.get(Meeting, meeting_id)
+    meeting = session.get(Meeting, context.id)
     if meeting is None:
         return HTTPNotFound()
 

@@ -128,11 +128,13 @@ class HTMLReportRenderer:
         request: 'IRequest'
     ) -> str:
         """Render chameleon report template."""
-
         document_context = {'title': meeting.name, 'created_at': timestamp}
-
-        title = translate(_("Protocol of meeting ${title}",
-                          mapping={'title': document_context['title']}))
+        title = translate(
+            _(
+                "Protocol of meeting ${title}",
+                mapping={'title': document_context['title']},
+            )
+        )
         ctx = {
             'title': title,
             'meeting': meeting,
