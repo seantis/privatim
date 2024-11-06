@@ -261,7 +261,7 @@ msgstr "Sitzungsbericht"
 
 #: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
 msgid "Participants"
-msgstr "Mitwirkende"
+msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
