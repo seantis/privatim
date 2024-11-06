@@ -159,8 +159,9 @@ class Meeting(Base, SearchableMixin):
     )
 
     @property
-    def sorted_attendance_records(self) \
-            -> Select[tuple[MeetingUserAttendance]]:
+    def sorted_attendance_records(
+            self
+    ) -> Select[tuple[MeetingUserAttendance]]:
         return (
             select(MeetingUserAttendance)
             .join(MeetingUserAttendance.user)
