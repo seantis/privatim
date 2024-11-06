@@ -40,8 +40,26 @@
         font-family: "DM Sans", sans-serif;
     }
 
+    /* Preserve all text formatting */
+    strong, b {
+        font-weight: bold!important;
+    }
+
+    em, i {
+        font-style: italic!important;
+    }
+
+    u {
+        text-decoration: underline;
+    }
+
+    .make-line-breaks-in-p {
+        white-space: pre-line;
+    }
+
     p, textarea.form-control {
         line-height: 1.3;
+        text-align: justify;
         font-size: 1.05rem;
     }
 
@@ -113,7 +131,7 @@
         <ul tal:repeat="item meeting.agenda_items" class="agenda-items-list">
             <li>
                 <h3 tal:content="h.Markup(repeat.item.index + 1) + h.Markup('. ') + h.Markup(item.title)"></h3>
-                <p tal:content="h.Markup(item.description)"></p>
+                <p tal:content="h.Markup(item.description)" class="make-line-breaks-in-p"></p>
             </li>
         </ul>
 

@@ -447,7 +447,6 @@ input[type="color"]:focus,
     position: relative;
 }
 
-
 .timeline::before {
     content: '';
     position: absolute;

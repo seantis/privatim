@@ -7,7 +7,7 @@ from babel.dates import format_datetime
 
 from privatim.i18n import translate, _
 from privatim.layouts.layout import DEFAULT_TIMEZONE
-from privatim.utils import datetime_format
+from privatim.utils import datetime_format, strip_p_tags
 from pyramid.renderers import render
 from weasyprint import HTML  # type: ignore
 
