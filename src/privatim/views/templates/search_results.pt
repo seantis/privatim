@@ -27,6 +27,9 @@
                         <!-- Generic search result rendering -->
                         <tal:block tal:condition="python: result.type not in ['Comment', 'SearchableFile']">
                             <div class="card border-0 d-flex flex-row activity-card-wrapper">
+                                <div tal:condition="python: result.type == 'Consultation'" class="d-flex align-items-center ms-3">
+                                    <i class="fas fa-file-alt fa-2x text-muted"></i>
+                                </div>
                                 <div class="card-body col-md-8 d-flex flex-column">
                                     <tal:block tal:condition="result.headlines['title']" >
                                         <h4 class="card-title fw-bold m-2">
@@ -43,12 +46,12 @@
                                     </div>
 
                                     <tal:block tal:condition="python: result.type.lower() not in ['agendaitem']">
-                                    <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
-                                       class="details-link">Show Details</a>
+                                        <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate="
+                                           class="details-link mt-auto">Show Details</a>
                                     </tal:block>
                                     <tal:block tal:condition="result.type.lower() == 'agendaitem'">
                                         <a href="${request.route_url('meeting', id=str(result.model_instance.meeting.id))}" i18n:translate=""
-                                           class="details-link">Show Details</a>
+                                           class="details-link mt-auto">Show Details</a>
                                     </tal:block>
                                 </div>
                             </div>
