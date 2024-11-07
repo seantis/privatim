@@ -1,7 +1,4 @@
-from uuid import UUID
-
 from sqlalchemy import select
-from sqlalchemy.orm import load_only
 from wtforms import StringField, validators
 from wtforms.fields.form import FormField
 from wtforms.fields.list import FieldList
@@ -9,7 +6,7 @@ from wtforms.fields.simple import BooleanField
 from wtforms.validators import InputRequired
 
 from privatim.forms.core import Form
-
+from privatim.utils import get_guest_users
 from privatim.forms.fields import TimezoneDateTimeField
 from privatim.forms.fields.fields import SearchableMultiSelectField, \
     ConstantTextAreaField
@@ -76,22 +73,7 @@ class MeetingForm(Form):
                 'request': request
             }
         )
-        group_id_condition = (
-            UUID(context.working_group.id)
-            if isinstance(context, Meeting)
-            else UUID(context.id)
-        )
-        guest_users = (
-            session.execute(
-                select(User)
-                .options(load_only(User.id, User.first_name, User.last_name))
-                .filter(
-                    ~User.groups.any(WorkingGroup.id == group_id_condition)
-                )
-            )
-            .scalars()
-            .all()
-        )
+        guest_users = get_guest_users(session, context)
         self.attendees.choices = [
             (str(u.id), f"{u.first_name} {u.last_name}") for u in guest_users
         ]

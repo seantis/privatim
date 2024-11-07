@@ -7,9 +7,10 @@ from pytz import timezone, BaseTzInfo
 from sedate import to_timezone
 from markupsafe import escape
 from sqlalchemy import select, text
-from sqlalchemy.orm import DeclarativeBase, joinedload
+from sqlalchemy.orm import DeclarativeBase, joinedload, load_only
 
-from privatim.models import Consultation
+from privatim.models import Consultation, Meeting
+from privatim.models import User, WorkingGroup
 from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
@@ -17,7 +18,6 @@ from privatim.layouts.layout import DEFAULT_TIMEZONE
 from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from privatim.models.user import User
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
     from datetime import datetime
@@ -280,7 +280,7 @@ def get_previous_versions(
 
 
 class ConsultationVersion:
-    def __init__(self, created: 'datetime', editor: 'User | None', title: str):
+    def __init__(self, created: 'datetime', editor: User | None, title: str):
         self.created = created
         self.editor = editor
         self.title = title
@@ -326,3 +326,35 @@ def simple_get_previous_versions(
             current_version = current_version.previous_version
             count += 1
         return versions
+
+
+def get_guest_users(
+    session: 'FilteredSession', context: Meeting | WorkingGroup
+) -> 'Sequence[User]':
+
+    # Get ALL users first
+    all_users = (
+        session.execute(
+            select(User)
+            .options(load_only(User.id, User.first_name, User.last_name))
+            .order_by(User.first_name, User.last_name)
+        )
+        .scalars()
+        .all()
+    )
+
+    if isinstance(context, Meeting):
+        working_group_members = {
+            str(user.id) for user in context.working_group.users
+        }
+        # Also get existing attendees
+        existing_attendees = {
+            str(record.user_id) for record in context.attendance_records
+        }
+        excluded_ids = working_group_members | existing_attendees
+    else:
+        excluded_ids = {str(user.id) for user in context.users}
+
+    return [
+        user for user in all_users if str(user.id) not in excluded_ids
+    ]
