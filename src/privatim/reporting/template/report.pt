@@ -157,15 +157,10 @@
         </p>
         <ul class="attendees-list">
             <li tal:repeat="record sorted_attendance_records">
-                    <span tal:condition="record.user.first_name and record.user.last_name">
-                        ${record.user.first_name} ${record.user.last_name}
-                    </span>
-                <span tal:condition="not record.user.first_name and not record.user.last_name">
-                        ${record.user.email}
-                </span>
+            ${record.user.first_name} ${record.user.last_name}
                 <span class="attendance-status" tal:condition="record.status.value == 'attended'">
                         ✓
-                    </span>
+                </span>
             </li>
         </ul>
 

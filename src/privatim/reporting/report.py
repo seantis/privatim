@@ -13,8 +13,6 @@ from weasyprint import HTML  # type: ignore
 
 
 from typing import TYPE_CHECKING, Protocol
-
-
 if TYPE_CHECKING:
     from privatim.models import Meeting
     from pytz import BaseTzInfo
@@ -143,9 +141,7 @@ class HTMLReportRenderer:
         ctx = {
             'title': title,
             'meeting': meeting,
-            'sorted_attendance_records': list(
-                request.dbsession.scalars(meeting.sorted_attendance_records)
-            ),
+            'sorted_attendance_records': meeting.attendance_records,
             'meeting_time': datetime_format(meeting.time),
             'document': document_context,
         }
