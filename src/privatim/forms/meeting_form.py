@@ -16,9 +16,8 @@ from privatim.i18n import _
 from privatim.models.association_tables import AttendanceStatus
 from privatim.models import MeetingUserAttendance
 
-from typing import TYPE_CHECKING, Any
-
-from privatim.utils import attendance_status
+from typing import TYPE_CHECKING, Any, NamedTuple
+from privatim.utils import status_is_checked
 if TYPE_CHECKING:
     from wtforms import Field
     from pyramid.interfaces import IRequest
@@ -43,6 +42,11 @@ class AttendanceForm(Form):
     )
     status = CheckboxField(
         _('Attended'),
+        render_kw={'class': 'no-white-background'},
+        default=False
+    )
+    remove = CheckboxField(
+        _('Remove'),
         render_kw={'class': 'no-white-background'},
         default=False
     )
@@ -154,7 +158,7 @@ class MeetingForm(Form):
             self.attendance.append_entry(
                 {
                     'user_id': str(attendance_record.user_id),
-                    'fullname': attendance_record.user.fullname,
+                    'fullname': attendance_record.user.fullname_without_abbrev,
                     'status': status
                 }
             )
@@ -186,38 +190,44 @@ def sync_meeting_attendance_records(
     """ Searches in request.POST to manually get data and find the status
     for each user and map it to MeetingUserAttendance."""
 
-    def find_attendance_in_form(user_id: str) -> bool:
+    class AttendanceValues(NamedTuple):
+        is_present: bool
+        should_remove: bool
+
+    def find_attendance_in_form(user_id: str) -> AttendanceValues:
+        """ Returns the values of the status and remove checkboxes, in that
+        order """
         for f in form._fields.get('attendance', ()):  # type:ignore
             if f.user_id.data == user_id:
                 # XXX this is kind of crude, but I couldn't find a way to do
                 # it otherwise. Request.POST is somehow is not mapped to the
                 # 'status' field in AttendanceForm.
                 # We have to get it manually as a workaround
-                return attendance_status(post_data, user_id)
-
-        return False
+                return AttendanceValues(
+                    is_present=status_is_checked(post_data, user_id),
+                    should_remove=bool(f.remove.data)
+                )
+        return AttendanceValues(is_present=False, should_remove=False)
 
     assert isinstance(form.attendees, SearchableMultiSelectField)
 
-    # Extract user IDs and statuses from the attendance FieldList
-    attendance_data = {
-        entry.data['user_id']: entry.data['status']
-        for entry in form.attendance.entries
-    }
-    # Get user IDs from the attendees field
+    # Collect unique user IDs from attendees and attendance entries
+    entries = form.attendance.entries
+    attendance_user_ids = {entry.data['user_id'] for entry in entries}
     attendee_ids = set(form.attendees.data or [])
 
-    # Combine user IDs from attendance and attendees, removing duplicates
-    all_user_ids = set(attendance_data.keys()) | attendee_ids
-
+    # Merge both sets of user IDs
+    all_user_ids = attendance_user_ids | attendee_ids
     stmt = select(User).where(User.id.in_(all_user_ids))
     users_for_edited_meeting = session.execute(stmt).scalars().all()
+
     obj.attendance_records = []
     for user in users_for_edited_meeting:
-        actual_status = AttendanceStatus.INVITED
-        if find_attendance_in_form(user.id) is True:
-            actual_status = AttendanceStatus.ATTENDED
-        attendance = MeetingUserAttendance(
-            meeting=obj, user=user, status=actual_status
-        )
-        obj.attendance_records.append(attendance)
+        attended, remove = find_attendance_in_form(user.id)
+        if not remove:  # Only add if not marked for removal
+            obj.attendance_records.append(MeetingUserAttendance(
+                meeting=obj,
+                user=user,
+                status=AttendanceStatus.ATTENDED
+                if attended else AttendanceStatus.INVITED,
+            ))

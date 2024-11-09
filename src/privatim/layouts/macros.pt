@@ -269,22 +269,25 @@
 <tal:block metal:define-macro="render_attendance_field">
     <div class="attendance-container">
         <div class="attendance-list">
-            <div class="attendance-header">
-                <span>Name</span>
-                <span>Anwesend</span>
+            <div class="attendance-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                <span class="col-6" i18n:translate="">Name</span>
+                <span class="col-3 text-center" i18n:translate="">Attended</span>
+                <span class="col-3 text-center" i18n:translate="">Remove</span>
             </div>
             <tal:block tal:repeat="subfield field">
-                <div class="attendance-row">
+                <div class="attendance-row d-flex justify-content-between align-items-center mb-2">
                 ${subfield.user_id(type='hidden')}
-                    <span class="attendee-name">${subfield.fullname(disabled='disabled')}</span>
-                    <span class="attendee-status">${subfield.status()}</span>
+                    <span class="attendee-name col-6">${subfield.fullname(disabled='disabled', class_='form-control-plaintext')}</span>
+                    <span class="attendee-status col-3 text-center">${subfield.status(class_='form-check-input')}</span>
+                    <span class="attendee-remove col-3 text-center">
+                            ${subfield.remove(class_='form-check-input text-danger')}
+                    </span>
                 </div>
             </tal:block>
         </div>
         <div class="invalid-feedback" tal:repeat="error field.errors">${error}</div>
     </div>
 </tal:block>
-
 
 
 

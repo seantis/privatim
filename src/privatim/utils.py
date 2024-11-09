@@ -206,7 +206,7 @@ def strip_p_tags(text: str) -> str:
     return _text.strip()
 
 
-def attendance_status(data: 'Mapping[str, Any]', user_id: str) -> bool:
+def status_is_checked(data: 'Mapping[str, Any]', user_id: str) -> bool:
     """ Returns true if for the given user the checkbox has been checked,
     false otherwise. """
     # Find the index for the given user_id

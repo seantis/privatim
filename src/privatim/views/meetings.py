@@ -54,7 +54,7 @@ def meeting_view(
                 icon='edit',
                 title=_('Edit'),
                 css_class='dropdown-item',
-                description=_('Edit context'),
+                description=_('Edit meeting'),
             ),
             Button(
                 title=_('Copy'),

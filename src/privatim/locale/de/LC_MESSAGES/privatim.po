@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-09-10 11:47+0200\n"
+"POT-Creation-Date: 2024-11-08 22:02+0100\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -99,6 +99,22 @@ msgstr "K"
 #: src/privatim/layouts/macros.pt
 msgid "URL"
 msgstr "URL"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Name"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+#: src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr "Anwesend"
+
+#: src/privatim/layouts/macros.pt src/privatim/forms/meeting_form.py
+msgid "Remove"
+msgstr "Entfernen"
 
 #: src/privatim/layouts/macros.pt
 msgid "Do you really wish to delete \"${item_title}\"?"
@@ -203,29 +219,6 @@ msgstr "Anmeldung fehlgeschlagen."
 msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
-#: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
-msgid "Edit Agenda Item"
-msgstr "Traktandum bearbeiten"
-
-#: src/privatim/views/meetings.py
-msgid "Delete Agenda Item"
-msgstr "Traktandum löschen"
-
-#: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Mitglieder"
-
-#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
-msgid "Expand All"
-msgstr "Alle ausklappen"
-
-#: src/privatim/views/meetings.py
-msgid "Collapse All"
-msgstr "Alle einklappen"
-
-#: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Copy"
@@ -247,9 +240,25 @@ msgstr "Protokoll drucken"
 msgid "Delete Meeting"
 msgstr "Sitzung löschen"
 
-#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attended"
-msgstr "Anwesend"
+#: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
+msgstr "Traktandum bearbeiten"
+
+#: src/privatim/views/meetings.py
+msgid "Delete Agenda Item"
+msgstr "Traktandum löschen"
+
+#: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
+
+#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
+msgid "Expand All"
+msgstr "Alle ausklappen"
+
+#: src/privatim/views/meetings.py
+msgid "Collapse All"
+msgstr "Alle einklappen"
 
 #: src/privatim/views/meetings.py
 msgid "Invited"
@@ -259,18 +268,18 @@ msgstr "Abwesend"
 msgid "Meeting Report"
 msgstr "Sitzungsbericht"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
-msgid "Participants"
-msgstr "Mitglieder"
+#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Gremium bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
 msgstr "Gremium löschen"
 
-#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Gremium bearbeiten"
+#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
+msgid "Participants"
+msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -565,13 +574,6 @@ msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
 msgstr "Hier können Sie Sitzungen dieses Gremiums hinzufügen."
-
-#: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Name"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Date and Time"
@@ -1049,3 +1051,6 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Edit Meeting"
+#~ msgstr "Sitzung bearbeiten"
