@@ -104,12 +104,17 @@ class HTMLReportRenderer:
 
     You can turn on logging for weasyprint to debug issues:
 
-        >>> import logging, sys
-        >>> logger = logging.getLogger('weasyprint')
-        >>> logger.setLevel(logging.DEBUG)
-        >>> logger.addHandler(logging.StreamHandler(sys.stdout))
+        import logging, sys
+        logger = logging.getLogger('weasyprint')
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(logging.StreamHandler(sys.stdout))
 
     """
+
+    import logging, sys
+    logger = logging.getLogger('weasyprint')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(logging.StreamHandler(sys.stdout))
 
     template = 'privatim:reporting/template/report.pt'
 
@@ -139,7 +144,7 @@ class HTMLReportRenderer:
                             indx, Markup.escape(item.title)
                         )
                     ),
-                    'description': Markup(item.description),
+                    'description': Markup(strip_p_tags(item.description)),
                 }
             )
 
