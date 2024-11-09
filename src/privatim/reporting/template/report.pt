@@ -117,11 +117,12 @@
         <p tal:condition="meeting.attendees">
             <span class="fw-bold" i18n:translate="">Attendees:</span>
         </p>
-
         <ul class="attendees-list">
-            <li tal:repeat="user meeting.attendees">
-                <span tal:condition="user.first_name and user.last_name">${user.first_name} ${user.last_name}</span>
-                <span tal:condition="not user.first_name and not user.last_name">${user.email}</span>
+            <li tal:repeat="record sorted_attendance_records">
+            ${record.user.first_name} ${record.user.last_name}
+                <span class="attendance-status" tal:condition="record.status.value == 'attended'">
+                        ✓
+                </span>
             </li>
         </ul>
 

@@ -386,9 +386,6 @@ mark {
     width: 100%;
 }
 
-.filter-form .is-checkbox-field {
-
-}
 
 input[type="checkbox"]:checked {
     accent-color: var(--primary-color);

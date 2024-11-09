@@ -325,21 +325,22 @@ function listenForChangesInAttendees() {
 
     function addAttendee(userId, name) {
         // need to make sure that the × character is not part of the inserted name!
-
         const existingAttendee = document.querySelector(`input[value="${userId}"]`);
         // prevent adding duplicates
         if (existingAttendee) {
             return;
         }
-
-        const newIndex = attendanceList.children.length - 1; // -1 for header
+        const newIndex = attendanceList.children.length - 1; // -1 due to header
         const newRow = document.createElement('div');
-        newRow.className = 'attendance-row';
+        newRow.className = 'attendance-row d-flex justify-content-between align-items-center mb-2';
         newRow.innerHTML = `
-            <input class="hidden no-white-background" id="attendance-${newIndex}-user_id" name="attendance-${newIndex}-user_id" type="hidden" value="${userId}">
-            <span class="attendee-name"><input class="form-control no-white-background" disabled="disabled" id="attendance-${newIndex}-fullname" name="attendance-${newIndex}-fullname" type="text" value="${name}"></span>
-            <span class="attendee-status"><input checked class="no-white-background" id="attendance-${newIndex}-status" name="attendance-${newIndex}-status" type="checkbox" value="y"></span>
-        `;
+        <input class="form-control hidden no-white-background" id="attendance-${newIndex}-user_id" name="attendance-${newIndex}-user_id" type="hidden" value="${userId}">
+        <span class="attendee-name col-6"><input class="form-control-plaintext" disabled="disabled" id="attendance-${newIndex}-fullname" name="attendance-${newIndex}-fullname" type="text" value="${name}"></span>
+        <span class="attendee-status col-3 text-center"><input class="form-check-input" id="attendance-${newIndex}-status" name="attendance-${newIndex}-status" type="checkbox" value="y" checked></span>
+        <span class="attendee-remove col-3 text-center">
+            <input class="form-check-input text-danger" id="attendance-${newIndex}-remove" name="attendance-${newIndex}-remove" type="checkbox" value="y">
+        </span>
+    `;
         attendanceList.appendChild(newRow);
     }
 
@@ -454,6 +455,7 @@ function addTestSystemBadge() {
 
 
 function fixCSSonProfilePage() {
+    // todo: this can be removed soon
     const currentUrl = window.location.href;
     const profilePath = '/profile';
     const reloadKey = 'profilePageReloaded';

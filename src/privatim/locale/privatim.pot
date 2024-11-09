@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-09-10 11:47+0200\n"
+"POT-Creation-Date: 2024-11-08 22:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,6 +97,24 @@ msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
 msgid "URL"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt
+#: ./src/privatim/views/templates/working_group.pt
+#: ./src/privatim/views/templates/profile.pt
+#: ./src/privatim/views/templates/people.pt
+#: ./src/privatim/forms/meeting_form.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt ./src/privatim/views/meetings.py
+#: ./src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt ./src/privatim/forms/meeting_form.py
+msgid "Remove"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
@@ -200,28 +218,8 @@ msgstr ""
 msgid "Successfully deleted file \"${title}\""
 msgstr ""
 
-#: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
-msgid "Edit Agenda Item"
-msgstr ""
-
 #: ./src/privatim/views/meetings.py
-msgid "Delete Agenda Item"
-msgstr ""
-
-#: ./src/privatim/views/meetings.py ./src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr ""
-
-#: ./src/privatim/views/meetings.py ./src/privatim/views/templates/meeting.pt
-msgid "Expand All"
-msgstr ""
-
-#: ./src/privatim/views/meetings.py
-msgid "Collapse All"
-msgstr ""
-
-#: ./src/privatim/views/meetings.py
-msgid "Edit Meeting"
+msgid "Edit context"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -244,8 +242,24 @@ msgstr ""
 msgid "Delete Meeting"
 msgstr ""
 
-#: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
-msgid "Attended"
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/agenda_item_form.py
+msgid "Edit Agenda Item"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Delete Agenda Item"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/views/templates/meeting.pt
+msgid "Expand All"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Collapse All"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -256,18 +270,18 @@ msgstr ""
 msgid "Meeting Report"
 msgstr ""
 
-#: ./src/privatim/views/meetings.py
-#: ./src/privatim/views/templates/working_group.pt
-msgid "Participants"
+#: ./src/privatim/views/meetings.py ./src/privatim/views/working_groups.py
+#: ./src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Delete Working Group"
 msgstr ""
 
-#: ./src/privatim/views/meetings.py ./src/privatim/views/working_groups.py
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
+#: ./src/privatim/views/meetings.py
+#: ./src/privatim/views/templates/working_group.pt
+msgid "Participants"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -552,14 +566,6 @@ msgstr ""
 msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
-msgstr ""
-
-#: ./src/privatim/views/templates/working_group.pt
-#: ./src/privatim/views/templates/profile.pt
-#: ./src/privatim/views/templates/people.pt
-#: ./src/privatim/forms/meeting_form.py
-#: ./src/privatim/forms/working_group_forms.py
-msgid "Name"
 msgstr ""
 
 #: ./src/privatim/views/templates/working_group.pt

@@ -2,7 +2,7 @@ import pytest
 from webob.multidict import MultiDict
 
 from privatim.models.utils import get_docx_text
-from privatim.utils import attendance_status
+from privatim.utils import status_is_checked
 
 
 def test_analyze_docx(sample_docx_file):
@@ -31,7 +31,7 @@ def sample_meeting_form():
 
 def test_user_with_status(sample_meeting_form):
     assert (
-        attendance_status(
+        status_is_checked(
             sample_meeting_form, '27f1203f-a3a8-418f-89a2-41f0a2fbbd86'
         )
         is True
@@ -40,7 +40,7 @@ def test_user_with_status(sample_meeting_form):
 
 def test_user_without_status(sample_meeting_form):
     assert (
-        attendance_status(
+        status_is_checked(
             sample_meeting_form, 'ca258718-35bc-42a0-803d-13497fcb3639'
         )
         is False
@@ -48,12 +48,12 @@ def test_user_without_status(sample_meeting_form):
 
 
 def test_nonexistent_user(sample_meeting_form):
-    assert attendance_status(sample_meeting_form, 'non-existent-id') is False
+    assert status_is_checked(sample_meeting_form, 'non-existent-id') is False
 
 
 def test_empty_multidict():
     empty_data = MultiDict()
-    assert attendance_status(empty_data, 'any-id') is False
+    assert status_is_checked(empty_data, 'any-id') is False
 
 
 def test_user_with_multiple_entries(sample_meeting_form):
@@ -62,7 +62,7 @@ def test_user_with_multiple_entries(sample_meeting_form):
     )
     sample_meeting_form.add('attendance-4-status', 'n')
     assert (
-        attendance_status(
+        status_is_checked(
             sample_meeting_form, '27f1203f-a3a8-418f-89a2-41f0a2fbbd86'
         )
         is True
@@ -96,21 +96,21 @@ def complex_meeting_form():
 
 
 def test_user_with_single_y_status(complex_meeting_form):
-    assert attendance_status(complex_meeting_form, 'user1') is True
+    assert status_is_checked(complex_meeting_form, 'user1') is True
 
 
 def test_user_with_only_n_status(complex_meeting_form):
-    assert attendance_status(complex_meeting_form, 'user2') is False
+    assert status_is_checked(complex_meeting_form, 'user2') is False
 
 
 def test_user_with_multiple_statuses_including_y(complex_meeting_form):
-    assert attendance_status(complex_meeting_form, 'user3') is True
+    assert status_is_checked(complex_meeting_form, 'user3') is True
 
 
 def test_user_with_multiple_entries_y_first(complex_meeting_form):
     complex_meeting_form.add('attendance-7-user_id', 'user2')
     complex_meeting_form.add('attendance-7-status', 'y')
-    assert attendance_status(complex_meeting_form, 'user2') is True
+    assert status_is_checked(complex_meeting_form, 'user2') is True
 
 
 def test_user_with_multiple_entries_y_last():
@@ -124,7 +124,7 @@ def test_user_with_multiple_entries_y_last():
             ('attendance-3-status', 'y'),
         ]
     )
-    assert attendance_status(data, 'test-user') is True
+    assert status_is_checked(data, 'test-user') is True
 
 
 def test_user_with_multiple_entries_no_y():
@@ -137,7 +137,7 @@ def test_user_with_multiple_entries_no_y():
             ('attendance-3-user_id', 'test-user'),
         ]
     )
-    assert attendance_status(data, 'test-user') is False
+    assert status_is_checked(data, 'test-user') is False
 
 
 def test_multidict_with_only_user_ids():
@@ -148,6 +148,6 @@ def test_multidict_with_only_user_ids():
             ('attendance-3-user_id', 'user3'),
         ]
     )
-    assert attendance_status(data, 'user1') is False
-    assert attendance_status(data, 'user2') is False
-    assert attendance_status(data, 'user3') is False
+    assert status_is_checked(data, 'user1') is False
+    assert status_is_checked(data, 'user2') is False
+    assert status_is_checked(data, 'user3') is False

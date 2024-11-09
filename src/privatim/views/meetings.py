@@ -54,7 +54,7 @@ def meeting_view(
                 icon='edit',
                 title=_('Edit'),
                 css_class='dropdown-item',
-                description=_('Edit context'),
+                description=_('Edit meeting'),
             ),
             Button(
                 title=_('Copy'),
@@ -206,7 +206,6 @@ def export_meeting_as_pdf_view(
 
     response = Response(report.data)
     response.content_type = 'application/pdf'
-
     name = translate(_('Meeting Report'))
     safe_filename = name + '.pdf'
     response.content_disposition = f'attachment; filename="{safe_filename}"'
@@ -294,12 +293,18 @@ def add_meeting_view(
             working_group=context,
             creator=request.user
         )
-        # Manually setting this. The working_group.users should always be
-        # part people who attend the meeting.
-        # The form is used to select guests on the frontend
-        attendees_set = set(form.attendees.data or [])
-        context_users_set = {str(user.id) for user in context.users}
-        form.attendees.data = list(attendees_set | context_users_set)
+
+        # XXX A pragmatic shortcut that holds up, for the time being.
+        #
+        # In the frontend, we are displaying just attendees, it looks like a
+        # list uf users, but it's actually stored in `MeetingUserAttendance`.
+        # This creates a sort of inconsistency, which is why the lines below
+        # are necessary.
+        form_attendees = set(form.attendees.data or [])
+        working_group_attendees = {str(user.id) for user in context.users}
+        # As per requirements, the users of the working group always attend
+        # the meeting by default.
+        form.attendees.data = list(form_attendees | working_group_attendees)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
 
         session.add(meeting)

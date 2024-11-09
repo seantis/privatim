@@ -140,6 +140,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     )
 
     def add_comment(self, comment: Comment) -> None:
+        # Comments should be added though no other way than this method
         comment.target_id = self.id
         comment.target_type = self.__tablename__
         self.comments.append(comment)

@@ -46,7 +46,7 @@
                                     </div>
 
                                     <tal:block tal:condition="python: result.type.lower() not in ['agendaitem']">
-                                        <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate="
+                                        <a href="${request.route_url(result.type.lower(), id=result.id)}" i18n:translate=""
                                            class="details-link mt-auto">Show Details</a>
                                     </tal:block>
                                     <tal:block tal:condition="result.type.lower() == 'agendaitem'">

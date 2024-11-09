@@ -138,6 +138,7 @@ class HTMLReportRenderer:
         ctx = {
             'title': title,
             'meeting': meeting,
+            'sorted_attendance_records': meeting.attendance_records,
             'meeting_time': datetime_format(meeting.time),
             'document': document_context,
         }

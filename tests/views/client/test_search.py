@@ -132,9 +132,9 @@ def setup_docx_scenario(pdf_to_search, session):
     session.flush()
 
 
-# test search no longer in consultations which are soft deleted
+# test soft deleted objects are not shown in search.
 
-# test search does not search in SearchableFiles which are not attached to
-# any Consultation
+# test that the search does not search in SearchableFiles which are not
+# attached to any Consultation.
 
-# test duplicates are filtered
+# test that duplicates are filtered

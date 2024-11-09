@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-09-10 11:47+0200\n"
+"POT-Creation-Date: 2024-11-08 22:02+0100\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -96,6 +96,22 @@ msgstr "I"
 #: src/privatim/layouts/macros.pt
 msgid "URL"
 msgstr "URL"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/templates/working_group.pt
+#: src/privatim/views/templates/profile.pt
+#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Name"
+msgstr "Nom"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+#: src/privatim/forms/meeting_form.py
+msgid "Attended"
+msgstr "Attendus"
+
+#: src/privatim/layouts/macros.pt src/privatim/forms/meeting_form.py
+msgid "Remove"
+msgstr "Supprimer"
 
 #: src/privatim/layouts/macros.pt
 msgid "Do you really wish to delete \"${item_title}\"?"
@@ -200,6 +216,26 @@ msgstr "Échec de la connexion."
 msgid "Successfully deleted file \"${title}\""
 msgstr "Fichier supprimé avec succès \"${titre}\""
 
+#: src/privatim/views/meetings.py
+msgid "Copy"
+msgstr "Copier"
+
+#: src/privatim/views/meetings.py
+msgid "Copy Agenda Items"
+msgstr "Copier les points de l'ordre du jour"
+
+#: src/privatim/views/meetings.py
+msgid "Export"
+msgstr "Exporter"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol"
+msgstr "Imprimer le protocole"
+
+#: src/privatim/views/meetings.py
+msgid "Delete Meeting"
+msgstr "Supprimer la réunion"
+
 #: src/privatim/views/meetings.py src/privatim/forms/agenda_item_form.py
 msgid "Edit Agenda Item"
 msgstr "Traiter un point de l'ordre du jour"
@@ -221,34 +257,6 @@ msgid "Collapse All"
 msgstr "Réduire tout"
 
 #: src/privatim/views/meetings.py
-msgid "Edit Meeting"
-msgstr "Modifier la réunion"
-
-#: src/privatim/views/meetings.py
-msgid "Copy"
-msgstr "Copier"
-
-#: src/privatim/views/meetings.py
-msgid "Copy Agenda Items"
-msgstr "Copier les points de l'ordre du jour"
-
-#: src/privatim/views/meetings.py
-msgid "Export"
-msgstr "Exporter"
-
-#: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Imprimer le protocole"
-
-#: src/privatim/views/meetings.py
-msgid "Delete Meeting"
-msgstr "Supprimer la réunion"
-
-#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
-msgid "Attended"
-msgstr "Attendus"
-
-#: src/privatim/views/meetings.py
 msgid "Invited"
 msgstr "Présent"
 
@@ -256,18 +264,18 @@ msgstr "Présent"
 msgid "Meeting Report"
 msgstr "Rapport de réunion"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
-msgid "Participants"
-msgstr "Membres"
+#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
+#: src/privatim/forms/working_group_forms.py
+msgid "Edit Working Group"
+msgstr "Modifier le comité"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Working Group"
 msgstr "Supprimer le comité"
 
-#: src/privatim/views/meetings.py src/privatim/views/working_groups.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Edit Working Group"
-msgstr "Modifier le comité"
+#: src/privatim/views/meetings.py src/privatim/views/templates/working_group.pt
+msgid "Participants"
+msgstr "Membres"
 
 #: src/privatim/views/meetings.py
 #, python-format
@@ -564,13 +572,6 @@ msgid ""
 "Here you can add meetings in the context of a working group. Click \"Add "
 "meeting\" to get started."
 msgstr "Ici, vous pouvez ajouter des réunions dans le contexte d'un comité."
-
-#: src/privatim/views/templates/working_group.pt
-#: src/privatim/views/templates/profile.pt
-#: src/privatim/views/templates/people.pt src/privatim/forms/meeting_form.py
-#: src/privatim/forms/working_group_forms.py
-msgid "Name"
-msgstr "Nom"
 
 #: src/privatim/views/templates/working_group.pt
 msgid "Date and Time"
@@ -1045,3 +1046,6 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#~ msgid "Edit Meeting"
+#~ msgstr "Modifier la réunion"
