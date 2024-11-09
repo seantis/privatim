@@ -220,6 +220,11 @@ class User(Base):
         return ' '.join(parts)
 
     @property
+    def is_admin(self) -> bool:
+        return ('admin' in self.first_name.lower() or 'admin' in
+                self.last_name.lower())
+
+    @property
     def picture(self) -> GeneralFile:
         """ Returns the user's profile picture or the default picture. """
         session = object_session(self)

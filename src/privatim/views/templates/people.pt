@@ -27,15 +27,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr tal:repeat="person people">
+            <tr tal:repeat="user people">
                 <td>
                     <div class="d-flex align-items-center">
-                        <img src="${person.download_link}" alt="${person.name}'s avatar" class="rounded-circle me-2" width="32" height="32">
-                        <a href="${person.url}" class="mb-0 text-decoration-none">${person.name}</a>
+                        <img src="${user.download_link}" alt="${user.name}'s avatar" class="rounded-circle me-2" width="32" height="32">
+                        <a href="${user.url}" class="mb-0 text-decoration-none">${user.name}</a>
+                        <span tal:condition="user.is_admin" class="badge bg-primary ms-2" i18n:translate="">Admin</span>
                     </div>
                 </td>
                 <td class="text-end">
-                    <div class="d-flex justify-content-end gap-2" tal:content="person.buttons"></div>
+                    <div class="d-flex justify-content-end gap-2" tal:content="user.buttons"></div>
                 </td>
             </tr>
             </tbody>

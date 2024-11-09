@@ -56,7 +56,8 @@ def people_view(request: 'IRequest') -> 'RenderData':
             'name': f'{user.last_name} {user.first_name}',
             'download_link': user.profile_pic_download_link(request),
             'url': request.route_url('person', id=user.id),
-            'buttons': button_html
+            'buttons': button_html,
+            'is_admin': user.is_admin
         })
 
     return {
