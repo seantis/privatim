@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 
 from babel.dates import format_datetime
+from markupsafe import Markup
 
 from privatim.i18n import translate, _
 from privatim.layouts.layout import DEFAULT_TIMEZONE
@@ -129,15 +130,28 @@ class HTMLReportRenderer:
     ) -> str:
         """Render chameleon report template."""
         document_context = {'title': meeting.name, 'created_at': timestamp}
-        title = translate(
-            _(
-                "Protocol of meeting ${title}",
-                mapping={'title': document_context['title']},
+
+        agenda_items = []
+        for indx, item in enumerate(meeting.agenda_items, start=1):
+            agenda_items.append({
+                    'title': Markup(
+                        '<strong>{}.</strong> {}'.format(
+                            indx, Markup.escape(item.title)
+                        )
+                    ),
+                    'description': Markup(item.description),
+                }
             )
-        )
+
         ctx = {
-            'title': title,
+            'title': translate(
+                _(
+                    "Protocol of meeting ${title}",
+                    mapping={'title': document_context['title']},
+                )
+            ),
             'meeting': meeting,
+            'agenda_items': agenda_items,
             'sorted_attendance_records': meeting.attendance_records,
             'meeting_time': datetime_format(meeting.time),
             'document': document_context,
