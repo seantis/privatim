@@ -50,3 +50,20 @@ repos:
         exclude: '.*'
         always_run: true
         pass_filenames: false
+      - id: system
+        name: check-setup-cfg
+        entry: |
+          bash -c 'FILES=$(git diff --cached --name-only);
+          echo "Debug - Files changed: $FILES";
+          if echo "$FILES" | grep "setup.cfg" > /dev/null; then
+            if echo "$FILES" | grep "requirements.txt" > /dev/null; then
+              echo "✅ setup.cfg and requirements.txt both modified - looks good!";
+              exit 0;
+            else
+              echo "⚠️  Warning: setup.cfg was modified but requirements.txt was not!";
+              echo "Did you run \"make compile\" to re-generate the requirements.txt?";
+              exit 1;
+            fi;
+          fi'
+        language: system
+        pass_filenames: false
