@@ -63,7 +63,6 @@ class AgendaItem(Base, SearchableMixin):
         description: str,
         meeting: 'Meeting'
     ) -> 'AgendaItem':
-
         meeting_id = meeting.id
         max_position = session.scalar(
             select(func.max(AgendaItem.position)).where(
@@ -77,7 +76,6 @@ class AgendaItem(Base, SearchableMixin):
             meeting=meeting,
             position=new_position,
         )
-        session.add(new_agenda_item)
         return new_agenda_item
 
     id: Mapped[UUIDStrPK]

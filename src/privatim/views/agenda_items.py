@@ -1,5 +1,6 @@
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from privatim.forms.agenda_item_form import AgendaItemForm, AgendaItemCopyForm
 from privatim.i18n import _
@@ -133,19 +134,27 @@ def delete_agenda_item_view(
 def copy_agenda_item_view(
     context: Meeting, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
-    form = AgendaItemCopyForm(context, request)
+    available_meetings: list[Meeting] = [
+        meeting for meeting in context.working_group.meetings
+        if meeting.id != context.id
+    ]
+    form = AgendaItemCopyForm(context, request, available_meetings)
     session = request.dbsession
     assert isinstance(context, Meeting)
 
     target_url = request.route_url('meeting', id=context.id)
     if request.method == 'POST' and form.validate():
         source_meeting_id = form.copy_from.data
-        stmt = select(Meeting).where(Meeting.id == source_meeting_id)
+        stmt = (
+            select(Meeting)
+            .where(Meeting.id == source_meeting_id)
+            .options(selectinload(Meeting.agenda_items))
+        )
         source_meeting = session.execute(stmt).scalar_one()
-
         # Create deep copies of agenda items from the source meeting to the
         # context meeting
-        for agenda_item in source_meeting.agenda_items:
+        # Put them in a list, else this will loop forever
+        for agenda_item in list(source_meeting.agenda_items):
             new_item = AgendaItem.create(
                 session,
                 title=agenda_item.title,

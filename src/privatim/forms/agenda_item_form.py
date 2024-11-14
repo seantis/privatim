@@ -99,6 +99,7 @@ class AgendaItemCopyForm(Form):
         self,
         context: Meeting,
         request: 'IRequest',
+        available_meetings: list[Meeting]
     ) -> None:
 
         self._title = _('Source')
@@ -109,7 +110,6 @@ class AgendaItemCopyForm(Form):
             meta={'context': context, 'request': request},
         )
 
-        available_meetings: list[Meeting] = context.working_group.meetings
         self.copy_from.choices = [
             (str(meeting.id), meeting.name, {'time': meeting.time})
             for meeting in available_meetings

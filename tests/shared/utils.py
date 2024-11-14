@@ -98,12 +98,13 @@ def create_meeting_with_agenda_items(
 ) -> Meeting:
     meeting = create_meeting()
     for item in agenda_items:
-        AgendaItem.create(
+        created_item = AgendaItem.create(
             session,
             title=item['title'],
             description=item['description'],
             meeting=meeting,
         )
+        session.add(created_item)
     session.add(meeting)
     session.flush()
     return meeting
