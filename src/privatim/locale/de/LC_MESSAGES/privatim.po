@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-11-14 22:14+0100\n"
+"POT-Creation-Date: 2024-11-14 22:32+0100\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -944,6 +944,12 @@ msgstr "Gegebenenfalls Beschreibung"
 #: src/privatim/forms/agenda_item_form.py
 msgid "Source"
 msgstr "Quelle"
+
+#: src/privatim/forms/agenda_item_form.py
+#, python-format
+msgid "The agenda items of the following meeting is copied to ${meeting}"
+msgstr ""
+"Die Traktanden der folgenden Sitzung werden in die Sitzung ${meeting} kopiert"
 
 #: src/privatim/forms/agenda_item_form.py
 msgid "No valid destination meetings available."

@@ -1,5 +1,5 @@
 from markupsafe import Markup
-from wtforms import validators
+from wtforms import validators, Label
 from wtforms.fields.choices import RadioField
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import ValidationError
@@ -114,6 +114,23 @@ class AgendaItemCopyForm(Form):
             (str(meeting.id), meeting.name, {'time': meeting.time})
             for meeting in available_meetings
         ]
+
+        meeting_link = Markup(
+            f'<a href="{request.route_url("meeting", id=context.id)}" '
+            'target="_blank" rel="noopener">'
+            f'{context.name}</a>'
+        )
+        translated_text = translate(
+            _(
+                'The agenda items of the following meeting is copied to '
+                '${meeting}',
+                mapping={'meeting': meeting_link},
+            ),
+            request.locale_name,
+        )
+        self.copy_from.label = Label(
+            self.copy_from.id, Markup(translated_text)
+        )
 
         if not available_meetings:
             assert isinstance(self.copy_from.validators, list)
