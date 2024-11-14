@@ -2,7 +2,7 @@ import logging
 
 from markupsafe import Markup
 from pyramid.response import Response
-
+from sqlalchemy import func, select
 from privatim.models.association_tables import AttendanceStatus
 from privatim.reporting.report import (
     MeetingReport,
@@ -27,7 +27,6 @@ from privatim.i18n import _
 from privatim.i18n import translate
 
 from typing import TypeVar, TYPE_CHECKING, Any, Sequence
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.association_tables import MeetingUserAttendance
@@ -46,6 +45,13 @@ def meeting_view(
 ) -> 'RenderData':
     """ Displays a single meeting. """
     assert isinstance(context, Meeting)
+
+    stmt = select(func.count(Meeting.id)).where(
+        Meeting.working_group_id == context.working_group.id
+    )
+    meeting_count = request.dbsession.execute(stmt).scalar_one()
+    disable_copy_button = meeting_count <= 1
+
     formatted_time = datetime_format(context.time)
     request.add_action_menu_entries(
         (
@@ -61,7 +67,12 @@ def meeting_view(
                 css_class='dropdown-item',
                 url=request.route_url('copy_agenda_item', id=context.id),
                 icon='copy',
-                description=translate(_('Copy Agenda Items')),
+                description=(
+                    translate(_('Copy Agenda Items'))
+                    if not disable_copy_button
+                    else translate(_('No other meetings to copy from'))
+                ),
+                disabled=disable_copy_button,
             ),
             Button(
                 title=_('Export'),
