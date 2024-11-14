@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-11-08 22:02+0100\n"
+"POT-Creation-Date: 2024-11-14 22:14+0100\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -219,6 +219,9 @@ msgstr "Anmeldung fehlgeschlagen."
 msgid "Successfully deleted file \"${title}\""
 msgstr "Datei \"${title}\" erfolgreich gelöscht"
 
+#: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
+msgid "Edit meeting"
+msgstr "Sitzung bearbeiten"
 
 #: src/privatim/views/meetings.py
 msgid "Copy"
@@ -693,9 +696,16 @@ msgstr "E-Mail-Adresse"
 msgid "No people added yet."
 msgstr "Noch keine Personen hinzugefügt."
 
+#: src/privatim/views/templates/people.pt
+msgid "Admin"
+msgstr "Admin"
+
 #: src/privatim/views/templates/trash.pt
-msgid "Deleted Entries"
-msgstr "Gelöschte Einträge"
+msgid ""
+"Here you can see and restore deleted entries from everyone in your "
+"organization."
+msgstr ""
+"Hier sehen Sie gelöschte Einträge von allen Personen in Ihrer Organisation."
 
 #: src/privatim/views/templates/trash.pt
 #: src/privatim/forms/consultation_form.py
@@ -912,10 +922,6 @@ msgid "Date to"
 msgstr "Datum bis"
 
 #: src/privatim/forms/meeting_form.py
-msgid "Edit meeting"
-msgstr "Sitzung bearbeiten"
-
-#: src/privatim/forms/meeting_form.py
 msgid "Time"
 msgstr "Datum / Uhrzeit"
 
@@ -1051,6 +1057,9 @@ msgstr "Gremium:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Teilnehmende:"
+
+#~ msgid "Deleted Entries"
+#~ msgstr "Gelöschte Einträge"
 
 #~ msgid "Edit Meeting"
 #~ msgstr "Sitzung bearbeiten"
