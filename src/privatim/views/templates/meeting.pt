@@ -32,32 +32,45 @@
 
             <div class="col-lg-9 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3" tal:condition="agenda_items">
+                <div class="d-flex justify-content-between align-items-center mb-3" tal:condition="has_agenda_items">
                     <h2 i18n:translate="">Agenda Items</h2>
                     <button class="btn" id="toggleAllItems"
                             data-expand-text="${expand_all_text}"
                             data-collapse-text="${collapse_all_text}">
-                        <i class="fas fa-caret-down me-2"></i><span i18n:translate="">Expand All</span>
+                        <i class="fas ${python: 'fa-caret-up' if all_expanded else 'fa-caret-down'} me-2"></i>
+                        <span>${python: collapse_all_text if all_expanded else expand_all_text}</span>
                     </button>
                 </div>
                 <input type="hidden" name="csrf_token" value="${layout.csrf_token()}"/>
-                <div class="accordion" id="agenda-items" data-sortable="" data-sortable-url="${sortable_url}">
-                    <div data-sortable-id="${item.position}"
-                         class="accordion-item handle-for-dragging draggable-item" tal:repeat="item agenda_items">
+
+                <div class="accordion open" id="agenda-items" data-sortable="" data-sortable-url="${sortable_url}">
+                    <div tal:repeat="item agenda_items"
+                            data-sortable-id="${item.position}"
+                            class="accordion-item handle-for-dragging draggable-item">
                         <h2 class="accordion-header">
-                            <button class="accordion-button collapsed agenda-item-accordion" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#item-${item.id}" aria-expanded="false"
-                                    aria-controls="item-${item.id}">
+                            <button class="accordion-button ${python: item.is_expanded and '' or 'collapsed'} agenda-item-accordion"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#item-${item.id}"
+                                    aria-expanded="${python: item.is_expanded and 'true' or 'false'}"
+                                    aria-controls="item-${item.id}"
+                                    data-agenda-item-id="${item.id}">
                                 <span class="accordion-text-9">${item.title}</span>
                                     ${item.edit_btn()}
                                     ${item.delete_btn()}
-                                <a href="#" class="btn" data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="Reorder item" i18n:attributes="title">
+                                <a href="#"
+                                   class="btn"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Reorder item"
+                                         i18n:attributes="title">
                                     <i class="fas fa-arrows-alt-v"></i>
                                 </a>
                             </button>
                         </h2>
-                        <div id="item-${item.id}" class="accordion-collapse collapse" data-bs-parent="#agenda-items">
+                        <div id="item-${item.id}"
+                             class="accordion-collapse collapse ${python: item.is_expanded and 'show' or ''}"
+                             data-bs-parent="#agenda-items">
                             <div class="accordion-body">
                                 <p class="make-line-breaks-in-p">${item.description}</p>
                             </div>

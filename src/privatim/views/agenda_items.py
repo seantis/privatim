@@ -5,7 +5,11 @@ from sqlalchemy.orm import selectinload
 from privatim.forms.agenda_item_form import AgendaItemForm, AgendaItemCopyForm
 from privatim.i18n import _
 from privatim.i18n import translate
-from privatim.models import AgendaItem
+from privatim.models import (
+    AgendaItem,
+    AgendaItemDisplayState,
+    AgendaItemStatePreference,
+)
 from privatim.models import Meeting
 
 from typing import TypeVar
@@ -182,3 +186,68 @@ def copy_agenda_item_view(
         'title': form._title,
         'target_url': target_url,
     }
+
+
+def update_single_agenda_item_state(request: 'IRequest') -> dict[str, str]:
+    """Update the expanded/collapsed state of a single agenda item for the
+    current user"""
+    session = request.dbsession
+    new_state = AgendaItemDisplayState(int(request.json_body['state']))
+    agenda_item_id = request.matchdict['id']
+
+    # Look up existing preference
+    preference = session.execute(
+        select(AgendaItemStatePreference).where(
+            AgendaItemStatePreference.agenda_item_id == agenda_item_id,
+            AgendaItemStatePreference.user_id == request.user.id,
+        )
+    ).scalar_one_or_none()
+
+    if not preference:
+        preference = AgendaItemStatePreference(
+            user_id=request.user.id,
+            agenda_item_id=agenda_item_id,
+            state=new_state,
+        )
+        session.add(preference)
+    else:
+        preference.state = new_state
+        session.add(preference)
+
+    return {'status': 'success'}
+
+
+def update_bulk_agenda_items_state(
+        context: Meeting,
+        request: 'IRequest'
+) -> dict[str, str | int]:
+    """Update the expanded/collapsed state of all agenda items in a meeting
+    for the current user"""
+
+    session = request.dbsession
+    new_state = AgendaItemDisplayState(int(request.json_body['state']))
+
+    # Get all agenda items for the meeting
+    agenda_items = context.agenda_items
+
+    # Update or create preferences for all items
+    for agenda_item in agenda_items:
+        preference = session.execute(
+            select(AgendaItemStatePreference).where(
+                AgendaItemStatePreference.agenda_item_id == agenda_item.id,
+                AgendaItemStatePreference.user_id == request.user.id,
+            )
+        ).scalar_one_or_none()
+
+        if not preference:
+            preference = AgendaItemStatePreference(
+                user_id=request.user.id,
+                agenda_item_id=agenda_item.id,
+                state=new_state,
+            )
+        else:
+            preference.state = new_state
+
+        session.add(preference)
+
+    return {'status': 'success', 'updated': len(agenda_items)}

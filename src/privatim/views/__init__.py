@@ -15,6 +15,8 @@ from privatim.views.activities import activities_view
 from privatim.views.agenda_items import (
     add_agenda_item_view,
     copy_agenda_item_view,
+    update_single_agenda_item_state,
+    update_bulk_agenda_items_state
 )
 from privatim.views.agenda_items import delete_agenda_item_view
 from privatim.views.agenda_items import edit_agenda_item_view
@@ -457,6 +459,46 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         copy_agenda_item_view,
         route_name='copy_agenda_item',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'update_single_agenda_item_state,',
+        '/agenda_items/{id}/state',
+        factory=agenda_item_factory
+    )
+    config.add_view(
+        update_single_agenda_item_state,
+        route_name='update_single_agenda_item_state,',
+        renderer='json',
+        request_method='POST',
+        xhr=False
+    )
+    config.add_view(
+        update_single_agenda_item_state,
+        route_name='update_single_agenda_item_state,',
+        renderer='json',
+        request_method='POST',
+        xhr=True
+    )
+
+    config.add_route(
+        'update_bulk_agenda_items_state',
+        '/meeting/{id}/agenda_items/bulk/state',
+        factory=meeting_factory
+    )
+    config.add_view(
+        update_bulk_agenda_items_state,
+        route_name='update_bulk_agenda_items_state',
+        renderer='json',
+        request_method='POST',
+        xhr=False
+    )
+    config.add_view(
+        update_bulk_agenda_items_state,
+        route_name='update_bulk_agenda_items_state',
         renderer='json',
         request_method='POST',
         xhr=True

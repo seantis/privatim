@@ -7,19 +7,15 @@ from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
 from privatim.i18n import locales
 from privatim.models import AgendaItem
-
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
 from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
-
-
-from typing import (TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar,
-                    Union)
-
 from privatim.models.markup_text_type import MarkupText
 from privatim.utils import get_correct_comment_picture_for_comment
 
+
+from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar, Union
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session

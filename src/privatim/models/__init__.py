@@ -12,7 +12,11 @@ from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.comment import Comment
 from privatim.models.meeting import Meeting, AgendaItem
-from privatim.models.association_tables import MeetingUserAttendance
+from privatim.models.association_tables import (
+    MeetingUserAttendance,
+    AgendaItemDisplayState,
+    AgendaItemStatePreference,
+)
 from privatim.models.file import GeneralFile, SearchableFile
 from privatim.models.password_change_token import PasswordChangeToken
 from privatim.models.tan import TAN
@@ -30,6 +34,8 @@ Consultation
 Comment
 Meeting
 MeetingUserAttendance
+AgendaItemDisplayState
+AgendaItemStatePreference
 AgendaItem
 PasswordChangeToken
 GeneralFile

@@ -5,12 +5,14 @@ document.addEventListener('DOMContentLoaded', function () {
     setupCommentAnswerField();
     addEditorForCommentsEdit();
     makeConsultationsInActivitiesClickable();
-    setupAgendaItemGlobalToggle();
+    setupExpandOrCollapseAll();
     setupDeleteModalListeners();
     autoHideSuccessMessages();
     addTestSystemBadge();
     fixCSSonProfilePage();
+    handleSingleAgendaItemClickToggleStateUpdate();
 });
+
 
 
 function setupDeleteModalListeners() {
@@ -269,21 +271,31 @@ function setupCommentAnswerField() {
     }
 }
 
-// Expand / collapse all Agenda Items
-function setupAgendaItemGlobalToggle() {
+function setupExpandOrCollapseAll() {
     if (!window.location.href.includes('/meeting')) {
         return;
     }
-
     const toggleBtn = document.getElementById('toggleAllItems');
     if (!toggleBtn) {
         return;
     }
     const accordionItems = document.querySelectorAll('.accordion-collapse');
-    let isExpanded = false;
 
-    function toggleAll() {
+    // Initialize isExpanded based on actual state of items
+    let isExpanded = Array.from(accordionItems)
+        .every(item => item.classList.contains('show'));
+
+    // Update button initial state to match
+    const btnText = toggleBtn.querySelector('span');
+    const btnIcon = toggleBtn.querySelector('i');
+    if (isExpanded) {
+        btnText.textContent = toggleBtn.dataset.collapseText;
+        btnIcon.classList.replace('fa-caret-down', 'fa-caret-up');
+    }
+
+    async function toggleAll() {
         isExpanded = !isExpanded;
+        // Update UI
         accordionItems.forEach(item => {
             const bsCollapse = new bootstrap.Collapse(item, {
                 toggle: false
@@ -294,10 +306,7 @@ function setupAgendaItemGlobalToggle() {
                 bsCollapse.hide();
             }
         });
-
         // Update button text and icon
-        const btnText = toggleBtn.querySelector('span');
-        const btnIcon = toggleBtn.querySelector('i');
         if (isExpanded) {
             btnText.textContent = toggleBtn.dataset.collapseText;
             btnIcon.classList.replace('fa-caret-down', 'fa-caret-up');
@@ -305,10 +314,30 @@ function setupAgendaItemGlobalToggle() {
             btnText.textContent = toggleBtn.dataset.expandText;
             btnIcon.classList.replace('fa-caret-up', 'fa-caret-down');
         }
+        // Get meeting ID from URL
+        const id = window.location.pathname.split('/').pop();
+        console.log('Meeting ID:', id);
+        // Update server state
+        try {
+            const response = await fetch(`/meeting/${id}/agenda_items/bulk/state`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name=csrf_token]').value
+                },
+                body: JSON.stringify({
+                    state: isExpanded ? 1 : 0,
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update states');
+            }
+        } catch (error) {
+            console.error('Error updating agenda item states:', error);
+        }
     }
 
     toggleBtn.addEventListener('click', toggleAll);
-
 }
 
 
@@ -472,5 +501,43 @@ function fixCSSonProfilePage() {
 
         // Perform a hard reload
         window.location.reload(true);
+    }
+}
+
+
+function handleSingleAgendaItemClickToggleStateUpdate() {
+    const accordion = document.querySelector('#agenda-items');
+    if (!accordion) return;
+
+    // Initialize individual item toggling
+    document.querySelectorAll('.agenda-item-accordion').forEach(button => {
+        button.addEventListener('click', async () => {
+            const id = button.closest('.accordion-item')
+                .querySelector('.accordion-collapse').id.replace('item-', '');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            const newState = isExpanded ? 1 : 0;
+            console.log(`Toggling state for item ${id} to ${newState}`);
+            await updateItemState(id, newState);
+        });
+    });
+
+}
+
+// Helper function to update item state
+async function updateItemState(id, newState) {
+    try {
+        const response = await fetch(`/agenda_items/${id}/state`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('[name=csrf_token]').value
+            },
+            body: JSON.stringify({state: newState})
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update state');
+        }
+    } catch (error) {
+        console.error('Error updating agenda item state:', error);
     }
 }

@@ -30,7 +30,11 @@ from privatim.models.file import GeneralFile
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from privatim.models.association_tables import MeetingUserAttendance
+    from privatim.models.association_tables import (
+        MeetingUserAttendance,
+        AgendaItemStatePreference,
+        AgendaItemDisplayState,
+    )
     from privatim.types import ACL
     from sqlalchemy.orm import Session
     from pyramid.interfaces import IRequest
@@ -180,6 +184,26 @@ class User(Base):
         foreign_keys='Meeting.creator_id',
     )
 
+    agenda_item_state_preferences: Mapped[list['AgendaItemStatePreference']] \
+        = (relationship(
+            'AgendaItemStatePreference',
+            back_populates='user',
+            cascade='all, delete-orphan',
+        )
+    )
+
+    def get_agenda_item_state(
+            self,
+            agenda_item_id: str
+    ) -> 'AgendaItemDisplayState':
+        """Get the display state for a specific agenda item"""
+        pref = next(
+            (p for p in self.agenda_item_state_preferences
+             if p.agenda_item_id == agenda_item_id),
+            None
+        )
+        return pref.state if pref else AgendaItemDisplayState.COLLAPSED
+
     def set_password(self, password: str) -> None:
         password = password or ''
         pwhash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
@@ -221,6 +245,7 @@ class User(Base):
 
     @property
     def is_admin(self) -> bool:
+        """ This is only used for the badge in the user list (!) """
         return ('admin' in self.first_name.lower() or 'admin' in
                 self.last_name.lower())
 

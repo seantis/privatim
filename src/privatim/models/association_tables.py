@@ -1,6 +1,8 @@
 from enum import Enum as PyEnum
-from sqlalchemy import Enum
-from sqlalchemy import ForeignKey
+from enum import IntEnum
+from sqlalchemy import ForeignKey, Integer, Enum
+from privatim.orm.meta import UUIDStrPK
+
 from sqlalchemy.orm import relationship, mapped_column, Mapped
 from privatim.orm import Base
 from privatim.orm.uuid_type import UUIDStr
@@ -43,3 +45,38 @@ class MeetingUserAttendance(Base):
 
     def __repr__(self) -> str:
         return f'<MeetingUserAttendance {self.user_id} {self.status}>'
+
+
+class AgendaItemDisplayState(IntEnum):
+    COLLAPSED = 0
+    EXPANDED = 1
+
+
+class AgendaItemStatePreference(Base):
+    """Tracks user preferences for agenda item display states
+    (expanded/collapsed)"""
+
+    __tablename__ = 'agenda_item_state_preferences'
+
+    id: Mapped[UUIDStrPK]
+
+    user_id: Mapped[UUIDStr] = mapped_column(
+        ForeignKey('users.id', ondelete='CASCADE')
+    )
+
+    agenda_item_id: Mapped[UUIDStr] = mapped_column(
+        ForeignKey('agenda_items.id', ondelete='CASCADE')
+    )
+
+    state: Mapped[AgendaItemDisplayState] = mapped_column(
+        Integer,
+        default=AgendaItemDisplayState.COLLAPSED
+    )
+
+    user: Mapped['User'] = relationship(
+        'User',
+        back_populates='agenda_item_state_preferences'
+    )
+
+    def __repr__(self) -> str:
+        return f'<AgendaItemStatePreference {self.state}>'

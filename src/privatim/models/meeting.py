@@ -11,7 +11,8 @@ from pyramid.authorization import Authenticated
 
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
-from privatim.models.association_tables import AttendanceStatus
+from privatim.models.association_tables import AttendanceStatus, \
+    AgendaItemDisplayState, AgendaItemStatePreference
 from privatim.models.association_tables import MeetingUserAttendance
 from privatim.orm.uuid_type import UUIDStr
 from privatim.orm import Base
@@ -25,6 +26,7 @@ if TYPE_CHECKING:
     from privatim.models import WorkingGroup
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
+    from pyramid.interfaces import IRequest
 
 
 class AgendaItemCreationError(Exception):
@@ -102,6 +104,24 @@ class AgendaItem(Base, SearchableMixin):
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.title
         yield cls.description
+
+    def get_display_state_for_user(
+            self,
+            request: 'IRequest',
+    ) -> AgendaItemDisplayState:
+        session = request.dbsession
+        user = request.user
+        if not session:
+            return AgendaItemDisplayState.COLLAPSED
+
+        preference = session.execute(
+            select(AgendaItemStatePreference).where(
+                AgendaItemStatePreference.agenda_item_id
+                == self.id, AgendaItemStatePreference.user_id == user.id,
+            )
+        ).scalar_one_or_none()
+        return preference.state if preference \
+            else (AgendaItemDisplayState.COLLAPSED)
 
     def __acl__(self) -> list['ACL']:
         return [

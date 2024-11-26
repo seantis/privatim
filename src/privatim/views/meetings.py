@@ -1,9 +1,12 @@
 import logging
-
 from markupsafe import Markup
 from pyramid.response import Response
 from sqlalchemy import func, select
-from privatim.models.association_tables import AttendanceStatus
+from privatim.models.association_tables import (
+    AttendanceStatus,
+    AgendaItemDisplayState,
+    AgendaItemStatePreference,
+)
 from privatim.reporting.report import (
     MeetingReport,
     ReportOptions,
@@ -45,12 +48,28 @@ def meeting_view(
 ) -> 'RenderData':
     """ Displays a single meeting. """
     assert isinstance(context, Meeting)
+    session = request.dbsession
 
     stmt = select(func.count(Meeting.id)).where(
         Meeting.working_group_id == context.working_group.id
     )
-    meeting_count = request.dbsession.execute(stmt).scalar_one()
+    meeting_count = session.execute(stmt).scalar_one()
     disable_copy_button = meeting_count <= 1
+
+    # Get all preferences for this user and these agenda items in one query
+    preferences_stmt = (
+        select(AgendaItemStatePreference)
+        .where(
+            AgendaItemStatePreference.user_id == request.user.id,
+            AgendaItemStatePreference.agenda_item_id.in_(
+                item.id for item in context.agenda_items
+            )
+        )
+    )
+    preferences = {
+        str(pref.agenda_item_id): pref.state
+        for pref in session.execute(preferences_stmt).scalars()
+    }
 
     formatted_time = datetime_format(context.time)
     request.add_action_menu_entries(
@@ -96,7 +115,15 @@ def meeting_view(
     )
 
     agenda_items = []
+    all_items_expanded = True
     for indx, item in enumerate(context.agenda_items, start=1):
+        is_expanded = preferences.get(
+            str(item.id),
+            AgendaItemDisplayState.COLLAPSED
+        ) == AgendaItemDisplayState.EXPANDED
+
+        if not is_expanded:
+            all_items_expanded = False
         agenda_items.append(
             {
                 'title': Markup(
@@ -107,6 +134,7 @@ def meeting_view(
                 'description': Markup(item.description),
                 'id': item.id,
                 'position': item.position,
+                'is_expanded': is_expanded,
                 'edit_btn': Button(
                     url=request.route_url('edit_agenda_item', id=item.id),
                     icon='edit',
@@ -142,6 +170,8 @@ def meeting_view(
         ),
         'expand_all_text': _('Expand All'),
         'collapse_all_text': _('Collapse All'),
+        'all_expanded': all_items_expanded,
+        'has_agenda_items': bool(agenda_items),
     }
 
 
