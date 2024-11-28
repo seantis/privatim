@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-11-14 23:14+0100\n"
+"POT-Creation-Date: 2024-11-28 15:29+0100\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -256,7 +256,7 @@ msgstr "Supprimer un point de l'ordre du jour"
 msgid "Members"
 msgstr "Membres"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
+#: src/privatim/views/meetings.py
 msgid "Expand All"
 msgstr "Développer tout"
 
@@ -351,8 +351,8 @@ msgstr "Modifier l'utilisateur"
 
 #: src/privatim/views/people.py
 #, python-format
-msgid "Successfully deleted user: {full_name}."
-msgstr "Utilisateur supprimé avec succès: {full_name}."
+msgid "Successfully deleted user: ${full_name}."
+msgstr "Suppression réussie de l'utilisateur : ${full_name}."
 
 #: src/privatim/views/mtan.py
 msgid "Token"
@@ -1065,6 +1065,10 @@ msgstr "Comité:"
 #: src/privatim/reporting/template/report.pt
 msgid "Attendees:"
 msgstr "Participants:"
+
+#, python-format
+#~ msgid "Successfully deleted user: {full_name}."
+#~ msgstr "Utilisateur supprimé avec succès: {full_name}."
 
 #~ msgid "Deleted Entries"
 #~ msgstr "Entrées supprimées"

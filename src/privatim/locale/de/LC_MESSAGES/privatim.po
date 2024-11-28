@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-11-14 23:14+0100\n"
+"POT-Creation-Date: 2024-11-28 15:29+0100\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -259,7 +259,7 @@ msgstr "Traktandum löschen"
 msgid "Members"
 msgstr "Mitglieder"
 
-#: src/privatim/views/meetings.py src/privatim/views/templates/meeting.pt
+#: src/privatim/views/meetings.py
 msgid "Expand All"
 msgstr "Alle ausklappen"
 
@@ -354,8 +354,8 @@ msgstr "Benutzer bearbeiten"
 
 #: src/privatim/views/people.py
 #, python-format
-msgid "Successfully deleted user: {full_name}."
-msgstr "Benutzer {full_name} erfolgreich gelöscht."
+msgid "Successfully deleted user: ${full_name}."
+msgstr "Benutzer ${full_name} erfolgreich gelöscht."
 
 #: src/privatim/views/mtan.py
 msgid "Token"

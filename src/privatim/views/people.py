@@ -200,7 +200,7 @@ def delete_user_view(
 
     full_name = f'{user.first_name} {user.last_name}'
     message = _(
-        'Successfully deleted user: {full_name}.',
+        'Successfully deleted user: ${full_name}.',
         mapping={'full_name': full_name}
     )
     request.messages.add(translate(message, request.locale_name), 'success')
