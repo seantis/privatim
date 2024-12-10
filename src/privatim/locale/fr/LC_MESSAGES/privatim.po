@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-11-28 15:29+0100\n"
+"POT-Creation-Date: 2024-12-10 15:19+0100\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -156,6 +156,11 @@ msgstr "Poubelle"
 #: src/privatim/layouts/navbar.pt
 msgid "Sign out"
 msgstr "Se déconnecter"
+
+#. type: ignore[has-type]
+#: src/privatim/models/comment.py
+msgid "Comment deleted by user"
+msgstr "[Commentaire supprimé par l'utilisateur]"
 
 #: src/privatim/views/profile.py
 msgid "Upload a photo..."
@@ -431,10 +436,6 @@ msgstr ""
 "une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
 "spécial. une lettre majuscule, une lettre minuscule, un chiffre et un "
 "caractère spécial."
-
-#: src/privatim/views/comment.py
-msgid "Comment deleted by user"
-msgstr "[Commentaire supprimé par l'utilisateur]"
 
 #: src/privatim/views/comment.py
 msgid "Successfully deleted comment"

@@ -7,7 +7,9 @@ from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_, select
 from privatim.models import SearchableMixin
+from privatim.i18n import _
 from pyramid.authorization import Allow, Authenticated
+
 
 from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
 if TYPE_CHECKING:
@@ -16,6 +18,9 @@ if TYPE_CHECKING:
     from privatim.models.consultation import Consultation
     from privatim.types import ACL
     T = TypeVar('T', bound='Base')
+
+
+COMMENT_DELETED_MSG = _('Comment deleted by user')  # type: ignore[has-type]
 
 
 class Comment(Base, SearchableMixin):
@@ -44,6 +49,8 @@ class Comment(Base, SearchableMixin):
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+
+    deleted: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     # Author of the comment. Nullable to be somewhat more resilient for
     # deleted users

@@ -247,7 +247,7 @@ def _dugettext_policy(
             and not hasattr(translated, '__html__')
             # our plain TranslationString also implements __html__ but
             # we don't want it to get interpolated into Markup
-            and not type(tstring) is TranslationString
+            and type(tstring) is not TranslationString
     ):
         return Markup(translated)
     return translated

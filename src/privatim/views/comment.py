@@ -3,8 +3,7 @@ from pyramid.httpexceptions import (HTTPFound, HTTPClientError, HTTPNotFound,
                                     HTTPForbidden)
 from privatim.i18n import _
 from privatim.i18n import translate
-from privatim.models.comment import Comment
-
+from privatim.models.comment import Comment, COMMENT_DELETED_MSG
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -18,7 +17,8 @@ def delete_comment_view(
     context: Comment, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
     assert context.target_type == 'consultations'
-    context.content = translate(_('Comment deleted by user'))
+    context.content = translate(_(COMMENT_DELETED_MSG))
+    context.deleted = True
     message = _('Successfully deleted comment')
     request.messages.add(message, 'success')
 

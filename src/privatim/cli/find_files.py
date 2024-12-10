@@ -24,6 +24,7 @@ def find_ini_files(start_dir: str = '') -> 'Iterator[str]':
                             entry.is_file()
                             and entry.name.endswith('.ini')
                             and entry.name != 'testing.ini'
+                            and entry.name != 'e2e.ini'
                         ):
                             yield entry.path
                         elif entry.is_dir():

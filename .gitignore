@@ -74,3 +74,5 @@ messages.xlsx
 
 src/privatim/locale/de/LC_MESSAGES/privatim.mo
 src/privatim/locale/fr/LC_MESSAGES/privatim.mo
+
+.codebuddy/

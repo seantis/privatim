@@ -131,19 +131,17 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     end_date = form.end_date.data
 
     start_datetime = (
-        datetime.combine(start_date, time.min, tzinfo=ZoneInfo("UTC"))
+        datetime.combine(start_date, time.min, tzinfo=ZoneInfo('UTC'))
         if start_date
         else None
     )
     end_datetime = (
-        datetime.combine(end_date, time.max, tzinfo=ZoneInfo("UTC"))
+        datetime.combine(end_date, time.max, tzinfo=ZoneInfo('UTC'))
         if end_date
         else None
     )
 
     activities: list[Activity] = []
-
-    # Query construction for Consultations
     if include_consultations:
         consultation_query = select(Consultation).options(
             joinedload(Consultation.creator),
@@ -158,7 +156,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             session.execute(consultation_query).unique().scalars().all()
         )
 
-    # Query construction for Meetings
     if include_meetings:
         meeting_query = select(Meeting)
         meeting_query = maybe_apply_date_filter(
@@ -167,9 +164,14 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         activities.extend(
             session.execute(meeting_query).unique().scalars().all()
         )
-    # Query construction for Comments
+
     if include_comments:
-        comment_query = select(Comment).options(joinedload(Comment.user))
+        comment_query = (
+            select(Comment)
+            .options(joinedload(Comment.user))
+            .filter(~Comment.deleted)
+        )
+
         comment_query = maybe_apply_date_filter(
             comment_query, start_datetime, end_datetime, Comment.updated
         )
