@@ -42,8 +42,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install .[mypy] GitPython flake8 flake8-bugbear flake8-pyi bandit[toml]
+        python -m pip install --upgrade uv
+        uv pip install -r requirements.txt -r tests_requirements.txt
+      env:
+        UV_SYSTEM_PYTHON: true
 
     - name: Linting
       run: flake8 src/ tests/ stubs/
