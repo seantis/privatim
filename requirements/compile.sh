@@ -12,7 +12,7 @@ if [ -z "${VIRTUAL_ENV:-}" ]; then
 fi
 
 echo "Building requirements.txt"
-echo "-e ." | uv pip compile setup.cfg - \
+uv pip compile setup.cfg \
     -o requirements.txt \
     --no-emit-package setuptools \
     "$@"
@@ -22,5 +22,5 @@ uv pip compile setup.cfg \
     --extra test \
     --extra mypy \
     -o tests_requirements.txt \
-    -c requirements.txt
+    -c requirements.txt \
     "$@"
