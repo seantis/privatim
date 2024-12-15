@@ -53,11 +53,16 @@ def get_activities(session: 'Session') -> list[Any]:
         ).scalars().unique()
 
     def get_comments() -> Iterable[Comment]:
-        return session.execute(
-            select(Comment)
-            .options(joinedload(Comment.user))
-            .order_by(Comment.updated.desc())
-        ).scalars().unique()
+        return (
+            session.execute(
+                select(Comment)
+                .options(joinedload(Comment.user))
+                .order_by(Comment.updated.desc())
+                .filter(~Comment.deleted)
+            )
+            .scalars()
+            .unique()
+        )
 
     # Combine all activities using itertools.chain
     all_activities = sorted(
