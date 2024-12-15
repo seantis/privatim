@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-12-10 15:19+0100\n"
+"POT-Creation-Date: 2024-12-14 16:15+0100\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -520,6 +520,10 @@ msgstr "Se connecter"
 #: src/privatim/views/templates/form.pt
 msgid "Save"
 msgstr "Sauver"
+
+#: src/privatim/views/templates/consultations.pt
+msgid "Last edited date"
+msgstr "Dernière date d'édition"
 
 #: src/privatim/views/templates/consultations.pt
 #: src/privatim/views/templates/consultation.pt

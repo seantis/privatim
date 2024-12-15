@@ -474,29 +474,6 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         )
     )
 
-    def check_visible_deleted_comments(session: 'Session') -> None:
-        """
-        Check comments that have deletion text but are still visible
-        """
-        query = """
-        SELECT id, content, deleted
-        FROM comments
-        WHERE content = '[Kommentar von Benutzer gelöscht]'
-        ORDER BY updated DESC
-        LIMIT 5;
-        """
-        results = session.execute(text(query))
-
-        print("\nExamining supposedly deleted comments:")
-        print("-" * 50)
-        for id, content, deleted in results:
-            print(f"Comment ID: {id}")
-            print(f"Content: '{content}'")
-            print(f"Deleted flag: {deleted}")
-            print("-" * 50)
-
-    check_visible_deleted_comments(context.session)
-
     # Get all available translations of the deleted message
     translated_messages = {str(COMMENT_DELETED_MSG),  # untranslated
                            'Comment deleted by user',  # fallback English
@@ -523,5 +500,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         SET deleted = true
         WHERE """ + conditions  # nosec[B608]
         context.session.execute(text(query))
+
+    context.drop_column('consultations', 'updated')
 
     context.commit()

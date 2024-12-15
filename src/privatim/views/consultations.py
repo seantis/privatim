@@ -1,4 +1,3 @@
-import os
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
@@ -18,6 +17,9 @@ from privatim.utils import (
 
 
 from typing import TYPE_CHECKING
+
+from privatim.views.utils import trim_filename
+
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
@@ -49,7 +51,7 @@ def consultation_view(
         ),
     ])
     top_level_comments = (c for c in context.comments if c.parent_id is None)
-    previous_versions = get_previous_versions(session, context)
+    previous_versions = [context] + get_previous_versions(session, context)
     return {
         'delete_title': _('Delete Consultation'),
         'title': context.title,
@@ -86,17 +88,6 @@ def consultation_view(
     }
 
 
-def trim_filename(filename: str) -> str:
-    name, extension = os.path.splitext(filename)
-    max_name_length = 35 - len(extension)
-    if len(filename) <= 35:
-        return filename
-    else:
-        trimmed_name = name[:max_name_length-3] + ".."
-        trimmed_filename = trimmed_name + extension
-        return trimmed_filename
-
-
 def consultations_view(request: 'IRequest') -> 'RenderData':
     session = request.dbsession
     stmt = (
@@ -105,18 +96,18 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         .order_by(Consultation.created.desc())
     )
 
-    consultations = [
+    consultations = tuple(
         {
             '_id': _cons.id,
-            'creator_pic_id': _cons.creator.picture.id if _cons.creator else
+            'editor_pic_id': _cons.editor.picture.id if _cons.editor else
             None,
             'title': _cons.title,
-            'display_name':  _cons.creator.fullname if _cons.creator
+            'editor_name': _cons.editor.fullname if _cons.editor
             else _('Deleted User'),
             'description': Markup(_cons.description),
-            'created': _cons.created
+            'updated': _cons.updated,
         } for _cons in session.scalars(stmt).unique().all()
-    ]
+    )
     return {
         'title': _('Consultations'),
         'consultations': consultations,

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sedate import utcnow
 from sqlalchemy import ForeignKey, Integer, Index, ARRAY, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -87,10 +88,11 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
 
-    # fixme: Remove updated.
-    #  technically, we don't need this anymore, as we create a new instance of
-    # Consultation every time in edit view.
-    updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
+    @hybrid_property
+    def updated(self) -> datetime:
+        # This is ok, because we create a new consultation for each edit.
+        # Keep the same interface (hide the implementation detail)
+        return self.created
 
     # in theory this could be nullable=False, but let's avoid problems with
     # user deletion

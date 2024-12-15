@@ -230,7 +230,7 @@ def status_is_checked(data: 'Mapping[str, Any]', user_id: str) -> bool:
 
 def get_previous_versions(
     session: 'FilteredSession', consultation: Consultation, limit: int = 5
-) -> Sequence[Consultation]:
+) -> list[Consultation]:
     """
     Returns the previous versions of a consultation.
 
