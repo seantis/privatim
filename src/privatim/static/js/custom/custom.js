@@ -477,7 +477,7 @@ function autoHideSuccessMessages() {
 
 function addTestSystemBadge() {
     const testBadge = document.getElementById('testBadge');
-    if (window.location.href.includes('test')) {
+    if (window.location.href.includes('test') && !window.location.href.includes('q=test')) {
         testBadge.style.display = 'inline-block';
     }
 }

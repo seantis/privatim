@@ -238,7 +238,7 @@ msgstr "Traktanden kopieren"
 
 #: src/privatim/views/meetings.py
 msgid "No other meetings to copy from"
-msgstr "Keine weiteren Sitzungen zum Kopieren vorhanden"
+msgstr "Es gibt nur eine Sitzung innerhalb dieses Gremiums"
 
 #: src/privatim/views/meetings.py
 msgid "Export"
