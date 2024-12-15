@@ -58,7 +58,7 @@
                                 <span class="accordion-text-9">${item.title}</span>
                                     ${item.edit_btn()}
                                     ${item.delete_btn()}
-                                <a href="#"
+                                <a tal:condition="len(agenda_items) > 1" href="#"
                                    class="btn"
                                    data-bs-toggle="tooltip"
                                    data-bs-placement="top"
