@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, QueryableAttribute
 from privatim.models import Consultation, Meeting
 from privatim.models.comment import Comment
 from privatim.i18n import _
@@ -17,22 +17,21 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import Session
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, Activity
-    from sqlalchemy.orm import InstrumentedAttribute
 
 
 def maybe_apply_date_filter(
     query: 'Select[Any]',
     start_datetime: datetime | None,
     end_datetime: datetime | None,
-    date_column: 'InstrumentedAttribute[datetime]'
+    datetime_column: 'QueryableAttribute[datetime]',
 ) -> 'Select[Any]':
     """
     Apply start and end date filters to a given query.
     """
     if start_datetime:
-        query = query.filter(date_column >= start_datetime)
+        query = query.filter(datetime_column >= start_datetime)
     if end_datetime:
-        query = query.filter(date_column <= end_datetime)
+        query = query.filter(datetime_column <= end_datetime)
     return query
 
 

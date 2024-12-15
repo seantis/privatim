@@ -266,7 +266,7 @@ def get_previous_versions(
             .all()
         )
         try:
-            return (
+            return list(
                 session.execute(
                     select(Consultation)
                     .where(Consultation.id.in_(version_ids))

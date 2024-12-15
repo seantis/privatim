@@ -28,7 +28,8 @@ def create_consultation(
         session.add(file)
         consultation.files.append(file)
 
-    consultation.updated = utcnow() - timedelta(days=days_old)
+    # updated will be accesssed
+    consultation.created = utcnow() - timedelta(days=days_old)
     consultation.deleted = is_deleted
     session.add(consultation)
     session.flush()
