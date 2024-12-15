@@ -10,4 +10,3 @@ def trim_filename(filename: str) -> str:
         trimmed_name = name[:max_name_length-3] + ".."
         trimmed_filename = trimmed_name + extension
         return trimmed_filename
-

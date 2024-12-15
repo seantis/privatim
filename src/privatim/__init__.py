@@ -34,7 +34,6 @@ from subscribers import register_subscribers
 if TYPE_CHECKING:
     from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
-    from sqlalchemy.orm import Session
     from privatim.cli.upgrade import UpgradeContext
     from pyramid.interfaces import IRequest
 
