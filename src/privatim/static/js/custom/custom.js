@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     addTestSystemBadge();
     fixCSSonProfilePage();
     handleSingleAgendaItemClickToggleStateUpdate();
+    listenForChangesOfUserRemovedFromMeeting();
 });
 
 
@@ -402,7 +403,7 @@ function listenForChangesInAttendees() {
 
     observer.observe(tomSelectWrapper, {childList: true, subtree: true});
 
-    // Remove attendance rows with value="", inappropriately returned by the backend in case of form errors.
+    // Remove attendance rows with value="", which were inappropriately returned by the backend in case of form errors.
     // I can't find an elegant way to prevent this on the backend side.
     // This is reciprocal with MeetingForm.process()
     const attendanceRows = document.querySelectorAll('.attendance-row');
@@ -412,6 +413,39 @@ function listenForChangesInAttendees() {
             row.remove();
         }
     });
+}
+
+/**
+ * Just some visual feedback for the user. Disable and visually grey out the name and attendance status fields
+ */
+function listenForChangesOfUserRemovedFromMeeting() {
+
+    if (!window.location.href.match(/\/meetings\/[\w-]+\/edit$/)) {
+        return;
+    }
+    const removeCheckboxes = document.querySelectorAll('input[id$="-remove"]');
+
+    removeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function (event) {
+            const attendeeRow = event.target.closest('.attendance-row');
+            const nameInput = attendeeRow.querySelector('.attendee-name input');
+            const statusCheckbox = attendeeRow.querySelector('input[id$="-status"]');
+
+            if (event.target.checked) {
+                const attendeeName = nameInput.value;
+                nameInput.style.opacity = '0.5';
+                statusCheckbox.disabled = true;
+                statusCheckbox.style.opacity = '0.5';
+                attendeeRow.style.opacity = '0.7';
+            } else {
+                nameInput.style.opacity = '1';
+                statusCheckbox.disabled = false;
+                statusCheckbox.style.opacity = '1';
+                attendeeRow.style.opacity = '1';
+            }
+        });
+    });
+
 }
 
 
