@@ -52,6 +52,10 @@ def consultation_view(
     ])
     top_level_comments = (c for c in context.comments if c.parent_id is None)
     previous_versions = [context] + get_previous_versions(session, context)
+
+    is_old_version = not context.is_latest()
+    latest_version = context.get_latest_version(session)
+
     return {
         'delete_title': _('Delete Consultation'),
         'title': context.title,
@@ -60,6 +64,11 @@ def consultation_view(
         'recommendation': Markup(context.recommendation),
         'evaluation_result': Markup(context.evaluation_result),
         'decision': Markup(context.decision),
+        'is_old_version': is_old_version,
+        'latest_version_url': (
+            request.route_url('consultation', id=latest_version.id)
+            if latest_version else None
+        ),
         'previous_versions': [
             {
                 'created': version.created,

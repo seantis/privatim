@@ -18,52 +18,44 @@
                         <tal:b tal:repeat="activity activities">
                             <div class="timeline-item">
                                 <div class="timeline-icon">
-                                    <tal:b tal:switch="activity.__class__.__name__">
-                                        <i tal:case="'Meeting'" class="fas fa-users"></i>
-                                        <i tal:case="'Consultation'" class="fas fa-file-alt"></i>
-                                        <i tal:case="'Comment'" class="fas fa-comment"></i>
-                                    </tal:b>
+                                    <i class="${activity['icon_class']}"></i>
                                 </div>
-                                <a tal:attributes="href string:${request.route_url(activity.__class__.__name__.lower(), id=activity.id)}"
-                                        class="content-link">
+                                <a tal:attributes="href string:${request.route_url(activity['route_url'], id=activity['id'])}"
+                                    class="content-link">
                                     <div class="timeline-content claude-element">
                                         <h6 class="timeline-title">
-                                            <tal:b tal:switch="activity.__class__.__name__">
-                                                <span tal:case="'Consultation'" i18n:translate="">Consultation Added</span>
-                                                <span tal:case="'Meeting'" i18n:translate="">Meeting Scheduled</span>
-                                                <span tal:case="'Comment'" i18n:translate="">Comment Added</span>
-                                            </tal:b>
+                                            ${activity['title']}
                                         </h6>
                                         <p class="timeline-info">
-                                            <span class="timeline-date">${layout.format_date(activity.created, 'date')} ${layout.format_date(activity.created, 'time')}</span>
-                                            <span class="timeline-user">
-                                            <tal:b tal:define="creator python:getattr(activity, 'creator', None) or getattr(activity, 'user', None)"
-                                                     tal:condition="creator">
+                                            <span class="timeline-date">
+                                                ${layout.format_date(activity['timestamp'], 'date')}
+                                                ${layout.format_date(activity['timestamp'], 'time')}
+                                            </span>
+                                            <span class="timeline-user" tal:condition="activity['user']">
                                                 <span i18n:translate="">by </span>
-                                                <img src="${creator.profile_pic_download_link(request)}"
-                                                     alt="${creator.fullname}'s avatar"
+                                                <img src="${activity['user'].profile_pic_download_link(request)}"
+                                                     alt="${activity['user'].fullname}'s avatar"
                                                      class="rounded-circle"
                                                      width="20"
                                                      height="20"
                                                      style="vertical-align: middle;">
-                                                    ${creator.fullname}
-                                            </tal:b>
-                                        </span>
+                                                ${activity['user'].fullname}
+                                            </span>
                                         </p>
                                         <div class="timeline-body">
-                                            <tal:b tal:switch="activity.__class__.__name__">
-                                                <div tal:case="'Consultation'">
-                                                    <h4 tal:condition="activity.title" tal:content=" activity.title[:100] + '...' if len(activity.title) > 100 else activity.title"></h4>
-                                                </div>
-                                                <div tal:case="'Meeting'">
-                                                    <h4 i18n:translate="">${activity.name}</h4>
-                                                    <p>
-                                                        <strong i18n:translate="">Date:</strong> ${layout.format_date(activity.time, 'date')} ${layout.format_date(activity.time, 'time')}
-                                                    </p>
-                                                </div>
-                                                <div tal:case="'Comment'">
-                                                    <p tal:content="activity.content[:100] + '...' if len(activity.content) > 100 else activity.content"></p>
-                                                </div>
+                                            <tal:b tal:condition="'title' in activity['content']">
+                                                <h4>${activity['content']['title']}</h4>
+                                            </tal:b>
+                                            <tal:b tal:condition="'name' in activity['content']">
+                                                <h4>${activity['content']['name']}</h4>
+                                                <p>
+                                                    <strong i18n:translate="">Date:</strong>
+                                                    ${layout.format_date(activity['content']['time'], 'date')}
+                                                    ${layout.format_date(activity['content']['time'], 'time')}
+                                                </p>
+                                            </tal:b>
+                                            <tal:b tal:condition="'content' in activity['content']">
+                                                <p>${activity['content']['content']}</p>
                                             </tal:b>
                                         </div>
                                     </div>

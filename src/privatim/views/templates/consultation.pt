@@ -5,6 +5,16 @@
 
     <div metal:fill-slot="content">
 
+        <div tal:condition="is_old_version" class="alert alert-warning" role="alert">
+            <!-- That an old version is rendered — this should generally never happen.
+            But in the case it does, we should make this very clear to avoid confusing the user (and us). -->
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong i18n:translate="">You are viewing an old version of this consultation.</strong>
+            <a href="${latest_version_url}" class="alert-link" i18n:translate="">
+                Click here to view the latest version
+            </a>
+        </div>
+
         <a href="${navigate_back_up}" class="text-decoration-none" role="button" tabindex="1">
             <i class="fa fa-arrow-left me-2"></i><span i18n:translate="">Back to Consultations</span>
         </a>

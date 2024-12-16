@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-12-14 16:15+0100\n"
+"POT-Creation-Date: 2024-12-16 19:55+0100\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -304,6 +304,30 @@ msgstr "Réunion modifiée avec succès."
 msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
 
+#: src/privatim/views/activities.py
+msgid "Meeting Updated"
+msgstr "Réunion mise à jour"
+
+#: src/privatim/views/activities.py
+msgid "Meeting Scheduled"
+msgstr "Réunion prévue"
+
+#: src/privatim/views/activities.py
+msgid "Comment Updated"
+msgstr "Commentaire mis à jour"
+
+#: src/privatim/views/activities.py
+msgid "Comment Added"
+msgstr "Commentaire ajouté"
+
+#: src/privatim/views/activities.py
+msgid "Consultation Added"
+msgstr "Procédure de consultation ajoutée"
+
+#: src/privatim/views/activities.py
+msgid "Consultation Updated"
+msgstr "Procédure de consultation mise à jour"
+
 #: src/privatim/views/trash.py
 msgid "Invalid item type."
 msgstr "Type d'élément invalide."
@@ -591,6 +615,14 @@ msgid "Date and Time"
 msgstr "Date et heure"
 
 #: src/privatim/views/templates/consultation.pt
+msgid "You are viewing an old version of this consultation."
+msgstr "Vous consultez une ancienne version de cette consultation."
+
+#: src/privatim/views/templates/consultation.pt
+msgid "Click here to view the latest version"
+msgstr "Cliquez ici pour voir la dernière version"
+
+#: src/privatim/views/templates/consultation.pt
 msgid "Back to Consultations"
 msgstr "Retour aux procédures de consultation"
 
@@ -656,18 +688,6 @@ msgstr "→ Envoyer à nouveau le code / essayer un autre numéro"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Consultation Added"
-msgstr "Procédure de consultation ajoutée"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Meeting Scheduled"
-msgstr "Réunion prévue"
-
-#: src/privatim/views/templates/activities.pt
-msgid "Comment Added"
-msgstr "Commentaire ajouté"
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/forms/agenda_item_form.py

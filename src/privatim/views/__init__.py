@@ -5,7 +5,8 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from privatim.route_factories import (agenda_item_factory,
                                       general_file_factory, file_factory,
                                       consultation_from_comment_factory,
-                                      comment_factory)
+                                      comment_factory,
+                                      consultation_all_versions_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
 from privatim.route_factories import meeting_factory
@@ -176,7 +177,7 @@ def includeme(config: 'Configurator') -> None:
     config.add_route(
         'consultation',
         '/consultation/{id}',
-        factory=consultation_factory
+        factory=consultation_all_versions_factory
     )
     config.add_view(
         consultation_view,

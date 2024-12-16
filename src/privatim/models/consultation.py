@@ -3,7 +3,6 @@ from datetime import datetime
 
 from sedate import utcnow
 from sqlalchemy import ForeignKey, Integer, Index, ARRAY, String
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -20,6 +19,7 @@ from privatim.models.comment import Comment
 from typing import TYPE_CHECKING, Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
+    from privatim.orm import FilteredSession
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.models import User
     from privatim.models.file import SearchableFile
@@ -88,7 +88,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
 
-    @hybrid_property
+    @property
     def updated(self) -> datetime:
         # This is ok, because we create a new consultation for each edit.
         # Keep the same interface (hide the implementation detail)
@@ -153,6 +153,22 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     is_latest_version: Mapped[int] = mapped_column(
         Integer, default=1, index=True,
     )
+
+    def is_latest(self) -> bool:
+        # cosmetics
+        return self.is_latest_version == 1
+
+    def get_latest_version(self, session: 'FilteredSession') -> 'Consultation':
+        if self.is_latest():
+            return self
+        with session.no_consultation_filter():
+            latest_version = self.replaced_by
+            while latest_version and not latest_version.is_latest():
+                latest_version = latest_version.replaced_by
+        # if we're not the latest version, there exists a newer version and
+        # with that a replaced_by
+        assert latest_version is not None
+        return latest_version
 
     files: Mapped[list['SearchableFile']] = relationship(
         'SearchableFile',

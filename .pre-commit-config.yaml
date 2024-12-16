@@ -61,7 +61,7 @@ repos:
               exit 0;
             else
               echo "⚠️  Warning: setup.cfg was modified but requirements.txt was not!";
-              echo "If you have added new dependencies, you need to run \"make compile\" to re-generate the requirements.txt. Otherwise, you can ignore thi warning";
+              echo "If you have added new dependencies, you need to run \"make compile\" to re-generate the requirements.txt. Otherwise, you can ignore this warning with --no-verify";
               exit 1;
             fi;
           fi'

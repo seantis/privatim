@@ -16,9 +16,6 @@ if TYPE_CHECKING:
     from sqlalchemy.orm.session import Session
 
 
-KEEP_DELETED_FILES_TIMESPAN = 30
-
-
 def delete_old_records(
         session: 'Session',
         model: type[Base],

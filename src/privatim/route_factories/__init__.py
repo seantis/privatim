@@ -1,7 +1,10 @@
 from sqlalchemy import select, exists
 
 from .root_factory import root_factory
-from .uuid_factory import create_uuid_factory
+from .uuid_factory import (
+    create_uuid_factory,
+    create_consultation_all_versions_factory,
+)
 from privatim.models import AgendaItem, GeneralFile, Comment
 from privatim.models import WorkingGroup, Consultation, User, Meeting
 from privatim.models.file import SearchableFile
@@ -20,6 +23,11 @@ _person_factory = create_uuid_factory(User)
 _meeting_factory = create_uuid_factory(Meeting)
 _agenda_item_factory = create_uuid_factory(AgendaItem)
 _comment_factory = create_uuid_factory(Comment)
+_all_consultations_factory = create_consultation_all_versions_factory()
+
+
+def consultation_all_versions_factory(request: 'IRequest') -> Consultation:
+    return _all_consultations_factory(request)
 
 
 def consultation_factory(request: 'IRequest') -> 'Consultation | Root':

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-12-14 16:15+0100\n"
+"POT-Creation-Date: 2024-12-16 19:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -307,6 +307,30 @@ msgstr ""
 msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
+#: ./src/privatim/views/activities.py
+msgid "Meeting Updated"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Meeting Scheduled"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Comment Updated"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Comment Added"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Consultation Added"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Consultation Updated"
+msgstr ""
+
 #: ./src/privatim/views/trash.py
 msgid "Invalid item type."
 msgstr ""
@@ -582,6 +606,14 @@ msgid "Date and Time"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
+msgid "You are viewing an old version of this consultation."
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
+msgid "Click here to view the latest version"
+msgstr ""
+
+#: ./src/privatim/views/templates/consultation.pt
 msgid "Back to Consultations"
 msgstr ""
 
@@ -646,18 +678,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Consultation Added"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Meeting Scheduled"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Comment Added"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt

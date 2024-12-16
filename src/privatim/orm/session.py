@@ -10,11 +10,12 @@ if TYPE_CHECKING:
 
 class FilteredSession(BaseSession):
     """
+    Implements a global filter to all queries.
     Handles soft delete and versioning by wrapping the default SQLAlchemy
     Session.
 
-    A custom SQLAlchemy Session class that adds WHERE criteria to all
-    occurrences of an entity in all queries (GlobalFilter).
+    More precisely, this is a custom SQLAlchemy Session class that adds WHERE
+    criteria to all occurrences of an entity in all queries.
 
     Ignore models marked as 'deleted' in all queries, so developers don't have
     to remember this check every time they write a query. A similar thing  is
@@ -22,8 +23,8 @@ class FilteredSession(BaseSession):
     accidentally fetching older versions of Consultations. In most cases,
     we only want the latest version.
 
-    In the rare case where we actually do want the older / deleted versions,
-    we can disable the filter as follows:
+    In the case where we actually do want the older / deleted versions, we can
+    disable the filter as follows:
 
         with session.no_consultation_filter():
             all_consultations = session.query(Consultation).all()
@@ -32,8 +33,8 @@ class FilteredSession(BaseSession):
 
         with session.no_soft_delete_filter():
             deleted_consultations = session.query(Consultation).filter(
-                Consultation.deleted == True)
-
+                Consultation.deleted == True
+            )
 
     This is the recommended way to handle this kind of global filtering.:
     https://docs.sqlalchemy.org/en/20/orm/session_events.html#adding-global-where-on-criteria  # noqa: E501
@@ -92,6 +93,7 @@ class FilteredSession(BaseSession):
 
     @contextmanager
     def no_consultation_filter(self):  # type:ignore
+        """ Temporarily disables the consultation version filter. """
         original_value = self._disable_consultation_filter
         self._disable_consultation_filter = True
         try:
@@ -101,6 +103,7 @@ class FilteredSession(BaseSession):
 
     @contextmanager
     def no_soft_delete_filter(self):  # type:ignore
+        """ Temporarily disables the soft delete filter. """
         original_value = self._disable_soft_delete_filter
         self._disable_soft_delete_filter = True
         try:
