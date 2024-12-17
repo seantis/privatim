@@ -1,11 +1,11 @@
-import pytest
 from datetime import timedelta
 from sedate import utcnow
-from sqlalchemy import select, Column, Integer
+from sqlalchemy import select
 
-from privatim.cli.apply_data_retention_policy import delete_old_records
+from privatim.cli.apply_data_retention_policy import (
+    delete_old_consultation_chains,
+)
 from privatim.models import Consultation, SearchableFile
-from privatim.orm import Base
 
 
 def create_consultation(
@@ -55,8 +55,8 @@ def test_delete_old_records_consultations(session, user):
 
     session.flush()
 
-    # Run the delete_old_records function
-    deleted_ids = delete_old_records(session, Consultation)
+    # Run the delete_old_consultation_chains function
+    deleted_ids = delete_old_consultation_chains(session, days_threshold=30)
 
     # Check that the correct consultations were deleted
     assert len(deleted_ids) == 2
@@ -76,15 +76,15 @@ def test_delete_old_records_consultations(session, user):
         assert len(remaining_files) == 0
 
 
-def test_delete_old_records_no_deletions(session, user):
+def test_delete_old_consultation_chains_no_deletions(session, user):
     # Create only recent or active consultations
     create_consultation(session, user, 'Recent Active', 10)
     create_consultation(session, user, 'Recent Deleted', 10, is_deleted=True)
 
     session.flush()
 
-    # Run the delete_old_records function
-    deleted_ids = delete_old_records(session, Consultation)
+    # Run the delete_old_consultation_chains function
+    deleted_ids = delete_old_consultation_chains(session)
 
     # Check that no consultations were deleted
     assert len(deleted_ids) == 0
@@ -92,12 +92,3 @@ def test_delete_old_records_no_deletions(session, user):
     with session.no_soft_delete_filter():
         remaining_consultations = session.scalars(select(Consultation)).all()
         assert len(remaining_consultations) == 2
-
-
-def test_delete_old_records_invalid_model(session):
-    class InvalidModel(Base):
-        __tablename__ = 'invalid_model'
-        id = Column(Integer, primary_key=True)
-
-    with pytest.raises(ValueError, match="does not support soft delete"):
-        delete_old_records(session, InvalidModel)

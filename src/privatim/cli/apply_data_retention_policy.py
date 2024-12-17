@@ -1,51 +1,111 @@
 from datetime import timedelta
-
+import logging
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
 from sedate import utcnow
-from sqlalchemy import delete
-
+from sqlalchemy import select
+from sqlalchemy.sql import delete
 from privatim.models import Consultation
-from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.orm import get_engine, Base
 
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from sqlalchemy.orm.session import Session
+    from privatim.orm import FilteredSession
 
 
-def delete_old_records(
-        session: 'Session',
-        model: type[Base],
+log = logging.getLogger(__name__)
+
+
+def format_consultation_tree(
+    consultation: Consultation, level: int = 0
+) -> list[str]:
+    """Format a single consultation and its version history recursively."""
+    tree_lines = []
+    indent = '  ' * level
+    version_status = 'LATEST' if consultation.is_latest() else 'OLD'
+    tree_lines.append(
+        f'{indent}├── {consultation.title} ({version_status}) '
+        f'[ID: {consultation.id}]'
+    )
+    if consultation.previous_version:
+        tree_lines.extend(
+            format_consultation_tree(consultation.previous_version, level + 1)
+        )
+    return tree_lines
+
+
+def delete_old_consultation_chains(
+        session: 'FilteredSession',
         days_threshold: int = 30
 ) -> list[str]:
-    if not issubclass(model, SoftDeleteMixin):
-        raise ValueError(f'{model.__name__} does not support soft delete')
+    """
+    Delete entire consultation chains where the latest version is:
+    1. Soft deleted
+    2. Older than the threshold
+
+    Returns the IDs of all deleted consultations.
+    """
 
     cutoff_date = utcnow() - timedelta(days=days_threshold)
 
-    # Combine the select and delete operations
-    stmt = (
-        delete(model)
-        .where(
-            model.updated <= cutoff_date,  # type:ignore[attr-defined]
-            model.deleted.is_(True)
-        )
-        .returning(model.id)  # type:ignore[attr-defined]
-    )
-    result = session.execute(stmt)
-    deleted_ids = result.scalars().all()
-    session.flush()
-    return deleted_ids
+    with session.no_consultation_filter():
+        with session.no_soft_delete_filter():
+
+            # First find latest versions that are soft-deleted and old enough
+            latest_query = (
+                select(Consultation)
+                .where(
+                    Consultation.is_latest_version == 1,
+                    Consultation.deleted.is_(True),
+                    Consultation.created <= cutoff_date
+                )
+            )
+
+            to_delete = session.execute(latest_query).scalars().all()
+            ids_to_delete = []
+            for latest in to_delete:
+                # Log the tree structure before deletion
+                tree_lines = format_consultation_tree(latest)
+                log.info(
+                    'Will delete consultation tree:'
+                    '\n%s', '\n'.join(tree_lines))
+
+                # Follow chain backwards and collect IDs
+                current: Consultation | None = latest
+                while current is not None:
+                    ids_to_delete.append(current.id)
+                    current = current.previous_version
+
+            if ids_to_delete:
+                # Perform bulk delete
+                bulk_delete_stmt = delete(Consultation).where(
+                    Consultation.id.in_(ids_to_delete)
+                )
+                session.execute(bulk_delete_stmt)
+                log.info(
+                    'Bulk deletion complete. Removed consultations '
+                    'with IDs: %s',
+                    ', '.join(map(str, ids_to_delete)),
+                )
+                session.flush()
+                return ids_to_delete
+            return []
 
 
 @click.command()
 @click.argument('config_uri')
-def hard_delete(
-        config_uri: str,
-) -> None:
+@click.option(
+    '--days',
+    default=30,
+    help='Number of days after which to delete soft-deleted consultations'
+)
+def hard_delete(config_uri: str, days: int) -> None:
+    """
+    Hard delete consultation chains where the latest version is soft-deleted
+    and older than the specified number of days.
+    """
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
     engine = get_engine(settings)
@@ -53,9 +113,14 @@ def hard_delete(
 
     with env['request'].tm:
         session = env['request'].dbsession
-        deleted_consultation_ids = delete_old_records(session, Consultation)
-        for id in deleted_consultation_ids:
-            print(f"Deleted Consultation with ID: {id}")
+        deleted_ids = delete_old_consultation_chains(session, days)
+
+        if deleted_ids:
+            print(f"Deleted {len(deleted_ids)} consultations:")
+            for id in deleted_ids:
+                print(f"  - Consultation ID: {id}")
+        else:
+            print("No consultations were deleted.")
 
 
 if __name__ == '__main__':
