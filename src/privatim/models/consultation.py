@@ -125,13 +125,13 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         back_populates='previous_version',
         foreign_keys=[replaced_consultation_id],
         remote_side='Consultation.id',
-        cascade='all, delete'
+        cascade='all, delete',
     )
     previous_version: Mapped['Consultation | None'] = relationship(
         'Consultation',
         back_populates='replaced_by',
         foreign_keys='Consultation.replaced_consultation_id',
-        cascade='all, delete'
+        cascade='all, delete',
     )
 
     comments: Mapped[list[Comment]] = relationship(
@@ -197,3 +197,18 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     __table_args__ = (
         Index('ix_consultations_deleted', 'deleted'),
     )
+
+    @classmethod
+    def __declare_last__(cls) -> None:
+        """This runs after the class is fully declared"""
+        from sqlalchemy import event
+
+        @event.listens_for(cls, 'after_update')
+        def consultation_after_update(mapper, connection, target):
+            import traceback
+            stack = traceback.extract_stack()
+            # Get the last 3 frames of the stack trace
+            relevant_frames = stack[-3:]
+            print(f"\nConsultation <{target.id} {target.title} updated - "
+                  f"is_latest_version "
+                  f"changed to: {target.is_latest_version}")

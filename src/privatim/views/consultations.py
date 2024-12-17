@@ -206,19 +206,31 @@ def edit_consultation_view(
     form = ConsultationForm(next_cons, request)
     if request.method == 'POST' and form.validate():
 
-        # Populate the new consultation with form data
+        # First persist the new consultation
         form.populate_obj(next_cons)
         session.add(next_cons)
+        session.flush()  # This gives next_cons an ID
 
-        # Update the previous consultation
+        # Now we can set up the relationships
         previous.is_latest_version = 0
-        previous.replaced_by = next_cons
+        previous.replaced_by = next_cons  # This will work now that next_cons has an ID
+        next_cons.previous_version = previous
+
         session.add(previous)
         session.flush()
+
+
+        # Debug assertions
+        assert next_cons.previous_version is previous, "Previous version not set correctly"
+        assert previous.replaced_by is next_cons, "Replaced by not set correctly"
+        assert previous.is_latest_version == 0, "Previous version flag not set correctly"
+        assert next_cons.is_latest_version == 1, "New version flag not set correctly"
+
         message = _('Successfully edited consultation.')
         if not request.is_xhr:
             request.messages.add(message, 'success')
 
+        session.flush()
         return HTTPFound(
             location=request.route_url(
                 'consultation', id=str(next_cons.id)
