@@ -475,114 +475,16 @@ def test_consultation_version_chain_restore(client, pdf_vemz):
             )
             .filter_by(description='first update description')
         ).scalar_one()
+
         # validate chain relationships
         original = first_update.previous_version
-        # session.refresh(original)
-        assert original.is_latest() is False
-        return
 
+        session.refresh(original) #  this is required... why?
+        assert original.is_latest() is False
         assert first_update.previous_version.id == original_id
         assert first_update.is_latest() is True
         # assert original.replaced_by.id == first_update_id
 
-    return
-
-    # Second edit
-    page = client.get(f'/consultations/{str(first_update_id)}/edit')
-    page.form['title'] = 'second update'
-    page.form['description'] = 'second update description'
-    page = page.form.submit().follow()
-
-    with session.no_consultation_filter():
-        # Get the second update (latest version)
-        latest_version = session.execute(
-            select(Consultation)
-            .options(
-                selectinload(Consultation.previous_version).selectinload(
-                    Consultation.previous_version
-                ),
-                selectinload(Consultation.replaced_by)
-            )
-            .filter_by(description='second update description')
-        ).scalar_one()
-        latest_id = latest_version.id
-
-        # Verify chain relationships
-        assert latest_version.previous_version.id == first_update_id
-        # assert latest_version.previous_version.previous_version.id ==
-        # original_id
-
-    client.get(f'/consultation/{latest_id}')
-    assert 'Sie sehen eine alte Version dieser Vernehmlassung' not in page
-
-    # Delete the latest version (should delete entire chain)
-    page = client.get(f'/consultations/{latest_id}/delete')
-    page = page.follow()
-    assert 'Vernehmlassung in den Papierkorb verschoben' in page
-
-    # Verify all versions are soft deleted
-    # fixme: this is not yet done, but soft delete is smart enough,
-    # it will work in any case.
-    # Not sure if this is a good idea to set all to 'deleted'
-
-    # with session.no_soft_delete_filter():
-    #     for cons_id in [original_id, first_update_id, latest_id]:
-    #         consultation = session.execute(
-    #             select(Consultation)
-    #             .filter_by(id=cons_id)
-    #         ).scalar_one()
-    #         breakpoint()
-    #         # assert consultation.deleted
-
-    # Restore from trash (using any version should restore all)
-    page = client.get('/trash')
-    page = page.click('Wiederherstellen').follow()
-    assert 'Element erfolgreich wiederhergestellt' in page
-
-    with session.no_consultation_filter():
-        # Verify all versions are restored and maintain their relationships
-        # Get latest version
-        restored_latest = session.execute(
-            select(Consultation)
-            .options(
-                selectinload(Consultation.previous_version).selectinload(
-                    Consultation.previous_version
-                ),
-                selectinload(Consultation.replaced_by)
-            )
-            .filter_by(id=latest_id)
-        ).scalar_one()
-
-        assert not restored_latest.deleted
-        assert restored_latest.is_latest_version == 1
-
-        # Verify chain is intact
-        # Fixme: this needs to be looked at more closely
-        print_consultation_tree(restored_latest)
-        restored_first = restored_latest.previous_version
-        assert restored_first.id == first_update_id
-        assert not restored_first.deleted
-
-        # why is this not zero??
-
-        the_middle_cons = session.execute(
-            select(Consultation)
-            .filter_by(description='first update description')
-        ).scalar_one()
-        assert restored_first.is_latest_version == 0
-        return
-
-        # restored_original = restored_first.previous_version
-        # assert restored_original.id == original_id
-        # assert not restored_original.deleted
-        # assert restored_original.is_latest_version == 0
-        # Verify latest version appears in normal queries
-
-    page = client.get('/consultations')
-    assert 'second update description' in page
-    # Older versions should not appear in normal view
-    assert 'first update description' not in page
-    assert 'original description' not in page
 
 
 def test_display_previous_versions(client):
