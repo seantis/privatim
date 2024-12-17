@@ -430,6 +430,110 @@ def test_consultation_delete(client, pdf_vemz):
     assert not consultation.deleted
 
 
+def test_consultation_version_chain_restore(client, pdf_vemz):
+    session = client.db
+    client.login_admin()
+
+    # Create initial consultation
+    page = client.get('/consultations')
+    page = page.click('Vernehmlassung Erfassen')
+    page.form['title'] = 'original title'
+    page.form['description'] = 'original description'
+    page.form['status'] = 'Created'
+    filename, content = pdf_vemz
+    page.form['files'] = Upload(filename=filename, content=content)
+    page = page.form.submit().follow()
+
+    # Get the original consultation
+    consultation = session.execute(select(Consultation).filter_by(
+        description='original description')).scalar_one()
+    original_id = consultation.id
+
+    # First edit
+    page = client.get(f'/consultations/{str(original_id)}/edit')
+    page.form['title'] = 'first update'
+    page.form['description'] = 'first update description'
+    page.form['status'] = 'In Progress'
+    page = page.form.submit().follow()
+
+    # Get the first update
+    first_update = session.execute(select(Consultation).filter_by(
+        description='first update description')).scalar_one()
+    first_update_id = first_update.id
+
+    # Second edit
+    page = client.get(f'/consultations/{str(first_update_id)}/edit')
+    page.form['title'] = 'second update'
+    page.form['description'] = 'second update description'
+    page = page.form.submit().follow()
+
+    with session.no_consultation_filter():
+        # Get the second update (latest version)
+        latest_version = session.execute(
+            select(Consultation)
+            .options(
+                selectinload(Consultation.previous_version).selectinload(
+                    Consultation.previous_version
+                )
+            )
+            .filter_by(description='second update description')
+        ).scalar_one()
+        latest_id = latest_version.id
+
+        # Verify chain relationships
+        assert latest_version.previous_version.id == first_update_id
+        assert latest_version.previous_version.previous_version.id == original_id
+
+    # Delete the latest version (should delete entire chain)
+    page = client.get(f'/consultations/{latest_id}/delete')
+    page = page.follow()
+    assert 'Vernehmlassung in den Papierkorb verschoben' in page
+
+    # Verify all versions are soft deleted
+    with session.no_soft_delete_filter():
+        for cons_id in [original_id, first_update_id, latest_id]:
+            consultation = session.execute(
+                select(Consultation).filter_by(id=cons_id)).scalar_one()
+            assert consultation.deleted
+
+    # Verify none are visible in normal queries
+    for cons_id in [original_id, first_update_id, latest_id]:
+        consultation = session.execute(
+            select(Consultation).filter_by(id=cons_id)).scalar_one_or_none()
+        assert consultation is None
+
+    # Restore from trash (using any version should restore all)
+    page = client.get('/trash')
+    page = page.click('Wiederherstellen').follow()
+    assert 'Element erfolgreich wiederhergestellt' in page
+
+    # Verify all versions are restored and maintain their relationships
+    with session.no_consultation_filter():
+        # Get latest version
+        restored_latest = session.execute(
+            select(Consultation).filter_by(id=latest_id)).scalar_one()
+        assert not restored_latest.deleted
+        assert restored_latest.is_latest_version == 1
+
+        # Verify chain is intact
+        restored_first = restored_latest.previous_version
+        assert restored_first.id == first_update_id
+        assert not restored_first.deleted
+        assert restored_first.is_latest_version == 0
+
+        restored_original = restored_first.previous_version
+        assert restored_original.id == original_id
+        assert not restored_original.deleted
+        assert restored_original.is_latest_version == 0
+
+    # Verify latest version appears in normal queries
+    page = client.get('/consultations')
+    assert 'second update description' in page
+    # Older versions should not appear in normal view
+    assert 'first update description' not in page
+    assert 'original description' not in page
+
+
 def test_display_previous_versions(client):
     # Create a user that will be reused
     session = client.db

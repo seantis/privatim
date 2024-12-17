@@ -74,14 +74,34 @@ def trash_view(request: 'IRequest') -> 'RenderData':
     }
 
 
+def restore_consultation_chain(
+        session: 'FilteredSession',
+        consultation: Consultation
+) -> None:
+    """Restore an entire consultation chain starting from any point."""
+    # Restore backwards through the chain
+    current: Consultation | None = consultation
+    while current is not None:
+        current.revert_soft_delete()
+        session.add(current)
+        current = current.previous_version
+
+    # Also restore forwards through the chain
+    current = consultation.replaced_by
+    while current is not None:
+        current.revert_soft_delete()
+        session.add(current)
+        current = current.replaced_by
+
+
 def restore_soft_deleted_model_view(
-    request: 'IRequest',
+        request: 'IRequest',
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
     item_type = request.matchdict['item_type']
     item_id = request.matchdict['item_id']
-
     model = model_map.get(item_type)
+
     if not model:
         request.messages.add(_('Invalid item type.'), 'error')
         return HTTPFound(location=request.route_url('trash'))
@@ -91,9 +111,14 @@ def restore_soft_deleted_model_view(
     with session.no_soft_delete_filter():
         stmt = select(model).filter_by(id=item_id)
         item = session.execute(stmt).scalar_one_or_none()
+
         if item:
-            item.revert_soft_delete()
-            session.add(item)
+            if isinstance(item, Consultation):
+                restore_consultation_chain(session, item)
+            else:
+                item.revert_soft_delete()
+                session.add(item)
+
             session.flush()
             session.refresh(item)
             request.messages.add(_('Item restored successfully.'), 'success')

@@ -305,6 +305,23 @@ def simple_get_previous_versions(
     """Not used currently."""
     with session.no_consultation_filter():
         # Fetch the latest version of the consultation
+
+        # TODO: Be cautious - filtered sessions have unexpected behavior here
+        #       Loading previous consultation versions likely requires
+        #       selectinload() Replace current implementation with this
+        #       approach instead of the complex `get_previous_versions`
+
+        #
+        # latest_cons = session.execute(
+        #     select(Consultation)
+        #     .options(
+        #         selectinload(Consultation.previous_version).selectinload(
+        #             Consultation.previous_version
+        #         )
+        #     )
+        #     .filter_by(description='second update description')
+        # ).scalar_one()
+
         latest_consultation = session.get(Consultation, latest_consultation_id)
 
         if not latest_consultation:
