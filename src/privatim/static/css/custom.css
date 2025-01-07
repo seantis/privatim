@@ -226,7 +226,13 @@ a:hover {
 
 .consultation-card {
     cursor: pointer;
+    max-width: 100%;
 }
+
+.d-flex.flex-column.flex-md-row {
+    width: 100%;
+}
+
 
 /* New hover effect styles */
 .activity-card-wrapper:hover {
@@ -271,8 +277,18 @@ a:hover {
 }
 
 .consultation-profile-section {
+    width: 180px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
     flex-direction: column;
     align-items: center;
+}
+
+.consultation-profile-section p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
 }
 
 .profile-name, .details-link {
@@ -290,7 +306,6 @@ a:hover {
     height: 100px;
 }
 
-/* FIXME */
 .tag-button {
     background-color: #ededed;
     border-color: #ededed;

@@ -29,7 +29,7 @@
                             <div class="activity-card-wrapper consultation-card"
                                  data-href="${request.route_url('consultation', id=consultation._id)}">
                                 <div class="d-flex flex-column flex-md-row">
-                                    <div class="consultation-profile-section text-center text-md-start p-4">
+                                    <div class="consultation-profile-section text-center text-md-start ms-4">
                                         <img tal:condition="consultation.editor_pic_id"
                                                 src="${request.route_url('download_file', id=consultation.editor_pic_id)}"
                                                 class="rounded-circle mb-2 img-fluid" alt="Profile Icon">

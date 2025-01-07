@@ -161,7 +161,7 @@ def meeting_view(
         'time': formatted_time,
         'meeting': context,
         'meeting_attendees': user_list(
-            request, context.attendance_records, translate(_('Members'))
+            request, context.attendance_records
         ),
         'agenda_items': agenda_items,
         'sortable_url': data_sortable_url,
@@ -176,10 +176,11 @@ def meeting_view(
 
 
 def user_list(
-    request: 'IRequest', users: Sequence['MeetingUserAttendance'], title: str
+    request: 'IRequest', users: Sequence['MeetingUserAttendance']
 ) -> Markup:
-    """ Returns an HTML list of users with profile pictures, links to their
+    """Returns an HTML list of users with profile pictures, links to their
     profiles, and checkbox on the right, with tooltips."""
+    title = translate(_('Attendees:'))
     if not users:
         return Markup('')
     user_items = tuple(
@@ -225,7 +226,7 @@ def user_list(
         '''
     <div class="generic-user-list-container">
         <p>
-            <span class="fw-bold">{}:</span>
+            <span class="fw-bold">{}</span>
         </p>
         <ul class="generic-user-list list-unstyled">{}</ul>
     </div>
