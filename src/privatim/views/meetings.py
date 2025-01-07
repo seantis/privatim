@@ -433,9 +433,7 @@ def delete_meeting_view(
     )
 
 
-def sortable_agenda_items_view(
-        context: Meeting, request: 'IRequest'
-) -> 'RenderData':
+def move_agenda_item(context: Meeting, request: 'IRequest') -> 'RenderData':
 
     try:
         subject_id = int(request.matchdict['subject_id'])

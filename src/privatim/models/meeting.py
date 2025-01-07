@@ -78,6 +78,10 @@ class AgendaItem(Base, SearchableMixin):
             meeting=meeting,
             position=new_position,
         )
+
+        # Normalize positions to prevent any issues
+        # normalize_agenda_item_positions(meeting.agenda_items)
+
         return new_agenda_item
 
     id: Mapped[UUIDStrPK]
@@ -203,6 +207,10 @@ class Meeting(Base, SearchableMixin):
         cascade="all, delete-orphan"
     )
 
+    @property
+    def sorted_agenda_items(self) -> list[AgendaItem]:
+        return sorted(self.agenda_items, key=lambda x: x.position)
+
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)
 
@@ -234,3 +242,4 @@ class Meeting(Base, SearchableMixin):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
