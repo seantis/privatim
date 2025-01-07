@@ -1,4 +1,5 @@
 import logging
+from itertools import count
 from markupsafe import Markup
 from pyramid.response import Response
 from sqlalchemy import func, select
@@ -116,7 +117,7 @@ def meeting_view(
 
     agenda_items = []
     all_items_expanded = True
-    for indx, item in enumerate(context.agenda_items, start=1):
+    for indx, item in enumerate(context.sorted_agenda_items, start=1):
         is_expanded = preferences.get(
             str(item.id),
             AgendaItemDisplayState.COLLAPSED
@@ -443,7 +444,10 @@ def move_agenda_item(context: Meeting, request: 'IRequest') -> 'RenderData':
         raise HTTPBadRequest('Request parameters are missing or invalid') \
             from e
 
-    agenda_items = context.agenda_items
+    if direction not in ['above', 'below']:
+        raise HTTPBadRequest('Invalid direction')
+
+    agenda_items = list(context.sorted_agenda_items)  # Ensure it's a list
     subject_item = next(
         (item for item in agenda_items if item.position == subject_id), None
     )
@@ -452,25 +456,22 @@ def move_agenda_item(context: Meeting, request: 'IRequest') -> 'RenderData':
     )
 
     if subject_item is None or target_item is None:
-        raise HTTPMethodNotAllowed('Invalid subject or target id')
+        raise HTTPBadRequest('Invalid subject or target id')
 
-    if direction not in ['above', 'below']:
-        raise HTTPMethodNotAllowed('Invalid direction')
+    # First, remove the subject item from its current position
+    agenda_items.remove(subject_item)
 
-    new_position = target_item.position
+    # Find where to insert it
+    insert_index = agenda_items.index(target_item)
     if direction == 'below':
-        new_position += 1
+        insert_index += 1
 
-    for item in agenda_items:
-        match direction:
-            case 'above' if (new_position
-                             <= item.position < subject_item.position):
-                item.position += 1
-            case 'below' if (subject_item.position
-                             < item.position <= new_position):
-                item.position -= 1
+    # Insert at the new position
+    agenda_items.insert(insert_index, subject_item)
 
-    subject_item.position = new_position
+    # Renumber sequentially
+    for i, item in enumerate(agenda_items, start=1):
+        item.position = i
 
     return {
         'status': 'success',
