@@ -471,14 +471,12 @@ input[type="color"]:focus,
 }
 
 
-@media (min-width: 768px) {
-    .consultations-content-width {
-        width: 75%; /* 75% width only on desktop/tablet */
-    }
+.consultations-content-width {
+    width: 85%;
 }
 
 .sidebar-filter {
-    width: 30%;
+    width: 15%;
 }
 
 .make-line-breaks-in-p {
