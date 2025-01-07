@@ -270,7 +270,7 @@ a:hover {
     word-break: break-word;
 }
 
-.profile-section {
+.consultation-profile-section {
     flex-direction: column;
     align-items: center;
 }
@@ -285,7 +285,7 @@ a:hover {
     color: var(--primary-color) !important;
 }
 
-.profile-section img {
+.consultation-profile-section img {
     width: 100px;
     height: 100px;
 }

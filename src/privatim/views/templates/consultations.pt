@@ -29,14 +29,13 @@
                             <div class="activity-card-wrapper consultation-card"
                                  data-href="${request.route_url('consultation', id=consultation._id)}">
                                 <div class="d-flex flex-column flex-md-row">
-                                    <!-- Set width to 200px to ensure it will not move the text to the right if user has long name-->
-                                    <div class="profile-section text-center text-md-start p-4" style="width: 200px;">
+                                    <div class="consultation-profile-section text-center text-md-start p-4">
                                         <img tal:condition="consultation.editor_pic_id"
                                                 src="${request.route_url('download_file', id=consultation.editor_pic_id)}"
-                                                class="rounded-circle mb-2 profile-icon" alt="Profile Icon">
+                                                class="rounded-circle mb-2 img-fluid" alt="Profile Icon">
                                         <img tal:condition="not consultation.editor_pic_id"
                                                 src="${layout.static_url('privatim:static/default_profile_icon.png')}"
-                                                class="rounded-circle mb-2 profile-icon" alt="Profile Icon">
+                                                class="rounded-circle mb-2 img-fluid" alt="Profile Icon">
                                         <p class="text-secondary small">
                                             <span
                                                 data-bs-toggle="tooltip"
