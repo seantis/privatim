@@ -239,6 +239,35 @@ a:hover {
 
 .card-body {
     flex: 1;
+    /* Add word breaking for long content */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* Ensure links break */
+    word-break: break-word;
+}
+
+/* Make sure links also break properly */
+.card-body a {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Add max-width to ensure content stays within bounds */
+.consultation-card {
+    max-width: 100%;
+}
+
+/* Ensure the content flex container respects boundaries */
+.d-flex.flex-column.flex-md-row {
+    width: 100%;
+}
+
+/* Make sure paragraphs also handle long content properly */
+.card-text p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .profile-section {
