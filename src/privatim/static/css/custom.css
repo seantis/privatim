@@ -456,8 +456,10 @@ input[type="color"]:focus,
 }
 
 
-.consultations-content-width {
-    width: 75%;
+@media (min-width: 768px) {
+    .consultations-content-width {
+        width: 75%; /* 75% width only on desktop/tablet */
+    }
 }
 
 .sidebar-filter {
