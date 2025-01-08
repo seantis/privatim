@@ -7,11 +7,6 @@ from tests.shared.utils import (
 )
 
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from privatim.models import AgendaItem
-
-
 def test_sortable_agenda_items_view(pg_config):
 
     # Add route
@@ -54,7 +49,6 @@ def test_sortable_agenda_items_view(pg_config):
 
 
 def test_sortable_agenda_items_view_2(pg_config):
-    # Add route
     pg_config.add_route(
         'sortable_agenda_items',
         '/meetings/agenda_items/{id}/move/{subject_id}/{direction}/{'
@@ -78,7 +72,10 @@ def test_sortable_agenda_items_view_2(pg_config):
         ['Budget Review', 2],
         ['Next Steps', 3]
     ]
-    print('Initial positions:', [[e.title, e.position] for e in meeting.agenda_items])
+    print(
+        'Initial positions:', [[e.title, e.position] for e in
+                               meeting.agenda_items]
+    )
     verify_sequential_positions(meeting.agenda_items)
 
     # Test moving first item below second item
@@ -121,7 +118,7 @@ def test_sortable_agenda_items_view_2(pg_config):
         ['Project Update', 0],
         ['Introduction', 1],
         ['Next Steps', 2],
-        ['Introduction', 3],
+        ['Budget Review', 3],
     ]
 
     # AssertionError: assert

@@ -79,9 +79,6 @@ class AgendaItem(Base, SearchableMixin):
             position=new_position,
         )
 
-        # Normalize positions to prevent any issues
-        # normalize_agenda_item_positions(meeting.agenda_items)
-
         return new_agenda_item
 
     id: Mapped[UUIDStrPK]
@@ -101,7 +98,7 @@ class AgendaItem(Base, SearchableMixin):
     meeting: Mapped['Meeting'] = relationship(
         'Meeting',
         back_populates='agenda_items',
-        order_by='AgendaItem.position'
+
     )
 
     @classmethod
@@ -175,9 +172,9 @@ class Meeting(Base, SearchableMixin):
     time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
     attendance_records: Mapped[list[MeetingUserAttendance]] = relationship(
-        "MeetingUserAttendance",
-        back_populates="meeting",
-        cascade="all, delete-orphan",
+        'MeetingUserAttendance',
+        back_populates='meeting',
+        cascade='all, delete-orphan',
     )
 
     @property
@@ -203,8 +200,8 @@ class Meeting(Base, SearchableMixin):
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
         back_populates='meeting',
-        order_by="AgendaItem.position",
-        cascade="all, delete-orphan"
+        cascade='all, delete-orphan',
+        order_by='AgendaItem.position'
     )
 
     @property
@@ -242,4 +239,3 @@ class Meeting(Base, SearchableMixin):
         return [
             (Allow, Authenticated, ['view']),
         ]
-
