@@ -77,7 +77,7 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
                 if is_creation
                 else _('Consultation Updated')
             ),
-            'route_url': obj_type.lower(),
+            'route_url': 'consultation',
             'id': activity.id,
             'icon_class': _get_icon_class(obj_type),
             'content': _get_activity_content(activity),

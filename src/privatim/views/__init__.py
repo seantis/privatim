@@ -37,7 +37,7 @@ from privatim.views.logout import logout_view
 from privatim.views.mtan import mtan_view, mtan_setup_view
 from privatim.views.meetings import (add_meeting_view,
                                      export_meeting_as_pdf_view,
-                                     sortable_agenda_items_view)
+                                     move_agenda_item)
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
@@ -512,13 +512,13 @@ def includeme(config: 'Configurator') -> None:
         factory=meeting_factory
     )
     config.add_view(
-        sortable_agenda_items_view,
+        move_agenda_item,
         route_name='sortable_agenda_items',
         request_method='POST',
         xhr=False
     )
     config.add_view(
-        sortable_agenda_items_view,
+        move_agenda_item,
         route_name='sortable_agenda_items',
         renderer='json',
         request_method='POST',

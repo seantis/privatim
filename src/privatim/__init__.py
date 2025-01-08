@@ -29,6 +29,8 @@ from privatim.sms.sms_gateway import ASPSMSGateway
 
 
 from typing import Any, TYPE_CHECKING, Iterable
+
+from privatim.utils import fix_agenda_item_positions
 from subscribers import register_subscribers
 
 if TYPE_CHECKING:
@@ -501,5 +503,7 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
         context.session.execute(text(query))
 
     context.drop_column('consultations', 'updated')
+
+    fix_agenda_item_positions(context)
 
     context.commit()

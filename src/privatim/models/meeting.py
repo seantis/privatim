@@ -78,6 +78,7 @@ class AgendaItem(Base, SearchableMixin):
             meeting=meeting,
             position=new_position,
         )
+
         return new_agenda_item
 
     id: Mapped[UUIDStrPK]
@@ -97,7 +98,7 @@ class AgendaItem(Base, SearchableMixin):
     meeting: Mapped['Meeting'] = relationship(
         'Meeting',
         back_populates='agenda_items',
-        order_by='AgendaItem.position'
+
     )
 
     @classmethod
@@ -171,9 +172,9 @@ class Meeting(Base, SearchableMixin):
     time: Mapped[DateTimeWithTz] = mapped_column(nullable=False)
 
     attendance_records: Mapped[list[MeetingUserAttendance]] = relationship(
-        "MeetingUserAttendance",
-        back_populates="meeting",
-        cascade="all, delete-orphan",
+        'MeetingUserAttendance',
+        back_populates='meeting',
+        cascade='all, delete-orphan',
     )
 
     @property
@@ -199,9 +200,13 @@ class Meeting(Base, SearchableMixin):
     agenda_items: Mapped[list[AgendaItem]] = relationship(
         AgendaItem,
         back_populates='meeting',
-        order_by="AgendaItem.position",
-        cascade="all, delete-orphan"
+        cascade='all, delete-orphan',
+        order_by='AgendaItem.position'
     )
+
+    @property
+    def sorted_agenda_items(self) -> list[AgendaItem]:
+        return sorted(self.agenda_items, key=lambda x: x.position)
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
     updated: Mapped[datetime] = mapped_column(default=utcnow, onupdate=utcnow)

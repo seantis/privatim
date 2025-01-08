@@ -434,10 +434,7 @@ def delete_meeting_view(
     )
 
 
-def sortable_agenda_items_view(
-        context: Meeting, request: 'IRequest'
-) -> 'RenderData':
-
+def move_agenda_item(context: Meeting, request: 'IRequest') -> 'RenderData':
     try:
         subject_id = int(request.matchdict['subject_id'])
         direction = request.matchdict['direction']
@@ -446,34 +443,42 @@ def sortable_agenda_items_view(
         raise HTTPBadRequest('Request parameters are missing or invalid') \
             from e
 
-    agenda_items = context.agenda_items
-    subject_item = next(
-        (item for item in agenda_items if item.position == subject_id), None
-    )
-    target_item = next(
-        (item for item in agenda_items if item.position == target_id), None
-    )
-
-    if subject_item is None or target_item is None:
-        raise HTTPMethodNotAllowed('Invalid subject or target id')
-
     if direction not in ['above', 'below']:
         raise HTTPMethodNotAllowed('Invalid direction')
 
-    new_position = target_item.position
-    if direction == 'below':
-        new_position += 1
+    # Get all agenda items sorted by position
+    items = context.agenda_items
 
-    for item in agenda_items:
-        match direction:
-            case 'above' if (new_position
-                             <= item.position < subject_item.position):
-                item.position += 1
-            case 'below' if (subject_item.position
-                             < item.position <= new_position):
+    # Find the items we're working with
+    subject_item = next(
+        (item for item in items if item.position == subject_id), None
+    )
+    target_item = next(
+        (item for item in items if item.position == target_id), None
+    )
+
+    if not subject_item or not target_item:
+        raise HTTPMethodNotAllowed('Invalid subject or target id')
+
+    old_pos = subject_item.position
+    new_pos = (
+        target_item.position if direction == 'above'
+        else target_item.position + 1
+    )
+
+    # Adjust positions of items between old and new positions
+    for item in items:
+        if old_pos < new_pos:
+            # Moving down
+            if old_pos < item.position <= new_pos - 1:
                 item.position -= 1
+        else:
+            # Moving up
+            if new_pos <= item.position < old_pos:
+                item.position += 1
 
-    subject_item.position = new_position
+    # Set the subject item's new position
+    subject_item.position = new_pos - 1 if old_pos < new_pos else new_pos
 
     return {
         'status': 'success',

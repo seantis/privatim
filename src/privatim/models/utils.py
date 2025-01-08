@@ -5,8 +5,11 @@ from docx.table import Table
 
 
 from typing import IO, TYPE_CHECKING, Iterator, Any
+
+
 if TYPE_CHECKING:
     from _typeshed import SupportsRead
+    from privatim.models import AgendaItem
     from docx.blkcntnr import BlockItemContainer
 
 
@@ -79,3 +82,14 @@ def recursively_iter_block_items(
             for row in item.rows:
                 for cell in row.cells:
                     yield from recursively_iter_block_items(cell)
+
+
+def normalize_agenda_item_positions(items: list['AgendaItem']) -> None:
+    """
+    Normalize positions to ensure they are sequential without duplicates.
+    Items are sorted by their current position first, and title as secondary
+    sort to ensure consistent ordering when positions are duplicated.
+    """
+    sorted_items = sorted(items, key=lambda x: (x.position, x.title))
+    for i, item in enumerate(sorted_items):
+        item.position = i
