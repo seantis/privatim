@@ -166,7 +166,7 @@ def get_pre_filled_content_on_searchable_field(page, field_id):
     return [entry[2] for entry in attendees_options if entry[1]]
 
 
-def verify_sequential_positions(items: list['AgendaItem']) -> None:
+def verify_sequential_positions(items: list[AgendaItem]) -> None:
     """Verify that positions are sequential and have no duplicates."""
     positions = [item.position for item in items]
     # Check if positions are sequential from 0 to len(items)-1
@@ -179,4 +179,3 @@ def verify_sequential_positions(items: list['AgendaItem']) -> None:
     assert len(positions) == len(
         set(positions)
     ), f'Duplicate positions found in {positions}'
-

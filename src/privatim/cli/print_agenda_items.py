@@ -2,14 +2,14 @@ import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
 from sqlalchemy import select
-from privatim.models import User, Meeting
+from privatim.models import Meeting
 from privatim.orm import get_engine, Base
 
-from typing import TYPE_CHECKING, Callable
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.models import AgendaItem
-    from sqlalchemy.orm import Session
+
 
 DEFAULT_MEETING_ID = '359d71d2-2162-4110-b021-a0239f7a3236'
 
