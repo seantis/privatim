@@ -17,6 +17,7 @@ from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
 if TYPE_CHECKING:
+    from privatim import UpgradeContext
     from collections.abc import Mapping
     from privatim.types import FileDict, LaxFileDict
     from typing import Iterable
@@ -198,9 +199,9 @@ def maybe_escape(value: str | None) -> str:
 def strip_p_tags(text: str) -> str:
     """Remove <p> tags and strip whitespace from the given text.
 
-    Typically used to display HTML within <ul> and <li> tags,
-    ensuring elements remain on the same horizontal line. It's not the most
-    elegant solution, but less likely to break in the future.
+    Typically used to display HTML within <ul> and <li> tags, where <p> tags
+    would break the layout. It's not the most elegant solution, but less likely
+    to break in the future than other approaches.
     """
     _text = text.replace('<p>', '').replace('</p>', '')
     return _text.strip()
@@ -375,3 +376,22 @@ def get_guest_users(
     return [
         user for user in all_users if str(user.id) not in excluded_ids
     ]
+
+
+def fix_agenda_item_positions(context: 'UpgradeContext') -> None:
+    """Fix agenda item positions to be strictly increasing within each meeting.
+    """
+
+    session = context.session
+
+    # Get all meetings that have agenda items
+    stmt = select(Meeting).join(Meeting.agenda_items)
+    meetings = session.execute(stmt).scalars().unique().all()
+
+    for meeting in meetings:
+        # Get agenda items ordered by current position
+        items = meeting.agenda_items
+
+        # Reassign positions sequentially
+        for new_position, item in enumerate(items):
+            item.position = new_position
