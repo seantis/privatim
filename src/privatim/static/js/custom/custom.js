@@ -420,7 +420,9 @@ function listenForChangesInAttendees() {
  */
 function listenForChangesOfUserRemovedFromMeeting() {
 
-    if (!window.location.href.match(/\/meetings\/[\w-]+\/edit$/)) {
+    // Return early if we're not on either relevant page
+    if (!window.location.href.match(/\/meetings\/[\w-]+\/edit$/) &&
+        !window.location.href.match(/\/working_groups\/[\w-]+\/add$/)) {
         return;
     }
     const removeCheckboxes = document.querySelectorAll('input[id$="-remove"]');
