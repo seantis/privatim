@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-12-16 19:55+0100\n"
+"POT-Creation-Date: 2025-02-11 09:52+0100\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -260,10 +260,6 @@ msgstr "Traktandum bearbeiten"
 msgid "Delete Agenda Item"
 msgstr "Traktandum löschen"
 
-#: src/privatim/views/meetings.py src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr "Mitglieder"
-
 #: src/privatim/views/meetings.py
 msgid "Expand All"
 msgstr "Alle ausklappen"
@@ -271,6 +267,10 @@ msgstr "Alle ausklappen"
 #: src/privatim/views/meetings.py
 msgid "Collapse All"
 msgstr "Alle einklappen"
+
+#: src/privatim/views/meetings.py src/privatim/reporting/template/report.pt
+msgid "Attendees:"
+msgstr "Teilnehmende:"
 
 #: src/privatim/views/meetings.py
 msgid "Invited"
@@ -879,6 +879,10 @@ msgid "In Progress"
 msgstr "in Bearbeitung"
 
 #: src/privatim/forms/consultation_form.py
+msgid "Waiving"
+msgstr "Verzicht"
+
+#: src/privatim/forms/consultation_form.py
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -999,6 +1003,10 @@ msgid "Leader"
 msgstr "Leitung"
 
 #: src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr "Mitglieder"
+
+#: src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
 msgstr "Kontakt Vorstand"
 
@@ -1088,10 +1096,6 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Gremium:"
-
-#: src/privatim/reporting/template/report.pt
-msgid "Attendees:"
-msgstr "Teilnehmende:"
 
 #~ msgid "Deleted Entries"
 #~ msgstr "Gelöschte Einträge"

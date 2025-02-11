@@ -1,12 +1,12 @@
 #
 # SOME DESCRIPTIVE TITLE
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2024-12-16 19:55+0100\n"
+"POT-Creation-Date: 2025-02-11 09:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,16 +259,16 @@ msgstr ""
 msgid "Delete Agenda Item"
 msgstr ""
 
-#: ./src/privatim/views/meetings.py ./src/privatim/forms/working_group_forms.py
-msgid "Members"
-msgstr ""
-
 #: ./src/privatim/views/meetings.py
 msgid "Expand All"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
 msgid "Collapse All"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py ./src/privatim/reporting/template/report.pt
+msgid "Attendees:"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -867,6 +867,10 @@ msgid "In Progress"
 msgstr ""
 
 #: ./src/privatim/forms/consultation_form.py
+msgid "Waiving"
+msgstr ""
+
+#: ./src/privatim/forms/consultation_form.py
 msgid "Description"
 msgstr ""
 
@@ -982,6 +986,10 @@ msgid "Leader"
 msgstr ""
 
 #: ./src/privatim/forms/working_group_forms.py
+msgid "Members"
+msgstr ""
+
+#: ./src/privatim/forms/working_group_forms.py
 msgid "Contact Chairman"
 msgstr ""
 
@@ -1068,8 +1076,4 @@ msgstr ""
 
 #: ./src/privatim/reporting/template/report.pt
 msgid "Working Group:"
-msgstr ""
-
-#: ./src/privatim/reporting/template/report.pt
-msgid "Attendees:"
 msgstr ""

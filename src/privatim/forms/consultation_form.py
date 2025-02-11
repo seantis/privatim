@@ -26,6 +26,7 @@ STATUS_CHOICES = [
     ('Created', _('Created')),
     ('Closed', _('Closed')),
     ('In Progress', _('In Progress')),
+    ('Waiving', _('Waiving')),
 ]
 
 
