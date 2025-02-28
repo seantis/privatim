@@ -12,7 +12,7 @@ if [ -z "${VIRTUAL_ENV:-}" ]; then
 fi
 
 echo "Building requirements.txt"
-uv pip compile setup.cfg \
+echo "-e privatim @ ." | uv pip compile setup.cfg - \
     -o requirements.txt \
     --no-emit-package setuptools \
     "$@"
