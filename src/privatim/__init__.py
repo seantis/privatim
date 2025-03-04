@@ -96,7 +96,7 @@ def includeme(config: Configurator) -> None:
     config.add_request_method(MessageQueue, 'messages', reify=True)
 
     rev = settings.get('git_revision', '')
-    config.add_request_method(lambda r: rev, 'git_revision', reify=True)
+    config.add_request_method(lambda r: rev, 'git_revision')
 
     def add_action_menu_entries(
         request: 'IRequest',
