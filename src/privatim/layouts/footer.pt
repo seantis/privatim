@@ -20,7 +20,7 @@
                         title="Version of the software (Git revision number)">
                     <span>Versionsnummer:</span>
                     <span>
-                            ${request.git_revision}
+                            ${request.git_revision()}
                     </span>
                 </span>
             </div>
