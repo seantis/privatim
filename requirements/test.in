@@ -1,0 +1,39 @@
+-c ../requirements.txt
+
+bandit[toml]
+coverage
+flake8
+flake8-type-checking
+# mypy==1.10.1
+mypy[faster-cache]
+mypy-extensions
+mypy_zope>1.0.0
+lxml-stubs
+types-babel
+types-fanstatic
+types-requests
+types-setuptools
+types-translationstring
+types-WebOb
+types-WTForms
+types-polib
+types-psycopg2
+types-bleach
+types-reportlab
+types-pytz
+bandit[toml]
+flake8
+flake8-bugbear
+freezegun
+hypothesis
+pypdf
+pytest
+pytest-cov
+pytest-codecov
+pytest-postgresql
+pytest-xdist
+playwright
+pytest-playwright
+pyquery
+# todo: probably we can remove this pin?
+WebTest==3.0.0
