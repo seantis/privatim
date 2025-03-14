@@ -18,9 +18,6 @@ echo "-e privatim @ ." | uv pip compile setup.cfg - \
     "$@"
 
 echo "Building tests_requirements.txt"
-uv pip compile setup.cfg \
-    --extra test \
-    --extra mypy \
+uv pip compile requirements/test.in \
     -o tests_requirements.txt \
-    -c requirements.txt \
     "$@"

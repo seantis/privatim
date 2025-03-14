@@ -27,7 +27,7 @@ EOF"
 ```
 git clone git@github.com:seantis/privatim.git
 cd privatim
-python3 -m venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 make install
 cp development.ini.example development.ini
@@ -50,6 +50,14 @@ pytest -n auto
 ```
 
 - Login at http://localhost:6543 with admin@example.org / test
+
+
+# Pre-Commit
+
+Make sure to enable pre-commit using:
+
+    uv tool install pre-commit
+    pre-commit install
 
 
 
@@ -95,11 +103,13 @@ nvm use default
    ```
 
 
+
 # Manage dependencies
 
 If you add a new dependency to `setup.cfg`, you need to run `make compile` to update the `requirements.txt` file.
 The `make compile` commands generates a `requirements.txt`.
 This is then used by puppet and also the CI to install the dependencies.
+
 
 ## Regenerate requirements files based on new dependencies
 

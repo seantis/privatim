@@ -1,8 +1,14 @@
 TIPTAP_DIR ?= src/privatim/static/js/tiptap
 
 install: ensure_uv
+	# Check if requirements files exist and compile if needed
+	@if [ ! -f requirements.txt ] || [ ! -f test_requirements.txt ]; then \
+		echo "One or more requirements files missing, running compile first..."; \
+		make compile; \
+	fi
+
 	# install requirements
-	uv pip install -e '.[test,mypy,dev]' --config-settings editable_mode=compat
+	uv pip install -r requirements.txt -r tests_requirements.txt
 
 	# enable pre-commit
 	pre-commit install
@@ -16,7 +22,7 @@ install: ensure_uv
 
 update: ensure_uv
 	# update all dependencies
-	uv pip compile setup.cfg -U --all-extras | uv pip install -U -r /dev/stdin
+	./requirements/compile.sh -U
 
 	# update the pre-commit hooks
 	pre-commit autoupdate
