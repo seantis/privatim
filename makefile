@@ -47,10 +47,13 @@ e2e: in_virtual_env
 		--browser chromium --browser firefox \
 		--retries 3$
 
+# parallel shell execution with & and wait
+#
 lint: in_virtual_env
-	bash ./mypy.sh
-	flake8 src/ tests/ stubs/
-	bash ./bandit.sh
+	bash ./mypy.sh & \
+	flake8 src/ tests/ stubs/ & \
+	bash ./bandit.sh & \
+	wait
 
 frontend:
 	cd $(TIPTAP_DIR) && ./tiptap.sh
