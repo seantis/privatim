@@ -1,11 +1,15 @@
-from typing import TYPE_CHECKING, Any
+from typing import TypeVar, TYPE_CHECKING, Any
+from wtforms.form import BaseForm
+
+FormT = TypeVar('FormT', bound='BaseForm', contravariant=True)
+FieldT = TypeVar('FieldT', bound='Field', contravariant=True)
+
 if TYPE_CHECKING:
 
     from typing import Protocol, TypeVar
     from typing_extensions import TypeAlias
     from webob.request import _FieldStorageWithFile
     from wtforms.fields.core import _Filter, _Validator, _Widget, Field
-    from wtforms.form import BaseForm
 
     _BaseFormT = TypeVar('_BaseFormT', bound=BaseForm, contravariant=True)
     _FormT = TypeVar('_FormT', bound=BaseForm, contravariant=True)
@@ -17,7 +21,7 @@ if TYPE_CHECKING:
     Widget: TypeAlias = _Widget
     Filter: TypeAlias = _Filter
     BaseValidator: TypeAlias = _Validator
-    Validator: TypeAlias = _Validator[_FormT, _FieldT]
-    Validators: TypeAlias = tuple[_Validator[_FormT, _FieldT], ...] | list[Any]
+    Validator: TypeAlias = _Validator[FormT, FieldT]
+    Validators: TypeAlias = tuple[_Validator[FormT, FieldT], ...] | list[Any]
     # this matches what webob.request.POST returns as value type
     RawFormValue: TypeAlias = str | _FieldStorageWithFile
