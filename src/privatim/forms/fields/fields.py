@@ -19,9 +19,11 @@ from privatim.i18n import _
 from wtforms.fields import DateTimeLocalField as DateTimeLocalFieldBase
 from privatim.models.file import GeneralFile
 from operator import itemgetter
+from wtforms.form import Form
 
 
-from typing import Any, IO, Literal, TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, Any, IO, Literal, TypedDict, TypeVar
+_FormT = TypeVar('_FormT', bound='Form')
 if TYPE_CHECKING:
     from markupsafe import Markup
     from sqlalchemy.orm import Session
@@ -30,15 +32,17 @@ if TYPE_CHECKING:
     from datetime import datetime
     from privatim.types import FileDict as StrictFileDict
     from privatim.forms.types import (
-        _FormT,
         Filter,
         RawFormValue,
         Validators,
         Widget,
+        FormT,
     )
     from typing_extensions import Self
     from webob.request import _FieldStorageWithFile
     from wtforms.form import BaseForm
+    from wtforms.fields.core import _Validator
+
     from wtforms.meta import (
         _MultiDictLikeWithGetlist,
         _SupportsGettextAndNgettext,
@@ -91,7 +95,7 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
     def __init__(
             self,
             label: str | None = None,
-            validators: 'Validators[_FormT, Self] | None' = None,
+            validators: 'Validators[FormT, Self] | None' = None,
             format: str = '%Y-%m-%dT%H:%M',
             **kwargs: Any
     ):
@@ -326,7 +330,8 @@ class UploadMultipleField(UploadMultipleBase, FileField):
     def __init__(
         self,
         label: str | None = None,
-        validators: 'Validators[_FormT, UploadField] | None' = None,
+        validators: 'tuple[_Validator[_FormT, UploadField], ...] | '
+                    'list[Any] | None' = None,
         filters: 'Sequence[Filter]' = (),
         description: str = '',
         id: str | None = None,
@@ -346,12 +351,13 @@ class UploadMultipleField(UploadMultipleBase, FileField):
 
         # a lot of the arguments we just pass through to the subfield
         unbound_field = self.upload_field_class(
-            validators=validators,
+            validators=validators,  # type:ignore[arg-type]
             filters=filters,
             description=description,
             widget=upload_widget,
             render_kw=render_kw,
-            **extra_arguments)
+            **extra_arguments
+        )
         super().__init__(
             unbound_field,
             label,
