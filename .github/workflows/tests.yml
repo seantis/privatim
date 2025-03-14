@@ -43,7 +43,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade uv
-        pip install -r requirements -r tests_requirements.txt
+        make install
       env:
         UV_SYSTEM_PYTHON: true
 
