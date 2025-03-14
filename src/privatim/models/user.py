@@ -26,6 +26,7 @@ from privatim.models.group import user_group_association
 from privatim.orm import Base
 from privatim.orm.meta import UUIDStrPK, str_256, str_128, str_32
 from privatim.models.file import GeneralFile
+from privatim.models.association_tables import AgendaItemDisplayState
 
 
 from typing import TYPE_CHECKING
@@ -33,7 +34,6 @@ if TYPE_CHECKING:
     from privatim.models.association_tables import (
         MeetingUserAttendance,
         AgendaItemStatePreference,
-        AgendaItemDisplayState,
     )
     from privatim.types import ACL
     from sqlalchemy.orm import Session
@@ -195,7 +195,7 @@ class User(Base):
     def get_agenda_item_state(
             self,
             agenda_item_id: str
-    ) -> 'AgendaItemDisplayState':
+    ) -> AgendaItemDisplayState:
         """Get the display state for a specific agenda item"""
         pref = next(
             (p for p in self.agenda_item_state_preferences
