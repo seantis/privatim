@@ -47,6 +47,11 @@ e2e: in_virtual_env
 		--browser chromium --browser firefox \
 		--retries 3$
 
+lint: in_virtual_env
+	bash ./mypy.sh
+	flake8 src/ tests/ stubs/
+	bash ./bandit.sh
+
 frontend:
 	cd $(TIPTAP_DIR) && ./tiptap.sh
 
