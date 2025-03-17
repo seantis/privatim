@@ -22,27 +22,42 @@ def test_view_consultation(client):
                     'einer Interkantonalen Vereinbarung über den '
                     'Datenaustausch zum Betrieb gemeinsamer '
                     'Abfrageplattformen, zu welcher die Konferenz der '
-                    'Kantonalen Justiz- und Polizeidirektorinnen und '
+                    'Kantonalen Justiz- und Polizeidirektornnen und '
                     '–direktoren (KKJPD) zur Zeit eine Vernehmlassung '
                     'durchführt.',
         recommendation='Aus verfassungs- und datenschutzrechtlicher Sicht '
         'ergeben sich einerseits grundsätzliche; Vorbehalte '
         'und andererseits Hinweise zu einzelnen Bestimmungen des '
                        'Vereinbarungsentwurfs...',
-        status='Erstellt',
+        status='Waiving',
         creator=User(email='test@foo.com')
     )
     db.add(consultation)
     db.commit()
     db.refresh(consultation)
+    consultation_id = consultation.id
+    page = client.get(f'/consultations/{str(consultation_id)}/edit')
 
-    page = client.get('/consultations')
+    # test a critical edge case that caused multiple bugs:
+    # Ensure form.process() and form.populate_obj() are perfect
+    # mathematical inverses
+    # (E.g. when processing a form submission with no user
+    # modifications to values.)
+    assert page.form['status'].value != 'Created'
 
+    # Test submit and check again
+    page.form['recommendation'] = 'some text'
+    page = page.form.submit().follow()
     assert 'Noch keine' not in page
     assert 'Vernehmlassung zur Interkantonalen Vereinbarung über den' in page
+    assert 'Erstellt' not in page.pyquery('span.badge')[0].text
 
-    print(str(consultation.id))
-    # page = client.get(f'/consultations/{str(consultation.id)}')
+    # test empty submit
+    consultation_id = page.request.url.split('/')[-1]
+    page = client.get(f'/consultations/{str(consultation_id)}/edit')
+    page = page.form.submit().follow()
+    # status shoud not have been changed
+    assert 'Verzicht' in page.pyquery('span.badge')[0].text
 
 
 def test_view_add_and_delete_consultation(client):
