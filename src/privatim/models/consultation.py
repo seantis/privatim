@@ -61,6 +61,8 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         assert is_latest_version in (0, 1)
         if status is None:
             self.status = 'Created'
+        else:
+            self.status = status
         self.secondary_tags = secondary_tags or []
         if files is not None:
             self.files = files
