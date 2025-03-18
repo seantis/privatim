@@ -15,12 +15,12 @@
                 <h5 i18n:translate="" class="text-uppercase mb-md-3">
                     Version
                 </h5>
-                <span tal:condition="request.git_revision"
+                <span tal:condition="h.git_revision"
                         data-bs-toggle="tooltip" data-bs-placement="bottom" i18n:attributes="title"
                         title="Version of the software (Git revision number)">
                     <span>Versionsnummer:</span>
                     <span>
-                            ${request.git_revision()}
+                            ${h.git_revision}
                     </span>
                 </span>
             </div>
