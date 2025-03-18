@@ -8,13 +8,13 @@ bandit==1.8.2
     # via -r requirements/test.in
 beautifulsoup4==4.13.3
     # via webtest
-certifi==2025.1.31
+certifi==2024.7.4
     # via
     #   -c requirements/../requirements.txt
     #   requests
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.4.1
+charset-normalizer==3.3.2
     # via
     #   -c requirements/../requirements.txt
     #   requests
@@ -44,7 +44,7 @@ flake8-type-checking==3.0.0
     # via -r requirements/test.in
 freezegun==1.5.1
     # via -r requirements/test.in
-greenlet==3.1.1
+greenlet==3.0.3
     # via
     #   -c requirements/../requirements.txt
     #   playwright
@@ -52,13 +52,13 @@ hypothesis==6.129.1
     # via -r requirements/test.in
 identify==2.6.9
     # via pre-commit
-idna==3.10
+idna==3.7
     # via
     #   -c requirements/../requirements.txt
     #   requests
 iniconfig==2.0.0
     # via pytest
-lxml==5.3.1
+lxml==5.3.0
     # via
     #   -c requirements/../requirements.txt
     #   pyquery
@@ -66,7 +66,7 @@ lxml-stubs==0.5.1
     # via -r requirements/test.in
 markdown-it-py==3.0.0
     # via rich
-markupsafe==3.0.2
+markupsafe==2.1.5
     # via
     #   -c requirements/../requirements.txt
     #   types-wtforms
@@ -90,7 +90,7 @@ nodeenv==1.9.1
     # via pre-commit
 orjson==3.10.15
     # via mypy
-packaging==24.2
+packaging==24.1
     # via
     #   -c requirements/../requirements.txt
     #   pytest
@@ -99,7 +99,7 @@ pbr==6.1.1
     # via stevedore
 platformdirs==4.3.6
     # via virtualenv
-playwright==1.50.0
+playwright==1.47.0
     # via
     #   -r requirements/test.in
     #   pytest-playwright
@@ -115,11 +115,11 @@ psycopg==3.2.6
     # via pytest-postgresql
 pycodestyle==2.12.1
     # via flake8
-pyee==12.1.1
+pyee==12.0.0
     # via playwright
 pyflakes==3.2.0
     # via flake8
-pygments==2.19.1
+pygments==2.18.0
     # via
     #   -c requirements/../requirements.txt
     #   rich
@@ -156,7 +156,7 @@ python-dateutil==2.9.0.post0
     #   freezegun
 python-slugify==8.0.4
     # via pytest-playwright
-pyyaml==6.0.2
+pyyaml==6.0.1
     # via
     #   -c requirements/../requirements.txt
     #   bandit
@@ -178,7 +178,7 @@ setuptools==76.0.0
     #   zope-event
     #   zope-interface
     #   zope-schema
-six==1.17.0
+six==1.16.0
     # via
     #   -c requirements/../requirements.txt
     #   python-dateutil
@@ -230,18 +230,18 @@ typing-extensions==4.12.2
     #   mypy
     #   psycopg
     #   pyee
-urllib3==2.3.0
+urllib3==2.2.2
     # via
     #   -c requirements/../requirements.txt
     #   requests
     #   types-requests
 virtualenv==20.29.3
     # via pre-commit
-waitress==3.0.2
+waitress==3.0.0
     # via
     #   -c requirements/../requirements.txt
     #   webtest
-webob==1.8.9
+webob==1.8.7
     # via
     #   -c requirements/../requirements.txt
     #   webtest
@@ -251,7 +251,7 @@ zope-event==5.0
     # via
     #   -c requirements/../requirements.txt
     #   zope-schema
-zope-interface==7.2
+zope-interface==6.4.post2
     # via
     #   -c requirements/../requirements.txt
     #   mypy-zope
