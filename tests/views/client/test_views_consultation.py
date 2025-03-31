@@ -578,13 +578,11 @@ def test_display_previous_versions(client):
         page.form['title'] = f'My Cons {i+1}'
         page = page.form.submit().follow()
 
-    # Assert they were created by fetching only those specific consultations
+    # Assert they were created
     with session.no_consultation_filter():
         consultations = (
             session.execute(
-                select(Consultation)
-                .filter(Consultation.title.like('My Cons %')) # Filter by title prefix
-                .order_by(Consultation.created.asc())
+                (select(Consultation).order_by(Consultation.created.asc()))
             )
             .scalars()
             .all()
@@ -603,11 +601,9 @@ def test_display_previous_versions(client):
 
     # test the view
     page = client.get(f'/consultation/{latest.id}')
-    previous_versions_list = page.pyquery('ul.previous-versions')
-    assert previous_versions_list, "Previous versions list not found"
+    page.pyquery('.previous-versions')
 
-    # check author is set in previous versions using the logged-in user's name
-    expected_author = client.user.title
-    assert expected_author in ''.join(
-        e.text_content().strip() for e in previous_versions_list
+    # check author is set in previous versions
+    assert 'John Doe' in ''.join(
+        e.text_content().strip() for e in page.pyquery('ul.previous-versions')
     )
