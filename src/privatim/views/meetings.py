@@ -228,7 +228,7 @@ def user_list(
         <p>
             <span class="fw-bold">{}</span>
         </p>
-        <ul class="generic-user-list list-unstyled">{}</ul>
+        <ul class="generic-user-list list-unstyled multi-col-layout">{}</ul>
     </div>
     '''
     ).format(title, Markup('').join(user_items))

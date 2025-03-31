@@ -850,3 +850,17 @@ input[type="color"]:focus,
 .consultation-status i {
     color: inherit;
 }
+
+
+.generic-user-list {
+  column-count: 2;
+  column-gap: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.generic-user-list .user-list-item {
+  break-inside: avoid-column; /* Try to keep items from breaking */
+  page-break-inside: avoid;
+  padding-bottom: 5px;
+}
