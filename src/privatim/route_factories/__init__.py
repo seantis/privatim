@@ -1,5 +1,3 @@
-from sqlalchemy import select, exists
-
 from .root_factory import root_factory
 from .uuid_factory import (
     create_uuid_factory,
@@ -47,37 +45,6 @@ def meeting_factory(request: 'IRequest') -> 'Meeting | Root':
 
 def agenda_item_factory(request: 'IRequest') -> AgendaItem:
     return _agenda_item_factory(request)
-
-
-def comment_factory(request: 'IRequest') -> Comment:
-    return _comment_factory(request)
-
-
-def consultation_from_comment_factory(
-    request: 'IRequest',
-) -> Consultation | None:
-
-    # Linking to the comment will take us to the model in which it occurs
-    # This is actually what you want most of the time.
-
-    comment_id = request.matchdict['id']
-    session = request.dbsession
-
-    comment = session.get(Comment, comment_id)
-    if not comment:
-        return None
-
-    def get_top_level_comment(comment: Comment) -> Comment:
-        while comment.parent:
-            comment = comment.parent
-        return comment
-
-    top_level_comment = get_top_level_comment(comment)
-
-    subquery = select(1).where(
-        Consultation.comments.any(Comment.id == top_level_comment.id)
-    )
-    return session.query(Consultation).filter(exists(subquery)).first()
 
 
 def default_meeting_factory(request: 'IRequest') -> Meeting:

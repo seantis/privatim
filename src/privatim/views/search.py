@@ -9,10 +9,8 @@ from privatim.i18n import locales
 from privatim.models import AgendaItem
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
-from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 from privatim.models.markup_text_type import MarkupText
-from privatim.utils import get_correct_comment_picture_for_comment
 
 
 from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar, Union
@@ -94,7 +92,6 @@ class SearchCollection:
         for model in searchable_models():
             self.results.extend(self.search_model(model))
 
-        self._add_comments_to_results()
         self._add_agenda_items_to_results()
 
     def search_model(
@@ -216,32 +213,8 @@ class SearchCollection:
             )
         )
 
-    def _add_comments_to_results(self) -> None:
-        """Extends self.results with the complete model for Comment (not
-        just id)
-
-        This is for displaying more information in the search results.
-        """
-        comment_ids = [
-            result.id for result in self.results if result.type == 'Comment'
-        ]
-        if comment_ids:
-            stmt = select(Comment).filter(Comment.id.in_(comment_ids))
-            comments = self.session.scalars(stmt).all()
-            comment_dict: dict[str, Comment] = {
-                comment.id: comment for comment in comments
-            }
-            self.results = [
-                (
-                    result._replace(model_instance=comment_dict.get(result.id))
-                    if result.type == 'Comment'
-                    else result
-                )
-                for result in self.results
-            ]
-
     def _add_agenda_items_to_results(self) -> None:
-        """Extends self.results with the complete model for Comment (not
+        """Extends self.results with the complete model for AgendaItem (not
         just id)
 
         """
@@ -308,15 +281,6 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
         for result in collection.results:
             result_dict = result._asdict()  # Convert NamedTuple to dict
 
-            if result.type == 'Comment':
-                result_dict['headlines']['Content'] = Markup(
-                    result_dict['headlines']['Content']
-                )
-                comment = result.model_instance
-                assert isinstance(comment, Comment)
-                result_dict['picture'] = (
-                    get_correct_comment_picture_for_comment(comment, request)
-                )
             if result.type == 'SearchableFile':
                 file = result.model_instance
                 assert isinstance(file, SearchableFile)
@@ -361,3 +325,4 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
         'query': None,
         'layout': Layout(None, request),
     }
+

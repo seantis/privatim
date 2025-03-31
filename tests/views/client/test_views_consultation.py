@@ -1,8 +1,7 @@
 from sqlalchemy.orm import selectinload, undefer
 from privatim.models import User, SearchableFile
-from privatim.models.comment import Comment
 from privatim.models.consultation import Consultation
-from sqlalchemy import select, exists, func
+from sqlalchemy import select, func
 from webtest.forms import Upload
 
 from privatim.utils import get_previous_versions
@@ -112,17 +111,9 @@ def test_view_add_and_delete_consultation(client):
 
     status_text_badge = page.pyquery('span.badge.rounded-pill')[0].text
     assert status_text_badge == 'Erstellt'
-    # add comment
-    page = client.get(f'/consultation/{str(consultation_id)}')
-    page.form['content'] = 'Comment goes here'
-    page = page.form.submit().follow()
-    assert 'Comment goes here' in page
 
     # Delete consultation
     client.get(f'/consultations/{str(consultation_id)}/delete')
-    comment_exists_stmt = select(exists().where(Comment.id == consultation_id))
-    comment_exists = session.scalar(comment_exists_stmt)
-    assert not comment_exists
 
     # Check if the consultation still exists
     consultation_stmt = select(Consultation).where(
@@ -279,10 +270,6 @@ def test_edit_consultation_without_files(client):
         select(Consultation.id).filter_by(is_latest_version=1)
     ).scalar_one()
 
-    # add a comment
-    page = client.get(f'/consultation/{str(consultation_id)}')
-    page.form['content'] = 'Comment'
-    page.form.submit()
 
     page = client.get(f'/consultations/{str(consultation_id)}/edit')
 
@@ -315,9 +302,6 @@ def test_edit_consultation_without_files(client):
     assert f'consultation/{str(consultation_id)}' in page.request.url
 
     client.get(f'/consultation/{str(consultation_id)}')
-
-    # After editing the comment should still be visible
-    assert page.pyquery('p.comment-text')[0].text.strip() == 'Comment'
 
     text_paragraph = [
         e.text_content().strip() for e in page.pyquery(
@@ -406,9 +390,6 @@ def test_consultation_delete(client, pdf_vemz):
 
     latest_id = consultation.id
     page = client.get(f'/consultation/{latest_id}')
-    page.form['content'] = 'Comment is here'
-    page = page.form.submit().follow()
-    assert page.status_code == 200
 
     # Delete:
     page = client.get(f'/consultations/{latest_id}/delete')

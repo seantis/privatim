@@ -11,11 +11,10 @@ from sqlalchemy.orm import DeclarativeBase, joinedload, load_only
 
 from privatim.models import Consultation, Meeting
 from privatim.models import User, WorkingGroup
-from privatim.models.profile_pic import get_or_create_default_profile_pic
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload, TypeVar, Callable, Sequence
+from typing import Any, TYPE_CHECKING, overload, TypeVar, Sequence
 if TYPE_CHECKING:
     from privatim import UpgradeContext
     from collections.abc import Mapping
@@ -23,18 +22,7 @@ if TYPE_CHECKING:
     from typing import Iterable
     from datetime import datetime
     from privatim.orm import FilteredSession
-    from privatim.models.comment import Comment
-    from pyramid.interfaces import IRequest
-    from typing import TypedDict
 
-    class ChildCommentDict(TypedDict):
-        comment: 'Comment'
-        picture: str
-
-    class FlattenedCommentDict(TypedDict):
-        comment: 'Comment'
-        children: list['ChildCommentDict']
-        picture: str
 
     T = TypeVar('T', bound=DeclarativeBase)
 
@@ -123,71 +111,6 @@ def path_to_filename(path: str | None) -> str | None:
 def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
     return db_time and to_timezone(
         db_time, 'Europe/Zurich') or db_time
-
-
-def get_correct_comment_picture_for_comment(
-        comment: 'Comment', request: 'IRequest'
-) -> str:
-    """ Returns a downloadable link to the comment's profile pic."""
-
-    fallback_profile_pic_link = request.route_url(
-        'download_file', id=get_or_create_default_profile_pic(
-            request.dbsession
-        ).id
-    )
-
-    if comment.user is None:
-        pic = fallback_profile_pic_link
-    else:
-        if comment.user.id == request.user.id:
-            pic = request.profile_pic
-        else:
-            pic = (
-                request.route_url(
-                    'download_file', id=comment.user.profile_pic.id
-                )
-                if comment.user.profile_pic is not None
-                else fallback_profile_pic_link
-            )
-    return pic
-
-
-def flatten_comments(
-    top_level_comments: 'Iterable[Comment]',
-    request: 'IRequest',
-    get_picture_for_comment: Callable[['Comment', 'IRequest'], str] = (
-        get_correct_comment_picture_for_comment
-    )
-) -> list['FlattenedCommentDict']:
-    """
-    Returns a list of comments where are child comments are on the same level.
-
-    Comments naturally contain arbitrary levels of nesting. They are trees.
-    The UI only shows one level of nesting, so deeply nested comments
-    are not displayed with further indentation.
-
-    We pass in the `get_picture_for_comment` callable to ease testing.
-    """
-
-    def process_comment(comment: 'Comment') -> 'FlattenedCommentDict':
-        pic = get_picture_for_comment(comment, request)
-        children = []
-        for child in sorted(comment.children, key=lambda c: c.created):
-            children.extend(process_comment(child)['children'])
-            children.append({
-                'comment': child,
-                'picture': get_picture_for_comment(
-                    child,
-                    request
-                )
-            })
-        return {
-            'comment': comment,
-            'children': children,
-            'picture': pic
-        }
-
-    return [process_comment(comment) for comment in top_level_comments]
 
 
 def maybe_escape(value: str | None) -> str:
@@ -395,3 +318,4 @@ def fix_agenda_item_positions(context: 'UpgradeContext') -> None:
         # Reassign positions sequentially
         for new_position, item in enumerate(items):
             item.position = new_position
+

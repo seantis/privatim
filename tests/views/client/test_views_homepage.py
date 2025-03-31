@@ -25,7 +25,6 @@ def test_filter(client):
     form = page.forms['filter_activities']
     form['consultation'] = True
     form['meeting'] = False
-    form['comment'] = False
     form.submit().follow()
 
     page = client.get('/activities')

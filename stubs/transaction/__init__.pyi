@@ -3,7 +3,6 @@ from typing import Protocol
 
 from transaction._manager import Attempt, ThreadTransactionManager, TransactionManager as TransactionManager
 from transaction._transaction import Savepoint as Savepoint, Transaction as Transaction
-from transaction.interfaces import ITransaction, ITransactionManager
 
 
 class _CreateSavepoint(Protocol):

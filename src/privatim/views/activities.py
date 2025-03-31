@@ -4,7 +4,6 @@ from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting
-from privatim.models.comment import Comment
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
 
@@ -20,7 +19,7 @@ if TYPE_CHECKING:
 
     class ActivityDict(TypedDict):
         type: Literal['update', 'creation']
-        object: Consultation | Meeting | Comment
+        object: Consultation | Meeting
         timestamp: datetime
         user: 'User | None'
         title: str
@@ -46,15 +45,13 @@ def maybe_apply_date_filter(
     return query
 
 
-def _get_activity_title(activity: Comment | Meeting, is_update: bool) -> str:
+def _get_activity_title(activity: Meeting, is_update: bool) -> str:
     """Get the appropriate title for an activity."""
-    assert isinstance(activity, (Comment, Meeting))
+    assert isinstance(activity, Meeting)
     obj_type = activity.__class__.__name__
 
     if obj_type == 'Meeting':
         return _('Meeting Updated') if is_update else _('Meeting Scheduled')
-    elif obj_type == 'Comment':
-        return _('Comment Updated') if is_update else _('Comment Added')
     return ''
 
 
@@ -83,7 +80,7 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
             'content': _get_activity_content(activity),
         }
 
-    # Normal handling for other types (Meetings, Comments)
+    # Normal handling for other types (Meetings)
     is_update = activity.updated != activity.created
     return {
         'type': 'update' if is_update else 'creation',
@@ -104,7 +101,6 @@ def _get_icon_class(obj_type: str) -> str:
     icons = {
         'Meeting': 'fas fa-users',
         'Consultation': 'fas fa-file-alt',
-        'Comment': 'fas fa-comment',
     }
     return icons.get(obj_type, '')
 
@@ -123,14 +119,6 @@ def _get_activity_content(activity: Any) -> dict[str, str]:
         }
     elif obj_type == 'Meeting':
         return {'name': activity.name, 'time': activity.time}
-    elif obj_type == 'Comment':
-        return {
-            'content': (
-                activity.content[:100] + '...'
-                if len(activity.content) > 100
-                else activity.content
-            )
-        }
     return {}
 
 
@@ -161,17 +149,6 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
             .unique()
         )
 
-    def get_comments() -> Iterable[Comment]:
-        return (
-            session.execute(
-                select(Comment)
-                .options(joinedload(Comment.user))
-                .order_by(Comment.updated.desc())
-                .filter(~Comment.deleted)
-            )
-            .scalars()
-            .unique()
-        )
 
     activities = []
 
@@ -184,8 +161,6 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
     for meeting in get_meetings():
         activities.append(activity_to_dict(meeting))
 
-    for comment in get_comments():
-        activities.append(activity_to_dict(comment))
 
     # Sort by timestamp
     activities.sort(key=lambda x: x['timestamp'], reverse=True)
@@ -208,7 +183,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         if has_query_params:
             form.consultation.data = request.GET.get('consultation') == 'True'
             form.meeting.data = request.GET.get('meeting') == 'True'
-            form.comment.data = request.GET.get('comment') == 'True'
             form.start_date.data = (
                 datetime.fromisoformat(request.GET['start_date'])
                 if request.GET.get('start_date')
@@ -223,7 +197,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             # Default GET response, show everything, no filter.
             form.consultation.data = True
             form.meeting.data = True
-            form.comment.data = True
             return {
                 'title': _('Activities'),
                 'activities': get_activities(session),
@@ -234,7 +207,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         query_params = {
             'consultation': str(form.consultation.data),
             'meeting': str(form.meeting.data),
-            'comment': str(form.comment.data),
             'start_date': (
                 form.start_date.data.isoformat()
                 if form.start_date.data
@@ -250,7 +222,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     include_consultations = form.consultation.data
     include_meetings = form.meeting.data
-    include_comments = form.comment.data
     start_date = form.start_date.data
     end_date = form.end_date.data
 
@@ -298,20 +269,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             for me in session.execute(meeting_query).unique().scalars().all()
         )
 
-    # Get filtered comments
-    if include_comments:
-        comment_query = (
-            select(Comment)
-            .options(joinedload(Comment.user))
-            .filter(~Comment.deleted)
-        )
-        comment_query = maybe_apply_date_filter(
-            comment_query, start_datetime, end_datetime, Comment.updated
-        )
-        activities_data.extend(
-            activity_to_dict(co)
-            for co in session.execute(comment_query).unique().scalars().all()
-        )
 
     # Sort all items by their timestamp
     activities_data.sort(key=lambda x: x['timestamp'], reverse=True)

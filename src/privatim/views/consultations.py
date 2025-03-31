@@ -1,7 +1,6 @@
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
-from privatim.forms.add_comment import CommentForm, NestedCommentForm
 from privatim.forms.consultation_form import ConsultationForm
 from privatim.models import Consultation
 from privatim.i18n import _
@@ -11,7 +10,6 @@ import logging
 from privatim.models.file import SearchableFile
 from privatim.utils import (
     dictionary_to_binary,
-    flatten_comments,
     get_previous_versions,
 )
 
@@ -50,7 +48,6 @@ def consultation_view(
             data_item_title=context.title,
         ),
     ])
-    top_level_comments = (c for c in context.comments if c.parent_id is None)
     previous_versions = [context] + get_previous_versions(session, context)
 
     is_old_version = not context.is_latest()
@@ -87,11 +84,6 @@ def consultation_view(
             for doc in context.files
         ],
         'status_name': translate(_(context.status)),
-        'consultation_comment_form': CommentForm(context, request),
-        'nested_comment_form': NestedCommentForm(context, request),
-        'flattened_comments_tree': flatten_comments(
-            top_level_comments, request
-        ),
         'secondary_tags': context.secondary_tags,
         'navigate_back_up': request.route_url('consultations'),
     }
@@ -197,7 +189,6 @@ def edit_consultation_view(
         editor=request.user,
         files=list(previous.files),
         previous_version=previous,
-        comments=list(previous.comments),  # New list
         is_latest_version=1,
     )
     session.add(next_cons)

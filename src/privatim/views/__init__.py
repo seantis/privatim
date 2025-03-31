@@ -4,8 +4,6 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 
 from privatim.route_factories import (agenda_item_factory,
                                       general_file_factory, file_factory,
-                                      consultation_from_comment_factory,
-                                      comment_factory,
                                       consultation_all_versions_factory)
 from privatim.route_factories import consultation_factory
 from privatim.route_factories import default_meeting_factory
@@ -48,11 +46,6 @@ from privatim.views.password_retrieval import password_retrieval_view
 from privatim.views.people import people_view, person_view, add_user_view, \
     edit_user_view, delete_user_view
 from privatim.views.profile import profile_view, add_profile_image_view
-from privatim.views.comment import (
-    add_comment_view,
-    edit_comment_view,
-    delete_comment_view,
-)
 from privatim.views.search import search
 from privatim.views.trash import trash_view, restore_soft_deleted_model_view
 from privatim.views.working_groups import (delete_working_group_view,
@@ -523,71 +516,6 @@ def includeme(config: 'Configurator') -> None:
         renderer='json',
         request_method='POST',
         xhr=True
-    )
-
-    # Consultation Comments
-
-    # Linking to a comment directly is not what is intended. We instead link to
-    # the consultation it appears in.
-    config.add_route(
-        'comment',
-        '/comment/{id}/',
-        factory=consultation_from_comment_factory
-    )
-    config.add_view(
-        consultation_view,
-        route_name='comment',
-        renderer='templates/consultation.pt',
-    )
-
-    config.add_route(
-        'add_comment',
-        '/comments/{id}/add',
-        factory=consultation_factory
-    )
-    config.add_view(
-        add_comment_view,
-        route_name='add_comment',
-        renderer='json',
-        request_method='POST',
-        xhr=False,
-        request_param=['target_url', 'parent_id']
-    )
-
-    config.add_route(
-        'edit_comment',
-        '/comments/{id}/edit',
-        factory=comment_factory
-    )
-    config.add_view(
-        edit_comment_view,
-        route_name='edit_comment',
-        renderer='templates/form.pt',
-        xhr=False,
-    )
-    config.add_view(
-        edit_comment_view,
-        route_name='edit_comment',
-        renderer='json',
-        request_method='POST',
-        xhr=True,
-    )
-
-    config.add_route(
-        'delete_comment',
-        '/comments/{id}/delete',
-        factory=comment_factory
-    )
-    config.add_view(
-        delete_comment_view,
-        route_name='delete_comment',
-        xhr=False,
-    )
-    config.add_view(
-        delete_comment_view,
-        route_name='delete_comment',
-        renderer='json',
-        xhr=True,
     )
 
     # view for single person

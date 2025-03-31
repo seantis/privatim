@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initializePopoversAndTooltips();
     listenForChangesInAttendees();
     handleProfilePicFormSubmission();
-    setupCommentAnswerField();
-    addEditorForCommentsEdit();
     makeConsultationsInActivitiesClickable();
     setupExpandOrCollapseAll();
     setupDeleteModalListeners();
@@ -178,99 +176,6 @@ function initializePopoversAndTooltips() {
     });
 }
 
-/**
- * Enables inline editing for comments.
- *
- * Attaches click listeners to elements with the `.edit-comment-link` class. When clicked, replaces the comment's content
- * with a textarea for editing.
- * Assumes `data-comment-id` attributes on edit links and IDs of format `#comment-content-{commentId}` for comments.
- */
-function addEditorForCommentsEdit() {
-    // For each comment, attach a listener for edit button to swap out the <p> tag with an editor to allow inline editing of comment.
-    document.querySelectorAll('.edit-comment-link').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const commentId = this.dataset.commentId;
-            const commentContentElement = document.querySelector(`#comment-content-${commentId}`);
-            var originalContent = commentContentElement.textContent.trim();
-            // Escape HTML
-            originalContent = $('<div>').text(originalContent).html();
-
-            commentContentElement.innerHTML = `
-        <textarea class="form-control edit-comment-textarea" id="edit-textarea-${commentId}">${originalContent}</textarea>
-        <div class="d-flex justify-content-end mt-2 pt-1">
-            <button class="btn btn-secondary mt-2 cancel-edit-btn" data-comment-id="${commentId}">Abbrechen</button>
-            <button class="btn btn-primary mt-2 save-edit-btn" data-comment-id="${commentId}" style="margin-left: 1rem;">Speichern</button>
-        </div>
-      `;
-
-            document.querySelector(`#comment-content-${commentId} .save-edit-btn`).addEventListener('click', function () {
-                const editedContent = document.querySelector(`#edit-textarea-${commentId}`).value;
-                saveCommentEdit(commentId, editedContent);
-            });
-
-            document.querySelector(`#comment-content-${commentId} .cancel-edit-btn`).addEventListener('click', function () {
-                commentContentElement.innerHTML = originalContent;
-            });
-        });
-    });
-}
-
-function saveCommentEdit(commentId, editedContent) {
-    const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-
-    const formData = new FormData();
-    formData.append('content', editedContent);
-    formData.append('csrf_token', csrfToken);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `/comments/${commentId}/edit`, true);
-    xhr.setRequestHeader('X-CSRF-Token', csrfToken);
-    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        const content = $('<div>').text(response.content).html();
-                        document.querySelector(`#comment-content-${commentId}`).innerHTML = content;
-                    } else {
-                        console.error('Error updating comment:', response.message || 'Unknown error');
-                    }
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            } else {
-                console.error('HTTP error:', xhr.status, xhr.statusText);
-            }
-        }
-    };
-
-    xhr.onerror = function () {
-        console.error('Network error occurred while updating comment');
-    };
-
-    xhr.send(formData);
-}
-
-
-function setupCommentAnswerField() {
-    // Makes the answer comment form appear.
-    let replys = document.querySelectorAll('.comment-answer-form-container');
-    let buttons = document.querySelectorAll('.comment-answer-button');
-    for (let i = 0; i < buttons.length; i++) {
-        let hiddenCommentForm = replys[i];
-        buttons[i].addEventListener('click', () => {
-            hiddenCommentForm.classList.add('show');
-            setTimeout(() => {
-                hiddenCommentForm.querySelector('textarea').focus();
-            }, 200);
-        });
-
-    }
-}
 
 function setupExpandOrCollapseAll() {
     if (!window.location.href.includes('/meeting')) {

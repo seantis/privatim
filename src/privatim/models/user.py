@@ -40,7 +40,6 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models import Meeting
     from sqlalchemy import ScalarSelect
-    from privatim.models.comment import Comment
     from privatim.models import Consultation
 
 
@@ -267,3 +266,4 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f'<User {self.fullname}>'
+

@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from typing import Literal
-from typing_extensions import Self, TypeAlias
+from typing_extensions import TypeAlias
 
 from sqlalchemy.engine import Connection
 from sqlalchemy.orm import ORMExecuteState, Session, SessionTransaction, UOWTransaction

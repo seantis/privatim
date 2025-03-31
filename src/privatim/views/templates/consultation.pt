@@ -49,30 +49,6 @@
                         <span class="fw-bold" i18n:translate="">Decision:</span> ${decision}
                     </p>
                 </div>
-
-                <tal:b tal:condition="flattened_comments_tree">
-                    <div class="row">
-                        <div class="comment-container">
-                            <div class=mt-5></div>
-                            <metal:block use-macro="layout.macros['display_comments']"
-                                     tal:define="flattened_comments_tree flattened_comments_tree; return_to_model_id _id">
-                            </metal:block>
-
-                        </div>
-                    </div>
-                </tal:b>
-
-                <div class="row consultation-main-text">
-                    <div class="comment-container">
-                        <h2 i18n:translate="" class="mt-4">Add Comment</h2>
-                        <metal:block use-macro="layout.macros['add_comment_form']"
-                                 tal:define="add_comment_route_name request.route_url('add_comment', id=_id,
-                                        _query={'target_url': 'consultation',
-                                                'parent_id': 'root'});
-                                        form consultation_comment_form">
-                        </metal:block>
-                    </div>
-                </div>
             </div>
         </div>
 

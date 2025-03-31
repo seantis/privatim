@@ -27,9 +27,6 @@ class FilterForm(Form):
     meeting: CheckboxField = CheckboxField(
         _('Meeting'),
     )
-    comment: CheckboxField = CheckboxField(
-        _('Comment'),
-    )
 
     start_date: DateField = DateField(
         _('Date from'),

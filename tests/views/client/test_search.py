@@ -11,7 +11,6 @@ def test_search_with_client(client, pdf_vemz, docx):
 
     # search in Files
     # search in Consultation [x]
-    # search in Comments [ ]
     # search in AgendaItem [ ]
 
     client.login_admin()

@@ -7,13 +7,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
+from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.orm import Base
 
 from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
-from privatim.models.comment import Comment
 
 
 from typing import TYPE_CHECKING, Iterator
@@ -45,7 +45,6 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         replaced_by: 'Consultation | None' = None,
         secondary_tags: list[str] | None = None,
         previous_version: 'Consultation | None' = None,
-        comments: list[Comment] | None = None,
         is_latest_version: int = 1,
     ):
 
@@ -71,8 +70,6 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         self.editor = editor
         self.replaced_by = replaced_by
         self.previous_version = previous_version
-        if comments is not None:
-            self.comments = comments
         self.is_latest_version = is_latest_version
 
     id: Mapped[UUIDStrPK]
@@ -144,12 +141,6 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         cascade='all, delete-orphan'
     )
 
-    def add_comment(self, comment: Comment) -> None:
-        # Comments should be added though no other way but this method
-        comment.target_id = self.id
-        comment.target_type = self.__tablename__
-        self.comments.append(comment)
-
     # Querying the latest version is undoubtedly a common operation.
     # So let's make it fast for the small price of a bit redundancy.
     # '1' means latest / '0' means not the latest
@@ -200,3 +191,4 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     __table_args__ = (
         Index('ix_consultations_deleted', 'deleted'),
     )
+

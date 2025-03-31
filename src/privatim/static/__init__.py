@@ -64,7 +64,6 @@ fontawesome_css = css('fontawesome.min.css')
 bootstrap = css('bootstrap.min.css')
 bootstrap_css = css('custom.css', depends=[fontawesome_css, bootstrap])
 
-comments_css = css('comments.css')
 profile_css = css('profile.css')
 
 jquery = js('jquery.min.js')
