@@ -192,7 +192,6 @@ def edit_consultation_view(
         is_latest_version=1,
     )
     session.add(next_cons)
-    assert len(previous.comments) == len(next_cons.comments)
 
     # Create the form with the new consultation
     form = ConsultationForm(next_cons, request)
