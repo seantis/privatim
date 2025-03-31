@@ -115,6 +115,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             else _('Deleted User'),
             'description': Markup(_cons.description),
             'updated': _cons.updated,
+            'status': _(_cons.status)
         } for _cons in session.scalars(stmt).unique().all()
     )
     return {

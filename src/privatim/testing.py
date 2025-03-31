@@ -21,7 +21,7 @@ from typing import Sequence
 from typing import Union
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
-    from zope.interface import Interface
+    from zope.interface.interfaces import IInterface
     from privatim.models import User
     from email.headerregistry import Address
 
@@ -65,7 +65,7 @@ class DummyRequest(testing.DummyRequest):
         return authenticated_user(self)
 
 
-def verify_interface(klass: type[object], interface: 'Interface') -> None:
+def verify_interface(klass: type[Any], interface: 'IInterface') -> None:
     assert interface.implementedBy(klass)  # type: ignore
     assert verifyClass(interface, klass)
 

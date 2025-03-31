@@ -69,3 +69,4 @@ pyvenv.cfg
 messages.xlsx
 
 .codebuddy/
+.aider*

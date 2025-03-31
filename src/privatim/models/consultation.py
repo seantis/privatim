@@ -59,6 +59,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
             self.creator = creator
 
         assert is_latest_version in (0, 1)
+
         if status is None:
             self.status = 'Created'
         else:
@@ -144,7 +145,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     )
 
     def add_comment(self, comment: Comment) -> None:
-        # Comments should be added though no other way than this method
+        # Comments should be added though no other way but this method
         comment.target_id = self.id
         comment.target_type = self.__tablename__
         self.comments.append(comment)

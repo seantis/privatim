@@ -289,6 +289,15 @@
     </div>
 </tal:block>
 
+<tal:block metal:define-macro="consultation_status_list">
+    <div class="consultation-status status-${consultation.status.lower().replace(' ', '-')}">
+        <i tal:attributes="class string:fas ${{'created': 'fa-hourglass-start',
+                                              'closed': 'fa-check',
+                                              'in progress': 'fa-envelope',
+                                              'waiving': 'fa-hand-paper'}.get(consultation.status.lower(), 'fa-info-circle')}"></i>
+        <span>${consultation.status}</span>
+    </div>
+</tal:block>
 
 
 <tal:block metal:define-macro="the-modals">
@@ -305,11 +314,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" i18n:translate>Cancel</button>
                         <a class="btn btn-danger" href="#" data-csrf-token="${layout.csrf_token()}" i18n:translate>Delete</a>
-                    </div>
                 </div>
             </div>
-        </div>
-
+       </div>
+    </div>
 </tal:block>
 
 

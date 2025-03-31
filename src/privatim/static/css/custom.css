@@ -782,3 +782,71 @@ input[type="color"]:focus,
     background: linear-gradient(to bottom, transparent, white);
     pointer-events: none;
 }
+
+/* Base styles for all statuses */
+.consultation-status {
+    margin-bottom: 1.0rem;
+    display: inline-block;
+    padding: 4px 4px;
+    border-radius: 12px;
+    border: 1px solid;
+}
+
+.consultation-status i {
+    padding-left: 0.5rem;
+}
+
+.consultation-status span {
+    padding-right: 0.5rem;
+}
+
+/* --- Status Specific Colors (Subtle Tints) --- */
+/* Status: Created */
+.consultation-status.status-created {
+    background-color: #e0f7fa;
+    border-color: #b2ebf2;
+    color: #00796b;
+}
+.consultation-status.status-created:hover {
+    background-color: #cbeef3; /* Slightly darker cyan */
+    border-color: #a1e4ed; /* Slightly adjusted border */
+}
+
+/* Status: Closed */
+.consultation-status.status-closed {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+/* Uses the default hover state */
+.consultation-status.status-closed:hover {
+    background-color: #e9ecef;
+}
+
+
+/* Status: In Progress */
+.consultation-status.status-in-progress {
+    background-color: #e7f5ff;
+    border-color: #cce5ff;
+    color: #0d6efd;
+}
+.consultation-status.status-in-progress:hover {
+    background-color: #d1eaff; /* Slightly darker blue */
+    border-color: #b8daff; /* Slightly adjusted border */
+}
+
+/* Status: Waiving */
+.consultation-status.status-waiving {
+    background-color: #fff8e1;
+    border-color: #ffecb3;
+    color: #e65100;
+}
+.consultation-status.status-waiving:hover {
+    background-color: #fff1c6; /* Slightly darker yellow */
+    border-color: #ffe5a0; /* Slightly adjusted border */
+}
+
+/* Ensure icon inherits the text color */
+.consultation-status i {
+    color: inherit;
+}

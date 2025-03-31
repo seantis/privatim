@@ -27,8 +27,11 @@
                     <div class="consultations-content-width order-md-1">
                         <div tal:repeat="consultation consultations" class="mt-3 mt-md-4">
                             <div class="activity-card-wrapper consultation-card"
-                                 data-href="${request.route_url('consultation', id=consultation._id)}">
+                                        data-href="${request.route_url('consultation', id=consultation._id)}">
+
                                 <div class="d-flex flex-column flex-md-row">
+
+
                                     <div class="consultation-profile-section text-center text-md-start ms-4">
                                         <img tal:condition="consultation.editor_pic_id"
                                                 src="${request.route_url('download_file', id=consultation.editor_pic_id)}"
@@ -46,7 +49,10 @@
                                             <span i18n:translate="">by</span> ${consultation.editor_name}
                                         </p>
                                     </div>
-                                    <div class="card-body p-3 custom-truncate">
+                                    <div class="card-body ps-3 pe-3 pb-3 custom-truncate">
+
+                                        <metal:status use-macro="layout.macros['consultation_status_list']" />
+
                                         <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
                                         <p class="card-text" tal:condition="consultation.description" tal:content="consultation.description"></p>
                                     </div>
