@@ -105,44 +105,8 @@
                         </li>
                     </ul>
                 </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4 ms4">
-                    <div class="card-body claude-element">
-                        <h5 i18n:translate="" class="cons-sidebar-title">Status</h5>
-                        <h4 class="card-text" tal:condition="status_name">
-                            <span class="badge rounded-pill bg-secondary text-light">${status_name}</span>
-                        </h4>
-                    </div>
-                </div>
-
-                <div tal:condition="secondary_tags" class="card">
-                    <div class="card-body claude-element">
-                        <h5 i18n:translate="" class="cons-sidebar-title">Tags</h5>
-                        <div class="secondary-tags d-flex flex-row justify-content-start flex-wrap">
-                            <tal:b tal:repeat="tag_name secondary_tags">
-                                <span class="badge rounded-pill mb-4 text-dark fs-6 px-3 py-2 mx-1 tag-sidebar"> ${tag_name}</span>
-                            </tal:b>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="card mb-4 mt-4" tal:condition="previous_versions">
-                    <div class="card-body claude-element">
-                        <h5 class="card-title cons-sidebar-title" i18n:translate="">Changes</h5>
-                        <ul class="previous-versions">
-                            <li tal:repeat="version previous_versions" class="pb-2 ps-2">
-                                <span>${layout.format_date(version.created, 'date')} ${layout.format_date(version.created, 'time')}</span>
-                                <tal:b tal:condition="version.editor_name">
-                                    <span i18n:translate="">by</span><span>${version.editor_name}</span>
-                                </tal:b>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
+        </div>
             <!-- Sidebar End-->
         </div>
 
