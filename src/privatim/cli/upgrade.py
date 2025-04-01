@@ -7,7 +7,7 @@ import plaster
 import transaction
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
-from sqlalchemy import inspect
+from sqlalchemy import inspect, bindparam
 from sqlalchemy.sql import text
 from zope.sqlalchemy import mark_changed
 from privatim.models import get_engine
@@ -42,6 +42,8 @@ class UpgradeContext:
                 self.operations_connection
             )
         )
+        # Default schema is 'public' for PostgreSQL
+        self.schema = self.engine.url.query.get('schema', 'public')
 
     def has_table(self, table: str) -> bool:
         inspector = inspect(self.operations_connection)
@@ -219,6 +221,41 @@ class UpgradeContext:
         # start a new transaction
         self.operations.execute('BEGIN')
         return True
+
+    def has_constraint(
+        self, table_name: str, constraint_name: str, constraint_type: str
+    ) -> bool:
+        """ Check if a specific constraint exists on a table.
+
+        When constraint names aren't known, they can be discovered:
+
+        SELECT constraint_name FROM information_schema.table_constraints
+        WHERE table_name = 'table_name'
+        AND constraint_name LIKE '%column_name%';
+        """
+        # Ensure the connection is available
+        conn = self.operations_connection
+        if conn is None:
+            logger.warning("Cannot check constraint, no connection available.")
+            return False # Or raise an error
+
+        result = conn.execute(text("""
+            SELECT EXISTS (
+                SELECT 1 FROM information_schema.table_constraints
+                WHERE table_schema = :schema
+                  AND table_name = :table_name
+                  AND constraint_type = :constraint_type
+                  AND constraint_name = :constraint_name
+            )
+        """
+            ).bindparams(
+                bindparam('schema', value=self.schema),
+                bindparam('table_name', value=table_name),
+                bindparam('constraint_name', value=constraint_name),
+                bindparam('constraint_type', value=constraint_type.upper()), # Ensure type is upper case
+            )
+        ).scalar()
+        return bool(result) # Ensure boolean return
 
     def commit(self) -> None:
         mark_changed(self.session)

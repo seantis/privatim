@@ -79,5 +79,4 @@ if TYPE_CHECKING:
     class Callback(Protocol[_Tco]):
         def __call__(self, context: Any, request: IRequest) -> _Tco: ...
 
-    Activity: TypeAlias = Consultation | Meeting | Comment
-
+    Activity: TypeAlias = Consultation | Meeting

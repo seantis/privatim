@@ -5,7 +5,10 @@ from .fields import (
     TimezoneDateTimeField,
     UploadField,
     UploadMultipleField,
-    ConstantTextAreaField
+    ConstantTextAreaField,
+    SearchableMultiSelectField,
+    UploadMultipleFilesWithORMSupport,
+    UploadFileWithORMSupport,
 )
 from .phone_number import PhoneNumberField
 from .transparent_form_field import TransparentFormField
@@ -33,5 +36,8 @@ __all__ = (
     'TimezoneDateTimeField',
     'UploadField',
     'UploadMultipleField',
+    'SearchableMultiSelectField',
+    'UploadMultipleFilesWithORMSupport',
+    'UploadFileWithORMSupport',
     # "UploadOrSelectExistingMultipleFilesField"
 )

@@ -9,6 +9,7 @@ from datetime import datetime
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
+from privatim.models.file import SearchableFile
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
 from privatim.models.association_tables import AttendanceStatus, \
@@ -175,6 +176,14 @@ class Meeting(Base, SearchableMixin):
         'MeetingUserAttendance',
         back_populates='meeting',
         cascade='all, delete-orphan',
+    )
+
+    files: Mapped[list['SearchableFile']] = relationship(
+        'SearchableFile',
+        primaryjoin="Meeting.id == SearchableFile.meeting_id",
+        cascade='all, delete-orphan',
+        back_populates='meeting',
+        uselist=True
     )
 
     @property

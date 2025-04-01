@@ -1,6 +1,7 @@
 from functools import partial
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
+from sqlalchemy import CheckConstraint
 
 from pyramid.events import BeforeRender
 from sqlalchemy.dialects import postgresql
@@ -16,6 +17,7 @@ from email.headerregistry import Address
 
 from privatim.mail import PostmarkMailer
 from privatim.models.comment import COMMENT_DELETED_MSG
+from privatim.models.file import SearchableFile
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
 from pyramid.settings import asbool
@@ -206,31 +208,10 @@ def fix_user_constraints_to_work_with_hard_delete(
         except SQLAlchemyError as e:
             print(
                 f"Error creating constraint {constraint} on table {table}: "
-                f"{str(e)}"
-            )
+                f"{str(e)}")
 
 
-def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
-
-    if not context.has_column('consultations', 'creator_id'):
-        context.add_column(
-            'consultations',
-            Column(
-                'creator_id',
-                UUIDStrType,
-                ForeignKey('users.id', ondelete='SET NULL'),
-                nullable=True,
-            ),
-        )
-
-    context.add_column(
-        'meetings',
-        Column(
-            'created',
-            TIMESTAMP(timezone=False),
-            server_default=func.now()
-        )
-    )
+def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
     context.add_column(
         'meetings',
         Column(
@@ -504,6 +485,122 @@ def upgrade(context: 'UpgradeContext'):  # type: ignore[no-untyped-def]
 
     context.drop_column('consultations', 'updated')
 
+    # --- Add SearchableFile parent migration steps ---
+    print("Migrating SearchableFile parent structure...")
+    table_name = 'searchable_files'
+    old_parent_id_col = 'parent_id'
+    old_parent_type_col = 'parent_type'
+    consultation_fk_col = 'consultation_id'
+    meeting_fk_col = 'meeting_id'
+    constraint_name = f'chk_{table_name}_one_parent'
+    consultation_idx = f'ix_{table_name}_{consultation_fk_col}'
+    meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
+
+    # 1. Add new nullable FK columns if they don't exist
+    consultation_added = False
+    if not context.has_column(table_name, consultation_fk_col):
+        print(f"  Adding column {consultation_fk_col} to {table_name}")
+        context.add_column(
+            table_name,
+            Column(
+                consultation_fk_col,
+                UUIDStrType,
+                ForeignKey('consultations.id', ondelete='CASCADE'),
+                nullable=True # Start as nullable
+            )
+        )
+        consultation_added = True
+    else:
+        print(f"  Column {consultation_fk_col} already exists in {table_name}")
+
+    meeting_added = False
+    if not context.has_column(table_name, meeting_fk_col):
+        print(f"  Adding column {meeting_fk_col} to {table_name}")
+        context.add_column(
+            table_name,
+            Column(
+                meeting_fk_col,
+                UUIDStrType,
+                ForeignKey('meetings.id', ondelete='CASCADE'),
+                nullable=True # Start as nullable
+            )
+        )
+        meeting_added = True
+    else:
+        print(f"  Column {meeting_fk_col} already exists in {table_name}")
+
+    # 2. Migrate data if columns were just added and old columns exist
+    if (consultation_added or meeting_added) and \
+       context.has_column(table_name, old_parent_id_col) and \
+       context.has_column(table_name, old_parent_type_col):
+        print("  Migrating data from parent_id/parent_type to new FK columns...")
+        # Assume all existing files belong to consultations
+        update_stmt = text(f"""
+            UPDATE {table_name}
+            SET {consultation_fk_col} = {old_parent_id_col}::uuid
+            WHERE {old_parent_type_col} = 'consultations'
+        """) # Added ::uuid cast assuming parent_id was text/varchar
+        context.session.execute(update_stmt)
+        print("  Data migration complete.")
+
+    # 3. Add check constraint (attempt only if columns exist)
+    # Note: Checking for constraint existence directly is complex.
+    # Relying on the model definition and Alembic is preferred.
+    # This manual addition might fail if the constraint already exists.
+    if context.has_column(table_name, consultation_fk_col) and \
+       context.has_column(table_name, meeting_fk_col):
+        try:
+            print(f"  Attempting to add check constraint {constraint_name}...")
+            if not context.has_constraint(table_name, constraint_name, 'CHECK'):
+                print(f"    Constraint {constraint_name} does not exist, creating...")
+                context.operations.create_check_constraint(
+                    constraint_name=constraint_name,
+                    table_name=table_name,
+                    condition="num_nonnulls(consultation_id, meeting_id) = 1"
+                )
+                print(f"    Added check constraint {constraint_name}.")
+            else:
+                print(f"    Check constraint {constraint_name} already exists.")
+        except Exception as e:
+            print(f"  Warning: Could not add check constraint {constraint_name} (may already exist or other error): {e}")
+    # 4. Add indexes for the new FK columns if they don't exist
+    if consultation_added and not context.index_exists(table_name, consultation_idx):
+        print(f"  Adding index {consultation_idx} to {table_name}")
+        context.operations.create_index(
+            consultation_idx, table_name, [consultation_fk_col]
+        )
+    elif not context.index_exists(table_name, consultation_idx):
+         # Ensure index exists even if column wasn't added in this run
+         print(f"  Ensuring index {consultation_idx} exists on {table_name}")
+         context.operations.create_index(
+             consultation_idx, table_name, [consultation_fk_col]
+         )
+
+
+    if meeting_added and not context.index_exists(table_name, meeting_idx):
+        print(f"  Adding index {meeting_idx} to {table_name}")
+        context.operations.create_index(
+            meeting_idx, table_name, [meeting_fk_col]
+        )
+    elif not context.index_exists(table_name, meeting_idx):
+         # Ensure index exists even if column wasn't added in this run
+         print(f"  Ensuring index {meeting_idx} exists on {table_name}")
+         context.operations.create_index(
+             meeting_idx, table_name, [meeting_fk_col]
+         )
+
+    # 5. Drop old columns if they exist
+    if context.drop_column(table_name, old_parent_id_col):
+         print(f"  Dropped column {old_parent_id_col} from {table_name}.")
+    if context.drop_column(table_name, old_parent_type_col):
+         print(f"  Dropped column {old_parent_type_col} from {table_name}.")
+
+    print("Finished migrating SearchableFile parent structure.")
+    # --- End of SearchableFile parent migration steps ---
+
+
     fix_agenda_item_positions(context)
+    fix_user_constraints_to_work_with_hard_delete(context) # Ensure this is called after FKs are potentially modified
 
     context.commit()
+    print("Database schema upgrade process finished.")

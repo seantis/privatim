@@ -166,8 +166,10 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
 
     files: Mapped[list['SearchableFile']] = relationship(
         'SearchableFile',
+        primaryjoin="Consultation.id == SearchableFile.consultation_id",
+        cascade='all, delete-orphan',
         back_populates='consultation',
-        cascade='all, delete-orphan'
+        uselist=True
     )
 
     @classmethod
@@ -191,4 +193,3 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     __table_args__ = (
         Index('ix_consultations_deleted', 'deleted'),
     )
-

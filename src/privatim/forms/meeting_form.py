@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING, Any, NamedTuple
+
 from sqlalchemy import select
 from wtforms import StringField, validators
 from wtforms.fields.form import FormField
@@ -5,26 +7,29 @@ from wtforms.fields.list import FieldList
 from wtforms.fields.simple import BooleanField
 from wtforms.validators import InputRequired
 
+from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.core import Form
-from privatim.utils import get_guest_users
-from privatim.forms.fields import TimezoneDateTimeField
-from privatim.forms.fields.fields import SearchableMultiSelectField, \
-    ConstantTextAreaField
-from privatim.models import User, Meeting
-from privatim.models import WorkingGroup
+from privatim.forms.fields import (
+    TimezoneDateTimeField,
+    ConstantTextAreaField,
+    UploadMultipleFilesWithORMSupport,
+    SearchableMultiSelectField
+)
+from privatim.forms.validators import FileExtensionsAllowed, FileSizeLimit
 from privatim.i18n import _
+from privatim.models import Meeting, MeetingUserAttendance, User, WorkingGroup
 from privatim.models.association_tables import AttendanceStatus
-from privatim.models import MeetingUserAttendance
+from privatim.models.file import SearchableFile
+from privatim.utils import get_guest_users, status_is_checked
 
-from typing import TYPE_CHECKING, Any, NamedTuple
-from privatim.utils import status_is_checked
+
 if TYPE_CHECKING:
-    from wtforms import Field
-    from pyramid.interfaces import IRequest
-    from webob.multidict import GetDict
-    from sqlalchemy.orm import Session
-    from wtforms.meta import _MultiDictLike
     from collections.abc import Mapping, Sequence
+    from pyramid.interfaces import IRequest
+    from sqlalchemy.orm import Session
+    from webob.multidict import GetDict
+    from wtforms import Field
+    from wtforms.meta import _MultiDictLike
 
 
 class CheckboxField(BooleanField):
@@ -100,6 +105,16 @@ class MeetingForm(Form):
     attendance = FieldList(
         FormField(AttendanceForm),
         label=_('Attendance'),
+    )
+
+    files = UploadMultipleFilesWithORMSupport(
+        label=_('Documents'),
+        validators=[
+            validators.Optional(),
+            FileExtensionsAllowed(['docx', 'doc', 'pdf', 'txt']),
+            FileSizeLimit(DEFAULT_UPLOAD_LIMIT)
+        ],
+        file_class=SearchableFile
     )
 
     def validate_name(self, field: 'Field') -> None:

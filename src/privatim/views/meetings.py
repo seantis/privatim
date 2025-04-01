@@ -7,12 +7,13 @@ from privatim.models.association_tables import (
     AgendaItemDisplayState,
     AgendaItemStatePreference,
 )
+from privatim.models.file import SearchableFile
 from privatim.reporting.report import (
     MeetingReport,
     ReportOptions,
     HTMLReportRenderer,
 )
-from privatim.utils import datetime_format
+from privatim.utils import datetime_format, dictionary_to_binary
 from privatim.controls.controls import Button
 from pyramid.httpexceptions import (
     HTTPFound,
@@ -349,6 +350,17 @@ def add_meeting_view(
         # the meeting by default.
         form.attendees.data = list(form_attendees | working_group_attendees)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
+
+        if form.files.data:
+            for file in form.files.data:
+                if file:
+                    meeting.files.append(
+                        SearchableFile(
+                            file['filename'],
+                            dictionary_to_binary(file),
+                            content_type=file['mimetype']
+                        )
+                    )
 
         session.add(meeting)
         session.flush()

@@ -4,6 +4,7 @@ from random import choice
 
 from sedate import utcnow
 
+from privatim.models.comment import Comment
 from privatim.pyavatar import PyAvatar
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -266,4 +267,3 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f'<User {self.fullname}>'
-

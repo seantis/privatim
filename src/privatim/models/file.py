@@ -18,7 +18,9 @@ from privatim.models.soft_delete import SoftDeleteMixin
 from privatim.models.utils import extract_pdf_info, word_count, get_docx_text
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 from privatim.orm.abstract import AbstractFile
-from sqlalchemy import Text, Integer, ForeignKey, Computed, Index
+from sqlalchemy import (
+    Text, Integer, ForeignKey, Computed, Index, CheckConstraint
+)
 
 
 logger = logging.getLogger('privatim.models.file')
@@ -26,7 +28,7 @@ logger = logging.getLogger('privatim.models.file')
 
 from typing import TYPE_CHECKING  # noqa:E402
 if TYPE_CHECKING:
-    from privatim.models import Consultation
+    from privatim.models import Consultation, Meeting
 
 
 class GeneralFile(AbstractFile):
@@ -54,12 +56,25 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         'polymorphic_identity': 'searchable_file',
     }
 
-    consultation_id: Mapped[UUIDStrType] = mapped_column(
-        ForeignKey('consultations.id', ondelete='CASCADE'), nullable=False
+    # Foreign keys to potential parents
+    consultation_id: Mapped[UUIDStrType | None] = mapped_column(
+        ForeignKey('consultations.id', ondelete='CASCADE'),
+        nullable=True,
+        index=True
     )
-    consultation: Mapped['Consultation'] = relationship(
-        back_populates='files'
+    consultation: Mapped['Consultation | None'] = relationship(
+        'Consultation', back_populates='files'
     )
+
+    meeting_id: Mapped[UUIDStrType | None] = mapped_column(
+        ForeignKey('meetings.id', ondelete='CASCADE'),
+        nullable=True,
+        index=True
+    )
+    meeting: Mapped['Meeting | None'] = relationship(
+        'Meeting', back_populates='files'
+    )
+
     # the content of the given file as text.
     # (it is important that this column be loaded deferred by default, lest
     # we load massive amounts of text on simple queries)
@@ -79,10 +94,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
 
     @property
     def content_type(self) -> str:
-        if self.file:
-            return self.file.content_type
-        else:
-            return ''
+        return self.file.content_type if self.file else ''
 
     @declared_attr  # type:ignore[arg-type]
     def __table_args__(cls) -> tuple[Index, ...]:
@@ -93,6 +105,11 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
                 postgresql_using='gin'
             ),
             Index('ix_searchable_files_deleted', 'deleted'),
+            # Ensure exactly one parent FK is set
+            CheckConstraint(
+                "num_nonnulls(consultation_id, meeting_id) = 1",
+                name=f'chk_{cls.__tablename__.lower()}_one_parent'
+            )
         )
 
     # these are supported for pdfs only for now.
