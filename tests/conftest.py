@@ -21,7 +21,12 @@ from privatim.orm import Base, get_engine, get_session_factory, get_tm_session
 from privatim.testing import (
     DummyRequest, DummyMailer, DummySMSGateway, MockRequests
 )
+from playwright.sync_api import Page, Browser, StorageState
 from tests.shared.client import Client
+
+
+# --- Constants ---
+AUTH_STATE_FILE = Path(__file__).parent / '.auth_state.json'
 
 
 # --- Helper Functions ---
@@ -276,6 +281,82 @@ def sample_docx_file(tmp_path):
 
 
 # --- Browser Test Fixtures ---
+
+@pytest.fixture(scope='session')
+def auth_state_path() -> Path:
+    """Path to the stored authentication state file."""
+    return AUTH_STATE_FILE
+
+
+@pytest.fixture(scope='session')
+def browser_auth_state(
+    browser: Browser,
+    live_server_url: str, # Depends on live_server to ensure it's up
+    auth_state_path: Path
+) -> Path:
+    """
+    Logs in once per session and saves the authentication state (cookies,
+    local storage) to a file.
+    """
+    # If state file already exists from a previous run (or parallel worker),
+    # potentially reuse it, but logging in again is safer for consistency.
+    # For simplicity here, we always log in. Consider adding checks if needed.
+
+    page = browser.new_page()
+    try:
+        page.goto(live_server_url + '/login')
+        page.locator('input[name="email"]').fill('admin@example.org')
+        page.locator('input[name="password"]').fill('test')
+        page.locator('button[type="submit"]').click()
+        # Wait for navigation to ensure login completes and cookies are set
+        page.wait_for_url(lambda url: '/login' not in url, timeout=10000)
+        # Optional: Add an assertion here to confirm login success,
+        # e.g., check for a dashboard element.
+        # expect(page.locator('#dashboard-link')).to_be_visible()
+
+        page.context.storage_state(path=auth_state_path)
+    except Exception as e:
+        # Ensure cleanup happens on error during auth setup
+        page.close()
+        pytest.fail(f"Failed to create authentication state: {e}")
+    else:
+        page.close() # Close the page used for login
+
+    yield auth_state_path
+
+    # Session teardown: remove the auth state file
+    # Use try-except in case the file doesn't exist (e.g., setup failed)
+    try:
+        auth_state_path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+@pytest.fixture
+def authenticated_page(
+    browser: Browser,
+    browser_context_args: dict, # Provided by pytest-playwright
+    browser_auth_state: Path, # Ensures login state is created first
+    live_server_url: str # Pass along for base URL usage in tests
+) -> Page:
+    """
+    Provides a Page object that is already authenticated, using the
+    session-wide saved authentication state.
+    """
+    context = browser.new_context(
+        storage_state=browser_auth_state,
+        **browser_context_args
+    )
+    page = context.new_page()
+    # Add the base URL to the page object for convenience in tests
+    page.goto(live_server_url) # Go to base URL initially
+    setattr(page, 'base_url', live_server_url)
+
+    yield page
+
+    # Function teardown: close the context and page
+    context.close()
+
 
 @pytest.fixture(scope='function')
 def live_server_url(app_settings: dict[str, object], postgresql) -> str:
