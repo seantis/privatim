@@ -27,6 +27,7 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
     expect(page).not_to_have_url(re.compile(r'.*/login$'), timeout=5000)
 
     page.goto(live_server_url + '/working_groups/add')
+    page.wait_for_load_state('networkidle', timeout=10000) # Wait for page load
     group_name = f'Browser Test Group {datetime.now().isoformat()}'
     page.locator('input[name="name"]').fill(group_name)
 
