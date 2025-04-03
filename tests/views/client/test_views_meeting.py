@@ -3,17 +3,11 @@ from playwright.sync_api import Page, expect
 from datetime import datetime, timedelta
 import re
 
-from privatim.models import User, WorkingGroup, Meeting # Keep models if needed for type hints or direct interaction later
-
-# Mark all tests in this module potentially needing a browser differently,
-# or keep specific marks per test. Assuming specific marks for now.
+from privatim.models import User, WorkingGroup, Meeting
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
-
 from privatim.utils import fix_utc_to_local_time
-
-# pytestmark = pytest.mark.browser
 
 
 @pytest.mark.browser
@@ -33,13 +27,8 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
     expect(page).not_to_have_url(re.compile(r'.*/login$'), timeout=5000)
 
     page.goto(live_server_url + '/working_groups/add')
-    breakpoint()
     group_name = f'Browser Test Group {datetime.now().isoformat()}'
     page.locator('input[name="name"]').fill(group_name)
-
-    # Assuming the admin user is the default or only option for leader
-    # If selection is needed:
-    # page.locator('select[name="leader"]').select_option(...)
     page.locator('button[type="submit"]:has-text("Speichern")').click() # Adjust button text if needed
 
     # Wait for redirect and extract group ID
@@ -52,12 +41,7 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
     page.goto(live_server_url + f'/working_groups/{group_id}/meetings/add')
     initial_meeting_name = f'Initial Browser Meeting {datetime.now().isoformat()}'
     page.locator('input[name="name"]').fill(initial_meeting_name)
-    # Set time - Playwright interacts with datetime-local input
-    meeting_time = datetime.now() + timedelta(days=7)
-    # Format required by datetime-local input: YYYY-MM-DDTHH:mm
-    time_str = meeting_time.strftime('%Y-%m-%dT%H:%M')
-    page.locator('input[name="time"]').fill(time_str)
-    # Don't interact with attendees for this simple test
+    page.locator('input[name="name"]').fill(initial_meeting_name)
     page.locator('button[type="submit"]:has-text("Speichern")').click()
 
     # Wait for redirect and extract meeting ID
