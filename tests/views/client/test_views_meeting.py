@@ -28,15 +28,21 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
 
     page.goto(live_server_url + '/working_groups/add')
     page.wait_for_load_state('networkidle', timeout=10000) # Wait for page load
+
+    # Wait for the name input and fill it
+    group_name_input = page.locator('input[name="name"]')
+    group_name_input.wait_for(state='visible', timeout=5000) # Wait for element
+    group_name_input.wait_for(state='enabled', timeout=5000) # Wait for element to be enabled
     group_name = f'Browser Test Group {datetime.now().isoformat()}'
-    page.locator('input[name="name"]').fill(group_name)
+    group_name_input.fill(group_name)
 
     # Select users using Tom Select
-    # Click the input to open the dropdown
+    # Wait for the Tom Select input, click it, and fill
     user_select_input = page.locator('input[id="users-ts-control"]')
+    user_select_input.wait_for(state='visible', timeout=5000)
     user_select_input.click()
     # Select 'Admin User' (adjust name if necessary)
-    user_select_input.fill('Admin User')
+    user_select_input.fill('Admin User') # Start typing to filter
     page.locator('.ts-dropdown-content .option:has-text("Admin User")').click()
     # Select 'Test User' (adjust name if necessary, ensure this user exists)
     # user_select_input.click() # May not be needed if focus remains
