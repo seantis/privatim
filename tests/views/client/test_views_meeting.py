@@ -13,21 +13,27 @@ from sedate import utcnow
 
 from privatim.utils import fix_utc_to_local_time
 
-
 # pytestmark = pytest.mark.browser
 
 
 @pytest.mark.browser
-def test_edit_meeting_browser(authenticated_page: Page) -> None:
-    """
-    Tests editing a meeting's name via the browser UI, using an
-    authenticated page fixture.
-    """
-    page = authenticated_page # Use the authenticated page
-    live_server_url = page.base_url # Get base URL from the page fixture
+def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
+    page.goto(live_server_url + '/login')
+    page.locator('input[name="email"]').fill('admin@example.org')
+    page.locator('input[name="password"]').fill('test')
 
-    # 1. Create Working Group (Prerequisite)
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    error_locator = page.locator('.alert.alert-danger')
+    if error_locator.is_visible():
+        error_text = error_locator.text_content()
+        pytest.fail(f"Login failed. Error message found: {error_text}")
+
+    expect(page).not_to_have_url(re.compile(r'.*/login$'), timeout=5000)
+
     page.goto(live_server_url + '/working_groups/add')
+    breakpoint()
     group_name = f'Browser Test Group {datetime.now().isoformat()}'
     page.locator('input[name="name"]').fill(group_name)
 
