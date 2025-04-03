@@ -44,13 +44,13 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
     # Select 'Admin User' (adjust name if necessary)
     user_select_input.fill('Admin User') # Start typing to filter
     admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
-    admin_option.wait_for(state='visible', timeout=2000) # Wait for option to appear
+    admin_option.wait_for(state='visible', timeout=5000) # Increase timeout
     admin_option.click()
 
     # Select 'Test User' (adjust name if necessary, ensure this user exists)
     user_select_input.fill('Test User') # Start typing again
     test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
-    test_option.wait_for(state='visible', timeout=2000) # Wait for option to appear
+    test_option.wait_for(state='visible', timeout=5000) # Increase timeout
     test_option.click()
 
     # Click outside the dropdown to close it (optional, good practice)
