@@ -43,11 +43,15 @@ def test_edit_meeting_browser(page: Page, live_server_url: str) -> None:
     user_select_input.click()
     # Select 'Admin User' (adjust name if necessary)
     user_select_input.fill('Admin User') # Start typing to filter
-    page.locator('.ts-dropdown-content .option:has-text("Admin User")').click()
+    admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
+    admin_option.wait_for(state='visible', timeout=2000) # Wait for option to appear
+    admin_option.click()
+
     # Select 'Test User' (adjust name if necessary, ensure this user exists)
-    # user_select_input.click() # May not be needed if focus remains
-    user_select_input.fill('Test User')
-    page.locator('.ts-dropdown-content .option:has-text("Test User")').click()
+    user_select_input.fill('Test User') # Start typing again
+    test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
+    test_option.wait_for(state='visible', timeout=2000) # Wait for option to appear
+    test_option.click()
 
     # Click outside the dropdown to close it (optional, good practice)
     page.locator('h1').click() # Click the header or another element
