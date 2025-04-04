@@ -226,7 +226,8 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
             el.value = '{meeting_name}';
             el.dispatchEvent(new Event('input', {{ bubbles: true }})); // Trigger input event
             el.dispatchEvent(new Event('change', {{ bubbles: true }})); // Trigger change event
-            console.log(`[Evaluate] Set value for {name_selector} to: ${el.value}`);  # noqa: F821
+            // Escape JS template literal braces for Python f-string
+            console.log(`[Evaluate] Set value for {name_selector} to: ${{el.value}}`);
         }} else {{
             console.error(`[Evaluate] Element not found: {name_selector}`);
         }}
