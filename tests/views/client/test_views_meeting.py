@@ -21,35 +21,46 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Forcefully set the datetime: clear, type, trigger events, unfocus.
-    try:
-        locator = page.locator(selector)
-        locator.scroll_into_view_if_needed() # Ensure it's visible
-        locator.click() # Focus the element
+    # Use page.evaluate to directly set the value and dispatch events
+    script = """
+        (args) => {
+            const [selector, dateTimeString] = args;
+            const element = document.querySelector(selector);
+            if (!element) {
+                console.error('Datetime field with selector "' + selector + '" not found.');
+                return false; // Indicate failure: element not found
+            }
+            try {
+                // Ensure element is visible/interactable (basic check)
+                if (element.offsetParent === null) {
+                     console.warn('Element with selector "' + selector + '" might not be visible.');
+                     // Attempt to scroll into view if possible from JS
+                     element.scrollIntoViewIfNeeded ? element.scrollIntoViewIfNeeded() : element.scrollIntoView();
+                }
 
-        # Explicitly clear the field using keyboard shortcuts
-        page.keyboard.press('Control+A')
-        page.keyboard.press('Delete')
-        # Add a small pause to ensure clearing completes
-        page.wait_for_timeout(100)
+                // Set the value directly
+                element.value = dateTimeString;
 
-        # Type character by character
-        locator.press_sequentially(datetime_str, delay=50) # Slightly increased delay
+                // Dispatch events immediately after setting value
+                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+                // Optionally trigger blur as well if tabbing away was important
+                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
 
-        # Manually trigger events after typing
-        locator.evaluate("el => { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }")
+                return true; // Indicate success
+            } catch (error) {
+                console.error('Error setting datetime for selector "' + selector + '":', error);
+                return false; // Indicate failure due to error during setting/dispatching
+            }
+        }
+    """
+    success = page.evaluate(script, [selector, datetime_str])
 
-        # Tab away to potentially trigger validation/update on blur
-        page.keyboard.press('Tab')
-
-        # Optional: Add a small wait to observe the result or let JS process
-        page.wait_for_timeout(200)
-
-    except Exception as e:
-        # Log or raise if the process fails
-        print(f"Error forcefully setting datetime element with selector '{selector}': {e}")
-        # Optionally re-raise or handle the error appropriately
-        raise
+    if not success:
+        # Log a warning or raise an error if the script indicated failure
+        print(f"Warning: Failed to set datetime element with selector '{selector}' using page.evaluate.")
+        # Optionally raise an exception here if this is critical
+        # raise Exception(f"Failed to set datetime element with selector '{selector}'")
 
 
 def speichern(page):
