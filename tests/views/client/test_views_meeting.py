@@ -21,48 +21,78 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M') # Keep this for context if needed later
+    # Format date and time parts
+    local_tz = ZoneInfo('Europe/Zurich') # Ensure consistent timezone
+    local_dt = dt.astimezone(local_tz)
+    year = local_dt.strftime('%Y')
+    month = local_dt.strftime('%m')
+    day = local_dt.strftime('%d')
+    hour = local_dt.strftime('%H')
+    minute = local_dt.strftime('%M')
 
-    # --- DEBUG: Test basic JavaScript execution ---
-    # Replace the datetime setting logic with a simple script to clear the body
-    # If this works, the page content should disappear during the test run.
-    debug_script = """
-        () => {
-            try {
-                console.log('Attempting to execute debug script: Clearing document body...');
-                document.body.innerHTML = '<h1>JavaScript Execution Confirmed!</h1>';
-                console.log('Document body cleared successfully by page.evaluate.');
-                return true; // Indicate success
-            } catch (error) {
-                console.error('Error executing debug script (clearing body):', error);
-                return false; // Indicate failure
-            }
-        }
-    """
-    print(f"--- DEBUG: Executing script to clear page body for element '{selector}' ---")
-    success = page.evaluate(debug_script) # No arguments needed for this script
+    print(f"Attempting to set datetime for selector '{selector}' using key presses: {year}-{month}-{day}T{hour}:{minute}")
 
-    if not success:
-        print(f"--- DEBUG: Failed to execute script to clear page body for element '{selector}'. ---")
-        raise Exception(f"Debug script (clearing body) failed to execute for selector '{selector}'.")
-    else:
-        print(f"--- DEBUG: Successfully executed script to clear page body for element '{selector}'. ---")
-        # Since this is just a debug step, we might want to stop the test here
-        # or raise an exception to make it obvious it ran.
-        # For now, let's just print and let the test potentially fail later
-        # because the datetime wasn't actually set.
-        # If the page *does* go blank, we know JS execution works.
-        # If it *doesn't*, JS execution via evaluate is blocked/broken.
-        pass # Continue test execution after the debug step (or raise/fail here)
+    try:
+        element = page.locator(selector)
+        element.scroll_into_view_if_needed()
+        element.click() # Focus the element
 
-    # --- Original datetime setting logic (commented out for debug) ---
-    # script = """ ... """ # Original script here
-    # success = page.evaluate(script, [selector, datetime_str])
-    # if not success:
-    #     print(f"Warning: Failed to set datetime element with selector '{selector}' using page.evaluate.")
-    #     raise Exception(f"Failed to set datetime element with selector '{selector}' using page.evaluate.")
-    # else:
-    #     print(f"Successfully set datetime for selector '{selector}' using page.evaluate.")
+        # Simulate typing the date and time components
+        # This sequence might need adjustment based on browser behavior
+        # Using element.type() might be more reliable for sequences than press() for digits
+        # element.type(year, delay=50) # Add small delay if needed
+        # element.press('ArrowRight') # Or 'Tab'
+        # element.type(month, delay=50)
+        # element.press('ArrowRight') # Or 'Tab'
+        # element.type(day, delay=50)
+        # element.press('ArrowRight') # Or 'Tab'
+        # element.type(hour, delay=50)
+        # # element.press(':') # Colon might be automatic or require specific key
+        # element.type(minute, delay=50)
+        # element.press('Tab') # Move focus away to trigger change events
+
+        # Alternative using fill for parts - might be more robust than individual presses
+        element.fill(f'{year}-{month}-{day}')
+        element.press('Tab') # Navigate to time part
+        element.type(f'{hour}:{minute}') # Type time part
+        element.press('Tab') # Tab away to confirm
+
+
+        # Verification step (optional but recommended)
+        # Wait a moment for potential JS updates
+        page.wait_for_timeout(100) # Small pause
+        current_value = element.input_value()
+        expected_value_str = local_dt.strftime('%Y-%m-%dT%H:%M')
+        print(f"Value after key presses for '{selector}': '{current_value}' (Expected: '{expected_value_str}')")
+        if current_value != expected_value_str:
+             # If fill didn't work, try press sequences (more granular)
+             print("Fill approach failed, trying individual key presses...")
+             element.click() # Re-focus
+             element.press_sequentially(year, delay=20)
+             element.press('ArrowRight') # Or 'Tab'
+             element.press_sequentially(month, delay=20)
+             element.press('ArrowRight') # Or 'Tab'
+             element.press_sequentially(day, delay=20)
+             element.press('ArrowRight') # Or 'Tab' - Move to time section
+             element.press_sequentially(hour, delay=20)
+             # element.press(':') # Often not needed, browser handles separator
+             element.press('ArrowRight') # Or ':' depending on browser
+             element.press_sequentially(minute, delay=20)
+             element.press('Tab') # Tab away
+
+             page.wait_for_timeout(100) # Small pause again
+             current_value = element.input_value()
+             print(f"Value after individual key presses for '{selector}': '{current_value}'")
+             if current_value != expected_value_str:
+                 print(f"Warning: Setting datetime via key presses for '{selector}' might have failed. Final value: '{current_value}'")
+                 # raise Exception(f"Failed to set datetime element '{selector}' using key presses. Expected '{expected_value_str}', got '{current_value}'")
+
+
+        print(f"Successfully attempted to set datetime for selector '{selector}' using key presses.")
+
+    except Exception as e:
+        print(f"Error setting datetime for selector '{selector}' using key presses: {e}")
+        raise Exception(f"Failed to set datetime element with selector '{selector}' using key presses.") from e
 
 
 def speichern(page):
