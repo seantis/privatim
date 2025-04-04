@@ -25,7 +25,7 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     try:
         locator = page.locator(selector)
         locator.click() # Ensure the element has focus first
-        locator.press_sequentially(datetime_str, delay=50) # Type character by character with a small delay
+        locator.press_sequentially(datetime_str, delay=20) # Type character by character with a small delay
     except Exception as e:
         # Log or raise if pressing fails
         print(f"Error setting datetime element with selector '{selector}' using press_sequentially: {e}")
