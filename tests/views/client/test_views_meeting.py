@@ -16,7 +16,7 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     """ Sets the date and time on a datetime-local field using Playwright. """
     # Format datetime for datetime-local input (YYYY-MM-DDTHH:MM)
     # Ensure the datetime is in the local timezone expected by the browser/input
-    local_tz = ZoneInfo('Europe/Zurich') # Assuming this is the relevant local TZ
+    local_tz = ZoneInfo('Europe/Zurich')
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
