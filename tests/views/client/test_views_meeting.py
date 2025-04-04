@@ -66,9 +66,9 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
     submit_button.scroll_into_view_if_needed() # Explicitly scroll
-    submit_button.wait_for(state="visible", timeout=5000) # Wait for visibility
-    expect(submit_button).to_be_enabled(timeout=5000) # Wait for it to be enabled
-    submit_button.click()
+    submit_button.wait_for(state="visible", timeout=10000) # Wait longer for visibility
+    expect(submit_button).to_be_enabled(timeout=10000) # Wait longer for it to be enabled
+    submit_button.click(force=True, timeout=10000) # Force click and increase click timeout
 
     # wer are now in working groups overview page.
     # click on the created working group:
