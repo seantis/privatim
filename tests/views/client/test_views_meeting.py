@@ -88,13 +88,12 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     """
 
     try:
+        breakpoint()
         # Locate the element
         element = page.locator(selector)
 
         # Add robust waits before interaction
         print(f"Waiting for element '{selector}' to be visible and enabled...")
-        element.wait_for(state='visible', timeout=10000) # Increased timeout
-        element.wait_for(state='enabled', timeout=10000)
 
         # Scroll into view just in case
         print(f"Scrolling element '{selector}' into view...")
@@ -195,6 +194,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
 
+    breakpoint()
     user_select_input = page.locator('input[id="users-ts-control"]')
     user_select_input.wait_for(state="visible", timeout=3000)
     user_select_input.click()
@@ -208,7 +208,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
     speichern(page)
-
+    breakpoint() # this is the last breakpoint
 
     # wer are now in working groups overview page.
     # click on the created working group:
@@ -220,6 +220,8 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     # Set the meeting time using the helper function
     meeting_time = utcnow() + timedelta(hours=2) # Set time 2 hours from now
+    breakpoint()  #  we don't even get to this breakpoint.
+
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
     # First add no explicit attenees.
