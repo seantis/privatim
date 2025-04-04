@@ -13,13 +13,11 @@ from privatim.utils import fix_utc_to_local_time
 
 
 def set_datetime_element(page: Page, selector: str, dt: datetime):
-    """ Sets the date and time on a datetime-local field using Playwright's fill method. """
-    local_tz = ZoneInfo('Europe/Zurich')
+    """Sets the date and time on a datetime-local field using Playwright's fill method."""
+    local_tz = ZoneInfo("Europe/Zurich")
     local_dt = dt.astimezone(local_tz)
-    # Format required by datetime-local input: YYYY-MM-DDTHH:MM
-    datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
+    datetime_str = local_dt.strftime("%Y-%m-%dT%H:%M")
 
-    # Simplified JavaScript to set value and dispatch events
     script = """
         (args) => {
             const [selector, dateTimeString] = args;
@@ -48,43 +46,42 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
 
     try:
         element = page.locator(selector)
-        # Ensure the element is ready before interacting
-        element.wait_for(state='visible', timeout=5000)
-        element.wait_for(state='enabled', timeout=5000)
-
-        # Execute the script
+        element.wait_for(state="visible", timeout=3000)
         result = page.evaluate(script, [selector, datetime_str])
 
-        # Basic check if script execution reported success
-        if not result or not result.get('success'):
-            error_msg = result.get('error', 'Unknown error') if result else 'Script execution failed'
-            raise Exception(f"Failed to set datetime via page.evaluate for '{selector}'. Error: {error_msg}")
+        if not result or not result.get("success"):
+            error_msg = (
+                result.get("error", "Unknown error")
+                if result
+                else "Script execution failed"
+            )
+            raise Exception(
+                f"Failed to set datetime via page.evaluate for '{selector}'. Error: {error_msg}"
+            )
 
-        # Verify the value using Playwright's input_value after the script runs
         expect(element).to_have_value(datetime_str)
 
     except Exception as e:
-        # Simplified error handling, re-raise Playwright/Assertion errors directly
-        # Add screenshot on failure
-        safe_selector = re.sub(r'[^a-zA-Z0-9_-]', '_', selector)
+        safe_selector = re.sub(r"[^a-zA-Z0-9_-]", "_", selector)
         screenshot_path = f"playwright-fail-datetime-{safe_selector}.png"
         try:
             page.screenshot(path=screenshot_path, full_page=True)
             print(f"Screenshot saved to {screenshot_path}")
         except Exception as se:
             print(f"Failed to save screenshot: {se}")
-        raise Exception(f"Failed to set datetime element '{selector}' to '{datetime_str}'. Original error: {e}") from e
+        raise Exception(
+            f"Failed to set datetime element '{selector}' to '{datetime_str}'. Original error: {e}"
+        ) from e
 
 
 def speichern(page):
     submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
-    submit_button.scroll_into_view_if_needed() # Explicitly scroll
+    submit_button.scroll_into_view_if_needed()
     submit_button.click()
 
 
 @pytest.mark.browser
 def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
-
     admin_user = User(
         email="test@example.org",
         first_name="Test",
@@ -139,37 +136,33 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     # We are now in working groups overview page.
     # Click on the created working group:
     page.locator('a:has-text("Browser Test Group")').click()
-
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
-    meeting_name = "Initial Browser Meeting" 
-    name_selector = 'input[name="name"]'
+    meeting_name = "Initial Browser Meeting"
+    m_name = 'input[name="name"]'
 
-    # Use page.evaluate to set the value directly via JavaScript
+    # Note: We are using JS. We are using a sledgehammer to crack a nut. Simply
+    # to set the name of the meeting. Because when we set this the normal way 
+    # (e.g. element.fill(...)) it timed out afterwards for unknown reasons...
     page.evaluate(f"""
-        const el = document.querySelector('{name_selector}');
+        const el = document.querySelector('{m_name}');
         if (el) {{
             el.value = '{meeting_name}';
-            el.dispatchEvent(new Event('input', {{ bubbles: true }})); // Trigger input event
-            el.dispatchEvent(new Event('change', {{ bubbles: true }})); // Trigger change event
-            // Escape JS template literal braces for Python f-string
-            console.log(`[Evaluate] Set value for {name_selector} to: ${{el.value}}`);
+            el.dispatchEvent(new Event('input', {{ bubbles: true }}));
+            el.dispatchEvent(new Event('change', {{ bubbles: true }}));
+            console.log(`[Evaluate] Set value for {m_name} to: ${{el.value}}`);
         }} else {{
-            console.error(`[Evaluate] Element not found: {name_selector}`);
+            console.error(`[Evaluate] Element not found: {m_name}`);
         }}
     """)
-    # Verify the name was set correctly
-    expect(page.locator(name_selector)).to_have_value(meeting_name)
-
-    # Set the meeting time using the helper function
-    meeting_time = utcnow() + timedelta(hours=2) # Set time 2 hours from now
+    expect(page.locator(m_name)).to_have_value(meeting_name)
+    meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
     # First add no explicit attenees.
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
     speichern(page)
-
 
 
 def test_copy_agenda_items_without_description(client):
