@@ -21,57 +21,48 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Use page.evaluate to directly set the value and dispatch events,
-    # mirroring the logic from scratch_datetime_setter.js
-    script = """
-        (args) => {
-            const [selector, dateTimeString] = args;
-            console.log(`Attempting to set datetime via page.evaluate for selector: "${selector}" with value: "${dateTimeString}"`);
-            const element = document.querySelector(selector);
-            if (!element) {
-                console.error('Datetime field with selector "' + selector + '" not found.');
-                return false; // Indicate failure: element not found
-            }
+    datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M') # Keep this for context if needed later
+
+    # --- DEBUG: Test basic JavaScript execution ---
+    # Replace the datetime setting logic with a simple script to clear the body
+    # If this works, the page content should disappear during the test run.
+    debug_script = """
+        () => {
             try {
-                // Ensure element is visible/interactable (basic check)
-                if (element.offsetParent === null) {
-                     console.warn('Element with selector "' + selector + '" might not be visible. Attempting to scroll into view.');
-                     // Attempt to scroll into view if possible from JS
-                     element.scrollIntoViewIfNeeded ? element.scrollIntoViewIfNeeded() : element.scrollIntoView();
-                }
-
-                // Set the value directly
-                console.log('Setting element.value...');
-                element.value = dateTimeString;
-                console.log(`Current value after setting: "${element.value}"`);
-
-                // Dispatch events immediately after setting value
-                console.log('Dispatching input event...');
-                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-                console.log('Dispatching change event...');
-                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-                // Optionally trigger blur as well if needed
-                // console.log('Dispatching blur event...');
-                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
-
-                console.log('Successfully set value and dispatched events via page.evaluate.');
+                console.log('Attempting to execute debug script: Clearing document body...');
+                document.body.innerHTML = '<h1>JavaScript Execution Confirmed!</h1>';
+                console.log('Document body cleared successfully by page.evaluate.');
                 return true; // Indicate success
             } catch (error) {
-                console.error('Error setting datetime via page.evaluate for selector "' + selector + '":', error);
-                return false; // Indicate failure due to error during setting/dispatching
+                console.error('Error executing debug script (clearing body):', error);
+                return false; // Indicate failure
             }
         }
     """
-    # Execute the script and pass selector and datetime string as arguments
-    success = page.evaluate(script, [selector, datetime_str])
+    print(f"--- DEBUG: Executing script to clear page body for element '{selector}' ---")
+    success = page.evaluate(debug_script) # No arguments needed for this script
 
     if not success:
-        # Log a warning or raise an error if the script indicated failure
-        print(f"Warning: Failed to set datetime element with selector '{selector}' using page.evaluate.")
-        # Optionally raise an exception here if this is critical
-        raise Exception(f"Failed to set datetime element with selector '{selector}' using page.evaluate.")
+        print(f"--- DEBUG: Failed to execute script to clear page body for element '{selector}'. ---")
+        raise Exception(f"Debug script (clearing body) failed to execute for selector '{selector}'.")
     else:
-        print(f"Successfully set datetime for selector '{selector}' using page.evaluate.")
+        print(f"--- DEBUG: Successfully executed script to clear page body for element '{selector}'. ---")
+        # Since this is just a debug step, we might want to stop the test here
+        # or raise an exception to make it obvious it ran.
+        # For now, let's just print and let the test potentially fail later
+        # because the datetime wasn't actually set.
+        # If the page *does* go blank, we know JS execution works.
+        # If it *doesn't*, JS execution via evaluate is blocked/broken.
+        pass # Continue test execution after the debug step (or raise/fail here)
+
+    # --- Original datetime setting logic (commented out for debug) ---
+    # script = """ ... """ # Original script here
+    # success = page.evaluate(script, [selector, datetime_str])
+    # if not success:
+    #     print(f"Warning: Failed to set datetime element with selector '{selector}' using page.evaluate.")
+    #     raise Exception(f"Failed to set datetime element with selector '{selector}' using page.evaluate.")
+    # else:
+    #     print(f"Successfully set datetime for selector '{selector}' using page.evaluate.")
 
 
 def speichern(page):
