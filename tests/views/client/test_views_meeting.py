@@ -21,14 +21,14 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Use Playwright's fill method, which is generally more reliable for inputs
+    # Use Playwright's press_sequentially for character-by-character input
     try:
-        page.locator(selector).fill(datetime_str)
-        # Add a small wait/check if needed, though fill usually handles it
-        page.locator(selector).wait_for(state='visible', timeout=1000) # Optional: ensure element is still there
+        locator = page.locator(selector)
+        locator.click() # Ensure the element has focus first
+        locator.press_sequentially(datetime_str, delay=50) # Type character by character with a small delay
     except Exception as e:
-        # Log or raise if filling fails
-        print(f"Error filling datetime element with selector '{selector}': {e}")
+        # Log or raise if pressing fails
+        print(f"Error setting datetime element with selector '{selector}' using press_sequentially: {e}")
         # Optionally re-raise or handle the error appropriately
         raise
 
