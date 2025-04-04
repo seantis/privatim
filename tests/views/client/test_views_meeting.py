@@ -194,7 +194,6 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
 
-    breakpoint()
     user_select_input = page.locator('input[id="users-ts-control"]')
     user_select_input.wait_for(state="visible", timeout=3000)
     user_select_input.click()
