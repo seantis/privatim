@@ -11,6 +11,12 @@ from sedate import utcnow
 from privatim.utils import fix_utc_to_local_time
 
 
+def speichern(page):
+    submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
+    submit_button.scroll_into_view_if_needed() # Explicitly scroll
+    submit_button.click()
+
+
 @pytest.mark.browser
 def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
@@ -63,27 +69,21 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
+    speichern(page)
 
-    submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
-    submit_button.scroll_into_view_if_needed() # Explicitly scroll
-    submit_button.wait_for(state="visible", timeout=10000) # Wait longer for visibility
-    expect(submit_button).to_be_enabled(timeout=10000) # Wait longer for it to be enabled
-    submit_button.click(force=True, timeout=10000) # Force click and increase click timeout
 
     # wer are now in working groups overview page.
     # click on the created working group:
     page.locator('a:has-text("Browser Test Group")').click()
-    # Add a single meeting
+    # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
-
     meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
     page.locator('input[name="name"]').fill(meeting_name)
 
-    #  
-    # First add no explicit attenees. The participants of the meetinng should be
-    # equal to the members of the group
-    # page.locator('.ts-dropdown-content .option:has-text("Admin User")').click()
+    # First add no explicit attenees.
+    # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
+    speichern(page)
 
 
 
