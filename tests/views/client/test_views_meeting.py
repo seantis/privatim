@@ -13,32 +13,24 @@ from privatim.utils import fix_utc_to_local_time
 
 
 def set_datetime_element(page: Page, selector: str, dt: datetime):
-    """ Sets the date and time on a datetime-local field using Playwright. """
+    """ Sets the date and time on a datetime-local field using Playwright's fill method. """
     # Format datetime for datetime-local input (YYYY-MM-DDTHH:MM)
     # Ensure the datetime is in the local timezone expected by the browser/input
+    # Using a common timezone like Zurich as an example. Adjust if needed.
     local_tz = ZoneInfo('Europe/Zurich')
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    script = """
-        (args) => {
-            const [selector, dateTimeString] = args;
-            const element = document.querySelector(selector);
-            if (!element) {
-                console.error('Datetime field with selector "' + selector + '" not found.');
-                return false; // Indicate failure
-            }
-            element.value = dateTimeString;
-            // Dispatch events to ensure frameworks/listeners pick up the change
-            element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-            element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-            return true; // Indicate success
-        }
-    """
-    success = page.evaluate(script, [selector, datetime_str])
-    if not success:
-        # Optionally raise an error or log a warning if the element wasn't found
-        print(f"Warning: Could not find or set datetime element with selector '{selector}'")
+    # Use Playwright's fill method, which is generally more reliable for inputs
+    try:
+        page.locator(selector).fill(datetime_str)
+        # Add a small wait/check if needed, though fill usually handles it
+        page.locator(selector).wait_for(state='visible', timeout=1000) # Optional: ensure element is still there
+    except Exception as e:
+        # Log or raise if filling fails
+        print(f"Error filling datetime element with selector '{selector}': {e}")
+        # Optionally re-raise or handle the error appropriately
+        raise
 
 
 def speichern(page):
