@@ -215,14 +215,32 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
-    page.locator('input[name="name"]').fill(meeting_name)
-    # Explicitly wait for the page to settle after filling the name
-    page.wait_for_load_state("networkidle", timeout=10000)
+    name_selector = 'input[name="name"]'
+
+    # Use page.evaluate to set the value directly via JavaScript
+    print(f"Attempting to set value for '{name_selector}' using page.evaluate...")
+    page.evaluate(f"""
+        const el = document.querySelector('{name_selector}');
+        if (el) {{
+            el.value = '{meeting_name}';
+            el.dispatchEvent(new Event('input', {{ bubbles: true }})); // Trigger input event
+            el.dispatchEvent(new Event('change', {{ bubbles: true }})); // Trigger change event
+            console.log(`[Evaluate] Set value for {name_selector} to: ${el.value}`);
+        }} else {{
+            console.error(`[Evaluate] Element not found: {name_selector}`);
+        }}
+    """)
+    print(f"Finished page.evaluate for '{name_selector}'.")
+
+    # Explicitly wait for the page to settle *after* the evaluate call
+    print("Waiting for network idle after setting name via evaluate...")
+    page.wait_for_load_state("networkidle", timeout=15000) # Increased timeout slightly
+    print("Network idle confirmed.")
 
     # Set the meeting time using the helper function
     meeting_time = utcnow() + timedelta(hours=2) # Set time 2 hours from now
-    print("About to hit the breakpoint after filling name and waiting for idle...")
-    breakpoint()  # Hopefully we reach this now.
+    print("About to set datetime element...")
+    # breakpoint() # Keep breakpoint here or move after set_datetime_element if needed
 
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
