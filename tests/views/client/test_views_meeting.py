@@ -21,46 +21,18 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Use page.evaluate to directly set the value and dispatch events
-    script = """
-        (args) => {
-            const [selector, dateTimeString] = args;
-            const element = document.querySelector(selector);
-            if (!element) {
-                console.error('Datetime field with selector "' + selector + '" not found.');
-                return false; // Indicate failure: element not found
-            }
-            try {
-                // Ensure element is visible/interactable (basic check)
-                if (element.offsetParent === null) {
-                     console.warn('Element with selector "' + selector + '" might not be visible.');
-                     // Attempt to scroll into view if possible from JS
-                     element.scrollIntoViewIfNeeded ? element.scrollIntoViewIfNeeded() : element.scrollIntoView();
-                }
-
-                // Set the value directly
-                element.value = dateTimeString;
-
-                // Dispatch events immediately after setting value
-                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-                // Optionally trigger blur as well if tabbing away was important
-                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
-
-                return true; // Indicate success
-            } catch (error) {
-                console.error('Error setting datetime for selector "' + selector + '":', error);
-                return false; // Indicate failure due to error during setting/dispatching
-            }
-        }
-    """
-    success = page.evaluate(script, [selector, datetime_str])
-
-    if not success:
-        # Log a warning or raise an error if the script indicated failure
-        print(f"Warning: Failed to set datetime element with selector '{selector}' using page.evaluate.")
-        # Optionally raise an exception here if this is critical
-        # raise Exception(f"Failed to set datetime element with selector '{selector}'")
+    # Use Playwright's fill method to simulate typing the date and time
+    try:
+        element = page.locator(selector)
+        element.scroll_into_view_if_needed() # Ensure element is visible
+        element.fill(datetime_str)
+        # Playwright's fill usually handles necessary events, but add blur if needed
+        # element.press('Tab') # Simulate tabbing away to trigger change/blur if fill isn't enough
+        print(f"Successfully set datetime for selector '{selector}' using fill.")
+    except Exception as e:
+        print(f"Error setting datetime for selector '{selector}' using fill: {e}")
+        # Optionally raise the exception if this is critical
+        raise Exception(f"Failed to set datetime element with selector '{selector}' using fill.") from e
 
 
 def speichern(page):
