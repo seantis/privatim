@@ -7,8 +7,38 @@ import transaction
 from privatim.models import User, WorkingGroup, Meeting
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from sedate import utcnow
+from sedate import utcnow, to_timezone
+from zoneinfo import ZoneInfo
 from privatim.utils import fix_utc_to_local_time
+
+
+def set_datetime_element(page: Page, selector: str, dt: datetime):
+    """ Sets the date and time on a datetime-local field using Playwright. """
+    # Format datetime for datetime-local input (YYYY-MM-DDTHH:MM)
+    # Ensure the datetime is in the local timezone expected by the browser/input
+    local_tz = ZoneInfo('Europe/Zurich') # Assuming this is the relevant local TZ
+    local_dt = dt.astimezone(local_tz)
+    datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
+
+    script = """
+        (args) => {
+            const [selector, dateTimeString] = args;
+            const element = document.querySelector(selector);
+            if (!element) {
+                console.error('Datetime field with selector "' + selector + '" not found.');
+                return false; // Indicate failure
+            }
+            element.value = dateTimeString;
+            // Dispatch events to ensure frameworks/listeners pick up the change
+            element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+            element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+            return true; // Indicate success
+        }
+    """
+    success = page.evaluate(script, [selector, datetime_str])
+    if not success:
+        # Optionally raise an error or log a warning if the element wasn't found
+        print(f"Warning: Could not find or set datetime element with selector '{selector}'")
 
 
 def speichern(page):
@@ -79,6 +109,10 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
     page.locator('input[name="name"]').fill(meeting_name)
+
+    # Set the meeting time using the helper function
+    meeting_time = utcnow() + timedelta(hours=2) # Set time 2 hours from now
+    set_datetime_element(page, 'input[name="time"]', meeting_time)
 
     # First add no explicit attenees.
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
