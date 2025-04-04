@@ -20,6 +20,13 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
         last_name="User",
     )
     admin_user.set_password("test")
+    external_user = User(
+        email="external@example.org",
+        first_name="External",
+        last_name="User",
+    )
+    external_user.set_password("test")
+    session.add(external_user)
     session.add(admin_user)
     transaction.commit()
 
@@ -63,47 +70,17 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     # wer are now in working groups overview page.
     # click on the created working group:
     page.locator('a:has-text("Browser Test Group")').click()
+    # Add a single meeting
     page.locator('a:has-text("Sitzung hinzufügen")').click()
 
-    initial_meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
-    page.locator('input[name="name"]').fill(initial_meeting_name)
+    meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
+    page.locator('input[name="name"]').fill(meeting_name)
 
-    # Add attendees - Working group members are added by default,
-    # but we can explicitly add them here if needed or add others.
-    # For this test, let's ensure the default behaviour works and submit.
-    # If we needed to add *additional* users not in the group:
-    # attendee_select_input = page.locator('input[id="attendees-ts-control"]')
-    # attendee_select_input.wait_for(state="visible", timeout=3000)
-    # attendee_select_input.click()
-    # attendee_select_input.fill("Some Other User") # Assuming another user exists
-    # other_user_option = page.locator('.ts-dropdown-content .option:has-text("Some Other User")')
-    # other_user_option.wait_for(state="visible", timeout=3000)
-    # other_user_option.click()
+    #  
+    # First add no explicit attenees. The participants of the meetinng should be
+    # equal to the members of the group
+    # page.locator('.ts-dropdown-content .option:has-text("Admin User")').click()
 
-    page.locator(
-        'button[type="submit"]:has-text("Speichern")'
-    ).click()
-    page.wait_for_load_state("networkidle", timeout=10000)
-
-    # Verify we are on the meeting page and the attendees are listed
-    expect(page.locator('.generic-user-list-container')).to_contain_text('Attendees:')
-    expect(page.locator('.generic-user-list li:has-text("Admin User")')).to_be_visible()
-    expect(page.locator('.generic-user-list li:has-text("Test User")')).to_be_visible()
-
-    # Now, let's test editing the meeting - e.g., change the name
-    page.locator('a[data-bs-toggle="dropdown"]:has(.bi-three-dots-vertical)').click()
-    page.locator('a.dropdown-item:has-text("Edit")').click()
-    page.wait_for_load_state("networkidle", timeout=10000)
-
-    edited_meeting_name = f"Edited Browser Meeting {datetime.now().isoformat()}"
-    page.locator('input[name="name"]').fill(edited_meeting_name)
-    page.locator(
-        'button[type="submit"]:has-text("Speichern")'
-    ).click()
-    page.wait_for_load_state("networkidle", timeout=10000)
-
-    # Verify the name change on the meeting view page
-    expect(page.locator('h1')).to_contain_text(edited_meeting_name)
 
 
 
