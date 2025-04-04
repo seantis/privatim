@@ -13,7 +13,8 @@ from privatim.utils import fix_utc_to_local_time
 
 
 def set_datetime_element(page: Page, selector: str, dt: datetime):
-    """Sets the date and time on a datetime-local field using Playwright's fill method."""
+    """Sets the date and time on a datetime-local field using Playwright's fill 
+    method."""
     local_tz = ZoneInfo("Europe/Zurich")
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime("%Y-%m-%dT%H:%M")
@@ -32,14 +33,19 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
                 // Set the value
                 element.value = dateTimeString;
                 // Dispatch events to mimic user input and trigger potential listeners
-                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+                element.dispatchEvent(new Event('input', { bubbles: true, 
+                    cancelable: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true, 
+                    cancelable: true }));
                 // Optional: Dispatch blur if needed, but often focus moves automatically
-                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
+                // element.dispatchEvent(new Event('blur', { bubbles: true, 
+                //    cancelable: true }));
                 return { success: true, finalValue: element.value };
             } catch (error) {
-                console.error(`[Evaluate] Error setting value for ${selector}:`, error);
-                return { success: false, error: error.message, finalValue: element.value };
+                console.error(`[Evaluate] Error setting value for ${selector}:`, 
+                    error);
+                return { success: false, error: error.message, 
+                    finalValue: element.value };
             }
         }
     """
@@ -56,7 +62,8 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
                 else "Script execution failed"
             )
             raise Exception(
-                f"Failed to set datetime via page.evaluate for '{selector}'. Error: {error_msg}"
+                f"Failed to set datetime via page.evaluate for '{selector}'. "
+                f"Error: {error_msg}"
             )
 
         expect(element).to_have_value(datetime_str)
@@ -70,7 +77,8 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
         except Exception as se:
             print(f"Failed to save screenshot: {se}")
         raise Exception(
-            f"Failed to set datetime element '{selector}' to '{datetime_str}'. Original error: {e}"
+            f"Failed to set datetime element '{selector}' to '{datetime_str}'. "
+            f"Original error: {e}"
         ) from e
 
 
@@ -113,7 +121,8 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
 
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
 
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
@@ -123,12 +132,16 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     user_select_input.wait_for(state="visible", timeout=3000)
     user_select_input.click()
     user_select_input.fill("Admin User")
-    admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
+    admin_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Admin User")'
+    )
     admin_option.wait_for(state="visible", timeout=3000)
     admin_option.click()
 
     user_select_input.fill("Test User")  # Start typing again
-    test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
+    test_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Test User")'
+    )
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
     speichern(page)
