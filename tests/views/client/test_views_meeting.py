@@ -21,14 +21,33 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Use Playwright's press_sequentially for character-by-character input
+    # Forcefully set the datetime: clear, type, trigger events, unfocus.
     try:
         locator = page.locator(selector)
-        locator.click() # Ensure the element has focus first
-        locator.press_sequentially(datetime_str, delay=20) # Type character by character with a small delay
+        locator.scroll_into_view_if_needed() # Ensure it's visible
+        locator.click() # Focus the element
+
+        # Explicitly clear the field using keyboard shortcuts
+        page.keyboard.press('Control+A')
+        page.keyboard.press('Delete')
+        # Add a small pause to ensure clearing completes
+        page.wait_for_timeout(100)
+
+        # Type character by character
+        locator.press_sequentially(datetime_str, delay=50) # Slightly increased delay
+
+        # Manually trigger events after typing
+        locator.evaluate("el => { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }")
+
+        # Tab away to potentially trigger validation/update on blur
+        page.keyboard.press('Tab')
+
+        # Optional: Add a small wait to observe the result or let JS process
+        page.wait_for_timeout(200)
+
     except Exception as e:
-        # Log or raise if pressing fails
-        print(f"Error setting datetime element with selector '{selector}' using press_sequentially: {e}")
+        # Log or raise if the process fails
+        print(f"Error forcefully setting datetime element with selector '{selector}': {e}")
         # Optionally re-raise or handle the error appropriately
         raise
 
