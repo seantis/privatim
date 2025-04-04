@@ -34,6 +34,7 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
 
     try:
         element = page.locator(selector)
+        breakpoint()
         element.scroll_into_view_if_needed()
         element.click() # Focus the element
 
