@@ -212,9 +212,10 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     # wer are now in working groups overview page.
     # click on the created working group:
     page.locator('a:has-text("Browser Test Group")').click()
+
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
-    meeting_name = f"Initial Browser Meeting {datetime.now().isoformat()}"
+    meeting_name = "Initial Browser Meeting" 
     name_selector = 'input[name="name"]'
 
     # Use page.evaluate to set the value directly via JavaScript
