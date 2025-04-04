@@ -14,86 +14,139 @@ from privatim.utils import fix_utc_to_local_time
 
 def set_datetime_element(page: Page, selector: str, dt: datetime):
     """ Sets the date and time on a datetime-local field using Playwright's fill method. """
-    # Format datetime for datetime-local input (YYYY-MM-DDTHH:MM)
-    # Ensure the datetime is in the local timezone expected by the browser/input
-    # Using a common timezone like Zurich as an example. Adjust if needed.
     local_tz = ZoneInfo('Europe/Zurich')
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    # Format date and time parts
-    local_tz = ZoneInfo('Europe/Zurich') # Ensure consistent timezone
-    local_dt = dt.astimezone(local_tz)
-    year = local_dt.strftime('%Y')
-    month = local_dt.strftime('%m')
-    day = local_dt.strftime('%d')
-    hour = local_dt.strftime('%H')
-    minute = local_dt.strftime('%M')
+    print(f"Attempting to set datetime for selector '{selector}' using page.evaluate with value '{datetime_str}'")
 
-    print(f"Attempting to set datetime for selector '{selector}' using key presses: {year}-{month}-{day}T{hour}:{minute}")
+    # Define the JavaScript function to be executed in the browser context
+    # This mirrors the logic from scratch_datetime_setter.js that worked manually
+    script = """
+        async (args) => {
+            const [selector, dateTimeString] = args;
+            console.log(`[Evaluate] Attempting: selector="${selector}", value="${dateTimeString}"`);
+            const element = document.querySelector(selector);
+
+            if (!element) {
+                console.error('[Evaluate] Element not found.');
+                return { success: false, error: 'Element not found', finalValue: null };
+            }
+            console.log('[Evaluate] Element found:', element);
+
+            // Check visibility again inside evaluate (though Playwright waits should handle this)
+            if (element.offsetParent === null) {
+                 console.warn('[Evaluate] Element might not be visible (offsetParent is null).');
+            }
+            // Using checkVisibility() might be more reliable if available
+            if (typeof element.checkVisibility === 'function' && !element.checkVisibility()) {
+                 console.warn('[Evaluate] Element might not be visible (checkVisibility() is false).');
+            }
+
+
+            try {
+                console.log('[Evaluate] Forcing focus on element...');
+                element.focus();
+                // Add a tiny delay after focus inside JS
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                console.log('[Evaluate] Setting element.value...');
+                element.value = dateTimeString;
+                const valueAfterSet = element.value;
+                console.log(`[Evaluate] Value after setting: "${valueAfterSet}"`);
+
+                // Check if the value actually stuck
+                if (valueAfterSet !== dateTimeString) {
+                    console.warn(`[Evaluate] Value did not stick! Expected "${dateTimeString}", got "${valueAfterSet}".`);
+                    // Attempt to set again? Or just report failure.
+                }
+
+                // Add a tiny delay before dispatching events
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                console.log('[Evaluate] Dispatching input event...');
+                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+
+                console.log('[Evaluate] Dispatching change event...');
+                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+
+                // Optional: Dispatch blur event
+                // console.log('[Evaluate] Dispatching blur event...');
+                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
+
+                console.log('[Evaluate] Script execution finished successfully.');
+                // Return success and the final value read from the element
+                return { success: true, finalValue: element.value };
+
+            } catch (error) {
+                console.error('[Evaluate] Error during execution:', error);
+                // Try to return the value even if error occurred during dispatch
+                const finalValueOnError = element ? element.value : 'N/A';
+                return { success: false, error: error.message, finalValue: finalValueOnError };
+            }
+        }
+    """
 
     try:
+        # Locate the element
         element = page.locator(selector)
-        breakpoint()
+
+        # Add robust waits before interaction
+        print(f"Waiting for element '{selector}' to be visible and enabled...")
+        element.wait_for(state='visible', timeout=10000) # Increased timeout
+        element.wait_for(state='enabled', timeout=10000)
+
+        # Scroll into view just in case
+        print(f"Scrolling element '{selector}' into view...")
         element.scroll_into_view_if_needed()
-        element.click() # Focus the element
 
-        # Simulate typing the date and time components
-        # This sequence might need adjustment based on browser behavior
-        # Using element.type() might be more reliable for sequences than press() for digits
-        # element.type(year, delay=50) # Add small delay if needed
-        # element.press('ArrowRight') # Or 'Tab'
-        # element.type(month, delay=50)
-        # element.press('ArrowRight') # Or 'Tab'
-        # element.type(day, delay=50)
-        # element.press('ArrowRight') # Or 'Tab'
-        # element.type(hour, delay=50)
-        # # element.press(':') # Colon might be automatic or require specific key
-        # element.type(minute, delay=50)
-        # element.press('Tab') # Move focus away to trigger change events
+        # Force focus using Playwright before evaluate
+        print(f"Focusing element '{selector}' using Playwright...")
+        element.focus(timeout=5000)
 
-        # Alternative using fill for parts - might be more robust than individual presses
-        element.fill(f'{year}-{month}-{day}')
-        element.press('Tab') # Navigate to time part
-        element.type(f'{hour}:{minute}') # Type time part
-        element.press('Tab') # Tab away to confirm
+        # Add a small pause after focusing in Python
+        page.wait_for_timeout(150) # Slightly longer pause
 
+        print(f"Executing page.evaluate for '{selector}' with value '{datetime_str}'...")
+        # Execute the async script
+        result = page.evaluate(script, [selector, datetime_str])
 
-        # Verification step (optional but recommended)
-        # Wait a moment for potential JS updates
-        page.wait_for_timeout(100) # Small pause
-        current_value = element.input_value()
-        expected_value_str = local_dt.strftime('%Y-%m-%dT%H:%M')
-        print(f"Value after key presses for '{selector}': '{current_value}' (Expected: '{expected_value_str}')")
-        if current_value != expected_value_str:
-             # If fill didn't work, try press sequences (more granular)
-             print("Fill approach failed, trying individual key presses...")
-             element.click() # Re-focus
-             element.press_sequentially(year, delay=20)
-             element.press('ArrowRight') # Or 'Tab'
-             element.press_sequentially(month, delay=20)
-             element.press('ArrowRight') # Or 'Tab'
-             element.press_sequentially(day, delay=20)
-             element.press('ArrowRight') # Or 'Tab' - Move to time section
-             element.press_sequentially(hour, delay=20)
-             # element.press(':') # Often not needed, browser handles separator
-             element.press('ArrowRight') # Or ':' depending on browser
-             element.press_sequentially(minute, delay=20)
-             element.press('Tab') # Tab away
+        print(f"page.evaluate result: {result}")
 
-             page.wait_for_timeout(100) # Small pause again
-             current_value = element.input_value()
-             print(f"Value after individual key presses for '{selector}': '{current_value}'")
-             if current_value != expected_value_str:
-                 print(f"Warning: Setting datetime via key presses for '{selector}' might have failed. Final value: '{current_value}'")
-                 # raise Exception(f"Failed to set datetime element '{selector}' using key presses. Expected '{expected_value_str}', got '{current_value}'")
+        # Add a pause after evaluate to allow any async JS handlers on the page to run
+        page.wait_for_timeout(300) # Longer pause after evaluate
 
+        # Verify the result from the script and check the value again from Playwright
+        final_value_script = result.get('finalValue') if result else 'N/A' # Handle case where result is None
+        final_value_playwright = element.input_value() # Read value again via Playwright
 
-        print(f"Successfully attempted to set datetime for selector '{selector}' using key presses.")
+        print(f"Value reported by script: '{final_value_script}'")
+        print(f"Value read by Playwright after evaluate: '{final_value_playwright}'")
+
+        if not result or not result.get('success'):
+            error_msg = result.get('error', 'Unknown error or script did not return object') if result else 'Script execution failed entirely'
+            print(f"Error: page.evaluate failed for '{selector}'. Error: {error_msg}. Script value: '{final_value_script}', Playwright value: '{final_value_playwright}'")
+            raise Exception(f"Failed to set datetime element '{selector}' using page.evaluate. Error: {error_msg}")
+        elif final_value_playwright != datetime_str:
+             print(f"Warning: page.evaluate succeeded but final value mismatch for '{selector}'. Expected '{datetime_str}', Script reported: '{final_value_script}', Playwright read: '{final_value_playwright}'")
+             # Decide if this is a failure condition - uncomment to fail the test
+             # raise Exception(f"Failed to set datetime element '{selector}': value mismatch after page.evaluate.")
+        else:
+            print(f"Successfully set datetime for selector '{selector}' using page.evaluate. Final value: '{final_value_playwright}'")
 
     except Exception as e:
-        print(f"Error setting datetime for selector '{selector}' using key presses: {e}")
-        raise Exception(f"Failed to set datetime element with selector '{selector}' using key presses.") from e
+        print(f"Error setting datetime for selector '{selector}' using page.evaluate approach: {e}")
+        # Add screenshot on failure
+        # Ensure selector is filename-safe
+        safe_selector = re.sub(r'[^a-zA-Z0-9_-]', '_', selector)
+        screenshot_path = f"playwright-fail-{safe_selector}.png"
+        try:
+            page.screenshot(path=screenshot_path, full_page=True)
+            print(f"Screenshot saved to {screenshot_path}")
+        except Exception as se:
+            print(f"Failed to save screenshot: {se}")
+        # Re-raise the original exception
+        raise Exception(f"Failed to set datetime element with selector '{selector}' using page.evaluate.") from e
 
 
 def speichern(page):
