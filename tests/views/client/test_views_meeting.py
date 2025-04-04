@@ -16,136 +16,64 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
     """ Sets the date and time on a datetime-local field using Playwright's fill method. """
     local_tz = ZoneInfo('Europe/Zurich')
     local_dt = dt.astimezone(local_tz)
+    # Format required by datetime-local input: YYYY-MM-DDTHH:MM
     datetime_str = local_dt.strftime('%Y-%m-%dT%H:%M')
 
-    print(f"Attempting to set datetime for selector '{selector}' using page.evaluate with value '{datetime_str}'")
-
-    # Define the JavaScript function to be executed in the browser context
-    # This mirrors the logic from scratch_datetime_setter.js that worked manually
+    # Simplified JavaScript to set value and dispatch events
     script = """
-        async (args) => {
+        (args) => {
             const [selector, dateTimeString] = args;
-            console.log(`[Evaluate] Attempting: selector="${selector}", value="${dateTimeString}"`);
             const element = document.querySelector(selector);
-
             if (!element) {
-                console.error('[Evaluate] Element not found.');
-                return { success: false, error: 'Element not found', finalValue: null };
+                console.error(`[Evaluate] Element not found for selector: ${selector}`);
+                return { success: false, error: 'Element not found' };
             }
-            console.log('[Evaluate] Element found:', element);
-
-            // Check visibility again inside evaluate (though Playwright waits should handle this)
-            if (element.offsetParent === null) {
-                 console.warn('[Evaluate] Element might not be visible (offsetParent is null).');
-            }
-            // Using checkVisibility() might be more reliable if available
-            if (typeof element.checkVisibility === 'function' && !element.checkVisibility()) {
-                 console.warn('[Evaluate] Element might not be visible (checkVisibility() is false).');
-            }
-
-
             try {
-                console.log('[Evaluate] Forcing focus on element...');
+                // Ensure element is focused before setting value
                 element.focus();
-                // Add a tiny delay after focus inside JS
-                await new Promise(resolve => setTimeout(resolve, 50));
-
-                console.log('[Evaluate] Setting element.value...');
+                // Set the value
                 element.value = dateTimeString;
-                const valueAfterSet = element.value;
-                console.log(`[Evaluate] Value after setting: "${valueAfterSet}"`);
-
-                // Check if the value actually stuck
-                if (valueAfterSet !== dateTimeString) {
-                    console.warn(`[Evaluate] Value did not stick! Expected "${dateTimeString}", got "${valueAfterSet}".`);
-                    // Attempt to set again? Or just report failure.
-                }
-
-                // Add a tiny delay before dispatching events
-                await new Promise(resolve => setTimeout(resolve, 50));
-
-                console.log('[Evaluate] Dispatching input event...');
+                // Dispatch events to mimic user input and trigger potential listeners
                 element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-
-                console.log('[Evaluate] Dispatching change event...');
                 element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-
-                // Optional: Dispatch blur event
-                // console.log('[Evaluate] Dispatching blur event...');
+                // Optional: Dispatch blur if needed, but often focus moves automatically
                 // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
-
-                console.log('[Evaluate] Script execution finished successfully.');
-                // Return success and the final value read from the element
                 return { success: true, finalValue: element.value };
-
             } catch (error) {
-                console.error('[Evaluate] Error during execution:', error);
-                // Try to return the value even if error occurred during dispatch
-                const finalValueOnError = element ? element.value : 'N/A';
-                return { success: false, error: error.message, finalValue: finalValueOnError };
+                console.error(`[Evaluate] Error setting value for ${selector}:`, error);
+                return { success: false, error: error.message, finalValue: element.value };
             }
         }
     """
 
     try:
-        breakpoint()
-        # Locate the element
         element = page.locator(selector)
+        # Ensure the element is ready before interacting
+        element.wait_for(state='visible', timeout=5000)
+        element.wait_for(state='enabled', timeout=5000)
 
-        # Add robust waits before interaction
-        print(f"Waiting for element '{selector}' to be visible and enabled...")
-
-        # Scroll into view just in case
-        print(f"Scrolling element '{selector}' into view...")
-        element.scroll_into_view_if_needed()
-
-        # Force focus using Playwright before evaluate
-        print(f"Focusing element '{selector}' using Playwright...")
-        element.focus(timeout=5000)
-
-        # Add a small pause after focusing in Python
-        page.wait_for_timeout(150) # Slightly longer pause
-
-        print(f"Executing page.evaluate for '{selector}' with value '{datetime_str}'...")
-        # Execute the async script
+        # Execute the script
         result = page.evaluate(script, [selector, datetime_str])
 
-        print(f"page.evaluate result: {result}")
-
-        # Add a pause after evaluate to allow any async JS handlers on the page to run
-        page.wait_for_timeout(300) # Longer pause after evaluate
-
-        # Verify the result from the script and check the value again from Playwright
-        final_value_script = result.get('finalValue') if result else 'N/A' # Handle case where result is None
-        final_value_playwright = element.input_value() # Read value again via Playwright
-
-        print(f"Value reported by script: '{final_value_script}'")
-        print(f"Value read by Playwright after evaluate: '{final_value_playwright}'")
-
+        # Basic check if script execution reported success
         if not result or not result.get('success'):
-            error_msg = result.get('error', 'Unknown error or script did not return object') if result else 'Script execution failed entirely'
-            print(f"Error: page.evaluate failed for '{selector}'. Error: {error_msg}. Script value: '{final_value_script}', Playwright value: '{final_value_playwright}'")
-            raise Exception(f"Failed to set datetime element '{selector}' using page.evaluate. Error: {error_msg}")
-        elif final_value_playwright != datetime_str:
-             print(f"Warning: page.evaluate succeeded but final value mismatch for '{selector}'. Expected '{datetime_str}', Script reported: '{final_value_script}', Playwright read: '{final_value_playwright}'")
-             # Decide if this is a failure condition - uncomment to fail the test
-             # raise Exception(f"Failed to set datetime element '{selector}': value mismatch after page.evaluate.")
-        else:
-            print(f"Successfully set datetime for selector '{selector}' using page.evaluate. Final value: '{final_value_playwright}'")
+            error_msg = result.get('error', 'Unknown error') if result else 'Script execution failed'
+            raise Exception(f"Failed to set datetime via page.evaluate for '{selector}'. Error: {error_msg}")
+
+        # Verify the value using Playwright's input_value after the script runs
+        expect(element).to_have_value(datetime_str)
 
     except Exception as e:
-        print(f"Error setting datetime for selector '{selector}' using page.evaluate approach: {e}")
+        # Simplified error handling, re-raise Playwright/Assertion errors directly
         # Add screenshot on failure
-        # Ensure selector is filename-safe
         safe_selector = re.sub(r'[^a-zA-Z0-9_-]', '_', selector)
-        screenshot_path = f"playwright-fail-{safe_selector}.png"
+        screenshot_path = f"playwright-fail-datetime-{safe_selector}.png"
         try:
             page.screenshot(path=screenshot_path, full_page=True)
             print(f"Screenshot saved to {screenshot_path}")
         except Exception as se:
             print(f"Failed to save screenshot: {se}")
-        # Re-raise the original exception
-        raise Exception(f"Failed to set datetime element with selector '{selector}' using page.evaluate.") from e
+        raise Exception(f"Failed to set datetime element '{selector}' to '{datetime_str}'. Original error: {e}") from e
 
 
 def speichern(page):
@@ -207,10 +135,9 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
     speichern(page)
-    breakpoint() # this is the last breakpoint
 
-    # wer are now in working groups overview page.
-    # click on the created working group:
+    # We are now in working groups overview page.
+    # Click on the created working group:
     page.locator('a:has-text("Browser Test Group")').click()
 
     # new meeting:
@@ -219,7 +146,6 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     name_selector = 'input[name="name"]'
 
     # Use page.evaluate to set the value directly via JavaScript
-    print(f"Attempting to set value for '{name_selector}' using page.evaluate...")
     page.evaluate(f"""
         const el = document.querySelector('{name_selector}');
         if (el) {{
@@ -232,18 +158,11 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
             console.error(`[Evaluate] Element not found: {name_selector}`);
         }}
     """)
-    print(f"Finished page.evaluate for '{name_selector}'.")
-
-    # Explicitly wait for the page to settle *after* the evaluate call
-    print("Waiting for network idle after setting name via evaluate...")
-    page.wait_for_load_state("networkidle", timeout=15000) # Increased timeout slightly
-    print("Network idle confirmed.")
+    # Verify the name was set correctly
+    expect(page.locator(name_selector)).to_have_value(meeting_name)
 
     # Set the meeting time using the helper function
     meeting_time = utcnow() + timedelta(hours=2) # Set time 2 hours from now
-    print("About to set datetime element...")
-    # breakpoint() # Keep breakpoint here or move after set_datetime_element if needed
-
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
     # First add no explicit attenees.
