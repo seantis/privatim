@@ -3,7 +3,6 @@ import multiprocessing
 import socket
 import time
 from pathlib import Path
-from urllib.parse import urlparse
 
 import pytest
 import requests
@@ -30,7 +29,7 @@ def find_free_port() -> int:
     """Finds an available port on localhost."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(('', 0))
-        address, port = s.getsockname()
+        _, port = s.getsockname()
         return port
 
 
@@ -274,8 +273,6 @@ def sample_docx_file(tmp_path):
     path = Path(__file__).parent / 'test_files' / filename
     return path
 
-
-# --- Browser Test Fixtures ---
 
 @pytest.fixture(scope='function')
 def live_server_url(app_settings: dict[str, object], postgresql) -> str:

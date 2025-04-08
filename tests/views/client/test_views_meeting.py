@@ -7,7 +7,7 @@ import transaction
 from privatim.models import User, WorkingGroup, Meeting
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-from sedate import utcnow, to_timezone
+from sedate import utcnow
 from zoneinfo import ZoneInfo
 from privatim.utils import fix_utc_to_local_time
 
@@ -23,7 +23,6 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
             const [selector, dateTimeString] = args;
             const element = document.querySelector(selector);
             if (!element) {
-                console.error(`[Evaluate] Element not found for selector: ${selector}`);
                 return { success: false, error: 'Element not found' };
             }
             try {
@@ -31,15 +30,18 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
                 element.focus();
                 // Set the value
                 element.value = dateTimeString;
-                // Dispatch events to mimic user input and trigger potential listeners
-                element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-                // Optional: Dispatch blur if needed, but often focus moves automatically
-                // element.dispatchEvent(new Event('blur', { bubbles: true, cancelable: true }));
+                // Dispatch events to mimic user input and trigger potential 
+                // listeners
+                element.dispatchEvent(new Event('input', { bubbles: true, 
+                    cancelable: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true, 
+                    cancelable: true }));
                 return { success: true, finalValue: element.value };
             } catch (error) {
-                console.error(`[Evaluate] Error setting value for ${selector}:`, error);
-                return { success: false, error: error.message, finalValue: element.value };
+                console.error(`[Evaluate] Error setting value for 
+                ${selector}:`, error);
+                return { success: false, error: error.message, 
+                    finalValue: element.value };
             }
         }
     """
@@ -70,7 +72,8 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
         except Exception as se:
             print(f"Failed to save screenshot: {se}")
         raise Exception(
-            f"Failed to set datetime element '{selector}' to '{datetime_str}'. Original error: {e}"
+            f"Failed to set datetime element '{selector}' to '{datetime_str}'."
+            f"Original error: {e}"
         ) from e
 
 
@@ -169,7 +172,7 @@ def test_copy_agenda_items_without_description(client):
     client.login_admin()
     users = [
         User(email="max@example.org", first_name="Max", last_name="Müller"),
-        User(email="alexa@example.org", first_name="Alexa", last_name="Troller"),
+        User(email="alexa@example.org", first_name="Alexa", last_name="A"),
         User(email="kurt@example.org", first_name="Kurt", last_name="Huber"),
     ]
     for user in users:

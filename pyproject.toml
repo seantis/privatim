@@ -7,12 +7,15 @@ skips = ["B101"]
 
 [tool.pytest.ini_options]
 log_level = "INFO"
-testpaths = ["tests"]
+testpaths = ["tests", "tests/browser"]
 norecursedirs = [
     "*.egg",
     ".git",
     ".*",
-    "_*"
+    "_*",
+]
+markers = [
+    "browser: mark test as a browser test using Playwright"
 ]
 
 [tool.coverage.run]
