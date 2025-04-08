@@ -141,16 +141,16 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     meeting_name = "Initial Browser Meeting"
     m_name = 'input[name="name"]'
 
-    # Note: We are using JS. We are using a sledgehammer to crack a nut. Simply
-    # to set the name of the meeting. Because when we set this the normal way 
-    # (e.g. element.fill(...)) it timed out afterwards for unknown reasons...
+    # Observe: We've resorted to JavaScript for this seemingly trivial task. 
+    # Akin to deploying artillery against a mouse, we're merely setting the 
+    # meeting title. Conventional approaches (element.fill) resulted in 
+    # mysterious timeout issues, hence this elaborate solution.
     page.evaluate(f"""
         const el = document.querySelector('{m_name}');
         if (el) {{
             el.value = '{meeting_name}';
             el.dispatchEvent(new Event('input', {{ bubbles: true }}));
             el.dispatchEvent(new Event('change', {{ bubbles: true }}));
-            console.log(`[Evaluate] Set value for {m_name} to: ${{el.value}}`);
         }} else {{
             console.error(`[Evaluate] Element not found: {m_name}`);
         }}
@@ -159,7 +159,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
-    # First add no explicit attenees.
+    # we will add this later. 
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
     speichern(page)
