@@ -116,7 +116,7 @@ def test_search_agenda_item_integration(client):
     client.login_admin()
 
     # Create a meeting with an agenda item
-    transaction.begin()
+    # Rely on the test client's transaction management
     agenda_item_data = [{
         'title': 'Agenda Item Alpha',
         'description': 'Discussion about project Alpha progress.'
@@ -124,9 +124,8 @@ def test_search_agenda_item_integration(client):
     meeting = create_meeting_with_agenda_items(
         agenda_items=agenda_item_data, session=client.db
     )
-    transaction.commit()
-    session = client.db
-    assert session.query(AgendaItem).count() == 1
+    # The helper function calls flush; check count directly on client.db
+    assert client.db.query(AgendaItem).count() == 1
 
     # Go to a page with the search bar (e.g., dashboard)
     # Follow the redirect from '/'
