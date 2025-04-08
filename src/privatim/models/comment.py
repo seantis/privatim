@@ -6,7 +6,6 @@ from sqlalchemy.orm import (relationship, Mapped, mapped_column, foreign,
                             remote)
 from privatim.orm.meta import UUIDStrPK, UUIDStr
 from sqlalchemy import Text, ForeignKey, Index, and_, select
-from privatim.models import SearchableMixin
 from privatim.i18n import _
 from pyramid.authorization import Allow, Authenticated
 
@@ -23,7 +22,8 @@ if TYPE_CHECKING:
 COMMENT_DELETED_MSG = _('Comment deleted by user')  # type: ignore[has-type]
 
 
-class Comment(Base, SearchableMixin):
+# todo: We can delete this
+class Comment(Base):
 
     __tablename__ = 'comments'
 

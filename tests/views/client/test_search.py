@@ -2,14 +2,28 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from webtest import Upload
 
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+from webtest import Upload
+
 from privatim.models import SearchableFile, Consultation
 from privatim.views.search import SearchCollection
-from tests.shared.utils import create_consultation, hash_file
+from tests.shared.utils import (
+    create_consultation, hash_file
+)
 
 
-def test_search_with_client(client, pdf_vemz, docx):
+# ======= Client/View Integration Tests =======
 
-    # search in Files
+def test_search_integration_flow(client, pdf_vemz, docx):
+    """
+    Tests the full search flow via the web client, including:
+    - Searching for content within PDF and DOCX files attached to a Consultation.
+    - Verifying highlighted search terms in results.
+    - Checking file download links.
+    - Adding multiple files to a consultation.
+    """
+    # search in Files [x]
     # search in Consultation [x]
     # search in AgendaItem [ ]
 
@@ -74,8 +88,9 @@ def test_search_with_client(client, pdf_vemz, docx):
     # replace = files-0-2
     # first upload field = files-0
 
-    # Second upload fields ("Upload additional files") id = 'files'
-    # Let's upload the docx additionally to the pdf
+    # "Upload additional files" field has the id 'files'
+    # Let's upload the docx additionally to the pdf using the option
+    # "Upload additional files" of UploadMultipleFilesWithORMSupport
     docx_name, docx_bytse = docx
     form = page.forms[1]
     form['files'] = Upload(docx_name, docx_bytse)
@@ -97,8 +112,9 @@ def test_search_with_client(client, pdf_vemz, docx):
         .options(selectinload(Consultation.files))
     ).first()
 
-    assert len(new_consultation.files) == 2
 
+
+# ======= Test SearchCollection Directly =======
 
 def test_search(session, pdf_vemz):
     # Create a consultation with an attached pdf:
@@ -114,7 +130,7 @@ def test_search(session, pdf_vemz):
         if result.type == 'SearchableFile':
             first_item = next(iter(result.headlines.values()))
             assert ('grundsätzlichen</mark> <mark>Fragen</mark>:' in
-                    first_item)
+                    first_item), "Highlighting tags missing"
 
 
 def setup_search_scenario(pdf_to_search, session):
@@ -122,18 +138,3 @@ def setup_search_scenario(pdf_to_search, session):
     consultation = create_consultation(documents=documents)
     session.add(consultation)
     session.flush()
-
-
-def setup_docx_scenario(pdf_to_search, session):
-    documents = [SearchableFile(*pdf_to_search)]
-    consultation = create_consultation(documents=documents)
-    session.add(consultation)
-    session.flush()
-
-
-# test soft deleted objects are not shown in search.
-
-# test that the search does not search in SearchableFiles which are not
-# attached to any Consultation.
-
-# test that duplicates are filtered

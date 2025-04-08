@@ -5,6 +5,9 @@ from sqlalchemy import select
 
 from privatim.models import Consultation
 from privatim.orm import get_engine, Base
+from privatim.orm.session import FilteredSession
+from typing import List
+from pyramid.request import Request
 
 
 def print_consultation_tree(
@@ -22,13 +25,48 @@ def print_consultation_tree(
         print_consultation_tree(consultation.previous_version, level + 1)
 
 
-@click.command()
+def print_latest_consultations_with_files(dbsession: 'FilteredSession', request: Request) -> None:
+    """Print all latest consultations with their attached files."""
+    query = select(Consultation).where(
+        Consultation.is_latest_version == 1
+    ).order_by(Consultation.title)
+    
+    latest_consultations = dbsession.execute(query).scalars().all()
+    
+    if not latest_consultations:
+        click.echo('No latest consultations found.')
+        return
+    
+    click.echo('\nLatest Consultations with Files:\n')
+    
+    for i, consultation in enumerate(latest_consultations, 1):
+        url = request.route_url('consultation', id=consultation.id)
+        click.echo(f'{i}. {consultation.title} [ID: {consultation.id}]')
+        click.echo(f'   URL: {url}')
+        click.echo(f'   Status: {consultation.status}')
+        
+        if consultation.files:
+            for j, file in enumerate(consultation.files, 1):
+                click.echo(f'   └── File {j}: {file.name}')
+        else:
+            click.echo('   └── No files attached')
+        
+        click.echo('')
+
+
+@click.group()
+def cli() -> None:
+    """Consultation tree management commands."""
+    pass
+
+
+@cli.command('trees')
 @click.argument('config_uri')
 @click.option(
     '--title-filter',
     help='Only show consultations containing this text in the title',
 )
-def main(config_uri: str, title_filter: str | None) -> None:
+def print_trees(config_uri: str, title_filter: str | None) -> None:
     """
     Print all consultation version trees.
 
@@ -37,6 +75,7 @@ def main(config_uri: str, title_filter: str | None) -> None:
     """
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
+    registry = env['registry']
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
 
@@ -71,5 +110,56 @@ def main(config_uri: str, title_filter: str | None) -> None:
                 print_consultation_tree(consultation)
 
 
+@cli.command('latest-with-files')
+@click.argument('config_uri')
+def print_latest_with_files(config_uri: str) -> None:
+    """
+    Print all latest consultations with their attached files.
+    
+    Shows only the latest version of each consultation and lists their attached files.
+    """
+    env = bootstrap(config_uri)
+    settings = get_appsettings(config_uri)
+    registry = env['registry']
+    engine = get_engine(settings)
+    Base.metadata.create_all(engine)
+    closer = env['closer']
+
+
+    with env['request'].tm:
+        dbsession = env['request'].dbsession
+
+# This is the crucial part, if we don't have this request_route url will
+# not respect the used path
+        host = settings.get('pyramid.url_host', '127.0.0.1')
+        port = settings.get('pyramid.url_port', '6543')
+        scheme = settings.get('pyramid.url_scheme', 'http')
+        http_host = f"{host}:{port}" if port and port != '80' else host
+        server_port = str(port) if port else '80'
+        environ = {
+            'wsgi.url_scheme': scheme,
+            'HTTP_HOST': http_host, 
+            'SERVER_NAME': host,
+            'SERVER_PORT': server_port,
+            # Add other minimal required environ keys if necessary
+            'PATH_INFO': '/',
+            'REQUEST_METHOD': 'GET',
+        }
+
+        request = Request(environ) 
+            # IMPORTANT: Associate the request with the application registry
+            # This allows route_url to find the route definitions
+        request.registry = registry
+
+        print_latest_consultations_with_files(dbsession, request)
+        closer()
+
+
+
+def main() -> None:
+    """Entry point for the console script."""
+    cli()
+
+
 if __name__ == '__main__':
-    main()
+    cli()

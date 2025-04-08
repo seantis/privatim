@@ -215,9 +215,14 @@ class SearchCollection:
 
     def _add_agenda_items_to_results(self) -> None:
         """Extends self.results with the complete model for AgendaItem (not
-        just id)
 
-        """
+        Our initial search query intentionally avoided loading complete model 
+        instances for each result - a performance optimization. By querying 
+        only `id`, we enable selective full-model retrieval after the primary 
+        search completes, preventing unnecessary data overhead.
+
+        Currently, AgendaItems are the only SearchResult type requiring full 
+        model retrieval to support additional functionality. """
 
         agenda_item_ids = [
             result.id

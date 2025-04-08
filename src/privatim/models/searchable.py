@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from sqlalchemy.orm import Mapped
 
 F = TypeVar('F', bound='SearchableMixin')
-_primary_search_fields: dict[type, str] = {}
 
 
 class SearchableMixin:
@@ -19,7 +18,6 @@ class SearchableMixin:
 
     if TYPE_CHECKING:
         id: Mapped[UUIDStrPK]
-    _primary_search_field: dict[type, str] = {}
 
     @classmethod
     def searchable_fields(
