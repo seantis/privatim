@@ -2,14 +2,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from webtest import Upload
 
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from webtest import Upload
-
 from privatim.models import SearchableFile, Consultation
 from privatim.views.search import SearchCollection
 from tests.shared.utils import (
-    create_consultation, hash_file
+    create_consultation, hash_file, create_meeting, create_agenda_item
 )
 
 
@@ -113,6 +109,94 @@ def test_search_integration_flow(client, pdf_vemz, docx):
     ).first()
 
 
+def test_search_agenda_item_integration(client):
+    """ Tests searching for content within an AgendaItem. """
+    client.login_admin()
+
+    # Create a meeting and an agenda item
+    meeting = create_meeting(title='Important Meeting')
+    agenda_item = create_agenda_item(
+        meeting=meeting,
+        title='Agenda Item Alpha',
+        description='Discussion about project Alpha progress.'
+    )
+    client.db.add_all([meeting, agenda_item])
+    client.db.flush()
+
+    # Go to a page with the search bar (e.g., dashboard)
+    page = client.get('/')
+
+    # Perform search
+    search_form = page.forms['search']
+    search_form['term'] = 'project Alpha'
+    page = search_form.submit().follow()
+
+    # Verify search result
+    assert 'Agenda Item Alpha' in page
+    assert 'Discussion about project Alpha progress.' in page
+    search_results = page.pyquery('.card-body')
+    assert len(search_results) == 1, "Expected one search result"
+
+    # Verify the link points to the meeting
+    details_link = search_results.find('a.details-link')
+    assert details_link, "Details link not found"
+    expected_url = f'/meetings/{meeting.id}'
+    assert details_link.attr('href') == expected_url, \
+        f"Link should point to {expected_url}"
+
+
+def test_search_file_update_integration(client, pdf_vemz, pdf_new):
+    """
+    Tests searching after replacing a file in a Consultation.
+    Ensures new content is found and old content is not.
+    """
+    client.login_admin()
+
+    # 1. Create Consultation with initial PDF
+    page = client.get('/consultations/new')
+    page.form['title'] = 'Consultation with Updatable File'
+    pdf_name_initial, pdf_bytes_initial = pdf_vemz
+    # Unique content for initial PDF: "Sehr geehrte Damen und Herren"
+    page.form['files'] = Upload(pdf_name_initial, pdf_bytes_initial)
+    page = page.form.submit().follow()
+    consultation_id = page.request.url.split('/')[-1] # Get ID from URL
+
+    # 2. Search for initial content
+    search_form = page.forms['search']
+    search_form['term'] = 'Sehr geehrte Damen und Herren'
+    search_page = search_form.submit().follow()
+    assert 'Sehr geehrte Damen und Herren' in search_page, \
+        "Initial PDF content not found after creation"
+    assert len(search_page.pyquery('.search-result-link')) == 1, \
+        "Expected one file result for initial PDF"
+
+    # 3. Edit Consultation and replace the file
+    page = client.get(f'/consultations/{consultation_id}/edit')
+    form = page.forms[1] # Assuming the second form is for editing/files
+    pdf_name_new, pdf_bytes_new = pdf_new
+    # Unique content for new PDF: "This is the replacement document"
+    form['files-0-action'] = 'replace' # Select 'replace' radio button
+    form['files-0'] = Upload(pdf_name_new, pdf_bytes_new) # Upload new file
+    page = form.submit().follow()
+
+    # 4. Search for NEW content
+    search_form = page.forms['search']
+    search_form['term'] = 'replacement document'
+    search_page_new = search_form.submit().follow()
+    assert 'replacement document' in search_page_new, \
+        "New PDF content not found after replacement"
+    assert len(search_page_new.pyquery('.search-result-link')) == 1, \
+        "Expected one file result for new PDF"
+
+    # 5. Search for OLD content (should NOT be found)
+    search_form = page.forms['search']
+    search_form['term'] = 'Sehr geehrte Damen und Herren'
+    search_page_old = search_form.submit().follow()
+    assert 'Sehr geehrte Damen und Herren' not in search_page_old, \
+        "Old PDF content should not be found after replacement"
+    assert len(search_page_old.pyquery('.search-result-link')) == 0, \
+        "Expected zero file results for old PDF content"
+
 
 # ======= Test SearchCollection Directly =======
 
@@ -130,7 +214,7 @@ def test_search(session, pdf_vemz):
         if result.type == 'SearchableFile':
             first_item = next(iter(result.headlines.values()))
             assert ('grundsätzlichen</mark> <mark>Fragen</mark>:' in
-                    first_item), "Highlighting tags missing"
+                    first_item), 'Highlighting tags missing'
 
 
 def setup_search_scenario(pdf_to_search, session):

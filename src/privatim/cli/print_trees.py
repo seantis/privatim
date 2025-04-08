@@ -6,7 +6,6 @@ from sqlalchemy import select
 from privatim.models import Consultation
 from privatim.orm import get_engine, Base
 from privatim.orm.session import FilteredSession
-from typing import List
 from pyramid.request import Request
 
 
@@ -75,7 +74,6 @@ def print_trees(config_uri: str, title_filter: str | None) -> None:
     """
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
-    registry = env['registry']
     engine = get_engine(settings)
     Base.metadata.create_all(engine)
 

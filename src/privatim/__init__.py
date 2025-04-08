@@ -1,7 +1,6 @@
 from functools import partial
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
-from sqlalchemy import CheckConstraint
 
 from pyramid.events import BeforeRender
 from sqlalchemy.dialects import postgresql
