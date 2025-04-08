@@ -1,8 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from webtest import Upload
+import transaction
 
 from privatim.models import SearchableFile, Consultation
+from privatim.models.meeting import AgendaItem
 from privatim.views.search import SearchCollection
 from tests.shared.utils import (
     create_consultation, hash_file, create_meeting_with_agenda_items
@@ -114,6 +116,7 @@ def test_search_agenda_item_integration(client):
     client.login_admin()
 
     # Create a meeting with an agenda item
+    transaction.begin()
     agenda_item_data = [{
         'title': 'Agenda Item Alpha',
         'description': 'Discussion about project Alpha progress.'
@@ -121,15 +124,20 @@ def test_search_agenda_item_integration(client):
     meeting = create_meeting_with_agenda_items(
         agenda_items=agenda_item_data, session=client.db
     )
+    transaction.commit()
+    session = client.db
+    assert session.query(AgendaItem).count() == 1
 
     # Go to a page with the search bar (e.g., dashboard)
     # Follow the redirect from '/'
     page = client.get('/').follow()
 
     # Perform search
+    client.skip_n_forms = 0
     search_form = page.forms['search']
-    search_form['term'] = 'project Alpha'
+    search_form['term'] = 'Alpha'
     page = search_form.submit().follow()
+    assert 'Es wurden keine Ergebnisse gefunden' not in page
 
     # Verify search result
     assert 'Agenda Item Alpha' in page
