@@ -92,6 +92,8 @@ class SearchCollection:
         for model in searchable_models():
             self.results.extend(self.search_model(model))
 
+        breakpoint()
+
         self._add_agenda_items_to_results()
 
     def search_model(
