@@ -5,7 +5,7 @@ from webtest import Upload
 from privatim.models import SearchableFile, Consultation
 from privatim.views.search import SearchCollection
 from tests.shared.utils import (
-    create_consultation, hash_file, create_meeting, create_agenda_item
+    create_consultation, hash_file, create_meeting_with_agenda_items
 )
 
 
@@ -113,15 +113,14 @@ def test_search_agenda_item_integration(client):
     """ Tests searching for content within an AgendaItem. """
     client.login_admin()
 
-    # Create a meeting and an agenda item
-    meeting = create_meeting(title='Important Meeting')
-    agenda_item = create_agenda_item(
-        meeting=meeting,
-        title='Agenda Item Alpha',
-        description='Discussion about project Alpha progress.'
+    # Create a meeting with an agenda item
+    agenda_item_data = [{
+        'title': 'Agenda Item Alpha',
+        'description': 'Discussion about project Alpha progress.'
+    }]
+    meeting = create_meeting_with_agenda_items(
+        agenda_items=agenda_item_data, session=client.db
     )
-    client.db.add_all([meeting, agenda_item])
-    client.db.flush()
 
     # Go to a page with the search bar (e.g., dashboard)
     page = client.get('/')
