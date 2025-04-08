@@ -7,7 +7,7 @@ skips = ["B101"]
 
 [tool.pytest.ini_options]
 log_level = "INFO"
-testpaths = ["tests", "tests/browser"]
+testpaths = ["tests"]
 norecursedirs = [
     "*.egg",
     ".git",
