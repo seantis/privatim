@@ -123,7 +123,8 @@ def test_search_agenda_item_integration(client):
     )
 
     # Go to a page with the search bar (e.g., dashboard)
-    page = client.get('/')
+    # Follow the redirect from '/'
+    page = client.get('/').follow()
 
     # Perform search
     search_form = page.forms['search']
