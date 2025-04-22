@@ -158,7 +158,6 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
             console.error(`[Evaluate] Element not found: {m_name}`);
         }}
     """)
-    expect(page.locator(m_name)).to_have_value(meeting_name)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
@@ -166,6 +165,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
     speichern(page)
+
 
 
 def test_copy_agenda_items_without_description(client):

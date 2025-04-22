@@ -399,9 +399,31 @@ def edit_meeting_view(
     if request.method == 'POST' and form.validate():
         form.populate_obj(meeting)
         assert form.time.data is not None
-        meeting.name = meeting.name
+        # meeting.name is already populated by form.populate_obj(meeting)
 
         meeting.time = fix_utc_to_local_time(form.time.data)
+
+        # Handle newly uploaded files
+        if form.files.data:
+            for file in form.files.data:
+                if file:
+                    # Explicitly set meeting_id
+                    searchable_file = SearchableFile(
+                        filename=file['filename'],
+                        content=dictionary_to_binary(file),
+                        content_type=file['mimetype'],
+                        meeting_id=meeting.id
+                    )
+                    # Check if file with same name already exists for this meeting
+                    # to avoid duplicates if the user re-uploads the same file.
+                    # This is a simple check; more robust checks might involve checksums.
+                    existing_filenames = {f.filename for f in meeting.files}
+                    if searchable_file.filename not in existing_filenames:
+                        meeting.files.append(searchable_file)
+                    else:
+                        # Optionally log or inform the user about the duplicate attempt
+                        log.info(f"Skipping duplicate file upload: {searchable_file.filename} for meeting {meeting.id}")
+
 
         session.add(meeting)
         session.flush()
