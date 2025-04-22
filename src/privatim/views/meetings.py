@@ -354,13 +354,14 @@ def add_meeting_view(
         if form.files.data:
             for file in form.files.data:
                 if file:
-                    meeting.files.append(
-                        SearchableFile(
-                            file['filename'],
-                            dictionary_to_binary(file),
-                            content_type=file['mimetype']
-                        )
+                    # Explicitly set meeting_id, consultation_id defaults to None
+                    searchable_file = SearchableFile(
+                        filename=file['filename'],
+                        content=dictionary_to_binary(file),
+                        content_type=file['mimetype'],
+                        meeting_id=meeting.id
                     )
+                    meeting.files.append(searchable_file)
 
         session.add(meeting)
         session.flush()

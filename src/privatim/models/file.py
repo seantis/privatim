@@ -117,10 +117,25 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
     word_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     def __init__(
-        self, filename: str, content: bytes, content_type: str | None = None
+        self,
+        filename: str,
+        content: bytes,
+        content_type: str | None = None,
+        consultation_id: UUIDStrType | None = None,
+        meeting_id: UUIDStrType | None = None,
     ) -> None:
         self.id = str(uuid.uuid4())
         self.filename = filename
+        self.consultation_id = consultation_id
+        self.meeting_id = meeting_id
+
+        # Ensure only one parent ID is provided (basic check)
+        if not ((consultation_id is None) ^ (meeting_id is None)):
+             raise ValueError(
+                 'SearchableFile must have exactly one parent '
+                 '(consultation_id or meeting_id).'
+             )
+
 
         content_type = self.maybe_handle_octet_stream(
             content, content_type, filename
