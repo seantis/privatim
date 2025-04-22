@@ -511,6 +511,10 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
         consultation_added = True
     else:
         print(f"  Column {consultation_fk_col} already exists in {table_name}")
+        # Ensure the column is nullable if it already exists
+        print(f"  Ensuring column {consultation_fk_col} is nullable in {table_name}")
+        context.alter_column(table_name, consultation_fk_col, nullable=True)
+
 
     meeting_added = False
     if not context.has_column(table_name, meeting_fk_col):
@@ -527,6 +531,9 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
         meeting_added = True
     else:
         print(f"  Column {meeting_fk_col} already exists in {table_name}")
+        # Ensure the column is nullable if it already exists
+        print(f"  Ensuring column {meeting_fk_col} is nullable in {table_name}")
+        context.alter_column(table_name, meeting_fk_col, nullable=True)
 
     # 2. Migrate data if columns were just added and old columns exist
     if (consultation_added or meeting_added) and \
