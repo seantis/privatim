@@ -153,10 +153,7 @@ def test_search_agenda_item_integration(client):
     # Verify search result
     assert 'Agenda Item Alpha' in page
 
-# Keep the original webtest version for reference
-# fixme: fix this test (idea is good but some implementation details make it fail
-#        currently
-def test_search_file_update_integration_webtest(client, pdf_vemz, pdf_full_text):
+def test_search_file_update_integration(client, pdf_vemz, pdf_full_text):
     """
     Tests searching after replacing a file in a Consultation using webtest.
     Ensures new content is found and old content is not.
