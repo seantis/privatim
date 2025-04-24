@@ -247,20 +247,6 @@ def pdf_vemz():
 
 
 @pytest.fixture()
-def pdf_new():
-    filename = 'replacement.pdf'
-    path = Path(__file__).parent / 'views/client/test_files' / filename
-    # Ensure the file exists before trying to open it
-    if not path.is_file():
-        pytest.fail(
-            f"Test file not found: {path}. "
-            f"Please create this file with unique content."
-        )
-    with open(path, 'rb') as f:
-        yield filename, f.read()
-
-
-@pytest.fixture()
 def pdf_full_text():
     filename = 'fulltext_search.pdf'
     path = Path(__file__).parent / 'views/client/test_files' / filename

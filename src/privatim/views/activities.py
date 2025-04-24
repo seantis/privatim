@@ -154,8 +154,6 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
 
     # Get all activities and convert them to dictionaries
     for consultation in get_consultations():
-        # if "Umwelt Herbst" in consultation.title:
-        #     breakpoint()
         activities.append(activity_to_dict(consultation))
 
     for meeting in get_meetings():
@@ -277,3 +275,4 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         'form': form,
         'activities': activities_data,
     }
+

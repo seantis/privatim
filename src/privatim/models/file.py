@@ -129,13 +129,9 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         self.consultation_id = consultation_id
         self.meeting_id = meeting_id
 
-        # Ensure only one parent ID is provided (basic check)
-        if not ((consultation_id is None) ^ (meeting_id is None)):
-             raise ValueError(
-                 'SearchableFile must have exactly one parent '
-                 '(consultation_id or meeting_id).'
-             )
-
+        # The database check constraint 'chk_searchable_files_one_parent'
+        # ensures exactly one parent ID is non-NULL. We rely on this rather
+        # than a Python check which can interfere with SQLAlchemy's loading.
 
         content_type = self.maybe_handle_octet_stream(
             content, content_type, filename

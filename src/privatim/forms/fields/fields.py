@@ -509,7 +509,6 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
 
         for field, file in zip_longest(self.entries, files):
             if field is None:
-                # breakpoint()
                 # this generally shouldn't happen, but we should
                 # guard against it anyways, since it can happen
                 # if people manually call pop_entry()
@@ -517,6 +516,7 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
 
             dummy = _DummyFile()
             dummy.file = file
+            # dummy.file: SearchableFile
             field.populate_obj(dummy, 'file')
             if dummy.file is not None:
                 output.append(dummy.file)
@@ -527,7 +527,7 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
                     # it having being added
                     and getattr(field, 'existing_file', None) is None
                 ):
-                    # added file
                     self.added_files.append(dummy.file)
 
         setattr(obj, name, output)
+
