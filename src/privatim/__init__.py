@@ -16,7 +16,6 @@ from email.headerregistry import Address
 
 from privatim.mail import PostmarkMailer
 from privatim.models.comment import COMMENT_DELETED_MSG
-from privatim.models.file import SearchableFile
 from privatim.orm.uuid_type import UUIDStr as UUIDStrType
 
 from pyramid.settings import asbool
@@ -482,22 +481,22 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
         WHERE """ + conditions  # nosec[B608]
         context.session.execute(text(query))
 
-    context.drop_column('consultations', 'updated')
+    context.drop_column('consultations', 'updated') # Corrected indentation
 
-    # --- Add SearchableFile parent migration steps ---
+    # --- Migrate SearchableFile parent relationship ---
     print("Migrating SearchableFile parent structure...")
     table_name = 'searchable_files'
-    old_parent_id_col = 'parent_id'
-    old_parent_type_col = 'parent_type'
-    consultation_fk_col = 'consultation_id'
-    meeting_fk_col = 'meeting_id'
-    constraint_name = f'chk_{table_name}_one_parent'
+    old_parent_id_col = 'parent_id'       # Old column storing the parent ID
+    old_parent_type_col = 'parent_type'   # Old column storing parent type
+    consultation_fk_col = 'consultation_id' # New FK column for Consultations
+    meeting_fk_col = 'meeting_id'         # New FK column for Meetings
+    constraint_name = f'chk_{table_name}_one_parent' # Ensures one FK is set
     consultation_idx = f'ix_{table_name}_{consultation_fk_col}'
     meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
 
-    # 1. Add new nullable FK columns if they don't exist
-    consultation_added = False
-    if not context.has_column(table_name, consultation_fk_col):
+    # Step 1: Add new FK columns (nullable initially) if they don't exist
+    consultation_col_exists = context.has_column(table_name, consultation_fk_col)
+    if not consultation_col_exists:
         print(f"  Adding column {consultation_fk_col} to {table_name}")
         context.add_column(
             table_name,
@@ -505,19 +504,16 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
                 consultation_fk_col,
                 UUIDStrType,
                 ForeignKey('consultations.id', ondelete='CASCADE'),
-                nullable=True # Start as nullable
+                nullable=True
             )
         )
-        consultation_added = True
     else:
         print(f"  Column {consultation_fk_col} already exists in {table_name}")
-        # Ensure the column is nullable if it already exists
-        print(f"  Ensuring column {consultation_fk_col} is nullable in {table_name}")
+        # Ensure it's nullable for data migration step if it exists
         context.alter_column(table_name, consultation_fk_col, nullable=True)
 
-
-    meeting_added = False
-    if not context.has_column(table_name, meeting_fk_col):
+    meeting_col_exists = context.has_column(table_name, meeting_fk_col)
+    if not meeting_col_exists:
         print(f"  Adding column {meeting_fk_col} to {table_name}")
         context.add_column(
             table_name,
@@ -525,84 +521,87 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
                 meeting_fk_col,
                 UUIDStrType,
                 ForeignKey('meetings.id', ondelete='CASCADE'),
-                nullable=True # Start as nullable
+                nullable=True
             )
         )
-        meeting_added = True
     else:
         print(f"  Column {meeting_fk_col} already exists in {table_name}")
-        # Ensure the column is nullable if it already exists
-        print(f"  Ensuring column {meeting_fk_col} is nullable in {table_name}")
+        # Ensure it's nullable for data migration step if it exists
         context.alter_column(table_name, meeting_fk_col, nullable=True)
 
-    # 2. Migrate data if columns were just added and old columns exist
-    if (consultation_added or meeting_added) and \
-       context.has_column(table_name, old_parent_id_col) and \
-       context.has_column(table_name, old_parent_type_col):
-        print("  Migrating data from parent_id/parent_type to new FK columns...")
-        # Assume all existing files belong to consultations
-        update_stmt = text(f"""
+    # Step 2: Migrate data from old columns to new columns if old columns exist
+    old_id_col_exists = context.has_column(table_name, old_parent_id_col)
+    old_type_col_exists = context.has_column(table_name, old_parent_type_col)
+
+    if old_id_col_exists and old_type_col_exists:
+        print("  Migrating data from old parent columns to new FK columns...")
+        # Migrate Consultations
+        update_consultations = text(f"""
             UPDATE {table_name}
             SET {consultation_fk_col} = {old_parent_id_col}::uuid
             WHERE {old_parent_type_col} = 'consultations'
-        """) # Added ::uuid cast assuming parent_id was text/varchar
-        context.session.execute(update_stmt)
-        print("  Data migration complete.")
+            AND {consultation_fk_col} IS NULL -- Only update if not already set
+        """)
+        context.session.execute(update_consultations)
 
-    # 3. Add check constraint (attempt only if columns exist)
-    # Note: Checking for constraint existence directly is complex.
-    # Relying on the model definition and Alembic is preferred.
-    # This manual addition might fail if the constraint already exists.
-    if context.has_column(table_name, consultation_fk_col) and \
-       context.has_column(table_name, meeting_fk_col):
+        # Migrate Meetings (if they were ever supported by old columns)
+        update_meetings = text(f"""
+            UPDATE {table_name}
+            SET {meeting_fk_col} = {old_parent_id_col}::uuid
+            WHERE {old_parent_type_col} = 'meetings'
+            AND {meeting_fk_col} IS NULL -- Only update if not already set
+        """)
+        context.session.execute(update_meetings)
+        print("  Data migration complete.")
+    else:
+        print("  Old parent columns not found, skipping data migration.")
+
+    # Step 3: Add Check Constraint if it doesn't exist
+    # This ensures exactly one parent FK is set going forward.
+    # We add this *after* data migration.
+    if not context.has_constraint(table_name, constraint_name, 'CHECK'):
+        print(f"  Adding check constraint {constraint_name} to {table_name}")
         try:
-            print(f"  Attempting to add check constraint {constraint_name}...")
-            if not context.has_constraint(table_name, constraint_name, 'CHECK'):
-                print(f"    Constraint {constraint_name} does not exist, creating...")
-                context.operations.create_check_constraint(
-                    constraint_name=constraint_name,
-                    table_name=table_name,
-                    condition="num_nonnulls(consultation_id, meeting_id) = 1"
-                )
-                print(f"    Added check constraint {constraint_name}.")
-            else:
-                print(f"    Check constraint {constraint_name} already exists.")
+            context.operations.create_check_constraint(
+                constraint_name=constraint_name,
+                table_name=table_name,
+                condition=f"num_nonnulls({consultation_fk_col}, {meeting_fk_col}) = 1"
+            )
+            print(f"  Added check constraint {constraint_name}.")
         except Exception as e:
-            print(f"  Warning: Could not add check constraint {constraint_name} (may already exist or other error): {e}")
-    # 4. Add indexes for the new FK columns if they don't exist
-    if consultation_added and not context.index_exists(table_name, consultation_idx):
+            # It might fail if there's data violating the constraint *after* migration
+            print(f"  ERROR: Could not add check constraint {constraint_name}. "
+                  f"Check data in {table_name} - rows must have exactly one "
+                  f"of {consultation_fk_col} or {meeting_fk_col} set. Error: {e}")
+            # Depending on policy, you might raise an error here or just warn
+    else:
+        print(f"  Check constraint {constraint_name} already exists.")
+
+    # Step 4: Add Indexes for new FK columns if they don't exist
+    if not context.index_exists(table_name, consultation_idx):
         print(f"  Adding index {consultation_idx} to {table_name}")
         context.operations.create_index(
             consultation_idx, table_name, [consultation_fk_col]
         )
-    elif not context.index_exists(table_name, consultation_idx):
-         # Ensure index exists even if column wasn't added in this run
-         print(f"  Ensuring index {consultation_idx} exists on {table_name}")
-         context.operations.create_index(
-             consultation_idx, table_name, [consultation_fk_col]
-         )
+    else:
+        print(f"  Index {consultation_idx} already exists.")
 
-
-    if meeting_added and not context.index_exists(table_name, meeting_idx):
+    if not context.index_exists(table_name, meeting_idx):
         print(f"  Adding index {meeting_idx} to {table_name}")
         context.operations.create_index(
             meeting_idx, table_name, [meeting_fk_col]
         )
-    elif not context.index_exists(table_name, meeting_idx):
-         # Ensure index exists even if column wasn't added in this run
-         print(f"  Ensuring index {meeting_idx} exists on {table_name}")
-         context.operations.create_index(
-             meeting_idx, table_name, [meeting_fk_col]
-         )
+    else:
+        print(f"  Index {meeting_idx} already exists.")
 
-    # 5. Drop old columns if they exist
+    # Step 5: Drop old columns if they exist
     if context.drop_column(table_name, old_parent_id_col):
-         print(f"  Dropped column {old_parent_id_col} from {table_name}.")
+        print(f"  Dropped old column {old_parent_id_col} from {table_name}.")
     if context.drop_column(table_name, old_parent_type_col):
-         print(f"  Dropped column {old_parent_type_col} from {table_name}.")
+        print(f"  Dropped old column {old_parent_type_col} from {table_name}.")
 
     print("Finished migrating SearchableFile parent structure.")
-    # --- End of SearchableFile parent migration steps ---
+    # --- End of SearchableFile parent migration ---
 
 
     fix_agenda_item_positions(context)
