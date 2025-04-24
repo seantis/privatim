@@ -168,7 +168,7 @@ class User(Base):
             .scalar_subquery()
         )
 
-    comments: Mapped[list['Comment']] = relationship(
+    comments: Mapped[list[Comment]] = relationship(
         'Comment', back_populates='user',
     )
 

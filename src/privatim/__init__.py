@@ -166,7 +166,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         ('consultations', 'creator_id', 'fk_consultations_creator_id_users'),
         ('consultations', 'editor_id', 'fk_consultations_editor_id_users'),
         ('meetings', 'creator_id', 'fk_meetings_creator_id_users'),
-        # Add all other foreign key constraints here
+        #  Add all other foreign key constraints here
     ]
 
     for table, column, constraint in fk_constraints:
@@ -486,11 +486,11 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
     # --- Migrate SearchableFile parent relationship ---
     print("Migrating SearchableFile parent structure...")
     table_name = 'searchable_files'
-    old_parent_id_col = 'parent_id'       # Old column storing the parent ID
-    old_parent_type_col = 'parent_type'   # Old column storing parent type
-    consultation_fk_col = 'consultation_id' # New FK column for Consultations
-    meeting_fk_col = 'meeting_id'         # New FK column for Meetings
-    constraint_name = f'chk_{table_name}_one_parent' # Ensures one FK is set
+    old_parent_id_col = 'parent_id'  # Old column storing the parent ID
+    old_parent_type_col = 'parent_type'  # Old column storing parent type
+    consultation_fk_col = 'consultation_id'  # New FK for Consultations
+    meeting_fk_col = 'meeting_id'  # New FK column for Meetings
+    constraint_name = f'chk_{table_name}_one_parent'  # Ensures one FK is set
     consultation_idx = f'ix_{table_name}_{consultation_fk_col}'
     meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
 
@@ -569,10 +569,14 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
             )
             print(f"  Added check constraint {constraint_name}.")
         except Exception as e:
-            # It might fail if there's data violating the constraint *after* migration
-            print(f"  ERROR: Could not add check constraint {constraint_name}. "
-                  f"Check data in {table_name} - rows must have exactly one "
-                  f"of {consultation_fk_col} or {meeting_fk_col} set. Error: {e}")
+            # It might fail if there's data violating the constraint *after*
+            # migration
+            print(
+                f"  ERROR: Could not add check constraint {constraint_name}. "
+                f"Check data in {table_name} - rows must have exactly one "
+                f"of {consultation_fk_col} or {meeting_fk_col} set. "
+                f"Error: {e}"
+            )
             # Depending on policy, you might raise an error here or just warn
     else:
         print(f"  Check constraint {constraint_name} already exists.")
@@ -603,9 +607,9 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
 
-
     fix_agenda_item_positions(context)
-    fix_user_constraints_to_work_with_hard_delete(context) # Ensure this is called after FKs are potentially modified
+    # Ensure this is called after FKs are potentially modified
+    fix_user_constraints_to_work_with_hard_delete(context)
 
     context.commit()
     print("Database schema upgrade process finished.")

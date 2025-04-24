@@ -237,7 +237,7 @@ class UpgradeContext:
         conn = self.operations_connection
         if conn is None:
             logger.warning("Cannot check constraint, no connection available.")
-            return False # Or raise an error
+            return False  # Or raise an error
 
         result = conn.execute(text("""
             SELECT EXISTS (
@@ -247,15 +247,14 @@ class UpgradeContext:
                   AND constraint_type = :constraint_type
                   AND constraint_name = :constraint_name
             )
-        """
-            ).bindparams(
-                bindparam('schema', value=self.schema),
-                bindparam('table_name', value=table_name),
-                bindparam('constraint_name', value=constraint_name),
-                bindparam('constraint_type', value=constraint_type.upper()), # Ensure type is upper case
-            )
-        ).scalar()
-        return bool(result) # Ensure boolean return
+        """).bindparams(
+            bindparam('schema', value=self.schema),
+            bindparam('table_name', value=table_name),
+            bindparam('constraint_name', value=constraint_name),
+            # Ensure type is upper case
+            bindparam('constraint_type', value=constraint_type.upper()),
+        )).scalar()
+        return bool(result)  # Ensure boolean return
 
     def commit(self) -> None:
         mark_changed(self.session)

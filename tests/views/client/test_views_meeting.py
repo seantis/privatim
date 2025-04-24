@@ -1,4 +1,3 @@
-from pathlib import Path
 import pytest
 from playwright.sync_api import Page, expect
 from datetime import datetime, timedelta
@@ -14,7 +13,8 @@ from privatim.utils import fix_utc_to_local_time
 
 
 def set_datetime_element(page: Page, selector: str, dt: datetime):
-    """Sets the date and time on a datetime-local field using Playwright's fill method."""
+    """Sets the date and time on a datetime-local field using Playwright's fill
+    method."""
     local_tz = ZoneInfo("Europe/Zurich")
     local_dt = dt.astimezone(local_tz)
     datetime_str = local_dt.strftime("%Y-%m-%dT%H:%M")
@@ -209,9 +209,11 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     bearbeiten_link.click()
     page.wait_for_load_state("networkidle", timeout=10000)
 
-    # Find the row for Admin User using the disabled name input
-    # The value attribute of the disabled input holds the full name
-    admin_user_row_selector = '.attendance-row:has(input[name$="-fullname"][value="Admin User"])'
+    # Find the row for Admin User using the disabled name input The value
+    # attribute of the disabled input holds the full name
+    admin_user_row_selector = (
+        '.attendance-row:has(input[name$="-fullname"][value="Admin User"])'
+    )
     admin_user_row = page.locator(admin_user_row_selector)
     admin_user_row.wait_for(state="visible", timeout=5000)
 
@@ -219,7 +221,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     remove_checkbox_selector = 'input[name$="-remove"]'
     remove_checkbox = admin_user_row.locator(remove_checkbox_selector)
     remove_checkbox.wait_for(state="visible", timeout=3000)
-    remove_checkbox.check() # Use check() for checkboxes
+    remove_checkbox.check()  # Use check() for checkboxes
 
     speichern(page)
     page.wait_for_load_state("networkidle", timeout=10000)
@@ -307,7 +309,6 @@ def test_edit_meeting_add_document_browser(
     meeting_documents = page.locator('.meeting-documents')
     expect(meeting_documents).to_be_visible(timeout=5000)
     expect(meeting_documents).to_contain_text(filename)
-
 
 
 def test_copy_agenda_items_without_description(client):

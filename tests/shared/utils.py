@@ -79,7 +79,8 @@ def create_meeting(
     creator: User | None = None,
     working_group: WorkingGroup | None = None,
 ) -> Meeting:
-    """ Helper function to create a meeting with attendees and optional files. """
+    """ Helper function to create a meeting with attendees and optional files.
+    """
     if attendees is None:
         attendees = [
             User(email='john@doe.org', first_name='John', last_name='Doe'),
@@ -91,7 +92,7 @@ def create_meeting(
         ]
 
     if creator is None:
-        creator = attendees[0] # Default creator to the first attendee
+        creator = attendees[0]  # Default creator to the first attendee
 
     if working_group is None:
         working_group = WorkingGroup(
@@ -110,7 +111,7 @@ def create_meeting(
 
     if files:
         for file in files:
-            file.meeting = meeting # Associate each file with the meeting
+            file.meeting = meeting  # Associate each file with the meeting
 
     return meeting
 

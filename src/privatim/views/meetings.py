@@ -346,8 +346,8 @@ def add_meeting_view(
         # are necessary.
         form_attendees = set(form.attendees.data or [])
         working_group_attendees = {str(user.id) for user in context.users}
-        # As per requirements, the users of the working group always attend
-        # the meeting by default.
+        # As per requirements, the users of the working group always attend the
+        # meeting by default.
         form.attendees.data = list(form_attendees | working_group_attendees)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
 
@@ -414,16 +414,21 @@ def edit_meeting_view(
                         content_type=file['mimetype'],
                         meeting_id=meeting.id
                     )
-                    # Check if file with same name already exists for this meeting
-                    # to avoid duplicates if the user re-uploads the same file.
-                    # This is a simple check; more robust checks might involve checksums.
+                    # Check if file with same name already exists for this
+                    # meeting to avoid duplicates if the user re-uploads the
+                    # same file. This is a simple check; more robust checks
+                    # might involve checksums.
                     existing_filenames = {f.filename for f in meeting.files}
                     if searchable_file.filename not in existing_filenames:
                         meeting.files.append(searchable_file)
                     else:
-                        # Optionally log or inform the user about the duplicate attempt
-                        log.info(f"Skipping duplicate file upload: {searchable_file.filename} for meeting {meeting.id}")
-
+                        # Optionally log or inform the user about the duplicate
+                        # attempt
+                        log.info(
+                            f"Skipping duplicate file upload: "
+                            f"{searchable_file.filename} for meeting "
+                            f"{meeting.id}"
+                        )
 
         session.add(meeting)
         session.flush()

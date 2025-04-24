@@ -328,7 +328,9 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
 
     # Run the server in a separate process
     def run_server(app_to_serve, host_to_serve, port_to_serve):
-        serve(app_to_serve, host=host_to_serve, port=port_to_serve, _quiet=True)
+        serve(
+            app_to_serve, host=host_to_serve, port=port_to_serve, _quiet=True
+        )
 
     server_process = multiprocessing.Process(
         target=run_server,
@@ -339,18 +341,19 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
 
     # Wait for the server to be ready
     start_time = time.time()
-    timeout = 15 # seconds, increased slightly
-    check_url = base_url + '/login' # Use a known, simple endpoint
+    timeout = 15  # seconds, increased slightly
+    check_url = base_url + '/login'  # Use a known, simple endpoint
     connected = False
     while time.time() - start_time < timeout:
         try:
             response = requests.head(check_url, timeout=1)
-            # Check for any successful status code (2xx, 3xx) or auth redirect (401/403 often redirect to login)
+            # Check for any successful status code (2xx, 3xx) or auth redirect
+            # (401/403 often redirect to login)
             if response.status_code < 500:
                 connected = True
                 break
         except (ConnectionError, Timeout):
-            pass # Server not up yet or timed out
+            pass  # Server not up yet or timed out
         time.sleep(0.2)
     else:
         # If loop finishes without break
@@ -378,7 +381,7 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
     try:
         # Use the session created within this fixture's scope for cleanup
         # Ensure transaction state is clean before dropping
-        transaction.abort() # Abort any lingering transaction
+        transaction.abort()  # Abort any lingering transaction
         Base.metadata.drop_all(engine)
     except Exception as e:
         logging.getLogger(__name__).error(f"Error during DB cleanup: {e}")
@@ -386,11 +389,12 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
         try:
             Base.metadata.drop_all(engine)
         except Exception as final_e:
-             logging.getLogger(__name__).error(f"Final DB cleanup attempt failed: {final_e}")
-
+            logging.getLogger(__name__).error(
+                f"Final DB cleanup attempt failed: {final_e}"
+            )
     finally:
         # Close the session and engine connection
         if dbsession and dbsession.is_active:
-             dbsession.close()
+            dbsession.close()
         if engine:
             engine.dispose()

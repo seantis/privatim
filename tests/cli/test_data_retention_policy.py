@@ -27,13 +27,13 @@ def create_consultation(
         file = SearchableFile(
             filename='test.txt',
             content=b'Test content',
-            consultation_id=consultation.id # Set parent ID directly
+            consultation_id=consultation.id  # Set parent ID directly
         )
         session.add(file)
-        # No need for consultation.files.append(file), FK relationship handles it
+        # No need for consultation.files.append(file), FK relationship handles
 
-    # updated will be accesssed
-    consultation.created = utcnow() - timedelta(days=days_old) # This line remains
+    # updated will be accessed
+    consultation.created = utcnow() - timedelta(days=days_old)  # This line remains
     consultation.deleted = is_deleted
     session.add(consultation)
     session.flush()

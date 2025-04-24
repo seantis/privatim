@@ -178,7 +178,7 @@ class Meeting(Base, SearchableMixin):
         cascade='all, delete-orphan',
     )
 
-    files: Mapped[list['SearchableFile']] = relationship(
+    files: Mapped[list[SearchableFile]] = relationship(
         'SearchableFile',
         primaryjoin="Meeting.id == SearchableFile.meeting_id",
         cascade='all, delete-orphan',
