@@ -113,9 +113,6 @@ def create_meeting(
             file.meeting = meeting # Associate each file with the meeting
 
     return meeting
-        User(
-            email='schabala@babala.ch',
-            first_name='Schabala',
 
 
 def create_meeting_with_agenda_items(

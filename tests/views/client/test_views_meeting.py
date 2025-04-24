@@ -30,17 +30,17 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
                 element.focus();
                 // Set the value
                 element.value = dateTimeString;
-                // Dispatch events to mimic user input and trigger potential 
+                // Dispatch events to mimic user input and trigger potential
                 // listeners
-                element.dispatchEvent(new Event('input', { bubbles: true, 
+                element.dispatchEvent(new Event('input', { bubbles: true,
                     cancelable: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true, 
+                element.dispatchEvent(new Event('change', { bubbles: true,
                     cancelable: true }));
                 return { success: true, finalValue: element.value };
             } catch (error) {
-                console.error(`[Evaluate] Error setting value for 
+                console.error(`[Evaluate] Error setting value for
                 ${selector}:`, error);
-                return { success: false, error: error.message, 
+                return { success: false, error: error.message,
                     finalValue: element.value };
             }
         }
@@ -83,8 +83,30 @@ def speichern(page):
     submit_button.click()
 
 
+def set_meeting_title(meeting_title, page):
+    m_name = 'input[name="name"]'
+    # We've resorted to JavaScript for this seemingly trivial task.
+    # Conventional approaches (element.fill) resulted in mysterious timeout
+    # issues, hence this elaborate solution.
+    page.evaluate(f"""
+        const el = document.querySelector('{m_name}');
+        if (el) {{
+            el.value = '{meeting_title}';
+            el.dispatchEvent(new Event('input', {{ bubbles: true }}));
+            el.dispatchEvent(new Event('change', {{ bubbles: true }}));
+        }} else {{
+            console.error(`[Evaluate] Element not found: {m_name}`);
+        }}
+    """)
+
+
 @pytest.mark.browser
 def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
+    """ Needs full browser test because listening for changes in attendees /
+    guests for a meeting did require some javascript to dynamically updated the
+    dropdowns of people.
+    """
+
     admin_user = User(
         email="test@example.org",
         first_name="Test",
@@ -115,13 +137,12 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
 
+    # Create a working group
     page.goto(live_server_url + "/working_groups/add")
     page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
-
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
-
     user_select_input = page.locator('input[id="users-ts-control"]')
     user_select_input.wait_for(state="visible", timeout=3000)
     user_select_input.click()
@@ -129,7 +150,6 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
     admin_option.wait_for(state="visible", timeout=3000)
     admin_option.click()
-
     user_select_input.fill("Test User")  # Start typing again
     test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
     test_option.wait_for(state="visible", timeout=3000)
@@ -141,27 +161,16 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     page.locator('a:has-text("Browser Test Group")').click()
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
-    meeting_name = "Initial Browser Meeting"
-    m_name = 'input[name="name"]'
+    meeting_title = "Initial Browser Meeting"
 
-    # Observe: We've resorted to JavaScript for this seemingly trivial task. 
-    # Akin to deploying artillery against a mouse, we're merely setting the 
-    # meeting title. Conventional approaches (element.fill) resulted in 
-    # mysterious timeout issues, hence this elaborate solution.
-    page.evaluate(f"""
-        const el = document.querySelector('{m_name}');
-        if (el) {{
-            el.value = '{meeting_name}';
-            el.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            el.dispatchEvent(new Event('change', {{ bubbles: true }}));
-        }} else {{
-            console.error(`[Evaluate] Element not found: {m_name}`);
-        }}
-    """)
+    set_meeting_title(meeting_title, page)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
-    # we will add this later. 
+    # meeting created.
+
+    # Now edit it add add the External User
+    # we will add this later.
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
     speichern(page)
