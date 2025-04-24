@@ -169,12 +169,11 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     # meeting created.
 
-    # Now edit it add add the External User
+    # todo: Now edit it add add the External User
     # we will add this later.
     # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
 
     speichern(page)
-
 
 
 def test_copy_agenda_items_without_description(client):
