@@ -73,24 +73,49 @@ def find_login_form(resp_forms):
     return None
 
 
-def create_meeting(attendees=None) -> Meeting:
-    """ Helper function to create a meeting with some attendees """
-    attendees = attendees or [
-        User(email='john@doe.org', first_name='John', last_name='Doe'),
-        User(
-            email='schabala@babala.ch',
-            first_name='Schabala',
-            last_name='Babala',
-        ),
-    ]
-    return Meeting(
+def create_meeting(
+    attendees: list[User] | None = None,
+    files: list[SearchableFile] | None = None,
+    creator: User | None = None,
+    working_group: WorkingGroup | None = None,
+) -> Meeting:
+    """ Helper function to create a meeting with attendees and optional files. """
+    if attendees is None:
+        attendees = [
+            User(email='john@doe.org', first_name='John', last_name='Doe'),
+            User(
+                email='schabala@babala.ch',
+                first_name='Schabala',
+                last_name='Babala',
+            ),
+        ]
+
+    if creator is None:
+        creator = attendees[0] # Default creator to the first attendee
+
+    if working_group is None:
+        working_group = WorkingGroup(
+            name='Waffle Workshop Group',
+            creator=creator,
+            users=attendees
+        )
+
+    meeting = Meeting(
         name='Powerpoint Parade',
         time=datetime.now(tz=DEFAULT_TIMEZONE),
         attendees=attendees,
-        working_group=WorkingGroup(
-            name='Waffle Workshop Group', leader=attendees[0], users=attendees
-        ),
+        working_group=working_group,
+        creator=creator,
     )
+
+    if files:
+        for file in files:
+            file.meeting = meeting # Associate each file with the meeting
+
+    return meeting
+        User(
+            email='schabala@babala.ch',
+            first_name='Schabala',
 
 
 def create_meeting_with_agenda_items(
