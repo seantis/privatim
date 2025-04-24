@@ -1,3 +1,4 @@
+from pathlib import Path
 import pytest
 from playwright.sync_api import Page, expect
 from datetime import datetime, timedelta
@@ -48,7 +49,8 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
 
     try:
         element = page.locator(selector)
-        element.wait_for(state="visible", timeout=3000)
+        # Increase timeout for visibility check
+        element.wait_for(state="visible", timeout=5000)
         result = page.evaluate(script, [selector, datetime_str])
 
         if not result or not result.get("success"):
@@ -167,13 +169,145 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
-    # meeting created.
+    speichern(page)
 
-    # todo: Now edit it add add the External User
-    # we will add this later.
-    # page.locator('.ts-dropdown-content .option:has-text("External User")').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Edit the meeting - Click Actions dropdown, then Edit link
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Add External User to attendees
+    attendees_input = page.locator('input[id="attendees-ts-control"]')
+    attendees_input.wait_for(state="visible", timeout=3000)
+    attendees_input.click()
+    attendees_input.fill("External User")
+    external_option = page.locator(
+        '.ts-dropdown-content .option:has-text("External User")'
+    )
+    external_option.wait_for(state="visible", timeout=3000)
+    external_option.click()
 
     speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Verify External User is now an attendee
+    attendees_list = page.locator('ul.generic-user-list')
+    expect(attendees_list).to_contain_text("External User")
+    expect(attendees_list).to_contain_text("Admin User") # Original user
+    expect(attendees_list).to_contain_text("Test User") # Original user
+
+    # Remove Admin User
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Find the row for Admin User using the disabled name input
+    # The value attribute of the disabled input holds the full name
+    admin_user_row_selector = '.attendance-row:has(input[name$="-fullname"][value="Admin User"])'
+    admin_user_row = page.locator(admin_user_row_selector)
+    admin_user_row.wait_for(state="visible", timeout=5000)
+
+    # Find and click the 'Entfernen' checkbox within that row
+    remove_checkbox_selector = 'input[name$="-remove"]'
+    remove_checkbox = admin_user_row.locator(remove_checkbox_selector)
+    remove_checkbox.wait_for(state="visible", timeout=3000)
+    remove_checkbox.check() # Use check() for checkboxes
+
+    speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Verify Admin User is removed, others remain
+    attendees_list = page.locator('ul.generic-user-list')
+    expect(attendees_list).to_be_visible(timeout=5000)
+    expect(attendees_list).not_to_contain_text("Admin User")
+    expect(attendees_list).to_contain_text("External User")
+    expect(attendees_list).to_contain_text("Test User")
+
+
+@pytest.mark.browser
+def test_edit_meeting_add_document_browser(
+    page: Page, live_server_url, session, pdf_vemz
+) -> None:
+
+    admin_user = User(
+        email="test@example.org",
+        first_name="Test",
+        last_name="User",
+    )
+    admin_user.set_password("test")
+    session.add(admin_user)
+    transaction.commit()
+
+    page.goto(live_server_url + "/login")
+    page.locator('input[name="email"]').fill("admin@example.org")
+    page.locator('input[name="password"]').fill("test")
+
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    error_locator = page.locator(".alert.alert-danger")
+    if error_locator.is_visible():
+        error_text = error_locator.text_content()
+        pytest.fail(f"Login failed. Error message found: {error_text}")
+
+    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
+
+    # Create a working group
+    page.goto(live_server_url + "/working_groups/add")
+    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    group_name_input = page.locator('textarea[name="name"]')
+    group_name = f"Browser Test Group {datetime.now().isoformat()}"
+    group_name_input.fill(group_name)
+    user_select_input = page.locator('input[id="users-ts-control"]')
+    user_select_input.wait_for(state="visible", timeout=3000)
+    user_select_input.click()
+    user_select_input.fill("Admin User")
+    admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
+    admin_option.wait_for(state="visible", timeout=3000)
+    admin_option.click()
+    user_select_input.fill("Test User")  # Start typing again
+    test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
+    test_option.wait_for(state="visible", timeout=3000)
+    test_option.click()
+    speichern(page)
+
+    # We are now in working groups overview page.
+    # Click on the created working group:
+    page.locator('a:has-text("Browser Test Group")').click()
+    # new meeting:
+    page.locator('a:has-text("Sitzung hinzufügen")').click()
+    meeting_title = "Initial Browser Meeting"
+    set_meeting_title(meeting_title, page)
+    meeting_time = utcnow() + timedelta(hours=1)
+    set_datetime_element(page, 'input[name="time"]', meeting_time)
+
+    # Upload a document
+    file_input = page.locator('input[type="file"][name="files"]')
+    file_input.wait_for(state='visible', timeout=3000)
+    filename, file_content = pdf_vemz
+    file_input.set_input_files(
+        files=[
+            {'name': filename, 'mimeType': 'application/pdf', 'buffer': file_content}
+        ]
+    )
+
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    # Verify the document is listed
+    # TDD: current
+    meeting_documents = page.locator('.meeting-documents')
+    expect(meeting_documents).to_be_visible(timeout=5000)
+    expect(meeting_documents).to_contain_text(filename)
+
 
 
 def test_copy_agenda_items_without_description(client):
