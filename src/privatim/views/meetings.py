@@ -359,8 +359,9 @@ def add_meeting_view(
                         filename=file['filename'],
                         content=dictionary_to_binary(file),
                         content_type=file['mimetype'],
-                        meeting_id=meeting.id
                     )
+                    # Appending to the relationship automatically handles the
+                    # foreign key (meeting_id) upon session flush.
                     meeting.files.append(searchable_file)
 
         session.add(meeting)
