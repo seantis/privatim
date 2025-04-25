@@ -176,7 +176,7 @@ def meeting_view(
         'has_agenda_items': bool(agenda_items),
         'documents': [
             {
-                'display_filename': trim_filename(doc.filename),
+                'display_filename': doc.filename,  # Use full filename
                 'doc_content_type': doc.content_type,
                 'download_url': request.route_url('download_file', id=doc.id),
             }

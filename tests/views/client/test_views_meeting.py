@@ -235,7 +235,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
 
 @pytest.mark.browser
-def test_edit_meeting_add_document_browser(
+def test_edit_meeting_document(
     page: Page, live_server_url, session, pdf_vemz
 ) -> None:
 
@@ -305,7 +305,6 @@ def test_edit_meeting_add_document_browser(
     page.wait_for_load_state('networkidle', timeout=10000)
 
     # Verify the document is listed
-    # TDD: current
     meeting_documents = page.locator('.meeting-documents')
     expect(meeting_documents).to_be_visible(timeout=5000)
     expect(meeting_documents).to_contain_text(filename)
