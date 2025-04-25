@@ -27,6 +27,20 @@
                         <span class="fw-bold" i18n:translate="">Date / Time:</span> ${time}
                     </p>
                     ${meeting_attendees}
+
+                    <div tal:condition="documents" class="mt-3">
+                        <p class="fw-bold" i18n:translate="">Documents:</p>
+                        <ul class="list-unstyled">
+                            <li tal:repeat="doc documents">
+                                <a href="${doc.download_url}"
+                                   class="text-decoration-none"
+                                   target="_blank">
+                                    <i class="fa fa-file me-1"></i> ${doc.display_filename}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
 

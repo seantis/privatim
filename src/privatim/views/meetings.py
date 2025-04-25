@@ -14,6 +14,7 @@ from privatim.reporting.report import (
     HTMLReportRenderer,
 )
 from privatim.utils import datetime_format, dictionary_to_binary
+from privatim.views.utils import trim_filename
 from privatim.controls.controls import Button
 from pyramid.httpexceptions import (
     HTTPFound,
@@ -173,6 +174,14 @@ def meeting_view(
         'collapse_all_text': _('Collapse All'),
         'all_expanded': all_items_expanded,
         'has_agenda_items': bool(agenda_items),
+        'documents': [
+            {
+                'display_filename': trim_filename(doc.filename),
+                'doc_content_type': doc.content_type,
+                'download_url': request.route_url('download_file', id=doc.id),
+            }
+            for doc in context.files
+        ],
     }
 
 
