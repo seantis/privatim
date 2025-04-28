@@ -96,14 +96,14 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
 
     # Normal handling for other types (Meetings)
     is_update = activity.updated != activity.created
-    has_files = False
+    has_files = bool(activity.files)  # Check if the meeting has files
     return {
         'type': 'update' if is_update else 'creation',
         'object': activity,
         'timestamp': activity.updated if is_update else activity.created,
         'user': getattr(activity, 'editor', None) if is_update else getattr(
             activity, 'creator', None),
-        'has_files': has_files,
+        'has_files': has_files,  # Use the correctly determined value
         'title': _get_activity_title(activity, is_update),
         'route_url': obj_type.lower(),
         'id': activity.id,
