@@ -90,29 +90,51 @@ def consultation_view(
 
 
 def consultations_view(request: 'IRequest') -> 'RenderData':
+    from privatim.models import User  # Add User import if not present
+    from sqlalchemy.orm import selectinload
+
     session = request.dbsession
     stmt = (
         select(Consultation)
         .where(Consultation.is_latest_version == 1)
-        .order_by(Consultation.created.desc())
+        # Remove default ordering, we will sort in Python
+        .options(
+            # Eager load editor and their picture to avoid N+1 queries later
+            selectinload(Consultation.editor).selectinload(User.picture),
+            # Eager load previous_version recursively might be complex.
+            # We accept potential lazy loads in get_original_creation_date
+            # for now. Optimize if needed.
+            selectinload(Consultation.previous_version) # Load at least one level
+        )
     )
 
-    consultations = tuple(
+    latest_consultations = session.scalars(stmt).unique().all()
+
+    # Sort consultations in Python by their original creation date (ascending)
+    sorted_consultations = sorted(
+        latest_consultations,
+        key=lambda cons: cons.get_original_creation_date()
+    )
+
+    consultations_data = tuple(
         {
             '_id': _cons.id,
-            'editor_pic_id': _cons.editor.picture.id if _cons.editor else
-            None,
+            # Check if editor and picture exist before accessing id
+            'editor_pic_id': (
+                _cons.editor.picture.id
+                if _cons.editor and _cons.editor.picture else None
+            ),
             'title': _cons.title,
             'editor_name': _cons.editor.fullname if _cons.editor
             else _('Deleted User'),
             'description': Markup(_cons.description),
-            'updated': _cons.updated,
+            'updated': _cons.updated, # Keep last updated time for display
             'status': _(_cons.status)
-        } for _cons in session.scalars(stmt).unique().all()
+        } for _cons in sorted_consultations # Iterate over the sorted list
     )
     return {
         'title': _('Consultations'),
-        'consultations': consultations,
+        'consultations': consultations_data, # Use the sorted data
     }
 
 

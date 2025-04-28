@@ -164,6 +164,16 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         assert latest_version is not None
         return latest_version
 
+    def get_original_creation_date(self) -> datetime:
+        """Traverse back to find the creation date of the first version."""
+        current = self
+        # This loop might trigger lazy loading if previous_version isn't loaded
+        # during the initial query. Consider eager loading if performance is
+        # an issue.
+        while current.previous_version:
+            current = current.previous_version
+        return current.created
+
     files: Mapped[list['SearchableFile']] = relationship(
         'SearchableFile',
         primaryjoin="Consultation.id == SearchableFile.consultation_id",
