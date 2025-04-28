@@ -113,8 +113,8 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     # Sort consultations in Python by their original creation date (ascending)
     sorted_consultations = sorted(
         latest_consultations,
-        key=lambda cons: cons.get_original_creation_date(),
-        reverse=True
+        key=lambda cons: cons.get_original_creation_date()
+        # Removed reverse=True to sort oldest first (ascending)
     )
 
     consultations_data = tuple(
