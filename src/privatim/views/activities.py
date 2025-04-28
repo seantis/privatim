@@ -76,11 +76,13 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
     if obj_type == 'Consultation':
         is_creation = activity.previous_version is None
 
+        has_files = bool(activity.files)
         return {
             'type': 'creation' if is_creation else 'update',
             'object': activity,
             'timestamp': activity.created,
             'user': activity.creator if is_creation else activity.editor,
+            'has_files': has_files,
             'title': (
                 _('Consultation Added')
                 if is_creation
@@ -94,12 +96,15 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
 
     # Normal handling for other types (Meetings)
     is_update = activity.updated != activity.created
+    # Meetings don't have files in this context
+    has_files = False
     return {
         'type': 'update' if is_update else 'creation',
         'object': activity,
         'timestamp': activity.updated if is_update else activity.created,
         'user': getattr(activity, 'editor', None) if is_update else getattr(
             activity, 'creator', None),
+        'has_files': has_files,
         'title': _get_activity_title(activity, is_update),
         'route_url': obj_type.lower(),
         'id': activity.id,

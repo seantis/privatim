@@ -30,6 +30,10 @@
                                             <span class="timeline-date">
                                                 ${layout.format_date(activity['timestamp'], 'date')}
                                                 ${layout.format_date(activity['timestamp'], 'time')}
+                                                <i tal:condition="activity['has_files']"
+                                                   class="fas fa-file-pdf ms-1 text-secondary"
+                                                   title="Has attached files"
+                                                   i18n:attributes="title"></i>
                                             </span>
                                             <span class="timeline-user" tal:condition="activity['user']">
                                                 <span i18n:translate="">by </span>
