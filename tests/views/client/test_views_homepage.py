@@ -5,7 +5,7 @@ from tests.shared.utils import create_consultation, create_meeting
 from webtest import TestApp  # type:ignore
 
 
-def test_filter(client: TestApp):
+def test_filter_activities(client: TestApp):
     session = client.db
     client.login_admin()
 
@@ -24,8 +24,6 @@ def test_filter(client: TestApp):
     # Add a meeting
     meeting = create_meeting(name='Test Meeting')
     session.add(meeting)
-    session.commit()
-
     session.commit()
 
     # --- Test Type Filtering ---
