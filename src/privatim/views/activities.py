@@ -1,6 +1,6 @@
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
-from sqlalchemy import select
+from sqlalchemy import select, distinct
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting
@@ -174,7 +174,15 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     """
 
     session = request.dbsession
-    form = FilterForm(request)
+
+    # Get distinct consultation statuses for the filter dropdown
+    with session.no_consultation_filter():
+        status_query = select(distinct(Consultation.status)).where(
+            Consultation.status.isnot(None)
+        )
+        available_statuses = sorted(session.execute(status_query).scalars().all())
+
+    form = FilterForm(request, available_statuses=available_statuses)
 
     has_query_params = any(request.GET)
     if request.method == 'GET':
@@ -191,10 +199,12 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 if request.GET.get('end_date')
                 else None
             )
+            form.status.data = request.GET.get('status') or ''
         else:
             # Default GET response, show everything, no filter.
             form.consultation.data = True
             form.meeting.data = True
+            form.status.data = '' # Default to 'All Statuses'
             return {
                 'title': _('Activities'),
                 'activities': get_activities(session),
@@ -213,6 +223,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             'end_date': (
                 form.end_date.data.isoformat() if form.end_date.data else ''
             ),
+            'status': form.status.data or '',
         }
         return HTTPFound(
             location=request.route_url('activities', _query=query_params)
@@ -222,6 +233,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     include_meetings = form.meeting.data
     start_date = form.start_date.data
     end_date = form.end_date.data
+    selected_status = form.status.data
 
     start_datetime = (
         datetime.combine(start_date, time.min, tzinfo=ZoneInfo('UTC'))
@@ -248,6 +260,12 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 end_datetime,
                 Consultation.created,
             )
+            # Apply status filter if a specific status is selected
+            if selected_status:
+                consultation_query = consultation_query.filter(
+                    Consultation.status == selected_status
+                )
+
             activities_data.extend(
                 activity_to_dict(consultation)
                 for consultation in session.execute(consultation_query)

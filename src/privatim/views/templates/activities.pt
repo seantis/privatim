@@ -78,10 +78,9 @@
                             <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
                         </div>
                         <div class="mb-3" tal:condition="field.type != 'CheckboxField'">
-                            <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
-                                ${field()}
+                            <label for="${field.id}" class="form-label">${field.label.text}</label>
+                            ${field()}
                         </div>
-
                     </div>
                     <button type="submit" class="btn btn-primary btn-submit">
                         <i class="fa fa-filter me-2"></i><span i18n:translate=""> Filter</span></button>
