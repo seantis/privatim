@@ -74,6 +74,7 @@ def find_login_form(resp_forms):
 
 
 def create_meeting(
+    name: str | None = None,
     attendees: list[User] | None = None,
     files: list[SearchableFile] | None = None,
     creator: User | None = None,
@@ -98,7 +99,7 @@ def create_meeting(
         )
 
     meeting = Meeting(
-        name='Powerpoint Parade',
+        name=name or 'Powerpoint Parade',
         time=datetime.now(tz=DEFAULT_TIMEZONE),
         attendees=attendees,
         working_group=working_group,
