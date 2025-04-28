@@ -91,13 +91,9 @@ def create_meeting(
             ),
         ]
 
-    if creator is None:
-        creator = attendees[0]  # Default creator to the first attendee
-
     if working_group is None:
         working_group = WorkingGroup(
             name='Waffle Workshop Group',
-            creator=creator,
             users=attendees
         )
 
@@ -109,10 +105,7 @@ def create_meeting(
         creator=creator,
     )
 
-    if files:
-        for file in files:
-            file.meeting = meeting  # Associate each file with the meeting
-
+    meeting.files = files or []
     return meeting
 
 
