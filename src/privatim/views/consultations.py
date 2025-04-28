@@ -97,10 +97,9 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     stmt = (
         select(Consultation)
         .where(Consultation.is_latest_version == 1)
-        # Remove default ordering, we will sort in Python
         .options(
             # Eager load editor and their picture to avoid N+1 queries later
-            selectinload(Consultation.editor).selectinload(User.picture),
+            selectinload(Consultation.editor).selectinload(User.profile_pic),
             # Eager load previous_version recursively might be complex.
             # We accept potential lazy loads in get_original_creation_date
             # for now. Optimize if needed.
@@ -108,12 +107,14 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         )
     )
 
-    latest_consultations = session.scalars(stmt).unique().all()
+    with session.no_consultation_filter():
+        latest_consultations = session.scalars(stmt).unique().all()
 
     # Sort consultations in Python by their original creation date (ascending)
     sorted_consultations = sorted(
         latest_consultations,
-        key=lambda cons: cons.get_original_creation_date()
+        key=lambda cons: cons.get_original_creation_date(),
+        reverse=True
     )
 
     consultations_data = tuple(
