@@ -106,14 +106,15 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         )
     )
 
-    with session.no_consultation_filter():
-        latest_consultations = session.scalars(stmt).unique().all()
-        # Sort consultations in Python by their original creation date (ascending)
-        sorted_consultations = sorted(
-            latest_consultations,
-            key=lambda cons: cons.get_original_creation_date()
-            # Removed reverse=True to sort oldest first (ascending)
-        )
+    
+    latest_consultations = session.scalars(stmt).unique().all()
+    for l in latest_consultations:
+        # this here
+        prevs = get_previous_versions(session, l, 100)
+    sorted_consultations = sorted(
+        latest_consultations,
+        key=lambda cons: cons.get_original_creation_date()
+    )
 
     consultations_data = tuple(
         {
