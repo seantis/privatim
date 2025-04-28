@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-02-11 09:52+0100\n"
+"POT-Creation-Date: 2025-04-28 14:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,38 +52,6 @@ msgid "Actions"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt
-msgid "Message"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Show context Menu"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt ./src/privatim/views/meetings.py
-#: ./src/privatim/views/consultations.py
-#: ./src/privatim/views/templates/profile.pt
-msgid "Edit"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt ./src/privatim/views/meetings.py
-#: ./src/privatim/views/people.py ./src/privatim/views/consultations.py
-msgid "Delete"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
-msgid "Comments"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt ./src/privatim/views/consultations.py
-#: ./src/privatim/views/templates/search_results.pt
-msgid "Deleted User"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt ./src/privatim/forms/add_comment.py
-msgid "Answer"
-msgstr ""
-
-#: ./src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr ""
 
@@ -122,8 +90,12 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr ""
 
 #: ./src/privatim/layouts/macros.pt ./src/privatim/views/templates/form.pt
-#: ./src/privatim/forms/add_comment.py
 msgid "Cancel"
+msgstr ""
+
+#: ./src/privatim/layouts/macros.pt ./src/privatim/views/meetings.py
+#: ./src/privatim/views/people.py ./src/privatim/views/consultations.py
+msgid "Delete"
 msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
@@ -223,6 +195,11 @@ msgstr ""
 msgid "Successfully deleted file \"${title}\""
 msgstr ""
 
+#: ./src/privatim/views/meetings.py ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/profile.pt
+msgid "Edit"
+msgstr ""
+
 #: ./src/privatim/views/meetings.py ./src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
 msgstr ""
@@ -316,14 +293,6 @@ msgid "Meeting Scheduled"
 msgstr ""
 
 #: ./src/privatim/views/activities.py
-msgid "Comment Updated"
-msgstr ""
-
-#: ./src/privatim/views/activities.py
-msgid "Comment Added"
-msgstr ""
-
-#: ./src/privatim/views/activities.py
 msgid "Consultation Added"
 msgstr ""
 
@@ -414,6 +383,11 @@ msgid "Delete Consultation"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
+#: ./src/privatim/views/templates/search_results.pt
+msgid "Deleted User"
+msgstr ""
+
+#: ./src/privatim/views/consultations.py
 msgid "Successfully added consultation"
 msgstr ""
 
@@ -455,18 +429,6 @@ msgstr ""
 msgid ""
 "Password must have minimal length of 8 characters, contain one upper case "
 "letter, one lower case letter, one digit and one special character."
-msgstr ""
-
-#: ./src/privatim/views/comment.py
-msgid "Successfully deleted comment"
-msgstr ""
-
-#: ./src/privatim/views/comment.py
-msgid "Successfully edited comment"
-msgstr ""
-
-#: ./src/privatim/views/comment.py
-msgid "Successfully added comment"
 msgstr ""
 
 #: ./src/privatim/views/working_groups.py
@@ -556,6 +518,10 @@ msgid "Date / Time:"
 msgstr ""
 
 #: ./src/privatim/views/templates/meeting.pt
+msgid "Documents:"
+msgstr ""
+
+#: ./src/privatim/views/templates/meeting.pt
 #: ./src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr ""
@@ -634,12 +600,8 @@ msgid "Decision:"
 msgstr ""
 
 #: ./src/privatim/views/templates/consultation.pt
-#: ./src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr ""
-
-#: ./src/privatim/views/templates/consultation.pt
 #: ./src/privatim/forms/consultation_form.py
+#: ./src/privatim/forms/meeting_form.py
 msgid "Documents"
 msgstr ""
 
@@ -678,6 +640,10 @@ msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
+msgstr ""
+
+#: ./src/privatim/views/templates/activities.pt
+msgid "Has attached files"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt
@@ -890,14 +856,6 @@ msgstr ""
 msgid "Cantons"
 msgstr ""
 
-#: ./src/privatim/forms/add_comment.py ./src/privatim/forms/filter_form.py
-msgid "Comment"
-msgstr ""
-
-#: ./src/privatim/forms/add_comment.py
-msgid "Add comment"
-msgstr ""
-
 #: ./src/privatim/forms/validators.py
 #, python-format
 msgid "The file is too large, please provide a file smaller than {}."
@@ -924,6 +882,11 @@ msgstr ""
 msgid "This field is read only."
 msgstr ""
 
+#. Dynamically set choices for the status field
+#: ./src/privatim/forms/filter_form.py
+msgid "All Statuses"
+msgstr ""
+
 #: ./src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr ""
@@ -938,6 +901,10 @@ msgstr ""
 
 #: ./src/privatim/forms/filter_form.py
 msgid "Date to"
+msgstr ""
+
+#: ./src/privatim/forms/filter_form.py
+msgid "Consultation Status"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py

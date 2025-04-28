@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-02-11 09:52+0100\n"
+"POT-Creation-Date: 2025-04-28 14:09+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -51,37 +51,6 @@ msgid "Actions"
 msgstr "Actions"
 
 #: src/privatim/layouts/macros.pt
-msgid "Message"
-msgstr "Message"
-
-#: src/privatim/layouts/macros.pt
-msgid "Show context Menu"
-msgstr "Afficher le menu contextuel"
-
-#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
-#: src/privatim/views/consultations.py src/privatim/views/templates/profile.pt
-msgid "Edit"
-msgstr "Modifier"
-
-#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
-#: src/privatim/views/people.py src/privatim/views/consultations.py
-msgid "Delete"
-msgstr "Supprimer"
-
-#: src/privatim/layouts/macros.pt
-msgid "Comments"
-msgstr "Commentaires"
-
-#: src/privatim/layouts/macros.pt src/privatim/views/consultations.py
-#: src/privatim/views/templates/search_results.pt
-msgid "Deleted User"
-msgstr "Utilisateur supprimé"
-
-#: src/privatim/layouts/macros.pt src/privatim/forms/add_comment.py
-msgid "Answer"
-msgstr "Répondre"
-
-#: src/privatim/layouts/macros.pt
 msgid "Search..."
 msgstr "Rechercher..."
 
@@ -118,9 +87,13 @@ msgid "Do you really wish to delete \"${item_title}\"?"
 msgstr "Voulez-vous vraiment supprimer \"${item_title}\"?"
 
 #: src/privatim/layouts/macros.pt src/privatim/views/templates/form.pt
-#: src/privatim/forms/add_comment.py
 msgid "Cancel"
 msgstr "Annuler"
+
+#: src/privatim/layouts/macros.pt src/privatim/views/meetings.py
+#: src/privatim/views/people.py src/privatim/views/consultations.py
+msgid "Delete"
+msgstr "Supprimer"
 
 #: src/privatim/layouts/navbar.pt
 msgid "Testsystem"
@@ -221,6 +194,11 @@ msgstr "Échec de la connexion."
 msgid "Successfully deleted file \"${title}\""
 msgstr "Fichier supprimé avec succès \"${titre}\""
 
+#: src/privatim/views/meetings.py src/privatim/views/consultations.py
+#: src/privatim/views/templates/profile.pt
+msgid "Edit"
+msgstr "Modifier"
+
 #: src/privatim/views/meetings.py src/privatim/forms/meeting_form.py
 msgid "Edit meeting"
 msgstr "Modifier la réunion"
@@ -311,14 +289,6 @@ msgstr "Réunion mise à jour"
 #: src/privatim/views/activities.py
 msgid "Meeting Scheduled"
 msgstr "Réunion prévue"
-
-#: src/privatim/views/activities.py
-msgid "Comment Updated"
-msgstr "Commentaire mis à jour"
-
-#: src/privatim/views/activities.py
-msgid "Comment Added"
-msgstr "Commentaire ajouté"
 
 #: src/privatim/views/activities.py
 msgid "Consultation Added"
@@ -412,6 +382,11 @@ msgid "Delete Consultation"
 msgstr "Supprimer la procédure de consultation"
 
 #: src/privatim/views/consultations.py
+#: src/privatim/views/templates/search_results.pt
+msgid "Deleted User"
+msgstr "Utilisateur supprimé"
+
+#: src/privatim/views/consultations.py
 msgid "Successfully added consultation"
 msgstr "Procédure de consultation ajoutée avec succès"
 
@@ -460,18 +435,6 @@ msgstr ""
 "une lettre majuscule, une lettre minuscule, un chiffre et un caractère "
 "spécial. une lettre majuscule, une lettre minuscule, un chiffre et un "
 "caractère spécial."
-
-#: src/privatim/views/comment.py
-msgid "Successfully deleted comment"
-msgstr "Commentaire supprimé avec succès"
-
-#: src/privatim/views/comment.py
-msgid "Successfully edited comment"
-msgstr "Commentaire modifié avec succès"
-
-#: src/privatim/views/comment.py
-msgid "Successfully added comment"
-msgstr "Commentaire ajouté avec succès"
 
 #: src/privatim/views/working_groups.py
 #, python-format
@@ -565,6 +528,10 @@ msgid "Date / Time:"
 msgstr "Date / Heure:"
 
 #: src/privatim/views/templates/meeting.pt
+msgid "Documents:"
+msgstr "Documents"
+
+#: src/privatim/views/templates/meeting.pt
 #: src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr "Ordre du jour "
@@ -643,12 +610,7 @@ msgid "Decision:"
 msgstr "Décision"
 
 #: src/privatim/views/templates/consultation.pt
-#: src/privatim/forms/add_comment.py
-msgid "Add Comment"
-msgstr "Ajouter un commentaire"
-
-#: src/privatim/views/templates/consultation.pt
-#: src/privatim/forms/consultation_form.py
+#: src/privatim/forms/consultation_form.py src/privatim/forms/meeting_form.py
 msgid "Documents"
 msgstr "Documents"
 
@@ -688,6 +650,7 @@ msgstr "→ Envoyer à nouveau le code / essayer un autre numéro"
 #: src/privatim/views/templates/password_change.pt
 msgid "Change Password"
 msgstr "Changer le mot de passe"
+
 
 #: src/privatim/views/templates/activities.pt
 #: src/privatim/forms/agenda_item_form.py
@@ -901,14 +864,6 @@ msgstr "Décision"
 msgid "Cantons"
 msgstr "Les cantons"
 
-#: src/privatim/forms/add_comment.py src/privatim/forms/filter_form.py
-msgid "Comment"
-msgstr "Commentaire"
-
-#: src/privatim/forms/add_comment.py
-msgid "Add comment"
-msgstr "Ajouter un commentaire"
-
 #: src/privatim/forms/validators.py
 #, python-format
 msgid "The file is too large, please provide a file smaller than {}."
@@ -937,6 +892,11 @@ msgstr "Ce champ est désactivé."
 msgid "This field is read only."
 msgstr "Ce champ est en lecture seule."
 
+#. Dynamically set choices for the status field
+#: src/privatim/forms/filter_form.py
+msgid "All Statuses"
+msgstr "Tous"
+
 #: src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Procédures de consultation"
@@ -952,6 +912,10 @@ msgstr "Date de"
 #: src/privatim/forms/filter_form.py
 msgid "Date to"
 msgstr "Date à"
+
+#: src/privatim/forms/filter_form.py
+msgid "Consultation Status"
+msgstr "Statut de la consultation"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
@@ -1094,13 +1058,3 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Comité:"
-
-#, python-format
-#~ msgid "Successfully deleted user: {full_name}."
-#~ msgstr "Utilisateur supprimé avec succès: {full_name}."
-
-#~ msgid "Deleted Entries"
-#~ msgstr "Entrées supprimées"
-
-#~ msgid "Edit Meeting"
-#~ msgstr "Modifier la réunion"

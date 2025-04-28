@@ -1,4 +1,3 @@
-from datetime import datetime
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
@@ -9,9 +8,11 @@ from privatim.i18n import translate
 from pyramid.httpexceptions import HTTPFound
 import logging
 from privatim.models.file import SearchableFile
+from privatim.models import User
+from sqlalchemy.orm import selectinload
 from privatim.utils import (
     dictionary_to_binary,
-    get_previous_versions, # Ensure this is imported
+    get_previous_versions,
 )
 
 from privatim.views.utils import trim_filename
@@ -21,6 +22,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
+    from datetime import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -90,8 +92,6 @@ def consultation_view(
 
 
 def consultations_view(request: 'IRequest') -> 'RenderData':
-    from privatim.models import User  # Add User import if not present
-    from sqlalchemy.orm import selectinload
 
     session = request.dbsession
     stmt = (
@@ -103,26 +103,23 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             # Eager load previous_version recursively might be complex.
             # We accept potential lazy loads in get_original_creation_date
             # for now. Optimize if needed.
-            selectinload(Consultation.previous_version) # Load at least one level
+            selectinload(Consultation.previous_version)
         )
     )
 
     latest_consultations = session.scalars(stmt).unique().all()
 
-    def get_first_version_creation_date(cons: Consultation) -> datetime:
+    def get_first_version_creation_date(cons: Consultation) -> 'datetime':
         """Helper to find the creation date of the first version."""
-        # Get previous versions (excluding the current one)
-        prev_versions = get_previous_versions(session, cons, limit=1000) # Use a high limit
-        # Combine current and previous versions
+        prev_versions = get_previous_versions(session, cons, limit=1000)
         all_versions = [cons] + prev_versions
-        # Find the one with the minimum creation date
         first_version = min(all_versions, key=lambda v: v.created)
         return first_version.created
 
     # Sort the latest consultations based on the creation date of their
     # original version using the helper function.
     sorted_consultations = sorted(
-        latest_consultations, key=get_first_version_creation_date
+        latest_consultations, key=get_first_version_creation_date, reverse=True
     )
 
     consultations_data = tuple(
@@ -137,13 +134,13 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             'editor_name': _cons.editor.fullname if _cons.editor
             else _('Deleted User'),
             'description': Markup(_cons.description),
-            'updated': _cons.updated, # Keep last updated time for display
+            'updated': _cons.updated,  # Keep last updated time for display
             'status': _(_cons.status)
-        } for _cons in sorted_consultations # Iterate over the sorted list
+        } for _cons in sorted_consultations  # Iterate over the sorted list
     )
     return {
         'title': _('Consultations'),
-        'consultations': consultations_data, # Use the sorted data
+        'consultations': consultations_data,  # Use the sorted data
     }
 
 
