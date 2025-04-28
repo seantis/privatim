@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 14:09+0200\n"
+"POT-Creation-Date: 2025-04-28 15:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,7 +221,15 @@ msgid "Export"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
-msgid "Export meeting protocol"
+msgid "Export meeting protocol as PDF"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Export DOCX"
+msgstr ""
+
+#: ./src/privatim/views/meetings.py
+msgid "Export meeting protocol as Word"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
@@ -521,7 +529,7 @@ msgstr ""
 msgid "Documents:"
 msgstr ""
 
-#: ./src/privatim/views/templates/meeting.pt
+#: ./src/privatim/views/templates/meeting.pt ./src/privatim/reporting/report.py
 #: ./src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr ""
@@ -640,10 +648,6 @@ msgstr ""
 
 #: ./src/privatim/views/templates/password_change.pt
 msgid "Change Password"
-msgstr ""
-
-#: ./src/privatim/views/templates/activities.pt
-msgid "Has attached files"
 msgstr ""
 
 #: ./src/privatim/views/templates/activities.pt

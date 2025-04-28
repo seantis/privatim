@@ -12,6 +12,7 @@ from privatim.reporting.report import (
     MeetingReport,
     ReportOptions,
     HTMLReportRenderer,
+    WordReportRenderer,
 )
 from privatim.utils import datetime_format, dictionary_to_binary
 from privatim.controls.controls import Button
@@ -101,7 +102,16 @@ def meeting_view(
                     'export_meeting_as_pdf_view', id=context.id
                 ),
                 icon='file-export',
-                description=translate(_('Export meeting protocol')),
+                description=translate(_('Export meeting protocol as PDF')),
+            ),
+            Button(
+                title=_('Export DOCX'),
+                css_class='dropdown-item',
+                url=request.route_url(
+                    'export_meeting_as_docx_view', id=context.id
+                ),
+                icon='file-word',
+                description=translate(_('Export meeting protocol as Word')),
             ),
             Button(
                 url=request.route_url('delete_meeting', id=context.id),
@@ -260,6 +270,40 @@ def export_meeting_as_pdf_view(
     response.content_type = 'application/pdf'
     name = translate(_('Meeting Report'))
     safe_filename = name + '.pdf'
+    response.content_disposition = f'attachment; filename="{safe_filename}"'
+    log.info(f'Content-Disposition: {response.content_disposition}')
+    return response
+
+
+def export_meeting_as_docx_view(
+        context: Meeting, request: 'IRequest',
+) -> Response:
+    """Exports the meeting report as a Word (.docx) file."""
+    session = request.dbsession
+    meeting_id = context.id
+    # Use eager loading for related objects if performance becomes an issue
+    meeting = session.get(Meeting, meeting_id)
+    if meeting is None:
+        return HTTPNotFound()
+
+    # Ensure related data needed by the renderer is loaded
+    # (Example: attendees, agenda items - adjust if renderer needs more)
+    # This might already be handled by relationship loading, but explicit check
+    # can help.
+    __ = meeting.attendance_records  # Access to potentially load
+    ___ = meeting.agenda_items  # Access to potentially load
+
+    renderer = WordReportRenderer()
+    options = ReportOptions(language=request.locale_name)
+    # Pass the specific renderer instance
+    report_builder = MeetingReport(request, meeting, options, renderer)
+    report_doc = report_builder.build() # build() now uses the passed renderer
+
+    response = Response(report_doc.data)
+    response.content_type = (
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
+    safe_filename = report_doc.filename
     response.content_disposition = f'attachment; filename="{safe_filename}"'
     log.info(f'Content-Disposition: {response.content_disposition}')
     return response

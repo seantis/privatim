@@ -381,4 +381,58 @@ def test_copy_agenda_items_without_description(client):
     assert len(dest_updated.agenda_items) == 1
     assert dest_updated.agenda_items[0].title == "Agenda item"
     # Description wasn't copied
-    assert dest_updated.agenda_items[0].description == ""
+    assert dest_updated.agenda_items[0].description == ''
+
+
+def test_export_meeting_formats(client):
+    client.login_admin()
+    users = [
+        User(email='max@example.org', first_name='Max', last_name='Müller'),
+        User(email='alexa@example.org', first_name='Alexa', last_name='A'),
+    ]
+    for user in users:
+        user.set_password('test')
+        client.db.add(user)
+    client.db.commit()
+
+    working_group = WorkingGroup(name='Export Test Group', leader=users[0])
+    working_group.users.extend(users)
+    client.db.add(working_group)
+
+    meeting_time = fix_utc_to_local_time(utcnow())
+
+    meeting = Meeting(
+        name='Meeting for Export',
+        time=meeting_time,
+        attendees=users,
+        working_group=working_group,
+    )
+    client.db.add(meeting)
+    client.db.commit()
+    client.db.refresh(meeting)
+
+    # Add an agenda item for content
+    page = client.get(f'/meetings/{meeting.id}/add')
+    page.form['title'] = 'Export Agenda Item'
+    page.form['description'] = 'Details for export.'
+    page.form.submit().follow()
+
+    # Test PDF Export
+    pdf_export_url = f'/meetings/{meeting.id}/export'
+    pdf_response = client.get(pdf_export_url)
+    assert pdf_response.status_code == 200
+    assert pdf_response.content_type == 'application/pdf'
+    assert pdf_response.content_length > 0
+    assert b'%PDF' in pdf_response.body  # Basic check for PDF magic number
+
+    # Test DOCX Export
+    docx_export_url = f'/meetings/{meeting.id}/export/docx'
+    docx_response = client.get(docx_export_url)
+    assert docx_response.status_code == 200
+    assert docx_response.content_type == (
+        'application/vnd.openxmlformats-officedocument.wordprocessingml'
+        '.document'
+    )
+    assert docx_response.content_length > 0
+    # Basic check for DOCX (PK zip header)
+    assert docx_response.body.startswith(b'PK\x03\x04')

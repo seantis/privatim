@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 14:09+0200\n"
+"POT-Creation-Date: 2025-04-28 15:33+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -223,8 +223,16 @@ msgid "Export"
 msgstr "Exportieren"
 
 #: src/privatim/views/meetings.py
-msgid "Export meeting protocol"
-msgstr "Protokoll drucken"
+msgid "Export meeting protocol as PDF"
+msgstr "Sitzung als PDF exportieren"
+
+#: src/privatim/views/meetings.py
+msgid "Export DOCX"
+msgstr "Export DOCX"
+
+#: src/privatim/views/meetings.py
+msgid "Export meeting protocol as Word"
+msgstr "Sitzung als Word exportieren"
 
 #: src/privatim/views/meetings.py
 msgid "Delete Meeting"
@@ -532,7 +540,7 @@ msgstr "Datum / Zeit:"
 msgid "Documents:"
 msgstr "Dokumente:"
 
-#: src/privatim/views/templates/meeting.pt
+#: src/privatim/views/templates/meeting.pt src/privatim/reporting/report.py
 #: src/privatim/reporting/template/report.pt
 msgid "Agenda Items"
 msgstr "Traktanden"
@@ -1059,3 +1067,6 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Gremium:"
+
+#~ msgid "Export meeting protocol"
+#~ msgstr "Protokoll drucken"

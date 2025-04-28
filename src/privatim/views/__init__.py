@@ -33,9 +33,12 @@ from privatim.views.home import home_view, sentry_test_view
 from privatim.views.login import login_view
 from privatim.views.logout import logout_view
 from privatim.views.mtan import mtan_view, mtan_setup_view
-from privatim.views.meetings import (add_meeting_view,
-                                     export_meeting_as_pdf_view,
-                                     move_agenda_item)
+from privatim.views.meetings import (
+    add_meeting_view,
+    export_meeting_as_pdf_view,
+    export_meeting_as_docx_view, # Import the new view
+    move_agenda_item
+)
 from privatim.views.meetings import delete_meeting_view
 from privatim.views.meetings import edit_meeting_view
 from privatim.views.meetings import meeting_view
@@ -378,6 +381,17 @@ def includeme(config: 'Configurator') -> None:
     config.add_view(
         export_meeting_as_pdf_view,
         route_name='export_meeting_as_pdf_view',
+        request_method='GET',
+    )
+    # download the meeting report as DOCX
+    config.add_route(
+        'export_meeting_as_docx_view',
+        '/meetings/{id}/export/docx',
+        factory=meeting_factory
+    )
+    config.add_view(
+        export_meeting_as_docx_view,
+        route_name='export_meeting_as_docx_view',
         request_method='GET',
     )
 

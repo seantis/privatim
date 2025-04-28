@@ -1,11 +1,9 @@
 from wtforms import DateField, SelectField
 from privatim.forms.core import Form
 from wtforms.validators import Optional
-from sqlalchemy import select, distinct
 
 from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _
-from privatim.models import Consultation
 
 
 from typing import TYPE_CHECKING, Iterable
