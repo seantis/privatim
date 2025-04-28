@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 15:33+0200\n"
+"POT-Creation-Date: 2025-04-28 15:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -217,7 +217,7 @@ msgid "No other meetings to copy from"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py
-msgid "Export"
+msgid "Export PDF"
 msgstr ""
 
 #: ./src/privatim/views/meetings.py

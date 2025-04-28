@@ -54,6 +54,17 @@ jobs:
     - name: Check security issues
       run: bandit --recursive --configfile pyproject.toml src/
 
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright/
+        key: ${{ runner.os }}-browsers
+
+    - name: Install Playwright
+      run: |
+        playwright install-deps
+        playwright install
+
     - name: Static type checking
       run: bash mypy.sh
       env:

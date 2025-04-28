@@ -96,7 +96,7 @@ def meeting_view(
                 disabled=disable_copy_button,
             ),
             Button(
-                title=_('Export'),
+                title=_('Export PDF'),
                 css_class='dropdown-item',
                 url=request.route_url(
                     'export_meeting_as_pdf_view', id=context.id

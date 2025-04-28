@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 15:33+0200\n"
+"POT-Creation-Date: 2025-04-28 15:38+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -219,8 +219,8 @@ msgid "No other meetings to copy from"
 msgstr "Es gibt nur eine Sitzung innerhalb dieses Gremiums"
 
 #: src/privatim/views/meetings.py
-msgid "Export"
-msgstr "Exportieren"
+msgid "Export PDF"
+msgstr "Export PDF"
 
 #: src/privatim/views/meetings.py
 msgid "Export meeting protocol as PDF"
@@ -1067,6 +1067,9 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Gremium:"
+
+#~ msgid "Export"
+#~ msgstr "Exportieren"
 
 #~ msgid "Export meeting protocol"
 #~ msgstr "Protokoll drucken"
