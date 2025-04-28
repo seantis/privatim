@@ -14,7 +14,6 @@ from privatim.reporting.report import (
     HTMLReportRenderer,
 )
 from privatim.utils import datetime_format, dictionary_to_binary
-from privatim.views.utils import trim_filename
 from privatim.controls.controls import Button
 from pyramid.httpexceptions import (
     HTTPFound,
