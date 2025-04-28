@@ -13,11 +13,10 @@ from privatim.utils import (
     get_previous_versions,
 )
 
-
-from typing import TYPE_CHECKING
-
 from privatim.views.utils import trim_filename
 
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
@@ -109,13 +108,12 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
     with session.no_consultation_filter():
         latest_consultations = session.scalars(stmt).unique().all()
-
-    # Sort consultations in Python by their original creation date (ascending)
-    sorted_consultations = sorted(
-        latest_consultations,
-        key=lambda cons: cons.get_original_creation_date()
-        # Removed reverse=True to sort oldest first (ascending)
-    )
+        # Sort consultations in Python by their original creation date (ascending)
+        sorted_consultations = sorted(
+            latest_consultations,
+            key=lambda cons: cons.get_original_creation_date(),
+            reverse=True
+        )
 
     consultations_data = tuple(
         {
