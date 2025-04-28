@@ -2,42 +2,124 @@ from privatim.models import Consultation
 from tests.shared.utils import create_consultation, create_meeting
 
 
-def test_filter(client):
+from webtest import TestApp  # type:ignore
+
+
+def test_filter(client: TestApp):
     session = client.db
     client.login_admin()
-    # Add a meeting and a consultation
-    cons = create_consultation(tags=['ZH'])
-    session.add(cons)
 
-    meeting = create_meeting()
+    # Add consultations with different statuses
+    cons1 = create_consultation(
+        title='Consultation Created', status='Created', tags=['ZH']
+    )
+    cons2 = create_consultation(
+        title='Consultation In Progress', status='In Progress'
+    )
+    cons3 = create_consultation(
+        title='Consultation Completed', status='Completed'
+    )
+    session.add_all([cons1, cons2, cons3])
+
+    # Add a meeting
+    meeting = create_meeting(name='Test Meeting')
     session.add(meeting)
     session.commit()
 
-    cons = Consultation(
-        title='2nd Consultation',
-        creator=client.user
-    )
-    session.add(cons)
-    session.flush()
     session.commit()
 
+    # --- Test Type Filtering ---
     page = client.get('/activities')
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' in page
+    assert 'Consultation Completed' in page
+    assert 'Test Meeting' in page
+
+    # Filter: Only Consultations
     form = page.forms['filter_activities']
     form['consultation'] = True
     form['meeting'] = False
-    form.submit().follow()
+    page = form.submit().follow()
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' in page
+    assert 'Consultation Completed' in page
+    assert 'Test Meeting' not in page
 
-    page = client.get('/activities')
+    # Filter: Only Meetings
+    form = page.forms['filter_activities']
+    form['consultation'] = False
+    form['meeting'] = True
+    page = form.submit().follow()
+    assert 'Consultation Created' not in page
+    assert 'Consultation In Progress' not in page
+    assert 'Consultation Completed' not in page
+    assert 'Test Meeting' in page
 
-    assert 'Test Consultation' in page
-
-    page = client.get('/activities')
+    # Filter: Both (default after GET without params, but test explicit POST)
     form = page.forms['filter_activities']
     form['consultation'] = True
     form['meeting'] = True
-    form.submit().follow()
-    page = client.get('/activities')
-    assert 'Powerpoint Parade' in page
+    page = form.submit().follow()
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' in page
+    assert 'Consultation Completed' in page
+    assert 'Test Meeting' in page
+
+    # --- Test Status Filtering (Consultations only) ---
+    # Filter: Status 'Created'
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = False
+    form['status'] = 'Created'
+    page = form.submit().follow()
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' not in page
+    assert 'Consultation Completed' not in page
+    assert 'Test Meeting' not in page
+
+    # Filter: Status 'In Progress'
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = False
+    form['status'] = 'In Progress'
+    page = form.submit().follow()
+    assert 'Consultation Created' not in page
+    assert 'Consultation In Progress' in page
+    assert 'Consultation Completed' not in page
+    assert 'Test Meeting' not in page
+
+    # Filter: Status 'Completed'
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = False
+    form['status'] = 'Completed'
+    page = form.submit().follow()
+    assert 'Consultation Created' not in page
+    assert 'Consultation In Progress' not in page
+    assert 'Consultation Completed' in page
+    assert 'Test Meeting' not in page
+
+    # Filter: All Statuses (empty value)
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = False
+    form['status'] = ''  # 'All Statuses' option
+    page = form.submit().follow()
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' in page
+    assert 'Consultation Completed' in page
+    assert 'Test Meeting' not in page
+
+    # Filter: Status 'Created' and Meetings (should show only 'Created' cons)
+    form = page.forms['filter_activities']
+    form['consultation'] = True
+    form['meeting'] = True
+    form['status'] = 'Created'
+    page = form.submit().follow()
+    assert 'Consultation Created' in page
+    assert 'Consultation In Progress' not in page
+    assert 'Consultation Completed' not in page
+    assert 'Test Meeting' in page # Meetings are unaffected by status filter
 
 
 def test_translation_navbar(client):

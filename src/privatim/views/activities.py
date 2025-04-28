@@ -45,6 +45,18 @@ def maybe_apply_date_filter(
     return query
 
 
+def maybe_apply_status_filter(
+    query: 'Select[Any]',
+    selected_status: str | None,
+) -> 'Select[Any]':
+    """
+    Apply status filter to a consultation query if a status is selected.
+    """
+    if selected_status:
+        query = query.filter(Consultation.status == selected_status)
+    return query
+
+
 def _get_activity_title(activity: Meeting, is_update: bool) -> str:
     """Get the appropriate title for an activity."""
     assert isinstance(activity, Meeting)
@@ -260,11 +272,9 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 end_datetime,
                 Consultation.created,
             )
-            # Apply status filter if a specific status is selected
-            if selected_status:
-                consultation_query = consultation_query.filter(
-                    Consultation.status == selected_status
-                )
+            consultation_query = maybe_apply_status_filter(
+                consultation_query, selected_status
+            )
 
             activities_data.extend(
                 activity_to_dict(consultation)
