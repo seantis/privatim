@@ -1,4 +1,5 @@
 import hashlib
+import uuid
 from datetime import datetime
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models import (
@@ -146,8 +147,11 @@ def create_consultation(
         ),
     ]
 
+    # If no user is provided, create one. Be mindful of potential email clashes
+    # in tests calling this multiple times without specifying a user.
     if user is None:
-        user = User(email='testuser@example.org')
+        # Use a more unique default or require user in tests needing multiple calls
+        user = User(email=f'consultation-creator-{uuid.uuid4()}@example.org')
 
     consultation = Consultation(
         title=title or 'Test Consultation',
