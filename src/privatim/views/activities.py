@@ -27,6 +27,7 @@ if TYPE_CHECKING:
         id: int
         icon_class: str
         content: dict[str, str]
+        has_files: bool
 
 
 def maybe_apply_date_filter(
@@ -103,7 +104,7 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
         'timestamp': activity.updated if is_update else activity.created,
         'user': getattr(activity, 'editor', None) if is_update else getattr(
             activity, 'creator', None),
-        'has_files': has_files,  # Use the correctly determined value
+        'has_files': has_files,
         'title': _get_activity_title(activity, is_update),
         'route_url': obj_type.lower(),
         'id': activity.id,

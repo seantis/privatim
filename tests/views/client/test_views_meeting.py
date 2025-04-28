@@ -60,7 +60,8 @@ def set_datetime_element(page: Page, selector: str, dt: datetime):
                 else "Script execution failed"
             )
             raise Exception(
-                f"Failed to set datetime via page.evaluate for '{selector}'. Error: {error_msg}"
+                f"Failed to set datetime via page.evaluate for '{selector}'."
+                f" Error: {error_msg}"
             )
 
         expect(element).to_have_value(datetime_str)
@@ -146,14 +147,18 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
     user_select_input = page.locator('input[id="users-ts-control"]')
-    user_select_input.wait_for(state="visible", timeout=3000)
+    user_select_input.wait_for(state='visible', timeout=3000)
     user_select_input.click()
-    user_select_input.fill("Admin User")
-    admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
-    admin_option.wait_for(state="visible", timeout=3000)
+    user_select_input.fill('Admin User')
+    admin_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Admin User")'
+    )
+    admin_option.wait_for(state='visible', timeout=3000)
     admin_option.click()
-    user_select_input.fill("Test User")  # Start typing again
-    test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
+    user_select_input.fill('Test User')  # Start typing again
+    test_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Test User")'
+    )
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
     speichern(page)
@@ -183,13 +188,13 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     # Add External User to attendees
     attendees_input = page.locator('input[id="attendees-ts-control"]')
-    attendees_input.wait_for(state="visible", timeout=3000)
+    attendees_input.wait_for(state='visible', timeout=3000)
     attendees_input.click()
-    attendees_input.fill("External User")
+    attendees_input.fill('External User')
     external_option = page.locator(
         '.ts-dropdown-content .option:has-text("External User")'
     )
-    external_option.wait_for(state="visible", timeout=3000)
+    external_option.wait_for(state='visible', timeout=3000)
     external_option.click()
 
     speichern(page)
@@ -197,9 +202,9 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     # Verify External User is now an attendee
     attendees_list = page.locator('ul.generic-user-list')
-    expect(attendees_list).to_contain_text("External User")
-    expect(attendees_list).to_contain_text("Admin User") # Original user
-    expect(attendees_list).to_contain_text("Test User") # Original user
+    expect(attendees_list).to_contain_text('External User')
+    expect(attendees_list).to_contain_text('Admin User')  # Original user
+    expect(attendees_list).to_contain_text('Test User')  # Original user
 
     # Remove Admin User
     aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
@@ -269,14 +274,18 @@ def test_edit_meeting_document(
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
     user_select_input = page.locator('input[id="users-ts-control"]')
-    user_select_input.wait_for(state="visible", timeout=3000)
+    user_select_input.wait_for(state='visible', timeout=3000)
     user_select_input.click()
-    user_select_input.fill("Admin User")
-    admin_option = page.locator('.ts-dropdown-content .option:has-text("Admin User")')
-    admin_option.wait_for(state="visible", timeout=3000)
+    user_select_input.fill('Admin User')
+    admin_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Admin User")'
+    )
+    admin_option.wait_for(state='visible', timeout=3000)
     admin_option.click()
-    user_select_input.fill("Test User")  # Start typing again
-    test_option = page.locator('.ts-dropdown-content .option:has-text("Test User")')
+    user_select_input.fill('Test User')  # Start typing again
+    test_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Test User")'
+    )
     test_option.wait_for(state="visible", timeout=3000)
     test_option.click()
     speichern(page)
@@ -295,11 +304,11 @@ def test_edit_meeting_document(
     file_input = page.locator('input[type="file"][name="files"]')
     file_input.wait_for(state='visible', timeout=3000)
     filename, file_content = pdf_vemz
-    file_input.set_input_files(
-        files=[
-            {'name': filename, 'mimeType': 'application/pdf', 'buffer': file_content}
-        ]
-    )
+    file_input.set_input_files(files=[{
+        'name': filename,
+        'mimeType': 'application/pdf',
+        'buffer': file_content
+    }])
 
     speichern(page)
     page.wait_for_load_state('networkidle', timeout=10000)

@@ -1,21 +1,17 @@
 from privatim.models import Consultation
 from tests.shared.utils import create_consultation, create_meeting
-
+from privatim.models import User
 
 from webtest import TestApp  # type:ignore
 
 
 def test_filter_activities(client: TestApp):
-    from privatim.models import User
 
     session = client.db
     client.login_admin()
 
-    # Create a single user for the consultations
     test_user = User(email='consultation.creator@example.org')
     session.add(test_user)
-
-    # Add consultations with different statuses, using the same creator
     cons1 = create_consultation(
         title='Consultation Created',
         status='Created',
@@ -34,8 +30,6 @@ def test_filter_activities(client: TestApp):
     )
     session.add_all([cons1, cons2, cons3])
 
-    # Add a meeting (ensure its creator doesn't clash if it creates one)
-    # Assuming create_meeting handles users appropriately or uses different defaults
     meeting_creator = User(email='meeting.creator@example.org')
     session.add(meeting_creator)
     meeting = create_meeting(name='Test Meeting', creator=meeting_creator)

@@ -290,7 +290,7 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
 
     # Setup engine, metadata, session factory for THIS test function's DB
     engine = get_engine(settings)
-    Base.metadata.create_all(engine) # Create tables in the test DB
+    Base.metadata.create_all(engine)  # Create tables in the test DB
     session_factory = get_session_factory(engine)
     dbsession = get_tm_session(session_factory, transaction.manager)
 
@@ -302,7 +302,11 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
     # Use a separate transaction for data setup before starting the server
     try:
         with transaction.manager:
-            admin_user = User(email='admin@example.org', first_name='Admin', last_name='User')
+            admin_user = User(
+                email='admin@example.org',
+                first_name='Admin',
+                last_name='User'
+            )
             admin_user.set_password('test')
             dbsession.add(admin_user)
             # Add any other essential base data here if needed for tests
@@ -359,13 +363,16 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
         # If loop finishes without break
         server_process.terminate()
         server_process.join()
-        pytest.fail(f"Server did not start within {timeout} seconds at {base_url}")
+        pytest.fail(
+            f"Server did not start within {timeout} seconds at {base_url}"
+        )
 
     if not connected:
         server_process.terminate()
         server_process.join()
-        pytest.fail(f"Server check failed at {check_url} after {timeout} seconds.")
-
+        pytest.fail(
+            f"Server check failed at {check_url} after {timeout} seconds."
+        )
 
     # Yield the base URL for the test
     yield base_url
