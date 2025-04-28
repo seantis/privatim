@@ -127,7 +127,12 @@ def create_meeting_with_agenda_items(
 
 
 def create_consultation(
-        documents=None, tags=None, user=None, previous_version=None
+    title: str | None = None,
+    status: str | None = None,
+    documents=None,
+    tags=None,
+    user=None,
+    previous_version=None,
 ):
     documents = documents or [
         SearchableFile(
@@ -144,7 +149,8 @@ def create_consultation(
         user = User(email='testuser@example.org')
 
     consultation = Consultation(
-        title='Test Consultation',
+        title=title or 'Test Consultation',
+        status=status,  # Pass status directly, Consultation handles default
         description='This is a test consultation',
         recommendation='Some recommendation',
         files=documents,
