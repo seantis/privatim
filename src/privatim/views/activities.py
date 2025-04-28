@@ -96,7 +96,6 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
 
     # Normal handling for other types (Meetings)
     is_update = activity.updated != activity.created
-    # Meetings don't have files in this context
     has_files = False
     return {
         'type': 'update' if is_update else 'creation',
