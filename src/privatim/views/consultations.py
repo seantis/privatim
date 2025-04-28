@@ -10,7 +10,7 @@ import logging
 from privatim.models.file import SearchableFile
 from privatim.utils import (
     dictionary_to_binary,
-    get_previous_versions,
+    get_previous_versions, # Ensure this is imported
 )
 
 from privatim.views.utils import trim_filename
@@ -107,10 +107,21 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     )
 
     latest_consultations = session.scalars(stmt).unique().all()
+
+    def get_first_version_creation_date(cons: Consultation) -> datetime:
+        """Helper to find the creation date of the first version."""
+        # Get previous versions (excluding the current one)
+        prev_versions = get_previous_versions(session, cons, limit=1000) # Use a high limit
+        # Combine current and previous versions
+        all_versions = [cons] + prev_versions
+        # Find the one with the minimum creation date
+        first_version = min(all_versions, key=lambda v: v.created)
+        return first_version.created
+
     # Sort the latest consultations based on the creation date of their
-    # original version.
+    # original version using the helper function.
     sorted_consultations = sorted(
-        latest_consultations, key=lambda cons: cons.get_original_creation_date()
+        latest_consultations, key=get_first_version_creation_date
     )
 
     consultations_data = tuple(
