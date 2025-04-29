@@ -12,7 +12,7 @@ from privatim.forms.fields.fields import (
     ConstantTextAreaField,
 )
 from privatim.forms.validators import FileSizeLimit, FileExtensionsAllowed
-from privatim.i18n import _, translate
+from privatim.i18n import _
 from privatim.models import SearchableFile
 
 
@@ -45,10 +45,7 @@ class ConsultationForm(Form):
             }
         )
 
-        self.status.choices = [
-            (code, translate(label))
-            for code, label in STATUS_CHOICES
-        ]
+        self.status.choices = STATUS_CHOICES
 
     title = ConstantTextAreaField(
         _('Title'),

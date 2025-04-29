@@ -7,25 +7,25 @@ from privatim.i18n import _
 
 
 from typing import TYPE_CHECKING, Iterable
-
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
+    from privatim.i18n import TranslationString
 
 
 class FilterForm(Form):
     def __init__(
         self,
         request: 'IRequest',
-        available_statuses: Iterable[str]
+        available_statuses: Iterable[tuple[str, 'TranslationString']]
     ) -> None:
         self._title = _('Filter')
         session = request.dbsession
         super().__init__(request.POST, meta={'dbsession': session})
 
-        # Dynamically set choices for the status field
-        status_choices = [('', _('All Statuses'))] + [
-            (status, status) for status in available_statuses
-        ]
+        # Prepend the 'All Statuses' option
+        status_choices = [('', _('All Statuses'))] + list(
+            available_statuses
+        )
         self.status.choices = status_choices
 
     consultation: CheckboxField = CheckboxField(
@@ -48,5 +48,5 @@ class FilterForm(Form):
     status: SelectField = SelectField(
         _('Consultation Status'),
         validators=[Optional()],
-        choices=[],  # Choices are set dynamically in __init__
+        choices=[],
     )

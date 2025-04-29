@@ -1,11 +1,12 @@
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
-from sqlalchemy import select, distinct
+from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
+from privatim.forms.consultation_form import STATUS_CHOICES
 
 
 from typing import TYPE_CHECKING, Any, Literal, TypedDict, Iterable
@@ -192,14 +193,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     session = request.dbsession
 
-    # Get distinct consultation statuses for the filter dropdown
-    with session.no_consultation_filter():
-        status_query = select(distinct(Consultation.status)).where(
-            Consultation.status.isnot(None)
-        )
-        available_statuses = sorted(session.execute(status_query).scalars().all())
-
-    form = FilterForm(request, available_statuses=available_statuses)
+    form = FilterForm(request, available_statuses=STATUS_CHOICES)
 
     has_query_params = any(request.GET)
     if request.method == 'GET':
