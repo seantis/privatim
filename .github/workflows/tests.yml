@@ -54,17 +54,6 @@ jobs:
     - name: Check security issues
       run: bandit --recursive --configfile pyproject.toml src/
 
-    - name: Cache Playwright browsers
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/ms-playwright/
-        key: ${{ runner.os }}-browsers
-
-    - name: Install Playwright
-      run: |
-        playwright install-deps
-        playwright install
-
     - name: Static type checking
       run: bash mypy.sh
       env:
@@ -130,6 +119,20 @@ jobs:
         uv pip install -r requirements.txt -r tests_requirements.txt
       env:
         UV_SYSTEM_PYTHON: true
+
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright/
+        # Use a more specific key including requirements hash
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/tests_requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
+
+    - name: Install Playwright Browsers
+      run: |
+        playwright install-deps
+        playwright install --with-deps # Ensure browsers and OS dependencies are installed
 
     - name: Run tests
       run: |
