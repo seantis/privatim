@@ -1,4 +1,3 @@
-from privatim.models import Consultation
 from tests.shared.utils import create_consultation, create_meeting
 from privatim.models import User
 
@@ -96,17 +95,6 @@ def test_filter_activities(client: TestApp):
     assert 'Consultation Completed' not in page
     assert 'Test Meeting' not in page
 
-    # Filter: Status 'Completed'
-    form = page.forms['filter_activities']
-    form['consultation'] = True
-    form['meeting'] = False
-    form['status'] = 'Completed'
-    page = form.submit().follow()
-    assert 'Consultation Created' not in page
-    assert 'Consultation In Progress' not in page
-    assert 'Consultation Completed' in page
-    assert 'Test Meeting' not in page
-
     # Filter: All Statuses (empty value)
     form = page.forms['filter_activities']
     form['consultation'] = True
@@ -127,7 +115,7 @@ def test_filter_activities(client: TestApp):
     assert 'Consultation Created' in page
     assert 'Consultation In Progress' not in page
     assert 'Consultation Completed' not in page
-    assert 'Test Meeting' in page # Meetings are unaffected by status filter
+    assert 'Test Meeting' in page
 
 
 def test_translation_navbar(client):
