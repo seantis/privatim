@@ -81,10 +81,6 @@ class UploadWidget(FileInput):
         if not field.data:
             return None
 
-        from privatim.forms.fields import IMAGE_MIME  # type:ignore
-        if field.data.get('mimetype', None) not in IMAGE_MIME:
-            return None
-
         if not hasattr(field, 'object_data'):
             return None
 
