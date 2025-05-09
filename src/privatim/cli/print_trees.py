@@ -70,6 +70,10 @@ def cli() -> None:
     '--title-filter',
     help='Only show consultations containing this text in the title',
 )
+@click.option(
+    '--id',
+    help='Print consultation tree by id',
+)
 def print_trees(config_uri: str, title_filter: str | None) -> None:
     """
     Print all consultation version trees.
@@ -85,7 +89,6 @@ def print_trees(config_uri: str, title_filter: str | None) -> None:
     with env['request'].tm:
         dbsession = env['request'].dbsession
 
-        # We need to disable consultation filter to see all versions
         with dbsession.no_consultation_filter():
             # Get all root consultations (those that are not previous versions)
             query = select(Consultation).where(
@@ -96,6 +99,7 @@ def print_trees(config_uri: str, title_filter: str | None) -> None:
                 query = query.where(
                     Consultation.title.ilike(f'%{title_filter}%')
                 )
+            if 
 
             root_consultations = dbsession.execute(query).scalars().all()
 
