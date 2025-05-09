@@ -169,6 +169,77 @@ def print_trees(
                 print_consultation_tree(consultation)
 
 
+@cli.command('validate-trees')
+@click.argument('config_uri')
+def validate_trees(config_uri: str) -> None:
+    """
+    Validate consultation version trees.
+
+    Checks each consultation tree to ensure that exactly one version in each
+    chain is marked as `is_latest_version = TRUE`.
+    """
+    env = bootstrap(config_uri)
+    settings = get_appsettings(config_uri)
+    engine = get_engine(settings)
+    Base.metadata.create_all(engine)
+    closer = env['closer']
+
+    with env['request'].tm:
+        dbsession: 'FilteredSession' = env['request'].dbsession
+        all_trees_valid = True
+        error_messages: list[str] = []
+
+        with dbsession.no_consultation_filter():
+            # Get all root consultations (those that are not previous versions)
+            root_query = select(Consultation).where(
+                Consultation.replaced_consultation_id.is_(None)
+            )
+            root_consultations = dbsession.execute(
+                root_query.order_by(Consultation.title)
+            ).scalars().all()
+
+            if not root_consultations:
+                click.echo('No consultation trees found to validate.')
+                closer()
+                return
+
+            click.echo(f'Found {len(root_consultations)} consultation tree(s) to validate.')
+
+            sql_query = text("""
+                WITH RECURSIVE full_chain AS (
+                    SELECT id, replaced_consultation_id, is_latest_version, title
+                    FROM consultations
+                    WHERE id = :root_id
+                UNION ALL
+                    SELECT c.id, c.replaced_consultation_id, c.is_latest_version, c.title
+                    FROM consultations c
+                    JOIN full_chain fc ON c.replaced_consultation_id = fc.id
+                )
+                SELECT COUNT(*)
+                FROM full_chain
+                WHERE is_latest_version = TRUE;
+            """)
+
+            for root in root_consultations:
+                count_result = dbsession.execute(
+                    sql_query, {'root_id': root.id}
+                ).scalar_one_or_none()
+
+                if count_result != 1:
+                    all_trees_valid = False
+                    msg = (f'ERROR: Tree for root "{root.title}" (ID: {root.id})'
+                           f' has {count_result} versions marked as latest. Expected 1.')
+                    error_messages.append(msg)
+                    click.echo(click.style(msg, fg='red'))
+
+        if all_trees_valid:
+            click.echo(click.style('All consultation trees are valid.', fg='green'))
+        else:
+            click.echo(click.style(
+                f'\nValidation finished. {len(error_messages)} tree(s) have issues.', fg='red'
+            ))
+        closer()
+
 @cli.command('latest-with-files')
 @click.argument('config_uri')
 def print_latest_with_files(config_uri: str) -> None:
