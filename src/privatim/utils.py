@@ -195,6 +195,7 @@ def get_previous_versions(
                     select(Consultation)
                     .where(Consultation.id.in_(version_ids))
                     .options(joinedload(Consultation.creator))
+                    .order_by(Consultation.created.desc())
                 )
                 .scalars()
                 .all()
@@ -318,4 +319,3 @@ def fix_agenda_item_positions(context: 'UpgradeContext') -> None:
         # Reassign positions sequentially
         for new_position, item in enumerate(items):
             item.position = new_position
-
