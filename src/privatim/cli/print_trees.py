@@ -83,6 +83,9 @@ def print_trees(
 
     Shows the version history chains of all consultations, with optional title
     filtering.
+
+    for example:
+    print_trees trees --id "some-id" development.ini
     """
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
