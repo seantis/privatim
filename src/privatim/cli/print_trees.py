@@ -226,11 +226,59 @@ def validate_trees(config_uri: str) -> None:
                 ).scalar_one_or_none()
 
                 if count_result != 1:
+                    # This error is about the *number* of latest flags in the chain
                     all_trees_valid = False
-                    msg = (f'ERROR: Tree for root "{root.title}" (ID: {root.id})'
-                           f' has {count_result} versions marked as latest. Expected 1.')
+                    msg = (f'VALIDATION ERROR (Count): Tree for root "{root.title}" (ID: {root.id})'
+                           f' has {count_result} version(s) marked as latest (is_latest_version=1). Expected exactly 1.')
                     error_messages.append(msg)
                     click.echo(click.style(msg, fg='red'))
+
+                # Detailed chain structure validation using Python objects
+                current_node: Consultation | None = root
+                visited_in_current_chain_check: set[str] = set()
+
+                while current_node:
+                    if current_node.id in visited_in_current_chain_check:
+                        all_trees_valid = False
+                        msg = (
+                            f'VALIDATION ERROR (Cycle): Cycle detected in chain starting from root "{root.title}" (ID: {root.id}). '
+                            f'Node "{current_node.title}" (ID: {current_node.id}) encountered again.'
+                        )
+                        error_messages.append(msg)
+                        click.echo(click.style(msg, fg='red'))
+                        break  # Break from while loop for this chain
+                    visited_in_current_chain_check.add(current_node.id)
+
+                    is_marked_latest = (current_node.is_latest_version == 1)
+                    # Check relationship from current_node to its *next* version
+                    has_next_version = (current_node.replaced_by is not None)
+
+                    if is_marked_latest:
+                        if has_next_version:
+                            all_trees_valid = False
+                            next_node_id_str = current_node.replaced_by.id if current_node.replaced_by else "UNKNOWN_ID"
+                            msg = (
+                                f'VALIDATION ERROR (Link): Node "{current_node.title}" (ID: {current_node.id}) in tree of root "{root.title}" '
+                                f'is marked LATEST (is_latest_version=1) but HAS a "replaced_by" link '
+                                f'to version ID "{next_node_id_str}". A latest version should not be replaced.'
+                            )
+                            error_messages.append(msg)
+                            click.echo(click.style(msg, fg='red'))
+                    else:  # Not marked latest (is_latest_version != 1)
+                        if not has_next_version:
+                            # This is the condition that would cause the AssertionError in get_latest_version
+                            all_trees_valid = False
+                            msg = (
+                                f'VALIDATION ERROR (Link): Node "{current_node.title}" (ID: {current_node.id}) in tree of root "{root.title}" '
+                                f'is marked NOT LATEST (is_latest_version={current_node.is_latest_version}) '
+                                f'but has NO "replaced_by" link. It is a dead-end.'
+                            )
+                            error_messages.append(msg)
+                            click.echo(click.style(msg, fg='red'))
+                            # This chain is broken here for get_latest_version logic.
+                            break # Stop traversing this broken chain for link checks.
+
+                    current_node = current_node.replaced_by
 
         if all_trees_valid:
             click.echo(click.style('All consultation trees are valid.', fg='green'))
