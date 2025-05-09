@@ -103,6 +103,7 @@ def print_trees(
                     Consultation.title.ilike(f'%{title_filter}%')
                 )
             if id:
+                breakpoint()
                 query = query.where(Consultation.id == id)
 
             root_consultations = dbsession.execute(query).scalars().all()
