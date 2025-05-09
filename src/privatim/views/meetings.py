@@ -459,7 +459,7 @@ def edit_meeting_view(
         # Handle newly uploaded files
         if form.files.data:
             for file in form.files.data:
-                if file:
+                if file and file.get('data', None) is not None:
                     # Explicitly set meeting_id
                     searchable_file = SearchableFile(
                         filename=file['filename'],
