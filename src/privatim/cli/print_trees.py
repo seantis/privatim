@@ -71,13 +71,13 @@ def cli() -> None:
     help='Only show consultations containing this text in the title',
 )
 @click.option(
-    '--consultation-id',
+    '--id',
     help='Print consultation tree by id',
 )
 def print_trees(
     config_uri: str,
     title_filter: str | None,
-    consultation_id: str | None) -> None:
+    id: str | None) -> None:
     """
     Print all consultation version trees.
 
@@ -102,8 +102,8 @@ def print_trees(
                 query = query.where(
                     Consultation.title.ilike(f'%{title_filter}%')
                 )
-            if consultation_id:
-                query = query.where(Consultation.id == consultation_id)
+            if id:
+                query = query.where(Consultation.id == id)
 
             root_consultations = dbsession.execute(query).scalars().all()
 
