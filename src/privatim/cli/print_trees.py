@@ -169,7 +169,7 @@ def print_trees(
                 print_consultation_tree(consultation)
 
 
-@cli.command('validate-trees')
+@cli.command('validate')
 @click.argument('config_uri')
 def validate_trees(config_uri: str) -> None:
     """
