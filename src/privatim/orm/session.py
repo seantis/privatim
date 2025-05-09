@@ -53,7 +53,6 @@ class FilteredSession(BaseSession):
                 orm_execute_state.is_select
                 and not orm_execute_state.is_column_load
                 and not orm_execute_state.is_relationship_load
-                and not self._disable_consultation_filter
             ):
                 from privatim.models.consultation import Consultation
 
