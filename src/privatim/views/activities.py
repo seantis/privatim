@@ -152,7 +152,7 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
                     select(Consultation)
                     .options(
                         joinedload(Consultation.creator),
-                        joinedload(Consultation.previous_version),  # Add this
+                        joinedload(Consultation.previous_version),
                     )
                     .order_by(Consultation.created.desc())
                 )
