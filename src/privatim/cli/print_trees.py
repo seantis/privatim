@@ -217,7 +217,7 @@ def validate_trees(config_uri: str) -> None:
                 )
                 SELECT COUNT(*)
                 FROM full_chain
-                WHERE is_latest_version = TRUE;
+                WHERE is_latest_version = 1;
             """)
 
             for root in root_consultations:
