@@ -69,13 +69,14 @@ def _get_activity_title(activity: Meeting, is_update: bool) -> str:
     return ''
 
 
-def activity_to_dict(activity: Any) -> 'ActivityDict':
+def activity_to_dict(activity: Any, session: 'FilteredSession') -> 'ActivityDict':
     """Convert any activity object into a consistent dictionary format."""
 
     obj_type = activity.__class__.__name__
 
     # Special handling for Consultation due to versioning
     if obj_type == 'Consultation':
+        latest_consultation = activity.get_latest_version(session)
         is_creation = activity.previous_version is None
 
         has_files = bool(activity.files)
@@ -91,7 +92,7 @@ def activity_to_dict(activity: Any) -> 'ActivityDict':
                 else _('Consultation Updated')
             ),
             'route_url': 'consultation',
-            'id': activity.id,
+            'id': latest_consultation.id,
             'icon_class': _get_icon_class(obj_type),
             'content': _get_activity_content(activity),
         }
@@ -172,10 +173,10 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
 
     # Get all activities and convert them to dictionaries
     for consultation in get_consultations():
-        activities.append(activity_to_dict(consultation))
+        activities.append(activity_to_dict(consultation, session))
 
     for meeting in get_meetings():
-        activities.append(activity_to_dict(meeting))
+        activities.append(activity_to_dict(meeting, session))
 
 
     # Sort by timestamp
@@ -277,7 +278,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
             activities_data.extend(
                 activity_to_dict(consultation)
-                for consultation in session.execute(consultation_query)
+                for consultation in session.execute(consultation_query, session)
                 .unique()
                 .scalars()
                 .all()
@@ -290,7 +291,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             meeting_query, start_datetime, end_datetime, Meeting.updated
         )
         activities_data.extend(
-            activity_to_dict(me)
+            activity_to_dict(me, session)
             for me in session.execute(meeting_query).unique().scalars().all()
         )
 
