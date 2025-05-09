@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
+from privatim.mail.exceptions import InconsistentChain
 from privatim.models.comment import Comment
 from privatim.models.searchable import SearchableMixin
 from privatim.models.soft_delete import SoftDeleteMixin
@@ -157,10 +158,13 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
             return self
         with session.no_consultation_filter():
             latest_version = self.replaced_by
-            while latest_version and not latest_version.is_latest():
+            while (latest_version is not None 
+                   and latest_version.replaced_by is not None):
                 latest_version = latest_version.replaced_by
         # if we're not the latest version, there exists a newer version and
         # with that a replaced_by
+        if latest_version is None:
+            raise InconsistentChain
         assert latest_version is not None
         return latest_version
 

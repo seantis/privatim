@@ -8,3 +8,6 @@ class MailConnectionError(MailError, ConnectionError):
 
 class InactiveRecipient(MailError):
     pass
+
+class InconsistentChain(Exception):
+    pass

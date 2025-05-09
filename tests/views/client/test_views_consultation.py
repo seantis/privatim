@@ -58,6 +58,36 @@ def test_view_consultation(client):
     # status shoud not have been changed
     assert 'Verzicht' in page.pyquery('span.badge')[0].text
 
+    page = client.get('/activities')
+
+    items = page.pyquery('.timeline-item')
+
+    def get_link_from_Element_list(items): 
+        all_a_elements = []
+        for item in items:
+            # Find all 'a' tags within the current item and its descendants
+            a_elements_in_item = item.cssselect('a')
+            if a_elements_in_item:
+                for a_element in a_elements_in_item:
+                    href = a_element.get('href') # Safely get the href attribute
+                    all_a_elements.append({'element': a_element, 'href': href})
+        return all_a_elements
+
+
+    assert len(items) == 3
+    assert 'Vernehmlassung hinzugefügt' in items[2].text_content()
+    assert 'Vernehmlassung aktualisiert' in items[0].text_content()
+    assert 'Vernehmlassung aktualisiert' in items[1].text_content()
+    hrefs = [e['href'] for e in get_link_from_Element_list(items)]
+    for l in hrefs:
+        # go to each cons activity entry, and go to the edit view
+        # there was a bug where this would result in 404 because we were on 
+        # previous versions
+        client.get(l)
+        consultation_id = l.split('/')[-1]
+        page = client.get(f'/consultations/{consultation_id}/edit')
+
+
 
 def test_view_add_and_delete_consultation(client):
 

@@ -3,6 +3,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
+from privatim.mail.exceptions import InconsistentChain
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
@@ -173,7 +174,11 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
 
     # Get all activities and convert them to dictionaries
     for consultation in get_consultations():
-        activities.append(activity_to_dict(consultation, session))
+        try:
+            res = activity_to_dict(consultation, session)
+            activities.append(res)
+        except InconsistentChain:
+            pass
 
     for meeting in get_meetings():
         activities.append(activity_to_dict(meeting, session))
