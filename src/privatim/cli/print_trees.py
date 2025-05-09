@@ -1,7 +1,7 @@
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
-from sqlalchemy import select
+from sqlalchemy import select, text
 from pyramid.request import Request
 
 from privatim.models import Consultation
@@ -92,21 +92,65 @@ def print_trees(
     with env['request'].tm:
         dbsession = env['request'].dbsession
 
+        root_consultations: list[Consultation]
+
         with dbsession.no_consultation_filter():
-            # Get all root consultations (those that are not previous versions)
-            query = select(Consultation).where(
-                Consultation.replaced_consultation_id.is_(None)
-            )
-
-            if title_filter:
-                query = query.where(
-                    Consultation.title.ilike(f'%{title_filter}%')
-                )
             if id:
-                breakpoint()
-                query = query.where(Consultation.id == id)
+                target_consultation = dbsession.get(Consultation, id)
+                if not target_consultation:
+                    click.echo(f"Consultation with ID {id} not found.")
+                    return
 
-            root_consultations = dbsession.execute(query).scalars().all()
+                # Find the root of the tree containing this consultation.
+                # The root is the one where replaced_consultation_id IS NULL.
+                # replaced_consultation_id stores the ID of the *previous*
+                # version.
+                query_str = """
+                    WITH RECURSIVE ancestors AS (
+                        SELECT id, replaced_consultation_id
+                        FROM consultations
+                        WHERE id = :target_id
+                        UNION ALL
+                        SELECT c.id, c.replaced_consultation_id
+                        FROM consultations c
+                        JOIN ancestors a ON c.id = a.replaced_consultation_id
+                    )
+                    SELECT id
+                    FROM ancestors
+                    WHERE replaced_consultation_id IS NULL
+                    LIMIT 1;
+                """
+                root_id_result = dbsession.execute(
+                    text(query_str), {'target_id': id}
+                ).scalar_one_or_none()
+
+                if not root_id_result:
+                    click.echo(
+                        f"Could not determine the root for consultation ID {id}."
+                        " It might be an orphaned record or part of a cycle."
+                    )
+                    return
+
+                root_consultation = dbsession.get(Consultation, root_id_result)
+                if not root_consultation:
+                    # This should ideally not happen if root_id_result was valid
+                    click.echo(
+                        f"Found root ID {root_id_result} but failed to fetch "
+                        "the consultation object."
+                    )
+                    return
+                root_consultations = [root_consultation]
+            else:
+                # Get all root consultations (those not previous versions)
+                query = select(Consultation).where(
+                    Consultation.replaced_consultation_id.is_(None)
+                )
+                if title_filter:
+                    query = query.where(
+                        Consultation.title.ilike(f'%{title_filter}%')
+                    )
+                root_consultations = dbsession.execute(query).scalars().all()
+
 
             if not root_consultations:
                 click.echo('No consultations found.')
