@@ -281,9 +281,10 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 consultation_query, selected_status
             )
 
+            # fixme: be more robust to Excpetions due to inconsistent chain
             activities_data.extend(
-                activity_to_dict(consultation)
-                for consultation in session.execute(consultation_query, session)
+                activity_to_dict(consultation, session)
+                for consultation in session.execute(consultation_query)
                 .unique()
                 .scalars()
                 .all()
@@ -308,4 +309,3 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         'form': form,
         'activities': activities_data,
     }
-
