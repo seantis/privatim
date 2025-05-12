@@ -1,7 +1,7 @@
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
-from privatim.forms.consultation_form import ConsultationForm
+from privatim.forms.consultation_form import ConsultationForm, STATUS_CHOICES
 from privatim.models import Consultation
 from privatim.i18n import _
 from privatim.i18n import translate
@@ -69,6 +69,7 @@ def consultation_view(
             if latest_version else None
         ),
         'previous_versions': [
+
             {
                 'created': version.created,
                 'editor_name': version.editor.fullname
@@ -85,6 +86,7 @@ def consultation_view(
             }
             for doc in context.files
         ],
+        'status_key': context.status,
         'status_name': translate(_(context.status)),
         'secondary_tags': context.secondary_tags,
         'navigate_back_up': request.route_url('consultations'),
@@ -94,6 +96,8 @@ def consultation_view(
 def consultations_view(request: 'IRequest') -> 'RenderData':
 
     session = request.dbsession
+    selected_status = request.params.get('status')
+
     stmt = (
         select(Consultation)
         .where(Consultation.is_latest_version == 1)
@@ -107,10 +111,10 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         )
     )
 
-    latest_consultations = session.scalars(stmt).unique().all()
+    if selected_status:
+        stmt = stmt.where(Consultation.status == selected_status)
 
     def get_first_version_creation_date(cons: Consultation) -> 'datetime':
-        """Helper to find the creation date of the first version."""
         prev_versions = get_previous_versions(session, cons, limit=1000)
         all_versions = [cons] + prev_versions
         first_version = min(all_versions, key=lambda v: v.created)
@@ -118,6 +122,8 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
     # Sort the latest consultations based on the creation date of their
     # original version using the helper function.
+
+    latest_consultations = session.scalars(stmt).unique().all()
     sorted_consultations = sorted(
         latest_consultations, key=get_first_version_creation_date, reverse=True
     )
@@ -134,13 +140,46 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             'editor_name': _cons.editor.fullname if _cons.editor
             else _('Deleted User'),
             'description': Markup(_cons.description),
-            'updated': _cons.updated,  # Keep last updated time for display
+            'updated': _cons.updated,
+            'status_key': _cons.status, # Pass the status key for linking
             'status': _(_cons.status)
         } for _cons in sorted_consultations  # Iterate over the sorted list
     )
+
+    status_class_mapping = {
+        'created': 'status-created',
+        'closed': 'status-closed',
+        'waiving': 'status-waiving',
+        'in progress': 'status-in-progress',
+    }
+
+    css = 'status-closed' if selected_status else 'status-in-progress',
+    all_statuses_entry = {
+        'key': '',  # Empty key for "All"
+        'name': translate(_('All Statuses')),
+        'is_current': not selected_status,
+        'css_class': css,
+        'is_all_filter': True
+    }
+
+    status_entries = [
+        {
+            'key': status_key,
+            'name': _(status_key),  # Ensure translation
+            'is_current': status_key == selected_status,
+            'css_class': status_class_mapping.get(
+                status_key.lower(), 'status-closed'
+            ),
+            'is_all_filter': False
+        } for status_key, __ in STATUS_CHOICES
+    ]
+
+    all_statuses_for_display = [all_statuses_entry] + status_entries
+
     return {
         'title': _('Consultations'),
         'consultations': consultations_data,  # Use the sorted data
+        'all_statuses_for_display': all_statuses_for_display,
     }
 
 

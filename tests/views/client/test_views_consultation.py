@@ -589,7 +589,6 @@ def test_consultation_version_chain_restore(client, pdf_vemz):
 
 
 def test_consultation_status_filter(client):
-    session = client.db
     client.login_admin()
 
     # Create consultations with different statuses
@@ -608,7 +607,7 @@ def test_consultation_status_filter(client):
     assert 'Consultation 1 - In Progress' in page
     assert 'Consultation 2 - Waiving' in page
     assert 'Consultation 3 - Closed' in page
-    assert len(page.pyquery('.consultation-item')) == 4
+    assert len(page.pyquery('.consultation-card')) == 4
 
     # Check "All Statuses" filter is active by default
     all_status_link = page.pyquery('a.all-status-link')
@@ -620,7 +619,7 @@ def test_consultation_status_filter(client):
     assert 'Consultation 1 - In Progress' not in page
     assert 'Consultation 2 - Waiving' not in page
     assert 'Consultation 3 - Closed' not in page
-    assert len(page.pyquery('.consultation-item')) == 1
+    assert len(page.pyquery('.consultation-card')) == 1
     # Check correct filter badge is active
     active_filter = page.pyquery('.active-filter .consultation-status span')
     assert active_filter.text() == 'Erstellt'
@@ -631,14 +630,26 @@ def test_consultation_status_filter(client):
     assert 'Consultation 1 - In Progress' not in page
     assert 'Consultation 2 - Waiving' in page
     assert 'Consultation 3 - Closed' not in page
-    assert len(page.pyquery('.consultation-item')) == 1
+    assert len(page.pyquery('.consultation-card')) == 1
     active_filter = page.pyquery('.active-filter .consultation-status span')
     assert active_filter.text() == 'Verzicht'
 
     # 4. Test clicking "All Statuses" filter link
     all_status_link_href = page.pyquery('a.all-status-link').attr('href')
     page = client.get(all_status_link_href)
-    assert len(page.pyquery('.consultation-item')) == 4 # All should be visible again
+    assert len(page.pyquery('.consultation-card')) == 4 # All should be visible again
+    assert 'active-filter' in page.pyquery('a.all-status-link').attr('class')
+
+    # 5. Test clicking status badge *inside* a card
+    # Find the 'Waiving' card and its status link
+    waiving_card = page.pyquery('.consultation-card:contains("Waiving")')
+    # Find the link wrapping the status badge
+    status_link_in_card = waiving_card.find('a.status-link-overlay').attr('href')
+    page = client.get(status_link_in_card)
+    assert 'Consultation 2 - Waiving' in page
+    assert len(page.pyquery('.consultation-card')) == 1
+    active_filter = page.pyquery('.active-filter .consultation-status span')
+    assert active_filter.text() == 'Verzicht' # Check top filter is active
 
 def test_display_previous_versions(client):
     # Create a user that will be reused

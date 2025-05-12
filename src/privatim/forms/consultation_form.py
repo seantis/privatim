@@ -1,6 +1,5 @@
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
-from markupsafe import Markup
 from privatim.forms.core import Form, HtmlField
 from wtforms.fields.choices import SelectField
 from wtforms.validators import DataRequired
