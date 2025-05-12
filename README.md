@@ -17,7 +17,7 @@ brew update && brew install postgresql poppler python libpq weasyprint
 Create the PostgreSQL (Version >=12) database:
 ```
 sudo -u postgres bash -c "psql <<EOF
-CREATE USER dev WITH PASSWORD 'devpassword' LOGIN NOINHERIT;
+CREATE USER dev WITH PASSWORD 'postgres' LOGIN NOINHERIT;
 ALTER USER dev WITH SUPERUSER;
 CREATE DATABASE privatim;
 GRANT ALL PRIVILEGES ON DATABASE privatim TO dev;

@@ -21,7 +21,7 @@ pyramid.available_languages =
 # pyramid.includes =
     # pyramid_debugtoolbar
 
-sqlalchemy.url = postgresql://dev:devpassword@localhost:5432/privatim
+sqlalchemy.url = postgresql://dev:postgres@localhost:5432/privatim
 
 auth.password_only = true
 
