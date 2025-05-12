@@ -11,7 +11,7 @@ from pyramid.renderers import render
 import lxml.html
 import html2text
 import re
-from docx import Document
+from docx import Document # type: ignore
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from weasyprint import HTML, CSS  # type: ignore
@@ -259,6 +259,17 @@ class WordReportRenderer:
         font = style.font
         font.name = 'DM Sans'  # Match PDF font if possible
         font.size = Pt(10)
+
+        # Add logo to header
+        logo_path = Path('src/privatim/static/logo-dark-font-transparent.png')
+        if logo_path.exists():
+            header = document.sections[0].header
+            # Clear existing paragraphs in header if any
+            for para in header.paragraphs:
+                para._element.getparent().remove(para._element)
+            header_paragraph = header.add_paragraph()
+            header_paragraph.add_run().add_picture(str(logo_path), width=Inches(1.5))
+            header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
         title_text = translate(
             _(
