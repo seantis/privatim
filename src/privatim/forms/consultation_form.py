@@ -1,8 +1,8 @@
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
-from privatim.forms.core import Form
+from markupsafe import Markup
+from privatim.forms.core import Form, HtmlField
 from wtforms.fields.choices import SelectField
-from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
@@ -52,26 +52,27 @@ class ConsultationForm(Form):
         validators=[DataRequired()],
     )
 
-    description = TextAreaField(
+    description = HtmlField(
         _('Description'),
         render_kw={'rows': 6},
     )
 
-    recommendation = TextAreaField(
+    recommendation = HtmlField(
         _('Recommendation'),
         render_kw={'rows': 6},
     )
-    evaluation_result = TextAreaField(
+    evaluation_result = HtmlField(
         _('Evaluation Result'),
         render_kw={'rows': 6},
     )
 
-    decision = TextAreaField(
+    decision = HtmlField(
         _('Decision'),
         render_kw={'rows': 6},
     )
 
     status = SelectField(
+
         _('Status'),
         choices=[],  # We'll set this in __init__
     )

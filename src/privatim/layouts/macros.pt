@@ -65,7 +65,11 @@
             </div>
         </div>
     </div>
-    <input type="hidden" id="${field.id}" name="${field.name}" value="${field.data or ''}"/>
+
+<!-- NOTE: The `str()` cast is necessary here specifically when re-rendering the form after validation errors.
+     This is because the Tiptap-generated HTML content is not automatically escaped
+     in this error scenario, which could lead to rendering issues if not treated as a simple string. -->
+    <input type="hidden" id="${field.id}" name="${field.name}" value="${str(field.data or '')}"/>
 </tal:block>
 
 
