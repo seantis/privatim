@@ -49,14 +49,14 @@ def test_view_consultation(client):
     page = page.form.submit().follow()
     assert 'Noch keine' not in page
     assert 'Vernehmlassung zur Interkantonalen Vereinbarung über den' in page
-    assert 'Erstellt' not in page.pyquery('span.badge')[0].text
+    assert 'Erstellt' not in page
 
     # test empty submit
     consultation_id = page.request.url.split('/')[-1]
     page = client.get(f'/consultations/{str(consultation_id)}/edit')
     page = page.form.submit().follow()
     # status shoud not have been changed
-    assert 'Verzicht' in page.pyquery('span.badge')[0].text
+    assert 'Verzicht' in page
 
     page = client.get('/activities')
 
