@@ -30,7 +30,6 @@
             </div>
         </div>
 
-
         <!-- Main Content -->
         <div class="row mt-4 mb-4">
             <div class="col-lg-8 card mb-4 consultation-body">
@@ -71,6 +70,14 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+            </div>
+            <div class="card mb-4 ms4">
+                <div class="card-body claude-element">
+                    <h5 i18n:translate="" class="cons-sidebar-title">Status</h5>
+                    <h4 class="card-text" tal:condition="status_name">
+                        <span class="badge rounded-pill bg-secondary text-light">${status_name}</span>
+                    </h4>
                 </div>
             </div>
 
