@@ -588,6 +588,58 @@ def test_consultation_version_chain_restore(client, pdf_vemz):
         assert 'original description' not in page
 
 
+def test_consultation_status_filter(client):
+    session = client.db
+    client.login_admin()
+
+    # Create consultations with different statuses
+    statuses_to_create = ['Created', 'In Progress', 'Waiving', 'Closed']
+    for i, status in enumerate(statuses_to_create):
+        page = client.get('/consultations')
+        page = page.click('Vernehmlassung Erfassen')
+        page.form['title'] = f'Consultation {i} - {status}'
+        page.form['description'] = f'Description for {status}'
+        page.form['status'] = status
+        page = page.form.submit().follow()
+
+    # 1. Test default view (no filter) - should show all
+    page = client.get('/consultations')
+    assert 'Consultation 0 - Created' in page
+    assert 'Consultation 1 - In Progress' in page
+    assert 'Consultation 2 - Waiving' in page
+    assert 'Consultation 3 - Closed' in page
+    assert len(page.pyquery('.consultation-item')) == 4
+
+    # Check "All Statuses" filter is active by default
+    all_status_link = page.pyquery('a.all-status-link')
+    assert 'active-filter' in all_status_link.attr('class')
+
+    # 2. Test filtering by 'Created'
+    page = client.get('/consultations?status=Created')
+    assert 'Consultation 0 - Created' in page
+    assert 'Consultation 1 - In Progress' not in page
+    assert 'Consultation 2 - Waiving' not in page
+    assert 'Consultation 3 - Closed' not in page
+    assert len(page.pyquery('.consultation-item')) == 1
+    # Check correct filter badge is active
+    active_filter = page.pyquery('.active-filter .consultation-status span')
+    assert active_filter.text() == 'Erstellt'
+
+    # 3. Test filtering by 'Waiving'
+    page = client.get('/consultations?status=Waiving')
+    assert 'Consultation 0 - Created' not in page
+    assert 'Consultation 1 - In Progress' not in page
+    assert 'Consultation 2 - Waiving' in page
+    assert 'Consultation 3 - Closed' not in page
+    assert len(page.pyquery('.consultation-item')) == 1
+    active_filter = page.pyquery('.active-filter .consultation-status span')
+    assert active_filter.text() == 'Verzicht'
+
+    # 4. Test clicking "All Statuses" filter link
+    all_status_link_href = page.pyquery('a.all-status-link').attr('href')
+    page = client.get(all_status_link_href)
+    assert len(page.pyquery('.consultation-item')) == 4 # All should be visible again
+
 def test_display_previous_versions(client):
     # Create a user that will be reused
     session = client.db
