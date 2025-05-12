@@ -96,3 +96,70 @@ def test_delete_old_consultation_chains_no_deletions(session, user):
     with session.no_soft_delete_filter():
         remaining_consultations = session.scalars(select(Consultation)).all()
         assert len(remaining_consultations) == 2
+
+
+def test_delete_old_consultation_chains_handles_files_correctly(session, user):
+    # Setup:
+    # 1. Consultation to be deleted (old, soft-deleted) WITH a file
+    consultation_to_delete_with_file = create_consultation(
+        session,
+        user,
+        'Old Deleted With File To Go',
+        40,
+        is_deleted=True,
+        with_file=True
+    )
+    file_to_be_deleted_id = consultation_to_delete_with_file.files[0].id
+
+    # 2. Consultation to be deleted (old, soft-deleted) WITHOUT a file
+    consultation_to_delete_no_file = create_consultation(
+        session, user, 'Old Deleted No File To Go', 40, is_deleted=True
+    )
+
+    # 3. Consultation NOT to be deleted (recent, soft-deleted) WITH a file
+    consultation_recent_with_file = create_consultation(
+        session,
+        user,
+        'Recent Deleted With File To Keep',
+        10,
+        is_deleted=True,
+        with_file=True
+    )
+    file_to_be_kept_recent_id = consultation_recent_with_file.files[0].id
+
+    # 4. Consultation NOT to be deleted (old, NOT soft-deleted) WITH a file
+    consultation_active_with_file = create_consultation(
+        session,
+        user,
+        'Old Active With File To Keep',
+        40,
+        is_deleted=False,
+        with_file=True
+    )
+    file_to_be_kept_active_id = consultation_active_with_file.files[0].id
+
+    session.flush()
+
+    # Run the delete_old_consultation_chains function
+    deleted_consultation_ids = delete_old_consultation_chains(
+        session, days_threshold=30
+    )
+
+    # Assertions:
+    assert len(deleted_consultation_ids) == 2
+    assert consultation_to_delete_with_file.id in deleted_consultation_ids
+    assert consultation_to_delete_no_file.id in deleted_consultation_ids
+
+    with session.no_soft_delete_filter():
+        # Check consultations
+        remaining_consultations_count = session.query(Consultation).count()
+        assert remaining_consultations_count == 2
+        assert session.get(Consultation, consultation_recent_with_file.id)
+        assert session.get(Consultation, consultation_active_with_file.id)
+
+        # Check files
+        remaining_files_count = session.query(SearchableFile).count()
+        assert remaining_files_count == 2
+        assert session.get(SearchableFile, file_to_be_deleted_id) is None
+        assert session.get(SearchableFile, file_to_be_kept_recent_id)
+        assert session.get(SearchableFile, file_to_be_kept_active_id)
