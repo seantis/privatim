@@ -72,6 +72,37 @@ def run_command(
         sys.exit(1)
 
 
+def check_server_known_host(
+    server: str, ssh_user: str, dry_run: bool
+) -> None:
+    """The main script assumes passwordless ssh. This checks if we have."""
+    if dry_run:
+        click.echo(click.style(
+            f'Dry run: Skipping known_hosts check for {server}.',
+                   fg='cyan'))
+        return
+    try:
+        process = subprocess.run(
+            ['ssh-keygen', '-F', server],
+            check=False,  # Handle non-zero exit code manually
+            capture_output=True,
+            text=True,
+        )
+        if process.returncode == 0:
+            return
+        else:
+            click.echo(
+                click.style(
+                    f"Host '{server}' not in SSH known_hosts. Please run:\n"
+                    f"  ssh {ssh_user}@{server}\n"
+                    f"Then re-run this script.",
+                    fg='red',
+                )
+            )
+            sys.exit(1)
+    except FileNotFoundError:
+        sys.exit(1)
+
 @click.command(name='privatim_transfer')
 @click.option(
     '--server',
@@ -97,13 +128,9 @@ def main(
     server: str, dry_run: bool, no_confirm: bool, no_filestorage: bool
 ) -> None:
     """
-    Transfers database and files from a remote server to the local
-    development environment.
+    Transfers database and files from a remote server:
 
-    Requires ssh, scp/rsync, psql, and sudo access for some operations.
-
-    Example:
-        privatim_transfer --server helios.seantis.ch
+    privatim_transfer --server helios.seantis.ch
     """
 
     ssh_user = DEFAULT_SSH_USER
@@ -111,6 +138,9 @@ def main(
 
     if dry_run:
         click.echo(click.style('--- DRY RUN MODE ---', fg='cyan', bold=True))
+
+    # Check if server is in known_hosts before proceeding
+    check_server_known_host(server, ssh_user, dry_run)
 
     selected_server = server
 
@@ -134,7 +164,7 @@ def main(
         ['ssh', f'{ssh_user}@{selected_server}', dump_cmd_str], dry_run=dry_run
     )
 
-    click.echo(f'\n--- 2. Transferring SQL dump to local machine ---')
+    click.echo('\n--- 2. Transferring SQL dump to local machine ---')
     scp_cmd = [
         'scp',
         f'{ssh_user}@{selected_server}:{REMOTE_DUMP_PATH}',
@@ -151,7 +181,6 @@ def main(
             default=False,
             abort=True,
         ):
-            # This path is not taken due to abort=True, but kept for clarity
             return
 
     db_ops_env = os.environ.copy()  # For sudo, PG* vars might be reset
@@ -258,6 +287,21 @@ def main(
             click.style(f'Dry run: Would remove {LOCAL_DUMP_PATH}', fg='cyan')
         )
 
+    click.echo('\n--- 7. Adding default admin user ---')
+    add_user_cmd = [
+        'venv/bin/add_user',
+        DEV_INI_PATH,
+        '--email',
+        'admin@example.org',
+        '--password',
+        'test',
+        '--first_name',
+        local_user,
+        '--last_name',
+        'K.',
+    ]
+    run_command(add_user_cmd, dry_run=dry_run)
+
     # Check local sqlalchemy.url
     config_file_to_check = ''
     if os.path.exists(DEV_INI_PATH):
@@ -271,6 +315,7 @@ def main(
             )
         )
 
+    # basic sanity to checks to make sure the db name is correct
     if config_file_to_check:
         config = configparser.ConfigParser()
         try:
@@ -288,13 +333,15 @@ def main(
                         )
                     )
                     click.echo(
-                        f"The database '{LOCAL_TARGET_DB_NAME}' was created, but your "
+                        f"The database '{LOCAL_TARGET_DB_NAME}' was created, "
+                        f"but your "
                         f"'{config_file_to_check}' is configured to use "
                         f"'{current_db_name}'."
                     )
                     click.echo(
-                        f"Please update 'sqlalchemy.url' in '{config_file_to_check}' to "
-                        f"point to '{LOCAL_TARGET_DB_NAME}'."
+                        f"Please update 'sqlalchemy.url' in "
+                        f"'{config_file_to_check}' to " f"point to "
+                        f"'{LOCAL_TARGET_DB_NAME}'."
                     )
         except Exception as e:
             click.echo(
@@ -304,12 +351,13 @@ def main(
                 )
             )
 
-    click.echo(
-        click.style(
-            '\n--- Transfer process completed. ---', fg='green', bold=True
-        )
-    )
     if dry_run:
         click.echo(
             click.style('--- DRY RUN MODE END ---', fg='cyan', bold=True)
+        )
+    else:
+        click.echo(
+            click.style(
+                '\n--- Transfer process completed. ---', fg='green', bold=True
+            )
         )
