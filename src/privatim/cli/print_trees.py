@@ -4,8 +4,10 @@ from pyramid.paster import get_appsettings
 from sqlalchemy import select, text
 from pyramid.request import Request
 
+from sqlalchemy.orm import joinedload
 from privatim.models import Consultation
 from privatim.orm import get_engine, Base
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -334,6 +336,107 @@ def print_latest_with_files(config_uri: str) -> None:
         print_latest_consultations_with_files(dbsession, request)
         closer()
 
+
+@cli.command('temp-delete-consultations-by-keyword')
+@click.argument('config_uri')
+@click.option(
+    '--keyword',
+    default='Engagement',
+    help='Case-insensitive keyword to find in consultation titles for deletion.',
+    show_default=True
+)
+def temp_delete_consultations_by_keyword(
+    config_uri: str, keyword: str
+) -> None:
+    """
+    Temporarily delete all consultations with a specific keyword.
+
+    This command ignores the standard consultation filters and carefully
+    unlinks versions before deleting to prevent unintended cascade deletions.
+    Searches for consultations with the specified keyword (case-insensitive)
+    in title.
+    """
+    env = bootstrap(config_uri)
+    closer = env['closer']
+
+    try:
+        with env['request'].tm:
+            dbsession: 'FilteredSession' = env['request'].dbsession
+
+            with dbsession.no_consultation_filter():
+                consultation_query = select(Consultation).options(
+                    joinedload(Consultation.creator),
+                    joinedload(Consultation.previous_version),
+                ).where(
+                    Consultation.title.ilike(f'%{keyword}%')
+                )
+                consultations_to_delete = dbsession.execute(
+                    consultation_query
+                ).scalars().all()
+
+                if not consultations_to_delete:
+                    click.echo(
+                        f"No consultations with '{keyword}' in title found."
+                    )
+                    return
+
+                click.echo(
+                    f"Found {len(consultations_to_delete)} consultations "
+                    "to delete:"
+                )
+                for cons_info in consultations_to_delete:
+                    click.echo(f"  - {cons_info.title} (ID: {cons_info.id})")
+
+                if not click.confirm(
+                    'Do you want to proceed with deleting these '
+                    'consultations?',
+                    abort=True
+                ):
+                    # This path is actually unreachable due to abort=True
+                    # but kept for clarity if abort=True is removed.
+                    return # pragma: no cover
+
+                for cons in consultations_to_delete:
+                    cons_id = cons.id
+                    click.echo(
+                        f"Processing consultation: {cons.title} "
+                        f"(ID: {cons_id})"
+                    )
+
+                    update_sql = text(
+                        "UPDATE consultations SET replaced_consultation_id = "
+                        "NULL WHERE replaced_consultation_id = :target_id"
+                    )
+                    result_update = dbsession.execute(
+                        update_sql, {'target_id': cons_id}
+                    )
+                    click.echo(
+                        "  Unlinked subsequent versions from "
+                        f"{cons_id}. Rows affected: {result_update.rowcount}"
+                    )
+
+                    delete_sql = text(
+                        "DELETE FROM consultations WHERE id = :target_id"
+                    )
+                    result_delete = dbsession.execute(
+                        delete_sql, {'target_id': cons_id}
+                    )
+                    click.echo(
+                        f"  Deleted consultation {cons_id}. "
+                        f"Rows affected: {result_delete.rowcount}"
+                    )
+
+                    commit_sql = text(
+                        "COMMIT;"
+                    )
+                    result_delete = dbsession.execute(
+                        commit_sql , {'target_id': cons_id}
+                    )
+                click.echo(click.style(
+                    "Deletion process complete.", fg='green'
+                ))
+    finally:
+        closer()
 
 
 def main() -> None:
