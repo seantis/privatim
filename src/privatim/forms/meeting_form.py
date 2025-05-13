@@ -19,8 +19,8 @@ from privatim.forms.validators import FileExtensionsAllowed, FileSizeLimit
 from privatim.i18n import _
 from privatim.models import Meeting, MeetingUserAttendance, User, WorkingGroup
 from privatim.models.association_tables import AttendanceStatus
-from privatim.models.file import SearchableFile
-from privatim.utils import get_guest_users, status_is_checked
+from privatim.models.file import SearchableFile  # type:ignore[import-untyped]
+from privatim.utils import get_guest_and_removed_users, status_is_checked
 
 
 if TYPE_CHECKING:
@@ -82,9 +82,11 @@ class MeetingForm(Form):
                 'request': request
             }
         )
-        guest_users = get_guest_users(session, context)
+        guest_users, removed_users = get_guest_and_removed_users(
+            session, context)
         self.attendees.choices = [
-            (str(u.id), f"{u.first_name} {u.last_name}") for u in guest_users
+            (str(u.id), f'{u.first_name} {u.last_name}')
+            for u in guest_users | removed_users
         ]
 
     name: ConstantTextAreaField = ConstantTextAreaField(

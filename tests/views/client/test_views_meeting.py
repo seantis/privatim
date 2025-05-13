@@ -3,8 +3,10 @@ from playwright.sync_api import Page, expect
 from datetime import datetime, timedelta
 import re
 import transaction
+import uuid
 
-from privatim.models import User, WorkingGroup, Meeting
+from privatim.models import User, WorkingGroup, Meeting, MeetingUserAttendance
+from privatim.models.association_tables import AttendanceStatus
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
@@ -436,3 +438,137 @@ def test_export_meeting_formats(client):
     assert docx_response.content_length > 0
     # Basic check for DOCX (PK zip header)
     assert docx_response.body.startswith(b'PK\x03\x04')
+
+
+@pytest.mark.browser
+def test_remove_and_readd_working_group_member_in_meeting(
+    page: Page, live_server_url, session
+) -> None:
+    """
+    Tests that a working group member, initially an attendee,
+    can be removed from a meeting and then re-added via the 'Guests'
+    dropdown.
+    """
+    run_id = uuid.uuid4().hex[:8]  # Generate a unique ID for this test run
+
+    admin_first_name = f'Admin{run_id}'
+    admin_last_name = 'User'
+    admin_full_name = f'{admin_first_name} {admin_last_name}'
+    admin_email_value = f'admin_{run_id}@example.org'
+
+    member_first_name = f'Member{run_id}'
+    member_last_name = 'Person'
+    member_full_name = f'{member_first_name} {member_last_name}'
+    member_email_value = f'member_{run_id}@example.org'
+
+    admin_user = User(
+        email=admin_email_value,
+        first_name=admin_first_name,
+        last_name=admin_last_name,
+    )
+    admin_user.set_password("test")
+    member_user = User(
+        email=member_email_value,
+        first_name=member_first_name,
+        last_name=member_last_name,
+    )
+    member_user.set_password("test")
+    session.add_all([admin_user, member_user])
+    transaction.commit()
+
+    # Login as admin
+    page.goto(live_server_url + "/login")
+    page.locator('input[name="email"]').fill(admin_email_value)
+    page.locator('input[name="password"]').fill("test")
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
+
+    # Create a working group with Admin and Member User
+    page.goto(live_server_url + "/working_groups/add")
+    page.wait_for_load_state("networkidle", timeout=10000)
+    group_name = f"Re-add Test Group {datetime.now().isoformat()}"
+    page.locator('textarea[name="name"]').fill(group_name)
+
+    user_select_input = page.locator('input[id="users-ts-control"]')
+    user_select_input.wait_for(state='visible', timeout=3000)
+    user_select_input.click()
+    user_select_input.fill(admin_full_name)
+    page.locator(
+        f'.ts-dropdown-content .option:has-text("{admin_full_name}")'
+    ).click()
+
+    # Click outside to close dropdown if necessary, then fill for next user
+    page.locator('textarea[name="name"]').click() # Click somewhere else
+    user_select_input.click()
+    user_select_input.fill(member_full_name)
+    page.locator(
+        f'.ts-dropdown-content .option:has-text("{member_full_name}")'
+    ).click()
+    speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Go to the created working group and add a meeting
+    page.locator(f'a:has-text("{group_name}")').click()
+    page.locator('a:has-text("Sitzung hinzufügen")').click()
+    meeting_title = "Meeting for Re-add Test"
+    set_meeting_title(meeting_title, page)
+    meeting_time = utcnow() + timedelta(hours=1)
+    set_datetime_element(page, 'input[name="time"]', meeting_time)
+    speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Edit the meeting - Click Actions dropdown, then Edit link
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Remove "Member Person"
+    member_user_row_selector = (
+        f'.attendance-row:has(input[name$="-fullname"]'
+        f'[value="{member_full_name}"])'
+    )
+    member_user_row = page.locator(member_user_row_selector)
+    member_user_row.wait_for(state="visible", timeout=5000)
+    remove_checkbox = member_user_row.locator('input[name$="-remove"]')
+    remove_checkbox.check()
+    speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Verify "Member Person" is removed, "Admin User" remains
+    attendees_list_view = page.locator('ul.generic-user-list')
+    expect(attendees_list_view).to_be_visible(timeout=5000)
+    expect(attendees_list_view).not_to_contain_text(member_full_name)
+    expect(attendees_list_view).to_contain_text(admin_full_name)
+
+    # Edit the meeting again
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Try to re-add "Member Person" via the "Guests" (attendees) dropdown
+    guests_input = page.locator('input[id="attendees-ts-control"]')
+    guests_input.wait_for(state='visible', timeout=3000)
+    guests_input.click()
+    guests_input.fill(member_full_name)
+    member_option_in_dropdown = page.locator(
+        f'.ts-dropdown-content .option:has-text("{member_full_name}")'
+    )
+    # This is the crucial check: the removed member should be available
+    expect(member_option_in_dropdown).to_be_visible(timeout=3000)
+    member_option_in_dropdown.click()
+    speichern(page)
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Verify "Member Person" is re-added and "Admin User" is still there
+    attendees_list_view = page.locator('ul.generic-user-list')
+    expect(attendees_list_view).to_be_visible(timeout=5000)
+    expect(attendees_list_view).to_contain_text(member_full_name)
+    expect(attendees_list_view).to_contain_text(admin_full_name)
+

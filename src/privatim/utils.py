@@ -14,7 +14,7 @@ from privatim.models import User, WorkingGroup
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 
 
-from typing import Any, TYPE_CHECKING, overload, TypeVar, Sequence
+from typing import Any, TYPE_CHECKING, overload, TypeVar
 if TYPE_CHECKING:
     from privatim import UpgradeContext
     from collections.abc import Mapping
@@ -22,7 +22,6 @@ if TYPE_CHECKING:
     from typing import Iterable
     from datetime import datetime
     from privatim.orm import FilteredSession
-
 
     T = TypeVar('T', bound=DeclarativeBase)
 
@@ -270,36 +269,63 @@ def simple_get_previous_versions(
         return versions
 
 
-def get_guest_users(
+def get_guest_and_removed_users(
     session: 'FilteredSession', context: Meeting | WorkingGroup
-) -> 'Sequence[User]':
-
+) -> tuple[set[User], set[User]]:
     # Get ALL users first
-    all_users = (
-        session.execute(
-            select(User)
-            .options(load_only(User.id, User.first_name, User.last_name))
-            .order_by(User.first_name, User.last_name)
-        )
-        .scalars()
-        .all()
+    all_users_query = (
+        select(User)
+        .options(load_only(User.id, User.first_name, User.last_name))
+        .order_by(User.first_name, User.last_name)
     )
+    all_users = session.execute(all_users_query).scalars().all()
+
+    guest_users: set[User] = set()
+    removed_users: set[User] = set()
 
     if isinstance(context, Meeting):
-        working_group_members = {
+        working_group_members_ids = {
             str(user.id) for user in context.working_group.users
         }
-        # Also get existing attendees
-        existing_attendees = {
+        # Ensure we only consider valid, existing user IDs from records
+        valid_user_ids_in_db = {str(u.id) for u in all_users}
+        existing_attendee_ids = {
             str(record.user_id) for record in context.attendance_records
+            if record.user_id and str(record.user_id) in valid_user_ids_in_db
         }
-        excluded_ids = working_group_members | existing_attendees
-    else:
-        excluded_ids = {str(user.id) for user in context.users}
 
-    return [
-        user for user in all_users if str(user.id) not in excluded_ids
-    ]
+        for user in all_users:
+            user_id_str = str(user.id)
+            is_wg_member = user_id_str in working_group_members_ids
+            is_current_attendee = user_id_str in existing_attendee_ids
+
+            if is_wg_member:
+                if not is_current_attendee:
+                    # This is a WG member who is not currently an attendee
+                    # (e.g., was removed or never initially added).
+                    # They should be available to be (re-)added.
+                    removed_users.add(user)
+                # If is_wg_member and is_current_attendee, they are already
+                # in the meeting, so they don't need to be in the addable list.
+            else:  # User is NOT a WG member
+                if not is_current_attendee:
+                    # This is a non-WG member not currently attending.
+                    # They are a potential guest.
+                    guest_users.add(user)
+                # If not is_wg_member and is_current_attendee, they are
+                # a guest already in the meeting. They don't need to be
+                # in the addable list.
+    else:
+        # For a new meeting (context is WorkingGroup),
+        # all non-members are potential guests.
+        working_group_member_ids = {str(user.id) for user in context.users}
+        guest_users = {
+            user for user in all_users
+            if str(user.id) not in working_group_member_ids
+        }
+        # No "removed_users" when creating a new meeting from a WG context,
+        # as all WG members are typically added by default initially.
+    return guest_users, removed_users
 
 
 def fix_agenda_item_positions(context: 'UpgradeContext') -> None:
