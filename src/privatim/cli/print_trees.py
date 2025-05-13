@@ -177,6 +177,8 @@ def validate_trees(config_uri: str) -> None:
 
     Checks each consultation tree to ensure that exactly one version in each
     chain is marked as `is_latest_version = TRUE`.
+
+    print_trees validate development.ini
     """
     env = bootstrap(config_uri)
     settings = get_appsettings(config_uri)
