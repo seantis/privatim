@@ -268,7 +268,9 @@ class WordReportRenderer:
             for para in header.paragraphs:
                 para._element.getparent().remove(para._element)
             header_paragraph = header.add_paragraph()
-            header_paragraph.add_run().add_picture(str(logo_path), width=Inches(1.5))
+            header_paragraph.add_run().add_picture(
+                str(logo_path), width=Inches(2.0)
+            )
             header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
 
         title_text = translate(
