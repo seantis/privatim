@@ -7,7 +7,6 @@ from privatim.mail.exceptions import InconsistentChain
 from privatim.models import Consultation, Meeting
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
-from privatim.forms.consultation_form import STATUS_CHOICES
 
 
 from typing import TYPE_CHECKING, Any, Literal, TypedDict, Iterable
@@ -45,18 +44,6 @@ def maybe_apply_date_filter(
         query = query.filter(datetime_column >= start_datetime)
     if end_datetime:
         query = query.filter(datetime_column <= end_datetime)
-    return query
-
-
-def maybe_apply_status_filter(
-    query: 'Select[Any]',
-    selected_status: str | None,
-) -> 'Select[Any]':
-    """
-    Apply status filter to a consultation query if a status is selected.
-    """
-    if selected_status:
-        query = query.filter(Consultation.status == selected_status)
     return query
 
 
@@ -199,7 +186,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     session = request.dbsession
 
-    form = FilterForm(request, available_statuses=STATUS_CHOICES)
+    form = FilterForm(request)
 
     has_query_params = any(request.GET)
     if request.method == 'GET':
@@ -216,12 +203,10 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 if request.GET.get('end_date')
                 else None
             )
-            form.status.data = request.GET.get('status') or ''
         else:
             # Default GET response, show everything, no filter.
             form.consultation.data = True
             form.meeting.data = True
-            form.status.data = '' # Default to 'All Statuses'
             return {
                 'title': _('Activities'),
                 'activities': get_activities(session),
@@ -240,7 +225,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             'end_date': (
                 form.end_date.data.isoformat() if form.end_date.data else ''
             ),
-            'status': form.status.data or '',
         }
         return HTTPFound(
             location=request.route_url('activities', _query=query_params)
@@ -250,7 +234,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
     include_meetings = form.meeting.data
     start_date = form.start_date.data
     end_date = form.end_date.data
-    selected_status = form.status.data
 
     start_datetime = (
         datetime.combine(start_date, time.min, tzinfo=ZoneInfo('UTC'))
@@ -276,9 +259,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 start_datetime,
                 end_datetime,
                 Consultation.created,
-            )
-            consultation_query = maybe_apply_status_filter(
-                consultation_query, selected_status
             )
 
             # fixme: be more robust to Excpetions due to inconsistent chain

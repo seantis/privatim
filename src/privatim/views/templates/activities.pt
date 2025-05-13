@@ -80,7 +80,7 @@
                             <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
                         </div>
                         <div class="mb-3" tal:condition="field.type != 'CheckboxField'">
-                            <label for="${field.id}" class="form-label">${field.label.text}</label>
+                            <label for="${field.label.text.lower()}" class="form-label">${field.label.text}</label>
                             ${field()}
                         </div>
                     </div>
