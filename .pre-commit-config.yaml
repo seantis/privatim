@@ -67,3 +67,7 @@ repos:
           fi'
         language: system
         pass_filenames: false
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
+    hooks:
+      - id: gitleaks
