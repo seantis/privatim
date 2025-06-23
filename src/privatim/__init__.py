@@ -209,7 +209,7 @@ def fix_user_constraints_to_work_with_hard_delete(
                 f"{str(e)}")
 
 
-def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
+def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     context.add_column(
         'meetings',
         Column(
@@ -481,7 +481,7 @@ def upgrade(context: 'UpgradeContext') -> None: # type: ignore[no-untyped-def]
         WHERE """ + conditions  # nosec[B608]
         context.session.execute(text(query))
 
-    context.drop_column('consultations', 'updated') # Corrected indentation
+    context.drop_column('consultations', 'updated')  # Corrected indentation
 
     # --- Migrate SearchableFile parent relationship ---
     print("Migrating SearchableFile parent structure...")
