@@ -141,7 +141,6 @@ p, textarea.form-control {
     border-color: var(--primary-color) !important;
 }
 
-/* FIXME */
 a.btn-primary:hover {
     color: white !important;
 }

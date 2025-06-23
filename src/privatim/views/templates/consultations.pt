@@ -77,10 +77,13 @@
                                         </p>
                                     </div>
                                     <div class="card-body ps-3 pe-3 pb-3 custom-truncate position-relative">
+
                                         <!-- Wrap status badge in a link for filtering -->
-                                        <a href="${request.route_url('consultations', _query={'status': consultation.status_key})}"
-                                           class="status-link-overlay">
-                                        <metal:status use-macro="layout.macros['consultation_status_list']" />
+                                        <a href="${request.route_url('consultations', _query={'status': consultation.status_key})}" class="status-link-overlay"></a>
+
+                                        <tal:block>
+                                            <metal:status use-macro="layout.macros['consultation_status_list']" /> 
+                                        </tal:block>
 
                                         <h5 class="card-title fw-bold" i18n:translate="">${consultation.title}</h5>
                                         <p class="card-text" tal:condition="consultation.description" tal:content="consultation.description"></p>
