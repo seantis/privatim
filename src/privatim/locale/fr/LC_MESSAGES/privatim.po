@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 15:38+0200\n"
+"POT-Creation-Date: 2025-06-24 12:19+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -36,6 +36,10 @@ msgstr "Version"
 #: src/privatim/layouts/footer.pt
 msgid "Version of the software (Git revision number)"
 msgstr "Version du logiciel (numéro de révision Git)"
+
+#: src/privatim/layouts/footer.pt
+msgid "Version number:"
+msgstr "Numéro de version:"
 
 #: src/privatim/layouts/footer.pt
 msgid "Contact"
@@ -393,6 +397,11 @@ msgstr "Supprimer la procédure de consultation"
 #: src/privatim/views/templates/search_results.pt
 msgid "Deleted User"
 msgstr "Utilisateur supprimé"
+
+#. Empty key for "All"
+#: src/privatim/views/consultations.py
+msgid "All Statuses"
+msgstr "Tous"
 
 #: src/privatim/views/consultations.py
 msgid "Successfully added consultation"
@@ -899,11 +908,6 @@ msgstr "Ce champ est désactivé."
 msgid "This field is read only."
 msgstr "Ce champ est en lecture seule."
 
-#. Dynamically set choices for the status field
-#: src/privatim/forms/filter_form.py
-msgid "All Statuses"
-msgstr "Tous"
-
 #: src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr "Procédures de consultation"
@@ -919,10 +923,6 @@ msgstr "Date de"
 #: src/privatim/forms/filter_form.py
 msgid "Date to"
 msgstr "Date à"
-
-#: src/privatim/forms/filter_form.py
-msgid "Consultation Status"
-msgstr "Statut de la consultation"
 
 #: src/privatim/forms/meeting_form.py
 msgid "Time"
@@ -1065,6 +1065,9 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Comité:"
+
+#~ msgid "Consultation Status"
+#~ msgstr "Statut de la consultation"
 
 #~ msgid "Export"
 #~ msgstr "Exporter"

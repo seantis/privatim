@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-04-28 15:38+0200\n"
+"POT-Creation-Date: 2025-06-24 12:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,6 +35,10 @@ msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
 msgid "Version of the software (Git revision number)"
+msgstr ""
+
+#: ./src/privatim/layouts/footer.pt
+msgid "Version number:"
 msgstr ""
 
 #: ./src/privatim/layouts/footer.pt
@@ -393,6 +397,11 @@ msgstr ""
 #: ./src/privatim/views/consultations.py
 #: ./src/privatim/views/templates/search_results.pt
 msgid "Deleted User"
+msgstr ""
+
+#. Empty key for "All"
+#: ./src/privatim/views/consultations.py
+msgid "All Statuses"
 msgstr ""
 
 #: ./src/privatim/views/consultations.py
@@ -886,11 +895,6 @@ msgstr ""
 msgid "This field is read only."
 msgstr ""
 
-#. Dynamically set choices for the status field
-#: ./src/privatim/forms/filter_form.py
-msgid "All Statuses"
-msgstr ""
-
 #: ./src/privatim/forms/filter_form.py
 msgid "Consultation"
 msgstr ""
@@ -905,10 +909,6 @@ msgstr ""
 
 #: ./src/privatim/forms/filter_form.py
 msgid "Date to"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Consultation Status"
 msgstr ""
 
 #: ./src/privatim/forms/meeting_form.py
