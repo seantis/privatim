@@ -265,10 +265,11 @@ def edit_consultation_view(
     if request.method == 'POST' and form.validate():
 
         # Populate the new consultation with form data
+        # NOTE: This also handles the edit files, implemented in the
+        # `populate_obj` method of `UploadMultipleFilesWithORMSupport`
         form.populate_obj(next_cons)
-        session.add(next_cons)
 
-        # Update the previous consultation
+        session.add(next_cons)
         previous.is_latest_version = 0
         previous.replaced_by = next_cons
         session.add(previous)

@@ -15,7 +15,7 @@ LOCAL_DUMP_PATH = (
 LOCAL_TARGET_DB_NAME = 'privatim_prod'  # DB name for local restoration
 LOCAL_DB_USER = 'dev'  # Local PostgreSQL user for restoration and grants
 
-POSTGRES_PASSWORD = 'postgres'  # Default password for the postgres user
+POSTGRES_PASSWORD = 'postgres'  # Default password for the local postgres user
 # Path template for remote files, server name will be prepended by rsync/scp
 REMOTE_FILES_DIR = '/var/lib/privatim/files/'
 # Path template for local files, {user} will be replaced by --local-user
