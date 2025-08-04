@@ -1,4 +1,5 @@
 from functools import partial
+import uuid
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
 
@@ -10,8 +11,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from privatim import helpers
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR, text, Boolean
+from sqlalchemy import (Column, ForeignKey, String, TIMESTAMP, func, Computed,
+                        VARCHAR, text, Boolean, table, column)
 from email.headerregistry import Address
 
 from privatim.mail import PostmarkMailer
@@ -207,6 +208,52 @@ def fix_user_constraints_to_work_with_hard_delete(
             print(
                 f"Error creating constraint {constraint} on table {table}: "
                 f"{str(e)}")
+
+
+def create_meeting_activities_and_migrate_data(
+    context: 'UpgradeContext'
+) -> None:
+    """
+    Creates the meeting_activities table and populates it with historical data
+    from the meetings table.
+    """
+    op = context.operations
+    conn = op.get_bind()
+    table_name = 'meeting_activities'
+    assert context.has_table(table_name)  # should be automatically created
+
+    print("Migrating historical meetings to activities...")
+    meetings_res = conn.execute(text(
+        "SELECT id, updated, creator_id FROM meetings"
+    ))
+    meetings = meetings_res.fetchall()
+
+    if not meetings:
+        print("No meetings found to migrate to activities.")
+        return
+
+    meeting_activities_table = table(
+        table_name,
+        column('id', UUIDStrType),
+        column('meeting_id', UUIDStrType),
+        column('activity_type', String),
+        column('description', String),
+        column('created', TIMESTAMP),
+        column('creator_id', UUIDStrType)
+    )
+
+    activities_to_insert = [
+        {
+            'id': str(uuid.uuid4()),
+            'meeting_id': meeting.id,
+            'activity_type': 'update',
+            'description': 'Meeting details updated',
+            'created': meeting.updated, 'creator_id': meeting.creator_id,
+        } for meeting in meetings if meeting.creator_id and meeting.updated
+    ]
+
+    if activities_to_insert:
+        op.bulk_insert(meeting_activities_table, activities_to_insert)
 
 
 def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
@@ -606,6 +653,8 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
 
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
+
+    create_meeting_activities_and_migrate_data(context)
 
     fix_agenda_item_positions(context)
     # Ensure this is called after FKs are potentially modified

@@ -4,7 +4,7 @@ from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.mail.exceptions import InconsistentChain
-from privatim.models import Consultation, Meeting
+from privatim.models import Consultation, Meeting, MeetingActivity
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
 
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
         route_url: str
         id: int
         icon_class: str
-        content: dict[str, str]
+        content: dict[str, Any]
         has_files: bool
 
 
@@ -47,20 +47,38 @@ def maybe_apply_date_filter(
     return query
 
 
-def _get_activity_title(activity: Meeting, is_update: bool) -> str:
-    """Get the appropriate title for an activity."""
-    assert isinstance(activity, Meeting)
-    obj_type = activity.__class__.__name__
-
-    if obj_type == 'Meeting':
-        return _('Meeting Updated') if is_update else _('Meeting Scheduled')
-    return ''
-
-
-def activity_to_dict(activity: Any, session: 'FilteredSession') -> 'ActivityDict':
+def activity_to_dict(
+    activity: Any, session: 'FilteredSession'
+) -> 'ActivityDict':
     """Convert any activity object into a consistent dictionary format."""
 
     obj_type = activity.__class__.__name__
+
+    if obj_type == 'MeetingActivity':
+        title = ''
+        content: dict[str, Any] = {}
+        if activity.activity_type == 'creation':
+            title = _('Meeting Scheduled')
+            content = _get_activity_content(activity.meeting)
+        elif activity.activity_type == 'update':
+            title = _('Meeting Updated')
+            content = _get_activity_content(activity.meeting)
+        elif activity.activity_type == 'file_added':
+            title = _('Meeting Files Updated')
+            content = {'content': activity.description or ''}
+
+        return {
+            'type': 'creation' if activity.activity_type == 'creation' else 'update',
+            'object': activity.meeting,
+            'timestamp': activity.created,
+            'user': activity.creator,
+            'has_files': bool(activity.meeting.files),
+            'title': title,
+            'route_url': 'meeting',
+            'id': activity.meeting.id,
+            'icon_class': _get_icon_class('Meeting', activity.activity_type),
+            'content': content,
+        }
 
     # Special handling for Consultation due to versioning
     if obj_type == 'Consultation':
@@ -85,26 +103,14 @@ def activity_to_dict(activity: Any, session: 'FilteredSession') -> 'ActivityDict
             'content': _get_activity_content(activity),
         }
 
-    # Normal handling for other types (Meetings)
-    is_update = activity.updated != activity.created
-    has_files = bool(activity.files)  # Check if the meeting has files
-    return {
-        'type': 'update' if is_update else 'creation',
-        'object': activity,
-        'timestamp': activity.updated if is_update else activity.created,
-        'user': getattr(activity, 'editor', None) if is_update else getattr(
-            activity, 'creator', None),
-        'has_files': has_files,
-        'title': _get_activity_title(activity, is_update),
-        'route_url': obj_type.lower(),
-        'id': activity.id,
-        'icon_class': _get_icon_class(obj_type),
-        'content': _get_activity_content(activity),
-    }
+    # Fallback for any other type, though we expect none.
+    raise TypeError(f'Unsupported activity type: {obj_type}')
 
 
-def _get_icon_class(obj_type: str) -> str:
+def _get_icon_class(obj_type: str, activity_type: str | None = None) -> str:
     """Get the appropriate icon class for an activity type."""
+    if obj_type == 'Meeting' and activity_type == 'file_added':
+        return 'fas fa-file-alt'
     icons = {
         'Meeting': 'fas fa-users',
         'Consultation': 'fas fa-file-alt',
@@ -149,13 +155,19 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
                 .unique()
             )
 
-    def get_meetings() -> Iterable[Meeting]:
+    def get_meeting_activities() -> Iterable[MeetingActivity]:
         return (
-            session.execute(select(Meeting).order_by(Meeting.updated.desc()))
+            session.execute(
+                select(MeetingActivity)
+                .options(
+                    joinedload(MeetingActivity.creator),
+                    joinedload(MeetingActivity.meeting).joinedload(Meeting.files)
+                )
+                .order_by(MeetingActivity.created.desc())
+            )
             .scalars()
             .unique()
         )
-
 
     activities = []
 
@@ -167,9 +179,8 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
         except InconsistentChain:
             pass
 
-    for meeting in get_meetings():
-        activities.append(activity_to_dict(meeting, session))
-
+    for meeting_activity in get_meeting_activities():
+        activities.append(activity_to_dict(meeting_activity, session))
 
     # Sort by timestamp
     activities.sort(key=lambda x: x['timestamp'], reverse=True)
@@ -272,15 +283,26 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     # Get filtered meetings
     if include_meetings:
-        meeting_query = select(Meeting)
-        meeting_query = maybe_apply_date_filter(
-            meeting_query, start_datetime, end_datetime, Meeting.updated
+        meeting_activity_query = (
+            select(MeetingActivity)
+            .options(
+                joinedload(MeetingActivity.creator),
+                joinedload(MeetingActivity.meeting).joinedload(Meeting.files)
+            )
+        )
+        meeting_activity_query = maybe_apply_date_filter(
+            meeting_activity_query,
+            start_datetime,
+            end_datetime,
+            MeetingActivity.created,
         )
         activities_data.extend(
-            activity_to_dict(me, session)
-            for me in session.execute(meeting_query).unique().scalars().all()
+            activity_to_dict(ma, session)
+            for ma in session.execute(meeting_activity_query)
+            .unique()
+            .scalars()
+            .all()
         )
-
 
     # Sort all items by their timestamp
     activities_data.sort(key=lambda x: x['timestamp'], reverse=True)

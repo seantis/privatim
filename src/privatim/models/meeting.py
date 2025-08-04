@@ -240,6 +240,13 @@ class Meeting(Base, SearchableMixin):
         'WorkingGroup', back_populates='meetings'
     )
 
+    activities: Mapped[list['MeetingActivity']] = relationship(
+        'MeetingActivity',
+        back_populates='meeting',
+        cascade='all, delete-orphan',
+        uselist=True
+    )
+
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.name
@@ -248,3 +255,32 @@ class Meeting(Base, SearchableMixin):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+
+class MeetingActivity(Base):
+    __tablename__ = 'meeting_activities'
+
+    id: Mapped[UUIDStrPK]
+    meeting_id: Mapped[UUIDStr] = mapped_column(
+        ForeignKey('meetings.id'),
+        nullable=False,
+        index=True
+    )
+
+    # 'file_added', 'file_removed', 'meeting_updated'
+    activity_type: Mapped[str] = mapped_column(Text, nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created: Mapped[datetime] = mapped_column(default=utcnow, nullable=False)
+    creator_id: Mapped[UUIDStr | None] = mapped_column(
+       ForeignKey('users.id', ondelete='SET NULL'),
+        nullable=True
+    )
+
+    meeting: Mapped['Meeting'] = relationship(
+        'Meeting',
+        back_populates='activities'
+    )
+    creator: Mapped[User | None] = relationship(
+        'User',
+        passive_deletes=True
+    )

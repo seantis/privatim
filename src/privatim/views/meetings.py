@@ -27,7 +27,7 @@ from privatim.forms.meeting_form import (
     MeetingForm,
     sync_meeting_attendance_records,
 )
-from privatim.models import Meeting, WorkingGroup
+from privatim.models import Meeting, WorkingGroup, MeetingActivity
 from privatim.i18n import _
 from privatim.i18n import translate
 
@@ -418,6 +418,13 @@ def add_meeting_view(
 
         session.add(meeting)
         session.flush()
+        activity = MeetingActivity(
+            meeting_id=meeting.id,
+            activity_type='creation',
+            description=_('Meeting created'),
+            creator_id=request.user.id
+        )
+        session.add(activity)
         message = _(
             'Successfully added meeting "${name}"',
             mapping={'name': form.name.data}
@@ -450,14 +457,19 @@ def edit_meeting_view(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(meeting)
         assert form.time.data is not None
+        data_changed = (
+            meeting.name != form.name.data
+            or meeting.time != fix_utc_to_local_time(form.time.data)
+        )
+
+        form.populate_obj(meeting)
         # meeting.name is already populated by form.populate_obj(meeting)
 
         meeting.time = fix_utc_to_local_time(form.time.data)
 
-        breakpoint()
         # Handle newly uploaded files
+        files_added = False
         if form.files.data:
             for file in form.files.data:
                 if file and file.get('data', None) is not None:
@@ -475,14 +487,33 @@ def edit_meeting_view(
                     existing_filenames = {f.filename for f in meeting.files}
                     if searchable_file.filename not in existing_filenames:
                         meeting.files.append(searchable_file)
+                        files_added = True
                     else:
                         # Optionally log or inform the user about the duplicate
                         # attempt
                         log.info(
-                            f"Skipping duplicate file upload: "
-                            f"{searchable_file.filename} for meeting "
-                            f"{meeting.id}"
+                            'Skipping duplicate file upload: '
+                            f'{searchable_file.filename} for meeting '
+                            f'{meeting.id}'
                         )
+
+        if data_changed:
+            activity = MeetingActivity(
+                meeting_id=meeting.id,
+                activity_type='update',
+                description=_('Meeting details updated'),
+                creator_id=request.user.id
+            )
+            session.add(activity)
+
+        if files_added:
+            activity = MeetingActivity(
+                meeting_id=meeting.id,
+                activity_type='file_added',
+                description=_('Files were added to the meeting.'),
+                creator_id=request.user.id
+            )
+            session.add(activity)
 
         session.add(meeting)
         session.flush()
