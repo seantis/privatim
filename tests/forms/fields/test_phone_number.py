@@ -90,3 +90,13 @@ def test_value_dont_format_given():
     field.data = '041 370 10 20'
     field.raw_data = ['0413701020']
     assert field._value() == '0413701020'
+
+
+def test_liechtenstein_mobile_nr():
+    form = F()
+    field = form.phone_number
+
+    field.process_formdata(['+4233701020'])
+    assert field.data == '+4233701020'
+    assert field.numobj is not None
+    assert field.region != 'LI'
