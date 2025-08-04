@@ -481,7 +481,7 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
         WHERE """ + conditions  # nosec[B608]
         context.session.execute(text(query))
 
-    context.drop_column('consultations', 'updated')  # Corrected indentation
+    context.drop_column('consultations', 'updated')
 
     # --- Migrate SearchableFile parent relationship ---
     print("Migrating SearchableFile parent structure...")
@@ -541,7 +541,7 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             SET {consultation_fk_col} = {old_parent_id_col}::uuid
             WHERE {old_parent_type_col} = 'consultations'
             AND {consultation_fk_col} IS NULL -- Only update if not already set
-        """)
+        """)  # nosec[B608]
         context.session.execute(update_consultations)
 
         # Migrate Meetings (if they were ever supported by old columns)
@@ -550,7 +550,7 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             SET {meeting_fk_col} = {old_parent_id_col}::uuid
             WHERE {old_parent_type_col} = 'meetings'
             AND {meeting_fk_col} IS NULL -- Only update if not already set
-        """)
+        """)  # nosec[B608]
         context.session.execute(update_meetings)
         print("  Data migration complete.")
     else:
