@@ -99,4 +99,4 @@ def test_liechtenstein_mobile_nr():
     field.process_formdata(['+4233701020'])
     assert field.data == '+4233701020'
     assert field.numobj is not None
-    assert field.region != 'LI'
+    assert field.region == 'LI'

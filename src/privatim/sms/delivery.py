@@ -39,10 +39,6 @@ class QueuedSMSDelivery:
             sender: str = 'Privatim'
     ) -> None:
 
-        logger.info(f'Sending SMS: UserName={self.username}',
-                    f'Originator={sender}, Recipients={recipients}',
-                    f'MessageText="{content[:50]}'
-                    f'{"..." if len(content) > 50 else ""}"')
         response = requests.post(  # nosec:B113
             'https://json.aspsms.com/SendSimpleTextSMS',
             json={
