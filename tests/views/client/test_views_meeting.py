@@ -320,6 +320,19 @@ def test_edit_meeting_document(
     expect(meeting_documents).to_be_visible(timeout=5000)
     expect(meeting_documents).to_contain_text(filename)
 
+    page.goto(live_server_url + "/activities")
+    # Check  
+    # 1. check a simple entry in activities is created after a meeting created
+
+    # breakpoint()
+
+    # 2. Edit files in meeting.
+    # (sidequest: verify all the cases with replace and so on)
+
+    # 3. View activities, there should be two entries, one where the meeting
+    # was created and one where we added a file to the meeting
+
+
 
 def test_copy_agenda_items_without_description(client):
     client.login_admin()

@@ -241,28 +241,28 @@ def main(
         local_files_target_dir = LOCAL_FILES_DIR_TEMPLATE.format(
             user=local_user
         )  # Define it here if not defined earlier
-        if not dry_run and not no_confirm:
-            if not click.confirm(
-                f'Proceed with syncing files to "{local_files_target_dir}"?',
-                default=False,
-                abort=True,
-            ):
-                return
-
-        remote_rsync_source = (
-            f'{ssh_user}@{selected_server}:{REMOTE_FILES_DIR}'
-        )
-        # Ensure local_files_target_dir ends with a slash for rsync
-        local_rsync_target = os.path.join(local_files_target_dir, '')
-        rsync_cmd = [
-            'rsync',
-            '-avz',
-            '-e',
-            'ssh',
-            remote_rsync_source,
-            local_rsync_target,
-        ]
-        run_command(rsync_cmd, dry_run=dry_run)
+        if not dry_run and not no_confirm and not click.confirm(
+            f'Proceed with syncing files to "{local_files_target_dir}"?',
+            default=False,
+        ):
+            click.echo(
+                click.style('Skipping file sync as requested.', fg='yellow')
+            )
+        else:
+            remote_rsync_source = (
+                f'{ssh_user}@{selected_server}:{REMOTE_FILES_DIR}'
+            )
+            # Ensure local_files_target_dir ends with a slash for rsync
+            local_rsync_target = os.path.join(local_files_target_dir, '')
+            rsync_cmd = [
+                'rsync',
+                '-avz',
+                '-e',
+                'ssh',
+                remote_rsync_source,
+                local_rsync_target,
+            ]
+            run_command(rsync_cmd, dry_run=dry_run)
     else:
         click.echo(
             click.style(

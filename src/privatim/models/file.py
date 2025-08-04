@@ -207,3 +207,6 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         mime = magic.Magic(mime=True)
         file_type = mime.from_buffer(content)
         return file_type
+
+    def __repr__(self) -> str:
+        return f'<SearchableFile: {self.filename}>'
