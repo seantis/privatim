@@ -235,10 +235,6 @@ class UpgradeContext:
         """
         # Ensure the connection is available
         conn = self.operations_connection
-        if conn is None:
-            logger.warning("Cannot check constraint, no connection available.")
-            return False  # Or raise an error
-
         result = conn.execute(text("""
             SELECT EXISTS (
                 SELECT 1 FROM information_schema.table_constraints

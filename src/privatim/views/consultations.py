@@ -20,6 +20,7 @@ from privatim.views.utils import trim_filename
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.orm.session import FilteredSession
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
     from datetime import datetime
@@ -31,7 +32,7 @@ logger = logging.getLogger(__name__)
 def consultation_view(
     context: Consultation, request: 'IRequest'
 ) -> 'RenderData':
-    session = request.dbsession
+    session: FilteredSession = request.dbsession
     request.add_action_menu_entries([
         Button(
             title=_('Edit'),
@@ -141,7 +142,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             else _('Deleted User'),
             'description': Markup(_cons.description),
             'updated': _cons.updated,
-            'status_key': _cons.status, # Pass the status key for linking
+            'status_key': _cons.status,  # Pass the status key for linking
             'status': _(_cons.status)
         } for _cons in sorted_consultations  # Iterate over the sorted list
     )
@@ -295,7 +296,7 @@ def edit_consultation_view(
 def delete_consultation_view(
         context: Consultation, request: 'IRequest'
 ) -> 'RenderDataOrRedirect':
-    session = request.dbsession
+    session: FilteredSession = request.dbsession
     target_url = request.route_url('activities')
 
     # SoftDeleteMixin should take care of the files

@@ -66,7 +66,7 @@ class DummyRequest(testing.DummyRequest):
 
 
 def verify_interface(klass: type[Any], interface: 'IInterface') -> None:
-    assert interface.implementedBy(klass)  # type: ignore
+    assert interface.implementedBy(klass)
     assert verifyClass(interface, klass)
 
 

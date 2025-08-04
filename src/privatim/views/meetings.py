@@ -290,19 +290,18 @@ def export_meeting_as_docx_view(
     # (Example: attendees, agenda items - adjust if renderer needs more)
     # This might already be handled by relationship loading, but explicit check
     # can help.
-    __ = meeting.attendance_records  # Access to potentially load
-    ___ = meeting.agenda_items  # Access to potentially load
+    __ = meeting.attendance_records  # Access to potentially load  # noqa: F841
+    ___ = meeting.agenda_items  # Access to potentially load  # noqa: F841
 
     renderer = WordReportRenderer()
     options = ReportOptions(language=request.locale_name)
     # Pass the specific renderer instance
     report_builder = MeetingReport(request, meeting, options, renderer)
-    report_doc = report_builder.build() # build() now uses the passed renderer
+    report_doc = report_builder.build()  # build() now uses the passed renderer
 
     response = Response(report_doc.data)
-    response.content_type = (
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    )
+    response.content_type = ('application/vnd.openxmlformats-officedocument'
+                             '.wordprocessingml.document')
     safe_filename = report_doc.filename
     response.content_disposition = f'attachment; filename="{safe_filename}"'
     log.info(f'Content-Disposition: {response.content_disposition}')
@@ -406,7 +405,8 @@ def add_meeting_view(
         if form.files.data:
             for file in form.files.data:
                 if file:
-                    # Explicitly set meeting_id, consultation_id defaults to None
+                    # Explicitly set meeting_id, consultation_id defaults
+                    # to None
                     searchable_file = SearchableFile(
                         filename=file['filename'],
                         content=dictionary_to_binary(file),

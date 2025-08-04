@@ -1,5 +1,5 @@
 from datetime import datetime, time
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfoactivites
 from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
@@ -57,7 +57,9 @@ def _get_activity_title(activity: Meeting, is_update: bool) -> str:
     return ''
 
 
-def activity_to_dict(activity: Any, session: 'FilteredSession') -> 'ActivityDict':
+def activity_to_dict(
+        activity: Any, session: 'FilteredSession'
+) -> 'ActivityDict':
     """Convert any activity object into a consistent dictionary format."""
 
     obj_type = activity.__class__.__name__
@@ -156,7 +158,6 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
             .unique()
         )
 
-
     activities = []
 
     # Get all activities and convert them to dictionaries
@@ -169,7 +170,6 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
 
     for meeting in get_meetings():
         activities.append(activity_to_dict(meeting, session))
-
 
     # Sort by timestamp
     activities.sort(key=lambda x: x['timestamp'], reverse=True)
@@ -280,7 +280,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             activity_to_dict(me, session)
             for me in session.execute(meeting_query).unique().scalars().all()
         )
-
 
     # Sort all items by their timestamp
     activities_data.sort(key=lambda x: x['timestamp'], reverse=True)

@@ -49,6 +49,7 @@ if TYPE_CHECKING:
         DefaultMeta,
     )
 
+    # We can't use the one from privatim/types.py
     class FileDict(TypedDict, total=False):
         data: str
         filename: str | None
@@ -256,7 +257,7 @@ class UploadField(FileField):
             # resend_upload
             action = valuelist[0]
             fieldstorage = valuelist[1]
-            self.data = binary_to_dictionary(
+            self.data = binary_to_dictionary(  # type: ignore[assignment]
                 dictionary_to_binary({'data': str(valuelist[3])}),
                 str(valuelist[2]),
             )
@@ -530,4 +531,3 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
                     self.added_files.append(dummy.file)
 
         setattr(obj, name, output)
-

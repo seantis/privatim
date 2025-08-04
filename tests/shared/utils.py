@@ -150,7 +150,7 @@ def create_consultation(
     # If no user is provided, create one. Be mindful of potential email clashes
     # in tests calling this multiple times without specifying a user.
     if user is None:
-        # Use a more unique default or require user in tests needing multiple calls
+        # Use a more unique default
         user = User(email=f'consultation-creator-{uuid.uuid4()}@example.org')
 
     consultation = Consultation(

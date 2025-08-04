@@ -1,5 +1,8 @@
+from _typeshed.wsgi import StartResponse
+from _typeshed.wsgi import WSGIEnvironment
 from collections.abc import Callable
 from collections.abc import Collection
+from collections.abc import Iterable
 from collections.abc import Iterator
 from collections.abc import Mapping
 from collections.abc import MutableMapping
@@ -7,7 +10,7 @@ from collections.abc import Sequence
 from contextlib import contextmanager
 from privatim.flash import MessageQueue
 from privatim.models import User
-from privatim.orm.session import FilteredSession as DBSession
+from sqlalchemy.orm import Session as DBSession
 from types import ModuleType
 from types import TracebackType
 from typing import Any
@@ -21,7 +24,6 @@ from zope.interface import Interface
 from pyramid_layout.interfaces import ILayoutManager
 from pyramid.registry import Registry
 from pyramid.security import ACLPermitsResult
-
 
 _HTTPHeader: TypeAlias = tuple[str, str]
 
@@ -103,6 +105,8 @@ class IRouter(Interface):
         self, environ: dict[str, Any]
     ) -> Iterator[IRequest]: ...
     def invoke_request(request: IRequest) -> IResponse: ...
+    # NOTE: Technically not part of the interface, but it should be
+    def __call__(env: WSGIEnvironment, start_response: StartResponse) -> Iterable[bytes]: ...
 
 class IRoutePregenerator(Interface):
     def __call__(
@@ -120,22 +124,20 @@ class IRoute(Interface):
     def match(path: str) -> dict[str, str] | None: ...
     def generate(kwargs: dict[str, str]) -> str:  ...
 
-
 class IRoutesMapper(Interface):
     def get_routes() -> Sequence[IRoute]: ...
     def has_routes() -> bool: ...
     def get_route(name: str) -> IRoute | None: ...
     def connect(
-            name: str,
-            pattern: str,
-            factory: IRootFactory | None = ...,
-            predicates: Sequence[IPredicate] = ...,
-            pregenerator: IRoutePregenerator | None = ...,
-            static: bool = ...,
+        name: str,
+        pattern: str,
+        factory: IRootFactory | None = ...,
+        predicates: Sequence[IPredicate] = ...,
+        pregenerator: IRoutePregenerator | None = ...,
+        static: bool = ...,
     ) -> None: ...
     def generate(name: str, kw: dict[str, Any]) -> str: ...
     def __call__(request: IRequest) -> _RouteMapResult: ...
-
 
 class IRequest(Interface, _Request):
     # NOTE: This mostly contains convenience attributes
@@ -161,8 +163,6 @@ class IRequest(Interface, _Request):
     user: User
 
     messages: MessageQueue
-    show_steps: bool
-
     response: IResponse
     layout_manager: ILayoutManager
 
@@ -208,7 +208,6 @@ class IRequest(Interface, _Request):
 
     def has_permission(permission: str, context: Any | None = ...) -> bool: ...
 
-
 class IRequestHandler(Interface):
     def __call__(
         request: IRequest
@@ -216,23 +215,11 @@ class IRequestHandler(Interface):
 
 class ILocalizer(Interface):
     locale_name: str
-    def translate(
-        tstring: str,
-        domain: str | None = ...,
-        mapping: dict[str, Any] | None = ...
-    ) -> str: ...
-    def pluralize(
-        singular: str,
-        plural: str,
-        n: int,
-        domain: str | None = ...,
-        mapping: dict[str, Any] | None = ...
-    ) -> str: ...
 
 class ILocaleNegotiator(Interface):
     def __call__(request: IRequest) -> str | None: ...
 
-class ITranslationDirectories(Interface, list[str]): ...  # type:ignore[misc]
+class ITranslationDirectories(Interface): ...
 
 class ICSRFStoragePolicy(Interface):
     def new_csrf_token(request: IRequest) -> str: ...
@@ -284,7 +271,7 @@ class IRendererFactory(Interface):
 
 class IRequestFactory(Interface):
     def __call__(environ: dict[str, Any]) -> IRequest: ...
-    def blank(str) -> IRequest: ...
+    def blank(str: str) -> IRequest: ...
 
 class IResponseFactory(Interface):
     def __call__(request: IRequest) -> IResponse: ...

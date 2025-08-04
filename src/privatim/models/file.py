@@ -97,7 +97,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         return self.file.content_type if self.file else ''
 
     @declared_attr  # type:ignore[arg-type]
-    def __table_args__(cls) -> tuple[Index, ...]:
+    def __table_args__(cls) -> tuple[Index | CheckConstraint, ...]:
         return (
             Index(
                 f'idx_{cls.__tablename__.lower()}_searchable_text_de_CH',

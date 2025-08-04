@@ -29,11 +29,10 @@ def create_consultation(
             content=b'Test content',
             consultation_id=consultation.id  # Set parent ID directly
         )
-        session.add(file)
         # No need for consultation.files.append(file), FK relationship handles
+        session.add(file)
 
-    # updated will be accessed
-    consultation.created = utcnow() - timedelta(days=days_old)  # This line remains
+    consultation.created = utcnow() - timedelta(days=days_old)
     consultation.deleted = is_deleted
     session.add(consultation)
     session.flush()

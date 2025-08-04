@@ -1,0 +1,6 @@
+from zope.interface.interfaces import IInterface
+
+__all__ = ["asReStructuredText", "asStructuredText"]
+
+def asStructuredText(iface: IInterface, munge: int = 0, rst: bool = False) -> str: ...
+def asReStructuredText(iface: IInterface, munge: int = 0) -> str: ...

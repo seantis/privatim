@@ -11,14 +11,14 @@ from pyramid.renderers import render
 import lxml.html
 import html2text
 import re
-from docx import Document # type: ignore
+from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from weasyprint import HTML, CSS  # type: ignore
 from weasyprint.text.fonts import FontConfiguration  # type: ignore
 
 
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Protocol, Sequence
 if TYPE_CHECKING:
     from docx.text.paragraph import Paragraph
     from privatim.models.association_tables import MeetingUserAttendance
@@ -301,7 +301,7 @@ class WordReportRenderer:
                 f"{translate(_('Attendees:'), language=request.locale_name)}"
             ).runs[0].bold = True
             # Fetch sorted records using the property
-            sorted_records: list['MeetingUserAttendance'] = (
+            sorted_records: Sequence['MeetingUserAttendance'] = (
                 request.dbsession.execute(meeting.sorted_attendance_records)
                 .scalars()
                 .all()
@@ -315,7 +315,7 @@ class WordReportRenderer:
                     f"{record.user.fullname}{status_marker}",
                     style='List Bullet',
                 )
-            document.add_paragraph() 
+            document.add_paragraph()
 
         document.add_paragraph(
             translate(_('Agenda Items'), language=request.locale_name)
@@ -336,7 +336,6 @@ class WordReportRenderer:
                     h.body_width = 0  # Disable line wrapping
                     h.ignore_links = True  # Ignore links for simplicity
                     h.ignore_images = True  # Ignore images
-                    # Add other config as needed, e.g., h.ignore_emphasis = False
                     markdown_text = h.handle(item.description).strip()
 
                     # Split into paragraphs based on double newlines
@@ -363,7 +362,8 @@ class WordReportRenderer:
                     # Fallback to plain text extraction using lxml
                     try:
                         html_tree = lxml.html.fromstring(item.description)
-                        text_content = html_tree.text_content()
+                        # Use itertext() which works on all element types
+                        text_content = ''.join(html_tree.itertext())
                         p_desc = document.add_paragraph(text_content.strip())
                         p_desc.paragraph_format.left_indent = Inches(0.25)
                         p_desc.paragraph_format.space_after = Pt(12)

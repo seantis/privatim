@@ -5,7 +5,6 @@ from pyramid.interfaces import IResponseFactory
 from pyramid.interfaces import IRootFactory
 from pyramid.interfaces import ISessionFactory
 
-
 class FactoriesConfiguratorMixin:
     def set_root_factory(self, factory: IRootFactory) -> None: ...
     def set_session_factory(self, factory: ISessionFactory) -> None: ...

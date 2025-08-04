@@ -331,4 +331,3 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
         'query': None,
         'layout': Layout(None, request),
     }
-

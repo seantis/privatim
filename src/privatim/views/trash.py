@@ -59,7 +59,7 @@ def trash_view(request: 'IRequest') -> 'RenderData':
             deleted_items = result.scalars().all()
         return deleted_items
 
-    session = request.dbsession
+    session: FilteredSession = request.dbsession
     deleted_items: List[DeletedItemData] = []
     deleted_items.extend(
         [
@@ -97,7 +97,7 @@ def restore_consultation_chain(
 def restore_soft_deleted_model_view(
         request: 'IRequest',
 ) -> 'RenderDataOrRedirect':
-    session = request.dbsession
+    session: FilteredSession = request.dbsession
     item_type = request.matchdict['item_type']
     item_id = request.matchdict['item_id']
     model = model_map.get(item_type)

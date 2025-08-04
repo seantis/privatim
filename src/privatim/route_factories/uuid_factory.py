@@ -5,6 +5,8 @@ from privatim.models import Consultation
 
 
 from typing import TYPE_CHECKING
+
+from privatim.orm.session import FilteredSession
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pyramid.interfaces import IRequest
@@ -52,7 +54,7 @@ def create_consultation_all_versions_factory(
     """
 
     def route_factory(request: 'IRequest') -> Consultation:
-        session = request.dbsession
+        session: FilteredSession = request.dbsession
         matchdict = request.matchdict
         uuid = matchdict.get(key, None)
         if not uuid:

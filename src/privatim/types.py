@@ -16,6 +16,10 @@ if TYPE_CHECKING:
     from typing import Any, Literal, TypeVar, Protocol
     from typing_extensions import NotRequired, TypedDict, TypeAlias
 
+    # Monkey patch (no effect)
+    # from pyramid.request import Request
+    # Request.dbsession: FilteredSession
+
     _Tco = TypeVar('_Tco', covariant=True)
 
     JSON: TypeAlias = (

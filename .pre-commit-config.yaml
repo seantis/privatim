@@ -29,7 +29,7 @@ repos:
           - flake8-comprehensions==3.14.0
           - flake8-noqa==1.4.0
           - flake8-pyi==24.1.0
-          - flake8-type-checking==2.9.1
+          - flake8-type-checking==3.0.0
   - repo: local
     hooks:
       - id: system
