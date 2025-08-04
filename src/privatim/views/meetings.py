@@ -456,6 +456,7 @@ def edit_meeting_view(
 
         meeting.time = fix_utc_to_local_time(form.time.data)
 
+        breakpoint()
         # Handle newly uploaded files
         if form.files.data:
             for file in form.files.data:
