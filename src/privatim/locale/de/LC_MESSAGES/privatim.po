@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-06-24 12:19+0200\n"
+"POT-Creation-Date: 2025-08-05 02:06+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -284,9 +284,21 @@ msgid "Participants"
 msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
+msgid "Meeting created"
+msgstr "Sitzung erstellt"
+
+#: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
 msgstr "Sitzung \"${name}\" hinzugefügt"
+
+#: src/privatim/views/meetings.py
+msgid "Meeting details updated"
+msgstr "Sitzungsdetails "
+
+#: src/privatim/views/meetings.py
+msgid "Files were added to the meeting."
+msgstr "Dokumente wurden aktualisiert / hinzugefügt"
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
@@ -298,12 +310,16 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr "Sitzung \"${name}\" erfolgreich gelöscht"
 
 #: src/privatim/views/activities.py
+msgid "Meeting Scheduled"
+msgstr "Sitzung geplant"
+
+#: src/privatim/views/activities.py
 msgid "Meeting Updated"
 msgstr "Sitzung aktualisiert"
 
 #: src/privatim/views/activities.py
-msgid "Meeting Scheduled"
-msgstr "Sitzung geplant"
+msgid "Meeting Files Updated"
+msgstr "Sitzungsdokument(e) aktualisiert"
 
 #: src/privatim/views/activities.py
 msgid "Consultation Added"

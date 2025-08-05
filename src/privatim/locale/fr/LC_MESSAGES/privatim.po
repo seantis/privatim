@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-06-24 12:19+0200\n"
+"POT-Creation-Date: 2025-08-05 02:06+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -281,9 +281,21 @@ msgid "Participants"
 msgstr "Membres"
 
 #: src/privatim/views/meetings.py
+msgid "Meeting created"
+msgstr "Réunion créée"
+
+#: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
 msgstr "Ajout réussi de la réunion \"${nom}\""
+
+#: src/privatim/views/meetings.py
+msgid "Meeting details updated"
+msgstr "Détails de la réunion mis à jour"
+
+#: src/privatim/views/meetings.py
+msgid "Files were added to the meeting."
+msgstr "Des fichiers ont été ajoutés à la réunion."
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
@@ -295,12 +307,16 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
 
 #: src/privatim/views/activities.py
+msgid "Meeting Scheduled"
+msgstr "Réunion prévue"
+
+#: src/privatim/views/activities.py
 msgid "Meeting Updated"
 msgstr "Réunion mise à jour"
 
 #: src/privatim/views/activities.py
-msgid "Meeting Scheduled"
-msgstr "Réunion prévue"
+msgid "Meeting Files Updated"
+msgstr "Fichiers de réunion mis à jour"
 
 #: src/privatim/views/activities.py
 msgid "Consultation Added"
