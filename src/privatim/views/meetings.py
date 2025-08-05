@@ -494,6 +494,7 @@ def edit_meeting_view(
             removed_filenames = [
                 f.filename for f in getattr(form.files, 'removed_files', [])
             ]
+            breakpoint()
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='file_update',

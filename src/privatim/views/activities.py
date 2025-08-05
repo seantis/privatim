@@ -4,7 +4,7 @@ from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.mail.exceptions import InconsistentChain
-from privatim.models import Consultation, Meeting, MeetingActivity
+from privatim.models import Consultation, Meeting, MeetingEditEvent
 from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
 
@@ -52,23 +52,28 @@ def activity_to_dict(
 ) -> 'ActivityDict':
     """Convert any activity object into a consistent dictionary format."""
 
-    obj_type = activity.__class__.__name__
+    # NOTE: This file contains numerous type-checking conditionals that would
+    # benefit from polymorphic refactoring. Consider moving this logic to the
+    # respective `Consultation` or `MeetingEditEvent` classes.
 
-    if obj_type == 'MeetingActivity':
+    obj_type = activity.__class__.__name__
+    if obj_type == 'MeetingEditEvent':
+        assert isinstance(activity, MeetingEditEvent)
         title = ''
         content: dict[str, Any] = {}
-        if activity.activity_type == 'creation':
+        if activity.event_type == 'creation':
             title = _('Meeting Scheduled')
-            content = _get_activity_content(activity.meeting)
-        elif activity.activity_type == 'update':
+            content = {'name': activity.name, 'time': activity.time}
+        elif activity.event_type == 'update':
             title = _('Meeting Updated')
-            content = _get_activity_content(activity.meeting)
-        elif activity.activity_type == 'file_added':
+            content = {'name': activity.name, 'time': activity.time}
+        elif activity.event_type == 'file_added':
             title = _('Meeting Files Updated')
-            content = {'content': activity.description or ''}
+            # todo: decide what to show in content here if meeting files updated
+            content = {'content': ''}
 
         return {
-            'type': 'creation' if activity.activity_type == 'creation' else 'update',
+            'type': 'creation' if activity.event_type == 'creation' else 'update',
             'object': activity.meeting,
             'timestamp': activity.created,
             'user': activity.creator,
@@ -76,7 +81,7 @@ def activity_to_dict(
             'title': title,
             'route_url': 'meeting',
             'id': activity.meeting.id,
-            'icon_class': _get_icon_class('Meeting', activity.activity_type),
+            'icon_class': _get_icon_class('Meeting', activity.event_type),
             'content': content,
         }
 
@@ -107,9 +112,8 @@ def activity_to_dict(
     raise TypeError(f'Unsupported activity type: {obj_type}')
 
 
-def _get_icon_class(obj_type: str, activity_type: str | None = None) -> str:
-    """Get the appropriate icon class for an activity type."""
-    if obj_type == 'Meeting' and activity_type == 'file_added':
+def _get_icon_class(obj_type: str, event_type: str | None = None) -> str:
+    if obj_type == 'Meeting' and event_type == 'file_added':
         return 'fas fa-file-alt'
     icons = {
         'Meeting': 'fas fa-users',
@@ -130,7 +134,8 @@ def _get_activity_content(activity: Any) -> dict[str, str]:
                 else activity.title
             )
         }
-    elif obj_type == 'Meeting':
+    elif obj_type == 'MeetingEditEvent':
+        assert isinstance(activity, MeetingEditEvent)
         return {'name': activity.name, 'time': activity.time}
     return {}
 
@@ -155,15 +160,15 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
                 .unique()
             )
 
-    def get_meeting_activities() -> Iterable[MeetingActivity]:
+    def get_meeting_edit_events() -> Iterable[MeetingEditEvent]:
         return (
             session.execute(
-                select(MeetingActivity)
+                select(MeetingEditEvent)
                 .options(
-                    joinedload(MeetingActivity.creator),
-                    joinedload(MeetingActivity.meeting).joinedload(Meeting.files)
+                    joinedload(MeetingEditEvent.creator),
+                    joinedload(MeetingEditEvent.meeting).joinedload(Meeting.files)
                 )
-                .order_by(MeetingActivity.created.desc())
+                .order_by(MeetingEditEvent.created.desc())
             )
             .scalars()
             .unique()
@@ -179,12 +184,11 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
         except InconsistentChain:
             pass
 
-    for meeting_activity in get_meeting_activities():
-        activities.append(activity_to_dict(meeting_activity, session))
+    for meeting_edit_event in get_meeting_edit_events():
+        activities.append(activity_to_dict(meeting_edit_event, session))
 
     # Sort by timestamp
     activities.sort(key=lambda x: x['timestamp'], reverse=True)
-
     return activities
 
 
@@ -283,22 +287,22 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     # Get filtered meetings
     if include_meetings:
-        meeting_activity_query = (
-            select(MeetingActivity)
+        meeting_edit_event_query = (
+            select(MeetingEditEvent)
             .options(
-                joinedload(MeetingActivity.creator),
-                joinedload(MeetingActivity.meeting).joinedload(Meeting.files)
+                joinedload(MeetingEditEvent.creator),
+                joinedload(MeetingEditEvent.meeting).joinedload(Meeting.files)
             )
         )
-        meeting_activity_query = maybe_apply_date_filter(
-            meeting_activity_query,
+        meeting_edit_event_query = maybe_apply_date_filter(
+            meeting_edit_event_query,
             start_datetime,
             end_datetime,
-            MeetingActivity.created,
+            MeetingEditEvent.created,
         )
         activities_data.extend(
             activity_to_dict(ma, session)
-            for ma in session.execute(meeting_activity_query)
+            for ma in session.execute(meeting_edit_event_query)
             .unique()
             .scalars()
             .all()

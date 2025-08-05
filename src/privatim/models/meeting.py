@@ -258,16 +258,15 @@ class Meeting(Base, SearchableMixin):
 
 
 class MeetingEditEvent(Base):
-    """ This model tracks edit events for meetings, primarily used in the
-    `/activities` view.
+    """Dedicated audit trail for meeting modifications, decoupling change
+    tracking from the core Meeting entity.
 
-    It offers greater flexibility than directly monitoring the meeting object,
-    which previously limited our ability to detect certain changes (e.g., only
-    file modifications to a meeting).
-    """
+    Feeds the `/activities` view. It has a meeting change history. We use this
+    because directly querying the meeting table for diffs was impressively
+    painful and self-limiting in its approach.
+    This way we actually know what happened when. """
 
     __tablename__ = 'meeting_edit_event'
-
     id: Mapped[UUIDStrPK]
     meeting_id: Mapped[UUIDStr] = mapped_column(
         ForeignKey('meetings.id'),

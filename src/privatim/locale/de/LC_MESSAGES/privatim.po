@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-08-05 02:06+0200\n"
+"POT-Creation-Date: 2025-08-05 22:21+0200\n"
 "PO-Revision-Date: 2024-05-21 21:20+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -284,21 +284,9 @@ msgid "Participants"
 msgstr "Mitglieder"
 
 #: src/privatim/views/meetings.py
-msgid "Meeting created"
-msgstr "Sitzung erstellt"
-
-#: src/privatim/views/meetings.py
 #, python-format
 msgid "Successfully added meeting \"${name}\""
 msgstr "Sitzung \"${name}\" hinzugefügt"
-
-#: src/privatim/views/meetings.py
-msgid "Meeting details updated"
-msgstr "Sitzungsdetails "
-
-#: src/privatim/views/meetings.py
-msgid "Files were added to the meeting."
-msgstr "Dokumente wurden aktualisiert / hinzugefügt"
 
 #: src/privatim/views/meetings.py
 msgid "Successfully edited meeting."
@@ -1083,6 +1071,15 @@ msgstr "Protokoll der Sitzung ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Gremium:"
+
+#~ msgid "Meeting created"
+#~ msgstr "Sitzung erstellt"
+
+#~ msgid "Meeting details updated"
+#~ msgstr "Sitzungsdetails "
+
+#~ msgid "Files were added to the meeting."
+#~ msgstr "Dokumente wurden aktualisiert / hinzugefügt"
 
 #~ msgid "Consultation Status"
 #~ msgstr "Status der Vernehmlassung"

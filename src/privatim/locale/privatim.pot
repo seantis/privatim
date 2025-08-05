@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-06-24 12:19+0200\n"
+"POT-Creation-Date: 2025-08-05 22:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -297,11 +297,15 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/activities.py
+msgid "Meeting Scheduled"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
 msgid "Meeting Updated"
 msgstr ""
 
 #: ./src/privatim/views/activities.py
-msgid "Meeting Scheduled"
+msgid "Meeting Files Updated"
 msgstr ""
 
 #: ./src/privatim/views/activities.py

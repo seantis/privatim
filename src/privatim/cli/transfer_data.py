@@ -105,7 +105,11 @@ def check_server_known_host(
 
 
 def check_pserve_running(dry_run: bool) -> None:
-    """Checks if a pserve process is running and exits if it is."""
+    """Checks if a 'pserve' process is already running and exits early if so.
+
+    This prevents potential failures later when attempting to write to the
+    PostgreSQL database, which would otherwise occur.
+    """
     if dry_run:
         click.echo(click.style('Dry run: Skipping pserve check.', fg='cyan'))
         return

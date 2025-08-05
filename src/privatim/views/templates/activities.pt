@@ -44,6 +44,7 @@
                                                 ${activity['user'].fullname}
                                             </span>
                                         </p>
+<!--! Generic renderer -->
                                         <div class="timeline-body">
                                             <tal:b tal:condition="'title' in activity['content']">
                                                 <h4>${activity['content']['title']}</h4>

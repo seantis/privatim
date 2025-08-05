@@ -210,7 +210,7 @@ def fix_user_constraints_to_work_with_hard_delete(
                 f"{str(e)}")
 
 
-def create_meeting_activities_and_migrate_data(
+def create_meeting_edit_events_and_migrate_data(
     context: 'UpgradeContext'
 ) -> None:
     """
@@ -219,7 +219,7 @@ def create_meeting_activities_and_migrate_data(
     """
     op = context.operations
     conn = op.get_bind()
-    table_name = 'meeting_activities'
+    table_name = 'meeting_edit_event'
     assert context.has_table(table_name)  # should be automatically created
 
     print("Migrating historical meetings to activities...")
@@ -232,7 +232,7 @@ def create_meeting_activities_and_migrate_data(
         print("No meetings found to migrate to activities.")
         return
 
-    meeting_activities_table = table(
+    edit_event_table = table(
         table_name,
         column('id', UUIDStrType),
         column('meeting_id', UUIDStrType),
@@ -241,7 +241,7 @@ def create_meeting_activities_and_migrate_data(
         column('creator_id', UUIDStrType)
     )
 
-    activities_to_insert = [
+    edit_events_to_insert = [
         {
             'id': str(uuid.uuid4()),
             'meeting_id': meeting.id,
@@ -250,9 +250,9 @@ def create_meeting_activities_and_migrate_data(
         } for meeting in meetings if meeting.creator_id and meeting.updated
     ]
 
-    if activities_to_insert:
-        op.bulk_insert(meeting_activities_table, activities_to_insert)
-        print(f'Created {len(activities_to_insert)} meeting activity items.')
+    if edit_events_to_insert:
+        op.bulk_insert(edit_event_table, edit_events_to_insert)
+        print(f'Created {len(edit_events_to_insert)} meeting edit evnt items.')
 
 
 def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
@@ -656,7 +656,7 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
 
-    create_meeting_activities_and_migrate_data(context)
+    create_meeting_edit_events_and_migrate_data(context)
 
     fix_agenda_item_positions(context)
     # Ensure this is called after FKs are potentially modified

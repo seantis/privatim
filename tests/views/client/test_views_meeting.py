@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
 from zoneinfo import ZoneInfo
+from privatim.models.meeting import MeetingEditEvent
 from privatim.utils import fix_utc_to_local_time
 
 
@@ -314,6 +315,7 @@ def test_edit_meeting_document(
 
     speichern(page)
     page.wait_for_load_state('networkidle', timeout=10000)
+    meeting_link = page.url
 
     # Verify the document is listed
     meeting_documents = page.locator('.meeting-documents')
@@ -327,12 +329,9 @@ def test_edit_meeting_document(
     timeline_content = page.locator('.timeline-content')
     expect(timeline_content).to_be_visible(timeout=5000)
     expect(timeline_content).to_contain_text('Sitzung geplant')
-    expect(timeline_content).to_contain_text(meeting_title)
-
-    # 2. Edit files in meeting.
-    # (TODO: sidequest: verify all the cases with replace and so on)
 
     # Edit the meeting - Click Actions dropdown, then Edit link
+    page.goto(meeting_link)
     aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
     aktionen_button.click()
     bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
@@ -349,24 +348,120 @@ def test_edit_meeting_document(
         'mimeType': 'application/pdf',
         'buffer': file_content
     }])
-
     speichern(page)
+    # check db models
+    events = session.scalars(select(MeetingEditEvent)).all()
+    assert len(events) == 2
+
     # 3. View activities, there should be two entries, one where the meeting
     # was created and one where we added a file to the meeting
-    # should be registered as distinct activity event
+    # Now _that_ should be registered as _distinct_ activity event.
     page.goto(live_server_url + "/activities")
     page.wait_for_load_state('networkidle', timeout=10000)
-
-    # Check for both activity entries
     timeline_items = page.locator('.timeline-content')
     expect(timeline_items).to_have_count(2, timeout=5000)
-
-    # Check for document upload activity
-    document_activity = page.locator('.timeline-content:has-text("Dokument hinzugefügt")')
+    document_activity = page.locator(
+        '.timeline-content:has-text("Sitzungsdokument(e) aktualisiert")'
+    )
     expect(document_activity).to_be_visible(timeout=5000)
     expect(document_activity).to_contain_text(filename)
     expect(document_activity).to_contain_text(meeting_title)
+    breakpoint()
 
+
+@pytest.mark.browser
+def test_edit_meeting_multiple_documents(
+    page: Page, live_server_url, session, pdf_vemz
+) -> None:
+    """ Extensive test for the "Add", "replace" "delete, and
+    'additional' functionality provided by UploadMultipleFilesWithORMSupport
+    """
+
+    admin_user = User(
+        email="test@example.org",
+        first_name="Test",
+        last_name="User",
+    )
+    admin_user.set_password("test")
+    session.add(admin_user)
+    transaction.commit()
+
+    page.goto(live_server_url + "/login")
+    page.locator('input[name="email"]').fill("admin@example.org")
+    page.locator('input[name="password"]').fill("test")
+
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    error_locator = page.locator(".alert.alert-danger")
+    if error_locator.is_visible():
+        error_text = error_locator.text_content()
+        pytest.fail(f"Login failed. Error message found: {error_text}")
+
+    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
+
+    # Create a working group
+    page.goto(live_server_url + "/working_groups/add")
+    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    group_name_input = page.locator('textarea[name="name"]')
+    group_name = f"Browser Test Group {datetime.now().isoformat()}"
+    group_name_input.fill(group_name)
+    user_select_input = page.locator('input[id="users-ts-control"]')
+    user_select_input.wait_for(state='visible', timeout=3000)
+    user_select_input.click()
+    user_select_input.fill('Admin User')
+    admin_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Admin User")'
+    )
+    admin_option.wait_for(state='visible', timeout=3000)
+    admin_option.click()
+    user_select_input.fill('Test User')  # Start typing again
+    test_option = page.locator(
+        '.ts-dropdown-content .option:has-text("Test User")'
+    )
+    test_option.wait_for(state="visible", timeout=3000)
+    test_option.click()
+    speichern(page)
+
+    # We are now in working groups overview page.
+    # Click on the created working group:
+    page.locator('a:has-text("Browser Test Group")').click()
+    # new meeting:
+    page.locator('a:has-text("Sitzung hinzufügen")').click()
+    meeting_title = "Initial Browser Meeting"
+    set_meeting_title(meeting_title, page)
+    meeting_time = utcnow() + timedelta(hours=1)
+    set_datetime_element(page, 'input[name="time"]', meeting_time)
+
+    # Upload a document
+    file_input = page.locator('input[type="file"][name="files"]')
+    file_input.wait_for(state='visible', timeout=3000)
+    filename, file_content = pdf_vemz
+    file_input.set_input_files(files=[{
+        'name': filename,
+        'mimeType': 'application/pdf',
+        'buffer': file_content
+    }])
+
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+    meeting_link = page.url
+
+    # Verify the document is listed
+    meeting_documents = page.locator('.meeting-documents')
+    expect(meeting_documents).to_be_visible(timeout=5000)
+    expect(meeting_documents).to_contain_text(filename)
+
+    page.goto(live_server_url + "/activities")
+
+    # 1. First an activity item is created
+    page.wait_for_load_state('networkidle', timeout=10000)
+    timeline_content = page.locator('.timeline-content')
+    expect(timeline_content).to_be_visible(timeout=5000)
+    expect(timeline_content).to_contain_text('Sitzung geplant')
+
+    # 2. Edit files in meeting.
+    # TODO: sidequest: verify all the cases with replace and so on)
 
 def test_copy_agenda_items_without_description(client):
     client.login_admin()
@@ -618,4 +713,3 @@ def test_remove_and_readd_working_group_member_in_meeting(
     expect(attendees_list_view).to_be_visible(timeout=5000)
     expect(attendees_list_view).to_contain_text(member_full_name)
     expect(attendees_list_view).to_contain_text(admin_full_name)
-
