@@ -103,6 +103,29 @@ def check_server_known_host(
     except FileNotFoundError:
         sys.exit(1)
 
+
+def check_pserve_running(dry_run: bool) -> None:
+    """Checks if a pserve process is running and exits if it is."""
+    if dry_run:
+        click.echo(click.style('Dry run: Skipping pserve check.', fg='cyan'))
+        return
+
+    try:
+        result = subprocess.run(
+            ['pgrep', '-f', 'pserve'], check=False, capture_output=True
+        )
+        if result.returncode == 0:
+            click.echo(
+                click.style(
+                    "A 'pserve' process is running. Please stop it.", fg='red'
+                )
+            )
+            sys.exit(1)
+    except FileNotFoundError:
+        click.echo(click.style(
+            'Warning: pgrep not found. Skipping pserve check.', fg='yellow'
+        ))
+
 @click.command(name='privatim_transfer')
 @click.option(
     '--server',
@@ -138,6 +161,8 @@ def main(
 
     if dry_run:
         click.echo(click.style('--- DRY RUN MODE ---', fg='cyan', bold=True))
+
+    check_pserve_running(dry_run)
 
     # Check if server is in known_hosts before proceeding
     check_server_known_host(server, ssh_user, dry_run)
