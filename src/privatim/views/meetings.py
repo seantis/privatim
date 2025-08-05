@@ -471,10 +471,20 @@ def edit_meeting_view(
         files_were_added = False
         # Handle newly uploaded files
         if form.files.data:
-            existing_file_hashes = {
-                hashlib.sha1(f.content, usedforsecurity=False).hexdigest()
-                for f in meeting.files
-            }
+            existing_file_hashes = set()
+            for f in meeting.files:
+                try:
+                    session.refresh(f)
+                    existing_file_hashes.add(
+                        hashlib.sha1(
+                            f.content, usedforsecurity=False
+                        ).hexdigest()
+                    )
+                except RuntimeError:
+                    log.warning(
+                        f'Could not read file content for {f.filename} '
+                        f'in meeting {meeting.id}, skipping hash check.'
+                    )
             for file in form.files.data:
                 if file and file.get('data', None) is not None:
                     content = dictionary_to_binary(file)
