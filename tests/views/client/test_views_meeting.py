@@ -324,7 +324,12 @@ def test_edit_meeting_document(
     # Check  
     # 1. check a simple entry in activities is created after a meeting created
 
-    breakpoint()
+    # Verify the meeting entry appears in activities
+    page.wait_for_load_state('networkidle', timeout=10000)
+    timeline_content = page.locator('.timeline-content')
+    expect(timeline_content).to_be_visible(timeout=5000)
+    expect(timeline_content).to_contain_text('Sitzung geplant')
+    expect(timeline_content).to_contain_text(meeting_title)
 
     # 2. Edit files in meeting.
     # (sidequest: verify all the cases with replace and so on)
