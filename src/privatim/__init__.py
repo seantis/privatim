@@ -170,7 +170,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         #  Add all other foreign key constraints here
     ]
 
-    for table, column, constraint in fk_constraints:
+    for table, col, constraint in fk_constraints:
         # Check if constraint exists
         try:
             exists = conn.execute(text(
@@ -200,7 +200,7 @@ def fix_user_constraints_to_work_with_hard_delete(
                 constraint,
                 table,
                 'users',
-                [column],
+                [col],
                 ['id'],
                 ondelete='SET NULL',
             )
@@ -236,8 +236,7 @@ def create_meeting_activities_and_migrate_data(
         table_name,
         column('id', UUIDStrType),
         column('meeting_id', UUIDStrType),
-        column('activity_type', String),
-        column('description', String),
+        column('event_type', String),
         column('created', TIMESTAMP),
         column('creator_id', UUIDStrType)
     )
@@ -246,8 +245,7 @@ def create_meeting_activities_and_migrate_data(
         {
             'id': str(uuid.uuid4()),
             'meeting_id': meeting.id,
-            'activity_type': 'update',
-            'description': 'Meeting details updated',
+            'event_type': 'update',
             'created': meeting.updated, 'creator_id': meeting.creator_id,
         } for meeting in meetings if meeting.creator_id and meeting.updated
     ]
@@ -542,7 +540,9 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
 
     # Step 1: Add new FK columns (nullable initially) if they don't exist
-    consultation_col_exists = context.has_column(table_name, consultation_fk_col)
+    consultation_col_exists = context.has_column(
+        table_name, consultation_fk_col
+    )
     if not consultation_col_exists:
         print(f"  Adding column {consultation_fk_col} to {table_name}")
         context.add_column(
@@ -612,7 +612,8 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             context.operations.create_check_constraint(
                 constraint_name=constraint_name,
                 table_name=table_name,
-                condition=f"num_nonnulls({consultation_fk_col}, {meeting_fk_col}) = 1"
+                condition=f"num_nonnulls({consultation_fk_col}, "
+                f"{meeting_fk_col}) = 1"
             )
             print(f"  Added check constraint {constraint_name}.")
         except Exception as e:
