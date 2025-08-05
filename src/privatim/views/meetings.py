@@ -28,7 +28,7 @@ from privatim.forms.meeting_form import (
     MeetingForm,
     sync_meeting_attendance_records,
 )
-from privatim.models import Meeting, WorkingGroup, MeetingActivity
+from privatim.models import Meeting, WorkingGroup, MeetingEditEvent
 from privatim.i18n import _
 from privatim.i18n import translate
 
@@ -419,7 +419,7 @@ def add_meeting_view(
 
         session.add(meeting)
         session.flush()
-        activity = MeetingActivity(
+        activity = MeetingEditEvent(
             meeting_id=meeting.id,
             event_type='creation',
             creator_id=request.user.id
@@ -458,57 +458,22 @@ def edit_meeting_view(
 
     if request.method == 'POST' and form.validate():
         assert form.time.data is not None
-        data_changed = (
+        data_changed: bool = (
             meeting.name != form.name.data
             or meeting.time != fix_utc_to_local_time(form.time.data)
         )
 
         form.populate_obj(meeting)
-        # meeting.name is already populated by form.populate_obj(meeting)
-
         meeting.time = fix_utc_to_local_time(form.time.data)
 
-        files_were_added = False
-        # Handle newly uploaded files
-        if form.files.data:
-            existing_file_hashes = set()
-            for f in meeting.files:
-                try:
-                    session.refresh(f)
-                    existing_file_hashes.add(
-                        hashlib.sha1(
-                            f.content, usedforsecurity=False
-                        ).hexdigest()
-                    )
-                except RuntimeError:
-                    log.warning(
-                        f'Could not read file content for {f.filename} '
-                        f'in meeting {meeting.id}, skipping hash check.'
-                    )
-            for file in form.files.data:
-                if file and file.get('data', None) is not None:
-                    content = dictionary_to_binary(file)
-                    new_file_hash = hashlib.sha1(
-                        content, usedforsecurity=False
-                    ).hexdigest()
-                    if new_file_hash not in existing_file_hashes:
-                        searchable_file = SearchableFile(
-                            filename=file['filename'],
-                            content=content,
-                            content_type=file['mimetype'],
-                            meeting_id=meeting.id
-                        )
-                        meeting.files.append(searchable_file)
-                        existing_file_hashes.add(new_file_hash)
-                        files_were_added = True
-                    else:
-                        log.info(
-                            'Skipping duplicate file upload (same hash): '
-                            f'{file["filename"]} for meeting {meeting.id}'
-                        )
+        # Check if files were added by form.populate_obj
+        files_were_added: bool = (
+            hasattr(form.files, 'added_files')
+            and len(form.files.added_files) > 0
+        )
 
         if data_changed:
-            activity = MeetingActivity(
+            activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='update',
                 creator_id=request.user.id
@@ -516,7 +481,7 @@ def edit_meeting_view(
             session.add(activity)
 
         if files_were_added:
-            activity = MeetingActivity(
+            activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='file_added',
                 creator_id=request.user.id

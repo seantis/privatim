@@ -240,8 +240,8 @@ class Meeting(Base, SearchableMixin):
         'WorkingGroup', back_populates='meetings'
     )
 
-    activities: Mapped[list['MeetingActivity']] = relationship(
-        'MeetingActivity',
+    activities: Mapped[list['MeetingEditEvent']] = relationship(
+        'MeetingEditEvent',
         back_populates='meeting',
         cascade='all, delete-orphan',
         uselist=True
@@ -257,8 +257,16 @@ class Meeting(Base, SearchableMixin):
         ]
 
 
-class MeetingActivity(Base):
-    __tablename__ = 'meeting_activities'
+class MeetingEditEvent(Base):
+    """ This model tracks edit events for meetings, primarily used in the
+    `/activities` view.
+
+    It offers greater flexibility than directly monitoring the meeting object,
+    which previously limited our ability to detect certain changes (e.g., only
+    file modifications to a meeting).
+    """
+
+    __tablename__ = 'meeting_edit_event'
 
     id: Mapped[UUIDStrPK]
     meeting_id: Mapped[UUIDStr] = mapped_column(
@@ -268,12 +276,10 @@ class MeetingActivity(Base):
     )
 
     # 'file_added', 'file_removed', 'meeting_updated'
-    activity_type: Mapped[str] = mapped_column(Text, nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    event_type: Mapped[str] = mapped_column(Text, nullable=False)
     created: Mapped[datetime] = mapped_column(default=utcnow, nullable=False)
     creator_id: Mapped[UUIDStr | None] = mapped_column(
-       ForeignKey('users.id', ondelete='SET NULL'),
-        nullable=True
+       ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
 
     meeting: Mapped['Meeting'] = relationship(
