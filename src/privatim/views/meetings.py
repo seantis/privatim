@@ -420,7 +420,7 @@ def add_meeting_view(
         session.flush()
         activity = MeetingActivity(
             meeting_id=meeting.id,
-            activity_type='creation',
+            event_type='creation',
             description=_('Meeting created'),
             creator_id=request.user.id
         )
@@ -463,13 +463,14 @@ def edit_meeting_view(
             or meeting.time != fix_utc_to_local_time(form.time.data)
         )
 
+        files_added = False
+        files_before = meeting.files
         form.populate_obj(meeting)
         # meeting.name is already populated by form.populate_obj(meeting)
 
         meeting.time = fix_utc_to_local_time(form.time.data)
 
         # Handle newly uploaded files
-        files_added = False
         if form.files.data:
             for file in form.files.data:
                 if file and file.get('data', None) is not None:
@@ -487,7 +488,6 @@ def edit_meeting_view(
                     existing_filenames = {f.filename for f in meeting.files}
                     if searchable_file.filename not in existing_filenames:
                         meeting.files.append(searchable_file)
-                        files_added = True
                     else:
                         # Optionally log or inform the user about the duplicate
                         # attempt
@@ -500,16 +500,18 @@ def edit_meeting_view(
         if data_changed:
             activity = MeetingActivity(
                 meeting_id=meeting.id,
-                activity_type='update',
+                event_type='update',
                 description=_('Meeting details updated'),
                 creator_id=request.user.id
             )
             session.add(activity)
 
+        files_after = meeting.files
+        files_added = files_after != files_before
         if files_added:
             activity = MeetingActivity(
                 meeting_id=meeting.id,
-                activity_type='file_added',
+                event_type='file_added',
                 description=_('Files were added to the meeting.'),
                 creator_id=request.user.id
             )
