@@ -473,12 +473,15 @@ def edit_meeting_view(
         # Handle newly uploaded files
         if form.files.data:
             existing_file_hashes = {
-                hashlib.sha1(f.content).hexdigest() for f in meeting.files
+                hashlib.sha1(f.content, usedforsecurity=False).hexdigest()
+                for f in meeting.files
             }
             for file in form.files.data:
                 if file and file.get('data', None) is not None:
                     content = dictionary_to_binary(file)
-                    new_file_hash = hashlib.sha1(content).hexdigest()
+                    new_file_hash = hashlib.sha1(
+                        content, usedforsecurity=False
+                    ).hexdigest()
                     if new_file_hash not in existing_file_hashes:
                         searchable_file = SearchableFile(
                             filename=file['filename'],
