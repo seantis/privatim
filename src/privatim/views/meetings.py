@@ -404,6 +404,7 @@ def add_meeting_view(
         form.attendees.data = list(form_attendees | working_group_attendees)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
 
+        added_filenames = []
         if form.files.data:
             for file in form.files.data:
                 if file:
@@ -416,13 +417,15 @@ def add_meeting_view(
                     # Appending to the relationship automatically handles the
                     # foreign key (meeting_id) upon session flush.
                     meeting.files.append(searchable_file)
+                    added_filenames.append(file['filename'])
 
         session.add(meeting)
         session.flush()
         activity = MeetingEditEvent(
             meeting_id=meeting.id,
             event_type='creation',
-            creator_id=request.user.id
+            creator_id=request.user.id,
+            added_files=added_filenames if added_filenames else None
         )
         session.add(activity)
         message = _(
@@ -471,6 +474,10 @@ def edit_meeting_view(
             hasattr(form.files, 'added_files')
             and len(form.files.added_files) > 0
         )
+        files_were_removed: bool = (
+            hasattr(form.files, 'removed_files')
+            and len(form.files.removed_files) > 0
+        )
 
         if data_changed:
             activity = MeetingEditEvent(
@@ -480,11 +487,19 @@ def edit_meeting_view(
             )
             session.add(activity)
 
-        if files_were_added:
+        if files_were_added or files_were_removed:
+            added_filenames = [
+                f['filename'] for f in getattr(form.files, 'added_files', [])
+            ]
+            removed_filenames = [
+                f.filename for f in getattr(form.files, 'removed_files', [])
+            ]
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
-                event_type='file_added',
-                creator_id=request.user.id
+                event_type='file_update',
+                creator_id=request.user.id,
+                added_files=added_filenames if added_filenames else None,
+                removed_files=removed_filenames if removed_filenames else None
             )
             session.add(activity)
 

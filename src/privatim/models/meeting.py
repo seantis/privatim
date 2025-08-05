@@ -1,7 +1,7 @@
 import uuid
 
 from sedate import utcnow
-from sqlalchemy import Integer, select, func, Text, Select
+from sqlalchemy import Integer, select, func, Text, Select, ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, contains_eager
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -281,6 +281,9 @@ class MeetingEditEvent(Base):
     creator_id: Mapped[UUIDStr | None] = mapped_column(
        ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
+
+    added_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
+    removed_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
 
     meeting: Mapped['Meeting'] = relationship(
         'Meeting',
