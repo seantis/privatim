@@ -10,77 +10,14 @@ from privatim.models.association_tables import AttendanceStatus
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
-from zoneinfo import ZoneInfo
 from privatim.models.meeting import MeetingEditEvent
 from privatim.utils import fix_utc_to_local_time
-
-
-def set_datetime_element(page: Page, selector: str, dt: datetime):
-    """Sets the date and time on a datetime-local field using Playwright's fill
-    method."""
-    local_tz = ZoneInfo("Europe/Zurich")
-    local_dt = dt.astimezone(local_tz)
-    datetime_str = local_dt.strftime("%Y-%m-%dT%H:%M")
-
-    script = """
-        (args) => {
-            const [selector, dateTimeString] = args;
-            const element = document.querySelector(selector);
-            if (!element) {
-                return { success: false, error: 'Element not found' };
-            }
-            try {
-                // Ensure element is focused before setting value
-                element.focus();
-                // Set the value
-                element.value = dateTimeString;
-                // Dispatch events to mimic user input and trigger potential
-                // listeners
-                element.dispatchEvent(new Event('input', { bubbles: true,
-                    cancelable: true }));
-                element.dispatchEvent(new Event('change', { bubbles: true,
-                    cancelable: true }));
-                return { success: true, finalValue: element.value };
-            } catch (error) {
-                console.error(`[Evaluate] Error setting value for
-                ${selector}:`, error);
-                return { success: false, error: error.message,
-                    finalValue: element.value };
-            }
-        }
-    """
-
-    try:
-        element = page.locator(selector)
-        # Increase timeout for visibility check
-        element.wait_for(state="visible", timeout=5000)
-        result = page.evaluate(script, [selector, datetime_str])
-
-        if not result or not result.get("success"):
-            error_msg = (
-                result.get("error", "Unknown error")
-                if result
-                else "Script execution failed"
-            )
-            raise Exception(
-                f"Failed to set datetime via page.evaluate for '{selector}'."
-                f" Error: {error_msg}"
-            )
-
-        expect(element).to_have_value(datetime_str)
-
-    except Exception as e:
-        safe_selector = re.sub(r"[^a-zA-Z0-9_-]", "_", selector)
-        screenshot_path = f"playwright-fail-datetime-{safe_selector}.png"
-        try:
-            page.screenshot(path=screenshot_path, full_page=True)
-            print(f"Screenshot saved to {screenshot_path}")
-        except Exception as se:
-            print(f"Failed to save screenshot: {se}")
-        raise Exception(
-            f"Failed to set datetime element '{selector}' to '{datetime_str}'."
-            f"Original error: {e}"
-        ) from e
+from tests.views.client.utils import (
+    set_datetime_element,
+    manage_document,
+    FileAction,
+    upload_new_documents
+)
 
 
 def speichern(page):
@@ -90,24 +27,33 @@ def speichern(page):
 
 
 def set_meeting_title(meeting_title, page):
-    m_name = 'input[name="name"]'
     # We've resorted to JavaScript for this seemingly trivial task.
     # Conventional approaches (element.fill) resulted in mysterious timeout
     # issues, hence this elaborate solution.
-    page.evaluate(f"""
-        const el = document.querySelector('{m_name}');
-        if (el) {{
-            el.value = '{meeting_title}';
-            el.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            el.dispatchEvent(new Event('change', {{ bubbles: true }}));
-        }} else {{
-            console.error(`[Evaluate] Element not found: {m_name}`);
-        }}
-    """)
+
+    # FIXME: It might be because the meeting name if you create a new one
+    # defaults to the working group name. It's still unclear why but we 
+    # can just overwrite it.
+    selector = '#name' 
+    script = """
+        (args) => {
+            const [selector, meeting_title] = args;
+            const el = document.querySelector(selector);
+            if (el) {
+                el.value = meeting_title;
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            } else {
+                console.error('[Evaluate] Element not found');
+            }
+
+        }
+        """
+    page.evaluate(script, [selector, meeting_title])
 
 
 @pytest.mark.browser
-def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
+def test_edit_meeting_users(page: Page, live_server_url, session) -> None:
     """ Needs full browser test because listening for changes in attendees /
     guests for a meeting did require some javascript to dynamically updated the
     dropdowns of people.
@@ -312,7 +258,6 @@ def test_edit_meeting_document(
         'mimeType': 'application/pdf',
         'buffer': file_content
     }])
-
     speichern(page)
     page.wait_for_load_state('networkidle', timeout=10000)
     meeting_link = page.url
@@ -339,7 +284,7 @@ def test_edit_meeting_document(
     bearbeiten_link.click()
     page.wait_for_load_state("networkidle", timeout=10000)
 
-    # Upload document
+    # Edit meeting document
     file_input = page.locator('input[type="file"][name="files"]')
     file_input.wait_for(state='visible', timeout=3000)
     filename, file_content = pdf_vemz
@@ -363,15 +308,15 @@ def test_edit_meeting_document(
     document_activity = page.locator(
         '.timeline-content:has-text("Sitzungsdokument(e) aktualisiert")'
     )
+
     expect(document_activity).to_be_visible(timeout=5000)
     expect(document_activity).to_contain_text(filename)
     expect(document_activity).to_contain_text(meeting_title)
-    breakpoint()
 
 
 @pytest.mark.browser
 def test_edit_meeting_multiple_documents(
-    page: Page, live_server_url, session, pdf_vemz
+    page: Page, live_server_url, session, pdf_vemz, docx, pdf_full_text
 ) -> None:
     """ Extensive test for the "Add", "replace" "delete, and
     'additional' functionality provided by UploadMultipleFilesWithORMSupport
@@ -436,9 +381,9 @@ def test_edit_meeting_multiple_documents(
     # Upload a document
     file_input = page.locator('input[type="file"][name="files"]')
     file_input.wait_for(state='visible', timeout=3000)
-    filename, file_content = pdf_vemz
+    filename_vemz, file_content = pdf_vemz
     file_input.set_input_files(files=[{
-        'name': filename,
+        'name': filename_vemz,
         'mimeType': 'application/pdf',
         'buffer': file_content
     }])
@@ -450,7 +395,7 @@ def test_edit_meeting_multiple_documents(
     # Verify the document is listed
     meeting_documents = page.locator('.meeting-documents')
     expect(meeting_documents).to_be_visible(timeout=5000)
-    expect(meeting_documents).to_contain_text(filename)
+    expect(meeting_documents).to_contain_text(filename_vemz)
 
     page.goto(live_server_url + "/activities")
 
@@ -461,7 +406,89 @@ def test_edit_meeting_multiple_documents(
     expect(timeline_content).to_contain_text('Sitzung geplant')
 
     # 2. Edit files in meeting.
-    # TODO: sidequest: verify all the cases with replace and so on)
+    page.goto(meeting_link)
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Replace the first document and add a new one
+    # sidequest
+    manage_document(page, index=0, action=FileAction.REPLACE,
+                    file_data=docx)
+
+    replaced_file = docx
+    additional_file = pdf_full_text 
+    upload_new_documents(page, files=[additional_file])
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    # we should have now fulltext_search.pdf  new file
+    # And test.docx (which replaced pdf_vemz)
+    # Verify documents: original gone, replaced and additional are present
+    meeting_documents = page.locator('.meeting-documents')
+    expect(meeting_documents).to_be_visible(timeout=5000)
+    expect(meeting_documents).not_to_contain_text(filename_vemz)
+    expect(meeting_documents).to_contain_text(replaced_file[0])
+    expect(meeting_documents).to_contain_text(additional_file[0])
+
+    # --- 2. Delete one document ---
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # To make the test robust, find the file to delete by its name
+    file_widgets = page.locator('.upload-widget.with-data').all()
+    file_titles = [w.locator('p.file-title').inner_text() for w in file_widgets]
+    idx_to_delete = next(
+        i for i, title in enumerate(file_titles) if replaced_file[0] in title
+    )
+    manage_document(page, index=idx_to_delete, action=FileAction.DELETE)
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    # Verify one document was deleted, the other remains
+    meeting_documents = page.locator('.meeting-documents')
+    expect(meeting_documents).to_be_visible(timeout=5000)
+    expect(meeting_documents).not_to_contain_text(replaced_file[0])
+    expect(meeting_documents).to_contain_text(additional_file[0])
+
+    # Delete all now
+    page.goto(meeting_link)
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    manage_document(page, index=0, action=FileAction.DELETE)
+    upload_new_documents(page, files=[pdf_full_text, docx])
+    # 2 new files
+
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+    meeting_documents = page.locator('.meeting-documents')
+    expect(meeting_documents).to_be_visible(timeout=5000)
+    expect(meeting_documents).to_contain_text(pdf_full_text[0])
+    expect(meeting_documents).to_contain_text(docx[0])
+
+    page.goto(live_server_url + "/activities")
+
+    # TODO: Check activity after all those edits
+    page.wait_for_load_state('networkidle', timeout=10000)
+    timeline_content = page.locator('.timeline-content')
+    # 
+    # first we have added one, then replaced the first one and added a new one
+    # then we have deleted the docx
+    # then we deleted the other one
+    # and aded two completly new ones
+
 
 def test_copy_agenda_items_without_description(client):
     client.login_admin()

@@ -9,6 +9,7 @@ from datetime import datetime
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
+from privatim.i18n import _
 from privatim.models.file import SearchableFile
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from pyramid.interfaces import IRequest
+    from pyramid.i18n import TranslationString
 
 
 class AgendaItemCreationError(Exception):
@@ -292,3 +294,13 @@ class MeetingEditEvent(Base):
         'User',
         passive_deletes=True
     )
+
+    def get_label_event_type(self) -> 'TranslationString':
+        if self.event_type == 'creation':
+            return _('Meeting Scheduled')
+        elif self.event_type == 'update':
+            return _('Meeting Updated')
+        elif self.event_type == 'file_update':
+            return _('Meeting Files Updated')
+        else:
+            return _('Meeting Event')

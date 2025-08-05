@@ -28,7 +28,6 @@ if TYPE_CHECKING:
         id: int
         icon_class: str
         content: dict[str, Any]
-        has_files: bool
 
 
 def maybe_apply_date_filter(
@@ -58,27 +57,20 @@ def activity_to_dict(
 
     obj_type = activity.__class__.__name__
     if obj_type == 'MeetingEditEvent':
-        assert isinstance(activity, MeetingEditEvent)
-        title = ''
-        content: dict[str, Any] = {}
-        if activity.event_type == 'creation':
-            title = _('Meeting Scheduled')
-            content = {'name': activity.name, 'time': activity.time}
-        elif activity.event_type == 'update':
-            title = _('Meeting Updated')
-            content = {'name': activity.name, 'time': activity.time}
-        elif activity.event_type == 'file_added':
-            title = _('Meeting Files Updated')
-            # todo: decide what to show in content here if meeting files updated
-            content = {'content': ''}
-
+        content: dict[str, Any] = {'name': activity.meeting.name, 
+                                   'time': activity.meeting.created}
+        if activity.event_type == 'file_update':
+            content.update({
+                'added_files': activity.added_files,
+                'removed_files': activity.removed_files
+            })
         return {
-            'type': 'creation' if activity.event_type == 'creation' else 'update',
+            'type': 'creation' if activity.event_type == 'creation'
+            else 'update',
             'object': activity.meeting,
             'timestamp': activity.created,
             'user': activity.creator,
-            'has_files': bool(activity.meeting.files),
-            'title': title,
+            'title': activity.get_label_event_type(),
             'route_url': 'meeting',
             'id': activity.meeting.id,
             'icon_class': _get_icon_class('Meeting', activity.event_type),
@@ -90,13 +82,11 @@ def activity_to_dict(
         latest_consultation = activity.get_latest_version(session)
         is_creation = activity.previous_version is None
 
-        has_files = bool(activity.files)
         return {
             'type': 'creation' if is_creation else 'update',
             'object': activity,
             'timestamp': activity.created,
             'user': activity.creator if is_creation else activity.editor,
-            'has_files': has_files,
             'title': (
                 _('Consultation Added')
                 if is_creation
@@ -105,7 +95,13 @@ def activity_to_dict(
             'route_url': 'consultation',
             'id': latest_consultation.id,
             'icon_class': _get_icon_class(obj_type),
-            'content': _get_activity_content(activity),
+            'content': {
+                'title': (
+                    activity.title[:100] + '...'
+                    if len(activity.title) > 100
+                    else activity.title
+                )
+            },
         }
 
     # Fallback for any other type, though we expect none.
@@ -113,31 +109,13 @@ def activity_to_dict(
 
 
 def _get_icon_class(obj_type: str, event_type: str | None = None) -> str:
-    if obj_type == 'Meeting' and event_type == 'file_added':
+    if obj_type == 'Meeting' and event_type == 'file_update':
         return 'fas fa-file-alt'
     icons = {
         'Meeting': 'fas fa-users',
         'Consultation': 'fas fa-file-alt',
     }
     return icons.get(obj_type, '')
-
-
-def _get_activity_content(activity: Any) -> dict[str, str]:
-    """Get the appropriate content for an activity."""
-    obj_type = activity.__class__.__name__
-
-    if obj_type == 'Consultation':
-        return {
-            'title': (
-                activity.title[:100] + '...'
-                if len(activity.title) > 100
-                else activity.title
-            )
-        }
-    elif obj_type == 'MeetingEditEvent':
-        assert isinstance(activity, MeetingEditEvent)
-        return {'name': activity.name, 'time': activity.time}
-    return {}
 
 
 def get_activities(session: 'FilteredSession') -> list['ActivityDict']:

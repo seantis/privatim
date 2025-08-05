@@ -449,8 +449,7 @@ def add_meeting_view(
 
 
 def edit_meeting_view(
-        meeting: Meeting,
-        request: 'IRequest'
+    meeting: Meeting, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
 
     assert isinstance(meeting, Meeting)
@@ -466,41 +465,38 @@ def edit_meeting_view(
             or meeting.time != fix_utc_to_local_time(form.time.data)
         )
 
+        # Determine removed files before populating the object
+        removed_files = [
+            entry.object_data for entry in form.files.entries
+            if entry.action in ('delete', 'replace') and entry.object_data
+        ]
+        removed_filenames = [f.filename for f in removed_files]
+
         form.populate_obj(meeting)
         meeting.time = fix_utc_to_local_time(form.time.data)
 
-        # Check if files were added by form.populate_obj
-        files_were_added: bool = (
-            hasattr(form.files, 'added_files')
-            and len(form.files.added_files) > 0
-        )
-        files_were_removed: bool = (
-            hasattr(form.files, 'removed_files')
-            and len(form.files.removed_files) > 0
-        )
+        # form.files.added_files is populated by populate_obj
+        added_files = getattr(form.files, 'added_files', [])
+        added_filenames = [f.filename for f in added_files]
+
+        files_were_added = bool(added_filenames)
+        files_were_removed = bool(removed_filenames)
 
         if data_changed:
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='update',
-                creator_id=request.user.id
+                creator_id=request.user.id,
             )
             session.add(activity)
 
         if files_were_added or files_were_removed:
-            added_filenames = [
-                f['filename'] for f in getattr(form.files, 'added_files', [])
-            ]
-            removed_filenames = [
-                f.filename for f in getattr(form.files, 'removed_files', [])
-            ]
-            breakpoint()
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='file_update',
                 creator_id=request.user.id,
                 added_files=added_filenames if added_filenames else None,
-                removed_files=removed_filenames if removed_filenames else None
+                removed_files=removed_filenames if removed_filenames else None,
             )
             session.add(activity)
 

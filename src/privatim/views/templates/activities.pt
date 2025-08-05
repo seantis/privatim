@@ -30,8 +30,6 @@
                                             <span class="timeline-date">
                                                 ${layout.format_date(activity['timestamp'], 'date')}
                                                 ${layout.format_date(activity['timestamp'], 'time')}
-                                                <i tal:condition="activity['has_files']"
-                                                   class="fas fa-file-pdf ms-1 text-secondary"></i>
                                             </span>
                                             <span class="timeline-user" tal:condition="activity['user']">
                                                 <span i18n:translate="">by </span>
@@ -44,11 +42,14 @@
                                                 ${activity['user'].fullname}
                                             </span>
                                         </p>
-<!--! Generic renderer -->
                                         <div class="timeline-body">
+
+                                            <!--? Consultation -->
                                             <tal:b tal:condition="'title' in activity['content']">
                                                 <h4>${activity['content']['title']}</h4>
                                             </tal:b>
+
+                                            <!--?          MeetingEditEvent  -->
                                             <tal:b tal:condition="'name' in activity['content']">
                                                 <h4>${activity['content']['name']}</h4>
                                                 <p>
@@ -57,9 +58,23 @@
                                                     ${layout.format_date(activity['content']['time'], 'time')}
                                                 </p>
                                             </tal:b>
+
                                             <tal:b tal:condition="'content' in activity['content']">
                                                 <p>${activity['content']['content']}</p>
                                             </tal:b>
+
+                                            <div class="file-changes"
+                                                 tal:condition="activity['content'].get('added_files') or activity['content'].get('removed_files')">
+                                                <ul class="list-unstyled mb-0">
+                                                    <li tal:repeat="filename python:activity['content'].get('added_files') or []">
+                                                        <i class="fas fa-plus-circle text-success me-2"></i>${filename}
+                                                    </li>
+                                                    <li tal:repeat="filename python:activity['content'].get('removed_files') or []">
+                                                        <i class="fas fa-minus-circle text-danger me-2"></i>${filename}
+                                                    </li>
+                                                </ul>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </a>
