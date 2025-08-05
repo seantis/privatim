@@ -252,6 +252,7 @@ def create_meeting_activities_and_migrate_data(
 
     if activities_to_insert:
         op.bulk_insert(meeting_activities_table, activities_to_insert)
+        print(f'Created {len(activities_to_insert)} meeting activity items.')
 
 
 def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
