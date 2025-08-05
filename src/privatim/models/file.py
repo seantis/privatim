@@ -129,10 +129,6 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         self.consultation_id = consultation_id
         self.meeting_id = meeting_id
 
-        # The database check constraint 'chk_searchable_files_one_parent'
-        # ensures exactly one parent ID is non-NULL. We rely on this rather
-        # than a Python check which can interfere with SQLAlchemy's loading.
-
         content_type = self.maybe_handle_octet_stream(
             content, content_type, filename
         )
@@ -172,30 +168,34 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
             filename: str
     ) -> str | None:
         """ Tries to determine the actual file if the content type is
-        advertised by the request is 'application/octet-stream'. """
+        advertised by the request is 'application/octet-stream'.
+
+        Files that are uploaded through the 'Upload additional files' field
+        of `UploadMultipleFilesWithORMSupport` will be octet-stream.
+        """
         if content_type is None:
             return None
-
         if content_type and content_type == 'application/octet-stream':
             logger.info(
                 f'Got octet-stream from form file upload.'
                 f'Filename' f'={filename}'
             )
-            #  Saw this happen with a docx if uploading in field 'additional
-            #  file'
+            # If files are uploaded through the 'Upload additional files' field
+            # they are indeed octet-stream.
             content_type = self.get_content_type(content)
-
-            # Fallback to filename guess:
             if content_type == 'application/octet-stream':
+                # Fallback to filename based approach
                 extension = filename.lower().split('.')[-1]
-                if extension == 'pdf':
-                    content_type = 'application/pdf'
-                elif extension in ['docx', 'doc', 'docm']:
-                    content_type = DEFAULT_DOCX_MIME
-                elif extension == 'txt':
-                    content_type = 'text/plain'
-                else:
+                extension_map = {
+                    'pdf': 'application/pdf',
+                    'docx': DEFAULT_DOCX_MIME,
+                    'doc': DEFAULT_DOCX_MIME,
+                    'docm': DEFAULT_DOCX_MIME,
+                    'txt': 'text/plain'
+                }
+                if extension not in extension_map:
                     raise ValueError(f'Unsupported file type: {extension}')
+                return extension_map[extension]
         return content_type
 
     @staticmethod
