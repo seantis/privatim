@@ -1,3 +1,4 @@
+import hashlib
 import logging
 from markupsafe import Markup
 from pyramid.response import Response
@@ -463,38 +464,35 @@ def edit_meeting_view(
             or meeting.time != fix_utc_to_local_time(form.time.data)
         )
 
-        files_added = False
-        files_before = meeting.files
         form.populate_obj(meeting)
         # meeting.name is already populated by form.populate_obj(meeting)
 
         meeting.time = fix_utc_to_local_time(form.time.data)
 
+        files_were_added = False
         # Handle newly uploaded files
         if form.files.data:
+            existing_file_hashes = {
+                hashlib.sha1(f.content).hexdigest() for f in meeting.files
+            }
             for file in form.files.data:
                 if file and file.get('data', None) is not None:
-                    # Explicitly set meeting_id
-                    searchable_file = SearchableFile(
-                        filename=file['filename'],
-                        content=dictionary_to_binary(file),
-                        content_type=file['mimetype'],
-                        meeting_id=meeting.id
-                    )
-                    # Check if file with same name already exists for this
-                    # meeting to avoid duplicates if the user re-uploads the
-                    # same file. This is a simple check; more robust checks
-                    # might involve checksums.
-                    existing_filenames = {f.filename for f in meeting.files}
-                    if searchable_file.filename not in existing_filenames:
+                    content = dictionary_to_binary(file)
+                    new_file_hash = hashlib.sha1(content).hexdigest()
+                    if new_file_hash not in existing_file_hashes:
+                        searchable_file = SearchableFile(
+                            filename=file['filename'],
+                            content=content,
+                            content_type=file['mimetype'],
+                            meeting_id=meeting.id
+                        )
                         meeting.files.append(searchable_file)
+                        existing_file_hashes.add(new_file_hash)
+                        files_were_added = True
                     else:
-                        # Optionally log or inform the user about the duplicate
-                        # attempt
                         log.info(
-                            'Skipping duplicate file upload: '
-                            f'{searchable_file.filename} for meeting '
-                            f'{meeting.id}'
+                            'Skipping duplicate file upload (same hash): '
+                            f'{file["filename"]} for meeting {meeting.id}'
                         )
 
         if data_changed:
@@ -506,9 +504,7 @@ def edit_meeting_view(
             )
             session.add(activity)
 
-        files_after = meeting.files
-        files_added = files_after != files_before
-        if files_added:
+        if files_were_added:
             activity = MeetingActivity(
                 meeting_id=meeting.id,
                 event_type='file_added',
