@@ -324,7 +324,7 @@ def test_edit_meeting_document(
     # Check  
     # 1. check a simple entry in activities is created after a meeting created
 
-    # breakpoint()
+    breakpoint()
 
     # 2. Edit files in meeting.
     # (sidequest: verify all the cases with replace and so on)
