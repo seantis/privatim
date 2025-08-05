@@ -321,10 +321,8 @@ def test_edit_meeting_document(
     expect(meeting_documents).to_contain_text(filename)
 
     page.goto(live_server_url + "/activities")
-    # Check  
-    # 1. check a simple entry in activities is created after a meeting created
 
-    # Verify the meeting entry appears in activities
+    # 1. First an activity item is created
     page.wait_for_load_state('networkidle', timeout=10000)
     timeline_content = page.locator('.timeline-content')
     expect(timeline_content).to_be_visible(timeout=5000)
@@ -332,11 +330,30 @@ def test_edit_meeting_document(
     expect(timeline_content).to_contain_text(meeting_title)
 
     # 2. Edit files in meeting.
-    # (sidequest: verify all the cases with replace and so on)
+    # (TODO: sidequest: verify all the cases with replace and so on)
+
+    # Edit the meeting - Click Actions dropdown, then Edit link
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    # Upload document
+    file_input = page.locator('input[type="file"][name="files"]')
+    file_input.wait_for(state='visible', timeout=3000)
+    filename, file_content = pdf_vemz
+    file_input.set_input_files(files=[{
+        'name': filename,
+        'mimeType': 'application/pdf',
+        'buffer': file_content
+    }])
 
     # 3. View activities, there should be two entries, one where the meeting
     # was created and one where we added a file to the meeting
-
+    # should be registered as distinct activity event
+    page.goto(live_server_url + "/activities")
 
 
 def test_copy_agenda_items_without_description(client):
