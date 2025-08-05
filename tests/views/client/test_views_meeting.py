@@ -350,10 +350,22 @@ def test_edit_meeting_document(
         'buffer': file_content
     }])
 
+    speichern(page)
     # 3. View activities, there should be two entries, one where the meeting
     # was created and one where we added a file to the meeting
     # should be registered as distinct activity event
     page.goto(live_server_url + "/activities")
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    # Check for both activity entries
+    timeline_items = page.locator('.timeline-content')
+    expect(timeline_items).to_have_count(2, timeout=5000)
+
+    # Check for document upload activity
+    document_activity = page.locator('.timeline-content:has-text("Dokument hinzugefügt")')
+    expect(document_activity).to_be_visible(timeout=5000)
+    expect(document_activity).to_contain_text(filename)
+    expect(document_activity).to_contain_text(meeting_title)
 
 
 def test_copy_agenda_items_without_description(client):
