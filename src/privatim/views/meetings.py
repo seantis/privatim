@@ -422,7 +422,6 @@ def add_meeting_view(
         activity = MeetingActivity(
             meeting_id=meeting.id,
             event_type='creation',
-            description=_('Meeting created'),
             creator_id=request.user.id
         )
         session.add(activity)
@@ -502,7 +501,6 @@ def edit_meeting_view(
             activity = MeetingActivity(
                 meeting_id=meeting.id,
                 event_type='update',
-                description=_('Meeting details updated'),
                 creator_id=request.user.id
             )
             session.add(activity)
@@ -511,7 +509,6 @@ def edit_meeting_view(
             activity = MeetingActivity(
                 meeting_id=meeting.id,
                 event_type='file_added',
-                description=_('Files were added to the meeting.'),
                 creator_id=request.user.id
             )
             session.add(activity)
