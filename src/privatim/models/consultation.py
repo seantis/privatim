@@ -46,6 +46,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         replaced_by: 'Consultation | None' = None,
         secondary_tags: list[str] | None = None,
         previous_version: 'Consultation | None' = None,
+        previous_filenames: list[str] | None = None,
         is_latest_version: int = 1,
     ):
 
@@ -72,6 +73,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         self.replaced_by = replaced_by
         self.previous_version = previous_version
         self.is_latest_version = is_latest_version
+        self.previous_filenames = previous_filenames
 
     id: Mapped[UUIDStrPK]
     title: Mapped[str] = mapped_column(nullable=False)
@@ -85,6 +87,10 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     )
     secondary_tags: Mapped[list[str]] = mapped_column(
         ARRAY(String(32)), nullable=False, default=list
+    )
+
+    previous_filenames: Mapped[list[str] | None] = mapped_column(
+        ARRAY(String), nullable=True
     )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
