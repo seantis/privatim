@@ -467,9 +467,7 @@ def edit_meeting_view(
                 for record in meeting.attendance_records
             }
         }
-
         assert form.time.data is not None
-        data_changed = meeting.name != form.name.data or meeting.time != fix_utc_to_local_time(form.time.data)
 
         # Determine removed files before populating the object
         removed_files = [
@@ -485,9 +483,9 @@ def edit_meeting_view(
         changes = meeting.track_changes(original_data)
 
         # form.files.added_files is populated by populate_obj
-        added_files = getattr(form.files, 'added_files', [])
-        added_filenames = [f.filename for f in added_files]
-
+        added_filenames = [
+            f.filename for f in getattr(form.files, 'added_files', [])
+        ]
         files_were_added = bool(added_filenames)
         files_were_removed = bool(removed_filenames)
 
