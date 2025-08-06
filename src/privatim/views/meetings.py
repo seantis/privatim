@@ -469,8 +469,7 @@ def edit_meeting_view(
         }
 
         assert form.time.data is not None
-            or meeting.time != fix_utc_to_local_time(form.time.data)
-        )
+        data_changed = meeting.name != form.name.data or meeting.time != fix_utc_to_local_time(form.time.data)
 
         # Determine removed files before populating the object
         removed_files = [
