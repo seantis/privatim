@@ -25,6 +25,12 @@ def print_consultation_tree(
         f'[ID: {consultation.id}]'
     )
 
+    if consultation.files:
+        for file in consultation.files:
+            click.echo(f'{indent}    └── File: {file.name}')
+    else:
+        click.echo(f'{indent}    └── No files attached')
+
     if consultation.previous_version:
         print_consultation_tree(consultation.previous_version, level + 1)
 
