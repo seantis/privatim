@@ -243,6 +243,7 @@ def edit_consultation_view(
 ) -> 'RenderDataOrRedirect':
     session = request.dbsession
     target_url = request.route_url('consultation', id=previous.id)
+
     # Create a new consultation (copy)
     next_cons = Consultation(
         title=previous.title,
