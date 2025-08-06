@@ -258,6 +258,7 @@ def edit_consultation_view(
         files=list(previous.files),
         previous_version=previous,
         is_latest_version=1,
+        previous_filenames=[f.filename for f in previous.files],
     )
     session.add(next_cons)
 

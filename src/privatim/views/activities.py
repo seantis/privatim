@@ -98,18 +98,11 @@ def activity_to_dict(
             icon_class = _get_icon_class(obj_type)
 
             if not is_creation:
-                previous_files_map = {
-                    f.id: f.filename for f in activity.previous_version.files
-                }
-                current_files_map = {f.id: f.filename for f in activity.files}
-                added_ids = set(current_files_map) - set(previous_files_map)
-                removed_ids = set(previous_files_map) - set(current_files_map)
+                previous_files_set = set(activity.previous_filenames or [])
+                current_files_set = {f.filename for f in activity.files}
 
-                added_files = sorted([current_files_map[id] for id in added_ids])
-                removed_files = sorted(
-                    [previous_files_map[id] for id in removed_ids]
-                )
-
+                added_files = sorted(list(current_files_set - previous_files_set))
+                removed_files = sorted(list(previous_files_set - current_files_set))
                 other_fields_changed = (
                     activity.title != activity.previous_version.title
                     or activity.description != activity.previous_version.description
