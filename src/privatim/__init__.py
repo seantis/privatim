@@ -656,6 +656,25 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
 
+    context.add_column(
+        'consultations',
+        Column(
+            'previous_filenames',
+            postgresql.ARRAY(String),
+            nullable=True
+        ),
+    )
+
+    if context.has_table('meeting_edit_event'):
+        context.add_column(
+            'meeting_edit_event',
+            Column(
+                'changes',
+                postgresql.JSONB,
+                nullable=True
+            ),
+        )
+
     create_meeting_edit_events_and_migrate_data(context)
 
     fix_agenda_item_positions(context)
