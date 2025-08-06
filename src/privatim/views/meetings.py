@@ -458,15 +458,17 @@ def edit_meeting_view(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        # Store original attendance records for comparison
-        original_attendance = {
-            record.user_id: record.status
-            for record in meeting.attendance_records
+        # Store original data for comparison
+        original_data = {
+            'name': meeting.name,
+            'time': meeting.time,
+            'attendance': {
+                record.user_id: record.status
+                for record in meeting.attendance_records
+            }
         }
 
         assert form.time.data is not None
-        data_changed: bool = (
-            meeting.name != form.name.data 
             or meeting.time != fix_utc_to_local_time(form.time.data)
         )
 
@@ -480,15 +482,8 @@ def edit_meeting_view(
         form.populate_obj(meeting)
         meeting.time = fix_utc_to_local_time(form.time.data)
 
-        # Check if attendance records changed
-        attendance_changed = False
-        for record in meeting.attendance_records:
-            if (record.user_id not in original_attendance or 
-                original_attendance[record.user_id] != record.status):
-                attendance_changed = True
-                break
-
-        data_changed = data_changed or attendance_changed
+        # Track changes
+        changes = meeting.track_changes(original_data)
 
         # form.files.added_files is populated by populate_obj
         added_files = getattr(form.files, 'added_files', [])
@@ -497,11 +492,12 @@ def edit_meeting_view(
         files_were_added = bool(added_filenames)
         files_were_removed = bool(removed_filenames)
 
-        if data_changed:
+        if changes:
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='update',
                 creator_id=request.user.id,
+                changes=changes
             )
             session.add(activity)
 

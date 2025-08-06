@@ -1,7 +1,7 @@
 import uuid
 
 from sedate import utcnow
-from sqlalchemy import Integer, select, func, Text, Select, ARRAY
+from sqlalchemy import Integer, select, func, Text, Select, ARRAY, JSON
 from sqlalchemy.orm import Mapped, mapped_column, contains_eager
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -258,6 +258,39 @@ class Meeting(Base, SearchableMixin):
             (Allow, Authenticated, ['view']),
         ]
 
+    def track_changes(self, original_data: dict) -> dict:
+        """Track changes between original and current state"""
+        changes = {}
+
+        # Track basic fields
+        if self.name != original_data.get('name'):
+            changes['name'] = {
+                'old': original_data.get('name'),
+                'new': self.name
+            }
+
+        if self.time != original_data.get('time'):
+            changes['time'] = {
+                'old': original_data.get('time'),
+                'new': self.time
+            }
+
+        # Track attendance changes
+        original_attendance = original_data.get('attendance', {})
+        current_attendance = {
+            record.user_id: record.status
+            for record in self.attendance_records
+        }
+
+        if original_attendance != current_attendance:
+            changes['attendance'] = {
+                'added': [uid for uid in current_attendance if uid not in original_attendance],
+                'removed': [uid for uid in original_attendance if uid not in current_attendance],
+                'changed': [uid for uid in original_attendance if uid in current_attendance and original_attendance[uid] != current_attendance[uid]]
+            }
+
+        return changes if changes else None
+
 
 class MeetingEditEvent(Base):
     """Dedicated audit trail for meeting modifications, decoupling change
@@ -285,6 +318,7 @@ class MeetingEditEvent(Base):
 
     added_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
     removed_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
+    changes: Mapped[dict | None] = mapped_column(JSON)
 
     meeting: Mapped['Meeting'] = relationship(
         'Meeting',
