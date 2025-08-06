@@ -303,4 +303,4 @@ class MeetingEditEvent(Base):
         elif self.event_type == 'file_update':
             return _('Meeting Files Updated')
         else:
-            return _('Meeting Event')
+            return _('Meeting')
