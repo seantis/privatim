@@ -1,4 +1,3 @@
-import hashlib
 import logging
 from markupsafe import Markup
 from pyramid.response import Response
