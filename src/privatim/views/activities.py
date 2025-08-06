@@ -79,30 +79,69 @@ def activity_to_dict(
 
     # Special handling for Consultation due to versioning
     if obj_type == 'Consultation':
-        latest_consultation = activity.get_latest_version(session)
-        is_creation = activity.previous_version is None
+        with session.no_consultation_filter():
+            latest_consultation = activity.get_latest_version(session)
+            is_creation = activity.previous_version is None
 
-        return {
-            'type': 'creation' if is_creation else 'update',
-            'object': activity,
-            'timestamp': activity.created,
-            'user': activity.creator if is_creation else activity.editor,
-            'title': (
-                _('Consultation Added')
-                if is_creation
-                else _('Consultation Updated')
-            ),
-            'route_url': 'consultation',
-            'id': latest_consultation.id,
-            'icon_class': _get_icon_class(obj_type),
-            'content': {
+            content: dict[str, Any] = {
                 'title': (
                     activity.title[:100] + '...'
                     if len(activity.title) > 100
                     else activity.title
                 )
-            },
-        }
+            }
+            title = (
+                _('Consultation Added')
+                if is_creation
+                else _('Consultation Updated')
+            )
+            icon_class = _get_icon_class(obj_type)
+
+            if not is_creation:
+                previous_files_map = {
+                    f.id: f.filename for f in activity.previous_version.files
+                }
+                current_files_map = {f.id: f.filename for f in activity.files}
+                added_ids = set(current_files_map) - set(previous_files_map)
+                removed_ids = set(previous_files_map) - set(current_files_map)
+
+                added_files = sorted([current_files_map[id] for id in added_ids])
+                removed_files = sorted(
+                    [previous_files_map[id] for id in removed_ids]
+                )
+
+                other_fields_changed = (
+                    activity.title != activity.previous_version.title
+                    or activity.description != activity.previous_version.description
+                    or activity.recommendation != activity.previous_version.recommendation
+                    or activity.evaluation_result != activity.previous_version.evaluation_result
+                    or activity.decision != activity.previous_version.decision
+                    or activity.status != activity.previous_version.status
+                    or set(activity.secondary_tags) != set(
+                        activity.previous_version.secondary_tags
+                    )
+                )
+
+                if added_files or removed_files:
+                    content.update({
+                        'added_files': added_files,
+                        'removed_files': removed_files
+                    })
+                    if not other_fields_changed:
+                        title = _('Consultation Files Updated')
+                        icon_class = _get_icon_class('Meeting', 'file_update')
+
+            return {
+                'type': 'creation' if is_creation else 'update',
+                'object': activity,
+                'timestamp': activity.created,
+                'user': activity.creator if is_creation else activity.editor,
+                'title': title,
+                'route_url': 'consultation',
+                'id': latest_consultation.id,
+                'icon_class': icon_class,
+                'content': content,
+            }
 
     # Fallback for any other type, though we expect none.
     raise TypeError(f'Unsupported activity type: {obj_type}')
