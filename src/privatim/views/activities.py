@@ -113,16 +113,20 @@ def activity_to_dict(
                 removed_files = sorted(
                     [previous_files_map[id] for id in removed_ids]
                 )
-                other_fields_changed = (
-                    activity.title != activity.previous_version.title
-                    or activity.description != activity.previous_version.description
-                    or activity.recommendation != activity.previous_version.recommendation
-                    or activity.evaluation_result != activity.previous_version.evaluation_result
-                    or activity.decision != activity.previous_version.decision
-                    or activity.status != activity.previous_version.status
-                    or set(activity.secondary_tags) != set(
+                prev = activity.previous_version
+                title_changed = activity.title != prev.title
+                desc_changed = activity.description != prev.description
+                rec_changed = activity.recommendation != prev.recommendation
+                eval_changed = activity.evaluation_result != prev.evaluation_result
+                decision_changed = activity.decision != prev.decision
+                status_changed = activity.status != prev.status
+                tags_changed = set(activity.secondary_tags) != set(
                         activity.previous_version.secondary_tags
                     )
+                other_fields_changed = (
+                    title_changed or desc_changed or rec_changed or 
+                    eval_changed or decision_changed or status_changed or
+                    tags_changed
                 )
 
                 if added_files or removed_files:
