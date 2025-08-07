@@ -322,9 +322,8 @@ class UploadMultipleField(UploadMultipleBase, FileField):
     if TYPE_CHECKING:
         _separator: str
 
-        def _add_entry(
-            self, __d: _MultiDictLikeWithGetlist
-        ) -> UploadField: ...
+        def _add_entry(self, d: _MultiDictLikeWithGetlist, /) -> UploadField:
+            ...
 
     upload_field_class: type[UploadField] = UploadField
     upload_widget: 'Widget[UploadField]' = UploadWidget()

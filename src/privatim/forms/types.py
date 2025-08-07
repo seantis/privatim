@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TypeVar, TYPE_CHECKING, Any
 from wtforms.form import BaseForm
 
+BaseFormT = TypeVar('BaseFormT', bound='BaseForm', contravariant=True)
 FormT = TypeVar('FormT', bound='BaseForm', contravariant=True)
 FieldT = TypeVar('FieldT', bound='Field', contravariant=True)
 
@@ -12,11 +13,8 @@ if TYPE_CHECKING:
     from webob.request import _FieldStorageWithFile
     from wtforms.fields.core import _Filter, _Validator, _Widget, Field
 
-    _BaseFormT = TypeVar('_BaseFormT', bound=BaseForm, contravariant=True)
-    _FieldT = TypeVar('_FieldT', bound=Field, contravariant=True)
-
-    class FieldCondition(Protocol[_BaseFormT, _FieldT]):
-        def __call__(self, __form: _BaseFormT, __field: _FieldT) -> bool: ...
+    class FieldCondition(Protocol[BaseFormT, FieldT]):
+        def __call__(self, form: BaseFormT, field: FieldT, /) -> bool: ...
 
     Widget: TypeAlias = _Widget
     Filter: TypeAlias = _Filter

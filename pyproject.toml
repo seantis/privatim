@@ -146,6 +146,10 @@ preview = true
 explicit-preview-rules = true
 
 [tool.ruff.lint.extend-per-file-ignores]
+#
+"src/privatim/mail/__init__.py" = ["B018"]
+"src/privatim/models/__init__.py" = ["B018"]
+
 "*.pyi" = [
     "E501",
     # TODO: re-enable this one, I think it is smarter in Ruff
