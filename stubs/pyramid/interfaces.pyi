@@ -10,7 +10,8 @@ from collections.abc import Sequence
 from contextlib import contextmanager
 from privatim.flash import MessageQueue
 from privatim.models import User
-from sqlalchemy.orm import Session as DBSession
+# We overwrite this!
+from privatim.orm.session import FilteredSession as DBSession
 from types import ModuleType
 from types import TracebackType
 from typing import Any
