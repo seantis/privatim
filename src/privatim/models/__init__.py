@@ -12,7 +12,7 @@ from privatim.models.searchable import SearchableMixin
 from privatim.models.user import User
 from privatim.models.consultation import Consultation
 from privatim.models.comment import Comment
-from privatim.models.meeting import Meeting, AgendaItem, MeetingEditEvent
+from privatim.models.meeting import Meeting, AgendaItem
 from privatim.models.association_tables import (
     MeetingUserAttendance,
     AgendaItemDisplayState,
@@ -34,7 +34,6 @@ User
 Consultation
 Comment
 Meeting
-MeetingEditEvent
 MeetingUserAttendance
 AgendaItemDisplayState
 AgendaItemStatePreference
