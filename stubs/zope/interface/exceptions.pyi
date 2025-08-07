@@ -3,7 +3,7 @@ from typing import Literal
 
 from zope.interface.interfaces import IInterface, IMethod
 
-__all__ = ["Invalid", "DoesNotImplement", "BrokenImplementation", "BrokenMethodImplementation", "MultipleInvalid", "BadImplements", "InvalidInterface"]
+__all__ = ["BadImplements", "BrokenImplementation", "BrokenMethodImplementation", "DoesNotImplement", "Invalid", "InvalidInterface", "MultipleInvalid"]
 
 class Invalid(Exception): ...
 

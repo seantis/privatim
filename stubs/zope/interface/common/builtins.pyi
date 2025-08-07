@@ -5,7 +5,7 @@ from typing import Any, overload
 from zope.interface import classImplements
 from zope.interface.common import collections, io, numbers
 
-__all__ = ["IList", "ITuple", "ITextString", "IByteString", "INativeString", "IBool", "IDict", "IFile"]
+__all__ = ["IBool", "IByteString", "IDict", "IFile", "IList", "INativeString", "ITextString", "ITuple"]
 
 class IList(collections.IMutableSequence):
     @overload

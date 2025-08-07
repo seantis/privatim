@@ -2,7 +2,7 @@ from _typeshed import SupportsItems
 from collections.abc import Sequence
 from typing import Any, Final, Literal
 
-__all__ = ["ro", "InconsistentResolutionOrderError", "InconsistentResolutionOrderWarning"]
+__all__ = ["InconsistentResolutionOrderError", "InconsistentResolutionOrderWarning", "ro"]
 
 class InconsistentResolutionOrderWarning(PendingDeprecationWarning): ...
 

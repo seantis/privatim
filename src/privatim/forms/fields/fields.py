@@ -100,7 +100,7 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
             format: str = '%Y-%m-%dT%H:%M',
             **kwargs: Any
     ):
-        super(DateTimeLocalField, self).__init__(
+        super().__init__(
             label=label,
             validators=validators,
             format=format,
@@ -111,7 +111,7 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
         if valuelist:
             date_str = 'T'.join(valuelist).replace(' ', 'T')  # type:ignore
             valuelist = [date_str[:16]]
-        super(DateTimeLocalField, self).process_formdata(valuelist)
+        super().process_formdata(valuelist)
 
 
 class ConstantTextAreaField(TextAreaField):
@@ -136,7 +136,7 @@ class TomSelectWidget(Select):
         placeholder = _('Select...')
         kwargs['placeholder_'] = placeholder
         kwargs['autocomplete_'] = 'off'
-        return super(TomSelectWidget, self).__call__(field, **kwargs)
+        return super().__call__(field, **kwargs)
 
 
 class SearchableMultiSelectField(SelectMultipleField):

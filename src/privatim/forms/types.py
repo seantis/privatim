@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from wtforms.fields.core import _Filter, _Validator, _Widget, Field
 
     _BaseFormT = TypeVar('_BaseFormT', bound=BaseForm, contravariant=True)
-    _FormT = TypeVar('_FormT', bound=BaseForm, contravariant=True)
     _FieldT = TypeVar('_FieldT', bound=Field, contravariant=True)
 
     class FieldCondition(Protocol[_BaseFormT, _FieldT]):

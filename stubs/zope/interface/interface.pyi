@@ -38,13 +38,13 @@ class Element:
 
 class SpecificationBase:
     __slots__ = (
-        "_implied",
-        "_dependents",
-        "_bases",
-        "_v_attrs",
         "__iro__",
         "__sro__",
         "__weakref__",
+        "_bases",
+        "_dependents",
+        "_implied",
+        "_v_attrs",
     )
     __iro__: tuple[InterfaceClass, ...]
     __sro__: tuple[Specification, ...]

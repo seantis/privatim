@@ -7,7 +7,7 @@ from zope.interface.declarations import implementer
 from zope.interface.exceptions import Invalid
 from zope.interface.interface import _SignatureInfo, Interface
 
-__all__ = ["ComponentLookupError", "IAdapterRegistration", "IAdapterRegistry", "IAttribute", "IComponentLookup", "IComponentRegistry", "IComponents", "IDeclaration", "IElement", "IHandlerRegistration", "IInterface", "IInterfaceDeclaration", "IMethod", "Invalid", "IObjectEvent", "IRegistered", "IRegistration", "IRegistrationEvent", "ISpecification", "ISubscriptionAdapterRegistration", "IUnregistered", "IUtilityRegistration", "ObjectEvent", "Registered", "Unregistered"]
+__all__ = ["ComponentLookupError", "IAdapterRegistration", "IAdapterRegistry", "IAttribute", "IComponentLookup", "IComponentRegistry", "IComponents", "IDeclaration", "IElement", "IHandlerRegistration", "IInterface", "IInterfaceDeclaration", "IMethod", "IObjectEvent", "IRegistered", "IRegistration", "IRegistrationEvent", "ISpecification", "ISubscriptionAdapterRegistration", "IUnregistered", "IUtilityRegistration", "Invalid", "ObjectEvent", "Registered", "Unregistered"]
 
 _T = TypeVar("_T")
 _DefaultT = TypeVar("_DefaultT")

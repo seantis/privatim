@@ -12,17 +12,12 @@ from privatim.models import (
 )
 from privatim.models import Meeting
 
-from typing import TypeVar
 from typing import TYPE_CHECKING
-from typing import Any
 
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from sqlalchemy.orm import Query
     from privatim.types import MixedDataOrRedirect
     from privatim.types import XHRDataOrRedirect
-
-    _Q = TypeVar("_Q", bound=Query[Any])
 
 
 def add_agenda_item_view(

@@ -51,7 +51,7 @@ def consultation_view(
             data_item_title=context.title,
         ),
     ])
-    previous_versions = [context] + get_previous_versions(session, context)
+    previous_versions = [context, *get_previous_versions(session, context)]
 
     is_old_version = not context.is_latest()
     latest_version = context.get_latest_version(session)
@@ -117,7 +117,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
 
     def get_first_version_creation_date(cons: Consultation) -> 'datetime':
         prev_versions = get_previous_versions(session, cons, limit=1000)
-        all_versions = [cons] + prev_versions
+        all_versions = [cons, *prev_versions]
         first_version = min(all_versions, key=lambda v: v.created)
         return first_version.created
 
@@ -175,7 +175,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         } for status_key, __ in STATUS_CHOICES
     ]
 
-    all_statuses_for_display = [all_statuses_entry] + status_entries
+    all_statuses_for_display = [all_statuses_entry, *status_entries]
 
     return {
         'title': _('Consultations'),

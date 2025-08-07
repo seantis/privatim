@@ -2,12 +2,6 @@ from bleach.sanitizer import Cleaner
 from markupsafe import Markup
 
 
-from typing import TypeVar
-
-
-_StrT = TypeVar("_StrT", bound=str)
-
-
 # html tags allowed by bleach
 SANE_HTML_TAGS = [
     "a",

@@ -31,14 +31,12 @@ from privatim.models import Meeting, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
 
-from typing import TypeVar, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from collections.abc import Sequence
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.association_tables import MeetingUserAttendance
-    from sqlalchemy.orm import Query
     from privatim.types import RenderData, XHRDataOrRedirect
-    _Q = TypeVar("_Q", bound=Query[Any])
     from privatim.types import MixedDataOrRedirect
 
 

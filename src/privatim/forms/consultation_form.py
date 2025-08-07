@@ -77,7 +77,7 @@ class ConsultationForm(Form):
     )
     secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
-        choices=[('', '')] + CANTONS_SHORT,
+        choices=[('', ''), *CANTONS_SHORT],
         validators=[
             validators.Optional(),
         ],
