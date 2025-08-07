@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-08-05 22:21+0200\n"
+"POT-Creation-Date: 2025-08-06 23:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,6 +135,22 @@ msgstr ""
 
 #: ./src/privatim/layouts/navbar.pt
 msgid "Sign out"
+msgstr ""
+
+#: ./src/privatim/models/meeting.py
+msgid "Meeting Scheduled"
+msgstr ""
+
+#: ./src/privatim/models/meeting.py
+msgid "Meeting Updated"
+msgstr ""
+
+#: ./src/privatim/models/meeting.py
+msgid "Meeting Files Updated"
+msgstr ""
+
+#: ./src/privatim/models/meeting.py ./src/privatim/forms/filter_form.py
+msgid "Meeting"
 msgstr ""
 
 #. type: ignore[has-type]
@@ -297,23 +313,15 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr ""
 
 #: ./src/privatim/views/activities.py
-msgid "Meeting Scheduled"
-msgstr ""
-
-#: ./src/privatim/views/activities.py
-msgid "Meeting Updated"
-msgstr ""
-
-#: ./src/privatim/views/activities.py
-msgid "Meeting Files Updated"
-msgstr ""
-
-#: ./src/privatim/views/activities.py
 msgid "Consultation Added"
 msgstr ""
 
 #: ./src/privatim/views/activities.py
 msgid "Consultation Updated"
+msgstr ""
+
+#: ./src/privatim/views/activities.py
+msgid "Consultation Files Updated"
 msgstr ""
 
 #: ./src/privatim/views/trash.py
@@ -901,10 +909,6 @@ msgstr ""
 
 #: ./src/privatim/forms/filter_form.py
 msgid "Consultation"
-msgstr ""
-
-#: ./src/privatim/forms/filter_form.py
-msgid "Meeting"
 msgstr ""
 
 #: ./src/privatim/forms/filter_form.py

@@ -98,11 +98,21 @@ def activity_to_dict(
             icon_class = _get_icon_class(obj_type)
 
             if not is_creation:
-                previous_files_set = set(activity.previous_filenames or [])
-                current_files_set = {f.filename for f in activity.files}
+                previous_files_map = {
+                    d['id']: d['filename']
+                    for d in (activity.previous_files_metadata or [])
+                }
+                current_files_map = {f.id: f.filename for f in activity.files}
 
-                added_files = sorted(list(current_files_set - previous_files_set))
-                removed_files = sorted(list(previous_files_set - current_files_set))
+                added_ids = set(current_files_map) - set(previous_files_map)
+                removed_ids = set(previous_files_map) - set(current_files_map)
+
+                added_files = sorted(
+                    [current_files_map[id] for id in added_ids]
+                )
+                removed_files = sorted(
+                    [previous_files_map[id] for id in removed_ids]
+                )
                 other_fields_changed = (
                     activity.title != activity.previous_version.title
                     or activity.description != activity.previous_version.description
@@ -255,6 +265,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             location=request.route_url('activities', _query=query_params)
         )
 
+    # main filtering logic begins:
     include_consultations = form.consultation.data
     include_meetings = form.meeting.data
     start_date = form.start_date.data
@@ -320,6 +331,7 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     # Sort all items by their timestamp
     activities_data.sort(key=lambda x: x['timestamp'], reverse=True)
+    breakpoint()
     return {
         'title': _('Activities'),
         'form': form,

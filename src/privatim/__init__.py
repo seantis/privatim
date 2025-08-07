@@ -656,11 +656,17 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
 
+    create_meeting_edit_events_and_migrate_data(context)
+
+    fix_agenda_item_positions(context)
+    # Ensure this is called after FKs are potentially modified
+    fix_user_constraints_to_work_with_hard_delete(context)
+
     context.add_column(
         'consultations',
         Column(
-            'previous_filenames',
-            postgresql.ARRAY(String),
+            'previous_files_metadata',
+            postgresql.JSONB,
             nullable=True
         ),
     )
@@ -675,11 +681,6 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             ),
         )
 
-    create_meeting_edit_events_and_migrate_data(context)
-
-    fix_agenda_item_positions(context)
-    # Ensure this is called after FKs are potentially modified
-    fix_user_constraints_to_work_with_hard_delete(context)
 
     context.commit()
     print("Database schema upgrade process finished.")

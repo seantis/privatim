@@ -258,7 +258,7 @@ class Meeting(Base, SearchableMixin):
             (Allow, Authenticated, ['view']),
         ]
 
-    def track_changes(self, original_data: dict) -> dict:
+    def track_changes(self, original_data: dict[str, str]) -> dict:
         """Track changes between original and current state"""
         changes = {}
 

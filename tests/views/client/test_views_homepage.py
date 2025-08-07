@@ -33,10 +33,11 @@ def test_filter(client):
 
     page = client.get('/activities')
     form = page.forms['filter_activities']
-    form['consultation'] = True
+    form['consultation'] = False 
     form['meeting'] = True
-    form.submit().follow()
-    page = client.get('/activities')
+    page = form.submit().follow()
+    page.showbrowser()
+    # page = client.get('/activities')
     assert 'Powerpoint Parade' in page
 
 
