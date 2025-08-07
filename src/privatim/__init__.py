@@ -28,7 +28,8 @@ from privatim.security_policy import SessionSecurityPolicy
 from privatim.sms.sms_gateway import ASPSMSGateway
 
 
-from typing import Any, TYPE_CHECKING, Iterable
+from typing import Any, TYPE_CHECKING
+from collections.abc import Iterable
 from typing import Any as Incomplete
 from privatim.utils import fix_agenda_item_positions
 from subscribers import register_subscribers
@@ -185,7 +186,7 @@ def fix_user_constraints_to_work_with_hard_delete(
             except (ProgrammingError, SQLAlchemyError) as e:
                 print(
                     f"Error dropping constraint {constraint} on table {table}:"
-                    f" {str(e)}"
+                    f" {e!s}"
                 )
         else:
             print(
@@ -206,7 +207,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         except SQLAlchemyError as e:
             print(
                 f"Error creating constraint {constraint} on table {table}: "
-                f"{str(e)}")
+                f"{e!s}")
 
 
 def upgrade(context: 'UpgradeContext') -> None:

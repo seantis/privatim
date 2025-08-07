@@ -31,7 +31,8 @@ from privatim.models import Meeting, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
 
-from typing import TypeVar, TYPE_CHECKING, Any, Sequence
+from typing import TypeVar, TYPE_CHECKING, Any
+from collections.abc import Sequence
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.association_tables import MeetingUserAttendance
@@ -290,8 +291,8 @@ def export_meeting_as_docx_view(
     # (Example: attendees, agenda items - adjust if renderer needs more)
     # This might already be handled by relationship loading, but explicit check
     # can help.
-    __ = meeting.attendance_records  # Access to potentially load  # noqa: F841
-    ___ = meeting.agenda_items  # Access to potentially load  # noqa: F841
+    __ = meeting.attendance_records  # Access to potentially load
+    ___ = meeting.agenda_items  # Access to potentially load
 
     renderer = WordReportRenderer()
     options = ReportOptions(language=request.locale_name)

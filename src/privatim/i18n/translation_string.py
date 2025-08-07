@@ -76,7 +76,7 @@ class TranslationMarkup(TranslationString):
     """
     Markup aware version of TranslationString
     """
-    __slots__ = ('domain', 'context', 'default', 'mapping')
+    __slots__ = ('context', 'default', 'domain', 'mapping')
 
     domain: str | None
     context: str | None
@@ -111,8 +111,8 @@ class TranslationMarkup(TranslationString):
             msgid = Markup(msgid)
 
         elif isinstance(msgid, translationstring.TranslationString):
-            domain = domain or msgid.domain and msgid.domain[:]
-            context = context or msgid.context and msgid.context[:]
+            domain = domain or (msgid.domain and msgid.domain[:])
+            context = context or (msgid.context and msgid.context[:])
             _default = _default or Markup(msgid.default)
             if msgid.mapping:
                 if _mapping:
@@ -175,7 +175,7 @@ def TranslationStringFactory(factory_domain: str) -> 'TStrCallable':
             *,
             markup: bool = False,
     ) -> TranslationMarkup: ...
-    @overload  # noqa: E306
+    @overload
     def create(
             msgid: 'str | HasHTML',
             mapping: dict[str, Any] | None = None,
@@ -184,7 +184,7 @@ def TranslationStringFactory(factory_domain: str) -> 'TStrCallable':
             *,
             markup: Literal[True],
     ) -> TranslationMarkup: ...
-    @overload  # noqa: E306
+    @overload
     def create(
             msgid: str,
             mapping: dict[str, Any] | None = None,

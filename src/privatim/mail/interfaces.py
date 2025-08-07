@@ -19,7 +19,7 @@ class IMailer(Interface):  # pragma: no cover
     # NOTE: We would like to say that kwargs is OptionalMailParams
     #       however there is no way in mypy to express that yet.
     def send(sender:    Optional['Address'],
-             receivers: 'Union[Address, Sequence[Address]]',
+             receivers: 'Address | Sequence[Address]',
              subject:   str,
              content:   str,
              **kwargs:  Any) -> 'MailID':
@@ -42,7 +42,7 @@ class IMailer(Interface):  # pragma: no cover
     # NOTE: We would like to say that kwargs is OptionalTemplateMailParams
     #       however there is no way in mypy to express that yet.
     def send_template(sender:    Optional['Address'],
-                      receivers: 'Union[Address, Sequence[Address]]',
+                      receivers: 'Address | Sequence[Address]',
                       template:  str,
                       data:      'JSONObject',
                       **kwargs:  Any) -> 'MailID':

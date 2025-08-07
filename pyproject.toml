@@ -61,3 +61,126 @@ module = [
 ]
 ignore_missing_imports = true
 disallow_untyped_defs = false
+
+
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+src = ["src", "stubs" ]
+include = [
+    "pyproject.toml",
+    "src/**/*.py",
+    "stubs/**/*.pyi",
+    # "tests/**/*.py", # not yet
+]
+line-length = 79
+indent-width = 4
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "B0",
+    "B901",
+    # NOTE: not yet supported
+    # "B903",
+    "B904",
+    # NOTE: not yet supported
+    # "B908",
+    "C4",
+    "E",
+    "E301",
+    "E302",
+    "E303",
+    "E304",
+    "E305",
+    "E306",
+    "F",
+    "FLY002",
+    "PGH004",
+    "PYI",
+    "RUF",
+    "UP",
+    "W"
+]
+ignore = [
+    "PYI019",
+    "PYI041",
+    "RUF012",
+    "RUF013",
+    "UP009",
+    "UP012",
+    "UP032",
+    "UP037",
+    "UP038",
+]
+unfixable = []
+external = ["MS", "TC"]
+# NOTE: Enable preview rules, but only the ones we select explicitly
+preview = true
+explicit-preview-rules = true
+
+[tool.ruff.lint.extend-per-file-ignores]
+"*.pyi" = [
+    "E501",
+    # TODO: re-enable this one, I think it is smarter in Ruff
+    "F401",
+    "F403",
+    # NOTE: We would prefer to set a different target version instead
+    #       but there's no per-file-target-version
+    "UP",
+]
+"**/tests/**.py" = [
+    "B018",
+    "C4",
+    "FLY002",
+    "PGH",
+    "PYI",
+    "RUF",
+    "UP",
+]
+
+[tool.ruff.lint.flake8-quotes]
+avoid-escape = true
+docstring-quotes = "double"
+inline-quotes = "single"
+multiline-quotes = "double"
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]

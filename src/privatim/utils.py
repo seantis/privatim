@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from privatim import UpgradeContext
     from collections.abc import Mapping
     from privatim.types import FileDict, LaxFileDict
-    from typing import Iterable
+    from collections.abc import Iterable
     from datetime import datetime
     from privatim.orm import FilteredSession
 
@@ -108,8 +108,8 @@ def path_to_filename(path: str | None) -> str | None:
 
 
 def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
-    return db_time and to_timezone(
-        db_time, 'Europe/Zurich') or db_time
+    return (db_time and to_timezone(
+        db_time, 'Europe/Zurich')) or db_time
 
 
 def maybe_escape(value: str | None) -> str:

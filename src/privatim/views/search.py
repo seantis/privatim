@@ -13,13 +13,13 @@ from privatim.models.searchable import SearchableMixin
 from privatim.models.markup_text_type import MarkupText
 
 
-from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar, Union
+from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
     from privatim.types import RenderDataOrRedirect
 
-T = TypeVar('T', bound=Union[BinaryExpression[Any], Function[Any]])
+T = TypeVar('T', bound=BinaryExpression[Any] | Function[Any])
 
 
 class SearchResult(NamedTuple):

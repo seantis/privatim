@@ -13,11 +13,9 @@ from privatim.mail import MailError
 from privatim.security import authenticated_user
 from privatim.sms.interfaces import ISMSGateway
 
-from typing import Dict
-from typing import List
 from typing import NamedTuple
 from typing import Optional
-from typing import Sequence
+from collections.abc import Sequence
 from typing import Union
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -78,7 +76,7 @@ _('<b>bold</b>', markup=True)
 @implementer(IMailer)
 class DummyMailer:
     stream:           str = 'dummy'
-    mails:            List['Mail']
+    mails:            list['Mail']
     sent:             int
     error_state:      Optional['MailState']
     raise_mail_error: bool
@@ -120,8 +118,8 @@ class DummyMailer:
              subject:     str,
              content:     str,
              *,
-             tag:         Optional[str] = None,
-             attachments: Optional[List['MailAttachment']] = None,
+             tag:         str | None = None,
+             attachments: list['MailAttachment'] | None = None,
              **kwargs:    Any) -> 'MailID':
         params: MailParams = {
             'receivers': receivers,
@@ -137,8 +135,8 @@ class DummyMailer:
         return self.queue(params)
 
     def bulk_send(self,
-                  mails: List['MailParams']
-                  ) -> List[Union['MailID', 'MailState']]:
+                  mails: list['MailParams']
+                  ) -> list[Union['MailID', 'MailState']]:
         return [self.batch_queue(mail) for mail in mails]
 
     def send_template(self,
@@ -147,9 +145,9 @@ class DummyMailer:
                       template:    str,
                       data:        'JSONObject',
                       *,
-                      subject:     Optional[str] = None,
-                      tag:         Optional[str] = None,
-                      attachments: Optional[List['MailAttachment']] = None,
+                      subject:     str | None = None,
+                      tag:         str | None = None,
+                      attachments: list['MailAttachment'] | None = None,
                       **kwargs:    Any) -> 'MailID':
 
         params: TemplateMailParams = {
@@ -170,9 +168,9 @@ class DummyMailer:
         return self.queue(params)
 
     def bulk_send_template(self,
-                           mails: List['TemplateMailParams'],
-                           default_template: Optional[str] = None,
-                           ) -> List[Union['MailID', 'MailState']]:
+                           mails: list['TemplateMailParams'],
+                           default_template: str | None = None,
+                           ) -> list[Union['MailID', 'MailState']]:
         sent = []
         for _mail in mails:
             mail = _mail.copy()
@@ -184,7 +182,7 @@ class DummyMailer:
             sent.append(self.batch_queue(mail))
         return sent
 
-    def validate_template(self, template_data: Dict[str, str]) -> List[str]:
+    def validate_template(self, template_data: dict[str, str]) -> list[str]:
         raise NotImplementedError()
 
     def template_exists(self, alias: str) -> bool:
@@ -244,15 +242,15 @@ class MockResponse:
 class RequestsCall(NamedTuple):
     method: str
     url:    str
-    kwargs: Dict[str, Any]
+    kwargs: dict[str, Any]
 
 
 class MockRequests:
-    _calls:                List[RequestsCall]
+    _calls:                list[RequestsCall]
     # default response if no responses have been added
     _response:             MockResponse
     # FIFO single-use responses
-    _responses:            List[MockResponse]
+    _responses:            list[MockResponse]
     mock_connection_error: bool
 
     def __init__(self) -> None:
@@ -267,7 +265,7 @@ class MockRequests:
     def add_response(self, response: MockResponse) -> None:
         self._responses.append(response)
 
-    def pop(self) -> List[RequestsCall]:
+    def pop(self) -> list[RequestsCall]:
         calls = self._calls
         self.clear()
         return calls

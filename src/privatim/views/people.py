@@ -132,7 +132,7 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             logger.info(f'Password retrieval mail sent to "{user.email}"')
         except PasswordException as e:
             logger.warning(
-                f'[{request.client_addr}] password retrieval: {str(e)}'
+                f'[{request.client_addr}] password retrieval: {e!s}'
             )
         message = _(
             'Successfully added user ${first_name} ${last_name}.'

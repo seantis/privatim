@@ -2,7 +2,8 @@ from privatim.models.file import SearchableFile
 from privatim.orm import Base
 
 
-from typing import Iterator, TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.orm.meta import UUIDStrPK

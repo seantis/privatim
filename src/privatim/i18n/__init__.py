@@ -10,9 +10,9 @@ locales = {'de_CH': 'german'}
 _ = TranslationStringFactory('privatim')
 
 __all__ = (
-    '_',
     'LocaleNegotiator',
+    '_',
+    'locales',
     'pluralize',
     'translate',
-    'locales',
 )

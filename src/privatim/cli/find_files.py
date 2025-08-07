@@ -4,7 +4,7 @@ import click
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Iterator
+    from collections.abc import Iterator
 
 
 def find_ini_files(start_dir: str = '') -> 'Iterator[str]':

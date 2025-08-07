@@ -90,7 +90,7 @@ def password_retrieval_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             logger.info(f'Password retrieval mail sent to "{email}"')
         except PasswordException as e:
             logger.warning(
-                f'[{request.client_addr}] password retrieval: {str(e)}'
+                f'[{request.client_addr}] password retrieval: {e!s}'
             )
 
         msg = _(

@@ -25,12 +25,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __all__ = (
+    "FontExtensionNotSupportedError",
+    "FontpathError",
+    "ImageExtensionNotSupportedError",
     "PyAvatar",
     "PyAvatarError",
     "RenderingSizeError",
-    "FontpathError",
-    "FontExtensionNotSupportedError",
-    "ImageExtensionNotSupportedError",
 )
 
 

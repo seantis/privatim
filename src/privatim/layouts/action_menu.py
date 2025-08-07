@@ -1,7 +1,8 @@
 from markupsafe import Markup
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData

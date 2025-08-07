@@ -21,7 +21,8 @@ from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.models.user import User
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from sqlalchemy.orm import Session
     from privatim.models import WorkingGroup

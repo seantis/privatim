@@ -7,7 +7,7 @@ FieldT = TypeVar('FieldT', bound='Field', contravariant=True)
 if TYPE_CHECKING:
 
     from typing import Protocol, TypeVar
-    from typing_extensions import TypeAlias
+    from typing import TypeAlias
     from webob.request import _FieldStorageWithFile
     from wtforms.fields.core import _Filter, _Validator, _Widget, Field
 

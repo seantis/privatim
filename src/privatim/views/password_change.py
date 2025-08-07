@@ -74,7 +74,7 @@ def password_change_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 request.messages.add(_('Password changed'), 'success')
                 return HTTPFound(request.route_url('login'))
             except PasswordException as e:
-                msg = f'Password change: {str(e)}'
+                msg = f'Password change: {e!s}'
                 logger.warning(msg)
                 request.messages.add('Invalid Request', 'error')
         else:

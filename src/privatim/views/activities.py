@@ -1,5 +1,4 @@
 from datetime import datetime, time
-from zoneinfo import ZoneInfoactivites
 from sqlalchemy import select
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
@@ -9,7 +8,8 @@ from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
 
 
-from typing import TYPE_CHECKING, Any, Literal, TypedDict, Iterable
+from typing import TYPE_CHECKING, Any, Literal, TypedDict
+from collections.abc import Iterable
 if TYPE_CHECKING:
     from sqlalchemy import Select
     from pyramid.interfaces import IRequest

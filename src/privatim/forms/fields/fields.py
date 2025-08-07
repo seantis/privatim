@@ -65,9 +65,9 @@ else:
 
 
 __all__ = [
-    "TomSelectWidget",
     "DateTimeLocalField",
     "TimezoneDateTimeField",
+    "TomSelectWidget",
     "UploadField",
     "UploadMultipleField",
     # "UploadFileWithORMSupport",
@@ -478,7 +478,7 @@ class UploadFileWithORMSupport(UploadField):
         if value:
             try:
                 size = value.file.size
-            except IOError:
+            except OSError:
                 # if the file doesn't exist on disk we try to fail
                 # silently for now
                 size = -1

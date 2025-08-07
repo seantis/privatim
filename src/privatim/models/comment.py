@@ -10,7 +10,8 @@ from privatim.i18n import _
 from pyramid.authorization import Allow, Authenticated
 
 
-from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
+from typing import TYPE_CHECKING, Optional, TypeVar
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from privatim.models import User
     from sqlalchemy.orm import InstrumentedAttribute, Session

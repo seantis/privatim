@@ -18,7 +18,8 @@ from weasyprint import HTML, CSS  # type: ignore
 from weasyprint.text.fonts import FontConfiguration  # type: ignore
 
 
-from typing import TYPE_CHECKING, Protocol, Sequence
+from typing import TYPE_CHECKING, Protocol
+from collections.abc import Sequence
 if TYPE_CHECKING:
     from docx.text.paragraph import Paragraph
     from privatim.models.association_tables import MeetingUserAttendance

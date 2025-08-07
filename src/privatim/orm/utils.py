@@ -15,7 +15,7 @@ if TYPE_CHECKING:
         def all(self) -> tuple[_T, ...]: ...
 
 
-class QueryChain(QueryChainBase):  # type:ignore  # noqa:F811
+class QueryChain(QueryChainBase):  # type:ignore
     """ Extends SQLAlchemy Utils' QueryChain with some extra methods. """
 
     def slice(self, start: int | None, end: int | None) -> 'Self':

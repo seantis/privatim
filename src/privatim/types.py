@@ -14,7 +14,8 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IResponse, IRequest
 
     from typing import Any, Literal, TypeVar, Protocol
-    from typing_extensions import NotRequired, TypedDict, TypeAlias
+    from typing_extensions import NotRequired, TypedDict
+    from typing import TypeAlias
 
     # Monkey patch (no effect)
     # from pyramid.request import Request

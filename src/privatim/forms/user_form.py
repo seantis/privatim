@@ -31,11 +31,11 @@ class UserForm(Form):
         self.groups.choices = [
             (str(id), name)
             for id, name in session.execute(
-                (
+
                     select(WorkingGroup.id, WorkingGroup.name).order_by(
                         WorkingGroup.name
                     )
-                )
+
             )
         ]
 

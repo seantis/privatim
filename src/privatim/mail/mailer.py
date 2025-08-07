@@ -356,7 +356,7 @@ class PostmarkMailer:
         buffer = io.BytesIO()
         buffer.write(preamble)
         num_included = 0
-        result: list[Union[MailID, MailState]] = []
+        result: list[MailID | MailState] = []
 
         def finish_batch() -> None:
             nonlocal buffer

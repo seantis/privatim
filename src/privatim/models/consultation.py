@@ -17,7 +17,8 @@ from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.orm import FilteredSession
