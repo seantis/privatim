@@ -7,8 +7,8 @@ from fanstatic.core import render_js as render_js_default
 
 
 from typing import TYPE_CHECKING
-from collections.abc import Callable
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from collections.abc import Iterable
     from fanstatic.core import Dependable
 

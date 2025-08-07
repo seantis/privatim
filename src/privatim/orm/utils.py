@@ -1,7 +1,6 @@
 from __future__ import annotations
 from sqlalchemy_utils import QueryChain as QueryChainBase  # type: ignore
 
-
 from typing import TypeVar, TYPE_CHECKING
 if TYPE_CHECKING:
     from typing_extensions import Self

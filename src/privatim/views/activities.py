@@ -9,8 +9,9 @@ from privatim.i18n import _
 from privatim.forms.filter_form import FilterForm
 
 
-from typing import TYPE_CHECKING, Any, Literal, TypedDict, Iterable
+from typing import TYPE_CHECKING, Any, Literal, TypedDict
 if TYPE_CHECKING:
+    from collections.abs import Iterable
     from sqlalchemy import Select
     from pyramid.interfaces import IRequest
     from privatim.orm import FilteredSession
@@ -117,14 +118,15 @@ def activity_to_dict(
                 title_changed = activity.title != prev.title
                 desc_changed = activity.description != prev.description
                 rec_changed = activity.recommendation != prev.recommendation
-                eval_changed = activity.evaluation_result != prev.evaluation_result
+                eval_changed = (activity.evaluation_result !=
+                                prev.evaluation_result)
                 decision_changed = activity.decision != prev.decision
                 status_changed = activity.status != prev.status
                 tags_changed = set(activity.secondary_tags) != set(
                         activity.previous_version.secondary_tags
                     )
                 other_fields_changed = (
-                    title_changed or desc_changed or rec_changed or 
+                    title_changed or desc_changed or rec_changed or
                     eval_changed or decision_changed or status_changed or
                     tags_changed
                 )

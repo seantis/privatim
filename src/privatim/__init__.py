@@ -30,12 +30,12 @@ from privatim.sms.sms_gateway import ASPSMSGateway
 
 
 from typing import Any, TYPE_CHECKING
-from collections.abc import Iterable
 from typing import Any as Incomplete
 from privatim.utils import fix_agenda_item_positions
 from subscribers import register_subscribers
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
