@@ -57,7 +57,7 @@ def activity_to_dict(
 
     obj_type = activity.__class__.__name__
     if obj_type == 'MeetingEditEvent':
-        content: dict[str, Any] = {'name': activity.meeting.name, 
+        content: dict[str, Any] = {'name': activity.meeting.name,
                                    'time': activity.meeting.created}
         if activity.event_type == 'file_update':
             content.update({
@@ -331,7 +331,6 @@ def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
     # Sort all items by their timestamp
     activities_data.sort(key=lambda x: x['timestamp'], reverse=True)
-    breakpoint()
     return {
         'title': _('Activities'),
         'form': form,

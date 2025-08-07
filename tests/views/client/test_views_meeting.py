@@ -32,9 +32,9 @@ def set_meeting_title(meeting_title, page):
     # issues, hence this elaborate solution.
 
     # FIXME: It might be because the meeting name if you create a new one
-    # defaults to the working group name. It's still unclear why but we 
+    # defaults to the working group name. It's still unclear why but we
     # can just overwrite it.
-    selector = '#name' 
+    selector = '#name'
     script = """
         (args) => {
             const [selector, meeting_title] = args;
@@ -423,7 +423,7 @@ def test_edit_meeting_multiple_documents(
                     file_data=docx)
 
     replaced_file = docx
-    additional_file = pdf_full_text 
+    additional_file = pdf_full_text
     upload_new_documents(page, files=[additional_file])
     speichern(page)
     page.wait_for_load_state('networkidle', timeout=10000)
@@ -486,7 +486,7 @@ def test_edit_meeting_multiple_documents(
     # TODO: Check activity after all those edits
     page.wait_for_load_state('networkidle', timeout=10000)
     timeline_content = page.locator('.timeline-content')
-    # 
+    #
     # first we have added one, then replaced the first one and added a new one
     # then we have deleted the docx
     # then we deleted the other one
