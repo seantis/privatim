@@ -14,9 +14,9 @@ from privatim.mail import MailError
 from privatim.security import authenticated_user
 from privatim.sms.interfaces import ISMSGateway
 
-from typing import NamedTuple
+
 from collections.abc import Sequence
-from typing import Union
+from typing import NamedTuple
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from zope.interface.interfaces import IInterface
@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from .mail.types import TemplateMailParams
     from .types import JSON
     from .types import JSONObject
-    Mail = Union[MailParams, TemplateMailParams]
+    Mail = MailParams | TemplateMailParams
     MailID = int
 
 

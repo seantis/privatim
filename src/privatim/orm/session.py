@@ -37,8 +37,9 @@ class FilteredSession(BaseSession):
                 Consultation.deleted == True
             )
 
-    This is the recommended way to handle this kind of global filtering.:
-    https://docs.sqlalchemy.org/en/20/orm/session_events.html#adding-global-where-on-criteria  # noqa: E501
+    This is the recommended way to handle this kind of global filtering:
+    https://docs.sqlalchemy.org/en/20/orm/session_events.html
+    #adding-global-where-on-criteria
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

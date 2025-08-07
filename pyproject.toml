@@ -97,7 +97,7 @@ include = [
     "pyproject.toml",
     "src/**/*.py",
     "stubs/**/*.pyi",
-    # "tests/**/*.py", # not yet
+    "tests/**/*.py", # not yet
 ]
 line-length = 79
 indent-width = 4

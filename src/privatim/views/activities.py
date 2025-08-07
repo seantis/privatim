@@ -11,7 +11,7 @@ from privatim.forms.filter_form import FilterForm
 
 from typing import TYPE_CHECKING, Any, Literal, TypedDict
 if TYPE_CHECKING:
-    from collections.abs import Iterable
+    from collections.abc import Iterable
     from sqlalchemy import Select
     from pyramid.interfaces import IRequest
     from privatim.orm import FilteredSession

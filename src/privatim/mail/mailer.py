@@ -17,15 +17,13 @@ from .interfaces import IMailer
 from .types import MailState
 
 
-from typing import TYPE_CHECKING
 from typing import Any
 from typing import ClassVar
-from typing import Union
 from typing import cast
 from typing import overload
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from requests import Response
-
     from collections.abc import Sequence
     from ..types import JSON
     from ..types import JSONArray
@@ -34,7 +32,7 @@ if TYPE_CHECKING:
     from .types import MailParams
     from .types import TemplateMailParams
     MailID = str
-    AnyMailParams = Union[MailParams, TemplateMailParams]
+    AnyMailParams = MailParams | TemplateMailParams
 
 
 domain_regex = re.compile(r'@[A-Za-z0-9][A-Za-z0-9.-]*[.][A-Za-z]{2,10}')
