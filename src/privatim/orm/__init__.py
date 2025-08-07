@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import engine_from_config
 import zope.sqlalchemy
 from sqlalchemy.orm import sessionmaker

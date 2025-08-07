@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .root_factory import root_factory
 from .uuid_factory import (
     create_uuid_factory,

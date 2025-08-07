@@ -1,10 +1,12 @@
+from __future__ import annotations
 from docx import Document
 from pdftotext import PDF  # type: ignore
 from docx.text.paragraph import Paragraph
 from docx.table import Table
 
 
-from typing import IO, TYPE_CHECKING, Iterator, Any
+from typing import IO, TYPE_CHECKING, Any
+from collections.abc import Iterator
 
 
 if TYPE_CHECKING:

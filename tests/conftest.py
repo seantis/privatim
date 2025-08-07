@@ -282,7 +282,8 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
     """
     # Use the postgresql fixture info to build the DB URL
     db_info = postgresql.info
-    db_url = f'postgresql+psycopg://{db_info.user}:@{db_info.host}:{db_info.port}/{db_info.dbname}'
+    db_url = (f'postgresql+psycopg://{db_info.user}:@{db_info.host}:'
+              f'{db_info.port}/{db_info.dbname}')
 
     # Create a copy of settings and update the DB URL
     settings = app_settings.copy()

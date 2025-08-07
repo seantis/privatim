@@ -1,3 +1,4 @@
+from __future__ import annotations
 import base64
 import io
 import json
@@ -16,15 +17,13 @@ from .interfaces import IMailer
 from .types import MailState
 
 
-from typing import TYPE_CHECKING
 from typing import Any
 from typing import ClassVar
-from typing import Union
 from typing import cast
 from typing import overload
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from requests import Response
-
     from collections.abc import Sequence
     from ..types import JSON
     from ..types import JSONArray
@@ -33,7 +32,7 @@ if TYPE_CHECKING:
     from .types import MailParams
     from .types import TemplateMailParams
     MailID = str
-    AnyMailParams = Union[MailParams, TemplateMailParams]
+    AnyMailParams = MailParams | TemplateMailParams
 
 
 domain_regex = re.compile(r'@[A-Za-z0-9][A-Za-z0-9.-]*[.][A-Za-z]{2,10}')
@@ -306,7 +305,7 @@ class PostmarkMailer:
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]: ...
+                       ) -> list['MailID' | MailState]: ...
 
     @overload
     def _raw_bulk_send(self,
@@ -316,7 +315,7 @@ class PostmarkMailer:
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]: ...
+                       ) -> list['MailID' | MailState]: ...
 
     def _raw_bulk_send(self,
                        api_path: str,
@@ -329,7 +328,7 @@ class PostmarkMailer:
                        #       these arguments
                        preamble: bytes = b'{"Messages": [',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]:
+                       ) -> list['MailID' | MailState]:
 
         messages: JSONArray = []
         for mail in mails:
@@ -356,7 +355,7 @@ class PostmarkMailer:
         buffer = io.BytesIO()
         buffer.write(preamble)
         num_included = 0
-        result: list[Union[MailID, MailState]] = []
+        result: list[MailID | MailState] = []
 
         def finish_batch() -> None:
             nonlocal buffer
@@ -433,14 +432,14 @@ class PostmarkMailer:
         return result
 
     def bulk_send(self, mails: list['MailParams']
-                  ) -> list[Union['MailID', MailState]]:
+                  ) -> list['MailID' | MailState]:
         return self._raw_bulk_send('/email/batch', mails,
                                    preamble=b'[', postamble=b']')
 
     def bulk_send_template(self,
                            mails: list['TemplateMailParams'],
                            default_template: str | None = None,
-                           ) -> list[Union['MailID', MailState]]:
+                           ) -> list['MailID' | MailState]:
         return self._raw_bulk_send(
             '/email/batchWithTemplates', mails, default_template
         )

@@ -1,6 +1,5 @@
 from pyramid.interfaces import IRendererFactory
 
-
 class RenderingConfiguratorMixin:
     def add_renderer(
         self,

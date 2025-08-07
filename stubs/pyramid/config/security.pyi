@@ -7,7 +7,6 @@ from pyramid.interfaces import ICSRFStoragePolicy
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import ISecurityPolicy
 
-
 class SecurityConfiguratorMixin:
     def set_security_policy(self, policy: ISecurityPolicy | str) -> None: ...
     def set_authentication_policy(

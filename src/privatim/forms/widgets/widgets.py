@@ -1,3 +1,4 @@
+from __future__ import annotations
 import humanize
 from contextlib import suppress
 from markupsafe import Markup

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import partial
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
@@ -28,12 +29,13 @@ from privatim.security_policy import SessionSecurityPolicy
 from privatim.sms.sms_gateway import ASPSMSGateway
 
 
-from typing import Any, TYPE_CHECKING, Iterable
-
+from typing import Any, TYPE_CHECKING
+from typing import Any as Incomplete
 from privatim.utils import fix_agenda_item_positions
 from subscribers import register_subscribers
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from privatim.controls.controls import Button
     from _typeshed.wsgi import WSGIApplication
     from privatim.cli.upgrade import UpgradeContext
@@ -117,7 +119,7 @@ def includeme(config: Configurator) -> None:
     )
 
 
-def add_renderer_globals(event: BeforeRender) -> None:
+def add_renderer_globals(event: Incomplete) -> None:
     """ Makes the helpers module available in all templates.
     For example, you can access Markup via 'h':
 
@@ -185,7 +187,7 @@ def fix_user_constraints_to_work_with_hard_delete(
             except (ProgrammingError, SQLAlchemyError) as e:
                 print(
                     f"Error dropping constraint {constraint} on table {table}:"
-                    f" {str(e)}"
+                    f" {e!s}"
                 )
         else:
             print(
@@ -206,10 +208,10 @@ def fix_user_constraints_to_work_with_hard_delete(
         except SQLAlchemyError as e:
             print(
                 f"Error creating constraint {constraint} on table {table}: "
-                f"{str(e)}")
+                f"{e!s}")
 
 
-def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
+def upgrade(context: 'UpgradeContext') -> None:
     context.add_column(
         'meetings',
         Column(
@@ -495,7 +497,8 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
 
     # Step 1: Add new FK columns (nullable initially) if they don't exist
-    consultation_col_exists = context.has_column(table_name, consultation_fk_col)
+    consultation_col_exists = context.has_column(
+        table_name, consultation_fk_col)
     if not consultation_col_exists:
         print(f"  Adding column {consultation_fk_col} to {table_name}")
         context.add_column(
@@ -565,7 +568,8 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             context.operations.create_check_constraint(
                 constraint_name=constraint_name,
                 table_name=table_name,
-                condition=f"num_nonnulls({consultation_fk_col}, {meeting_fk_col}) = 1"
+                condition=f"num_nonnulls({consultation_fk_col}, "
+                f"{meeting_fk_col}) = 1"
             )
             print(f"  Added check constraint {constraint_name}.")
         except Exception as e:

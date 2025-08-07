@@ -21,9 +21,8 @@ _HTTPCache: TypeAlias = tuple[_Expires, dict[str, Any]]
 _Decorator: TypeAlias = Callable[[Callable[..., Any]], Callable[..., Any]]
 _View: TypeAlias = Callable[[Any, IRequest], Any] | Callable[[IRequest], Any]
 
-
 class _ViewPredicateClass(Protocol):
-    def __init__(self, __value: Any, __info: IPredicateInfo, /): ...
+    def __init__(self, value: Any, info: IPredicateInfo, /): ...
     def text(self) -> str: ...
     def phash(self) -> str: ...
     def __call__(self, context: Any, request: IRequest) -> bool: ...
@@ -59,7 +58,9 @@ class ViewsConfiguratorMixin:
         physical_path: str | tuple[str] = ...,
         is_authenticated: bool = ...,
         effective_principals: str | Sequence[str] = ...,
-        # NOTE: here we would add any custom view predicates
+        # NOTE: here we add any custom view predicates
+        postmark_record_type: str = ...,
+        zoom_event: str = ...,
         **view_options: Any
     ) -> None: ...
     def add_view_predicate(
@@ -94,8 +95,11 @@ class ViewsConfiguratorMixin:
         decorator: _Decorator | str | Iterable[_Decorator | str] | None = ...,
         mapper: IViewMapper | str | None = ...,
         match_param: str | Sequence[str] | None = ...,
-        # NOTE: here we would add any custom view predicates
-        **view_options
+        *,
+        # NOTE: here we add any custom view predicates
+        postmark_record_type: str = ...,
+        zoom_event: str = ...,
+        **view_options: Any
     ) -> None: ...
     set_forbidden_view = add_forbidden_view
     def add_notfound_view(
@@ -118,9 +122,12 @@ class ViewsConfiguratorMixin:
         mapper: IViewMapper | str | None = ...,
         match_param: str | Sequence[str] | None = ...,
         append_slash: bool = ...,
-        # NOTE: here we would add any custom view predicates
-        **view_options
-    ): ...
+        *,
+        # NOTE: here we add any custom view predicates
+        postmark_record_type: str = ...,
+        zoom_event: str = ...,
+        **view_options: Any
+    ) -> None: ...
     set_notfound_view = add_notfound_view
     def add_exception_view(
         self,
@@ -143,9 +150,11 @@ class ViewsConfiguratorMixin:
         physical_path: str | tuple[str] = ...,
         is_authenticated: bool = ...,
         effective_principals: str | Sequence[str] = ...,
-        # NOTE: here we would add any custom view predicates
-        **view_options
-    ): ...
+        # NOTE: here we add any custom view predicates
+        postmark_record_type: str = ...,
+        zoom_event: str = ...,
+        **view_options: Any
+    ) -> None: ...
     def set_view_mapper(self, mapper: IViewMapper | str) -> None: ...
     def add_static_view(
         self,
@@ -170,7 +179,8 @@ class ViewsConfiguratorMixin:
         inherit_slash: bool = ...,
         is_authenticated: bool = ...,
         effective_principals: str | Sequence[str] = ...,
-        # NOTE: here we would add any custom route predicates
+        # NOTE: if we had any custom route predicated defined
+        #       we would add them here in order to type check them
         **predicates: Any
     ) -> None: ...
     def add_cache_buster(

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form, HtmlField
@@ -77,7 +78,7 @@ class ConsultationForm(Form):
     )
     secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
-        choices=[('', '')] + CANTONS_SHORT,
+        choices=[('', ''), *CANTONS_SHORT],
         validators=[
             validators.Optional(),
         ],

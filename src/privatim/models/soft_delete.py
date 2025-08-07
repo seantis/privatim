@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import cache
 from sqlalchemy import Boolean
 from sqlalchemy.orm import (

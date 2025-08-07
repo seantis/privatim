@@ -1,0 +1,13 @@
+from collections.abc import Callable
+from typing import Any
+from typing_extensions import Self
+
+from pyramid.interfaces import IRequest, IRouter
+from pyramid.registry import Registry
+
+def get_root(app: IRouter, request: IRequest | None = None) -> tuple[Any, Callable[[], None]]: ...
+def prepare(request: IRequest | None = None, registry: Registry | None = None) -> AppEnvironment: ...
+
+class AppEnvironment(dict[str, Any]):
+    def __enter__(self) -> Self: ...
+    def __exit__(self, type: object, value: object, traceback: object) -> None: ...

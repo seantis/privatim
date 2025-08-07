@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.forms.search_form import SearchForm
 
 

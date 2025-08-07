@@ -13,6 +13,7 @@ user avatars to use in a web application or elsewhere.
 :copyright: (c) 2020 by Matthieu Petiteau.
 :license: MIT, see LICENSE for more details.
 """
+from __future__ import annotations
 
 import os
 import random
@@ -25,12 +26,12 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 __all__ = (
+    "FontExtensionNotSupportedError",
+    "FontpathError",
+    "ImageExtensionNotSupportedError",
     "PyAvatar",
     "PyAvatarError",
     "RenderingSizeError",
-    "FontpathError",
-    "FontExtensionNotSupportedError",
-    "ImageExtensionNotSupportedError",
 )
 
 

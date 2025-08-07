@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from markupsafe import Markup
 from pyramid.response import Response
@@ -31,13 +32,12 @@ from privatim.models import Meeting, WorkingGroup
 from privatim.i18n import _
 from privatim.i18n import translate
 
-from typing import TypeVar, TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING
+from collections.abc import Sequence
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from privatim.models.association_tables import MeetingUserAttendance
-    from sqlalchemy.orm import Query
     from privatim.types import RenderData, XHRDataOrRedirect
-    _Q = TypeVar("_Q", bound=Query[Any])
     from privatim.types import MixedDataOrRedirect
 
 
@@ -297,12 +297,11 @@ def export_meeting_as_docx_view(
     options = ReportOptions(language=request.locale_name)
     # Pass the specific renderer instance
     report_builder = MeetingReport(request, meeting, options, renderer)
-    report_doc = report_builder.build() # build() now uses the passed renderer
+    report_doc = report_builder.build()  # build() now uses the passed renderer
 
     response = Response(report_doc.data)
-    response.content_type = (
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    )
+    response.content_type = ('application/vnd.openxmlformats-officedocument'
+                             '.wordprocessingml.document')
     safe_filename = report_doc.filename
     response.content_disposition = f'attachment; filename="{safe_filename}"'
     log.info(f'Content-Disposition: {response.content_disposition}')
@@ -406,7 +405,8 @@ def add_meeting_view(
         if form.files.data:
             for file in form.files.data:
                 if file:
-                    # Explicitly set meeting_id, consultation_id defaults to None
+                    # Explicitly set meeting_id, consultation_id defaults
+                    # to None
                     searchable_file = SearchableFile(
                         filename=file['filename'],
                         content=dictionary_to_binary(file),

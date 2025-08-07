@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 import subprocess
 import sys
@@ -103,6 +104,7 @@ def check_server_known_host(
     except FileNotFoundError:
         sys.exit(1)
 
+
 @click.command(name='privatim_transfer')
 @click.option(
     '--server',
@@ -151,7 +153,8 @@ def main(
         if not dry_run:
             os.makedirs(local_files_target_dir, exist_ok=True)
         else:
-            msg = f'Dry run: Would ensure directory exists: {local_files_target_dir}'
+            msg = (f'Dry run: Would ensure directory exists: '
+                  f'{local_files_target_dir}')
             click.echo(click.style(msg, fg='cyan'))
 
     click.echo(f"\n--- 1. Dumping remote DB on {selected_server} ---")

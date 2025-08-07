@@ -1,3 +1,4 @@
+from __future__ import annotations
 from code import InteractiveConsole
 import readline
 import rlcompleter

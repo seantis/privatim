@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select, exists
 from wtforms import SelectMultipleField
 from wtforms.fields.simple import StringField, EmailField
@@ -31,11 +32,11 @@ class UserForm(Form):
         self.groups.choices = [
             (str(id), name)
             for id, name in session.execute(
-                (
+
                     select(WorkingGroup.id, WorkingGroup.name).order_by(
                         WorkingGroup.name
                     )
-                )
+
             )
         ]
 

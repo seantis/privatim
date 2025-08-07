@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from functools import cached_property
 from random import choice

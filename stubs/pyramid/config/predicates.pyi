@@ -5,7 +5,6 @@ from pyramid.config import Configurator
 from pyramid.interfaces import IPredicate
 from pyramid.interfaces import IPredicateFactory
 
-
 _T = TypeVar('_T')
 
 class PredicateList:

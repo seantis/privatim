@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select
 from privatim.models import (
     Consultation,
@@ -6,7 +7,8 @@ from privatim.models import (
 )
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
-from typing import TYPE_CHECKING, TypedDict, List, Sequence, Type
+from typing import TYPE_CHECKING, TypedDict
+from collections.abc import Sequence
 
 if TYPE_CHECKING:
     from privatim.orm import FilteredSession
@@ -51,7 +53,7 @@ def generate_deleted_item_data(
 def trash_view(request: 'IRequest') -> 'RenderData':
 
     def get_deleted_items(
-        session: 'FilteredSession', model: Type['SoftDeleteMixin']
+        session: 'FilteredSession', model: type['SoftDeleteMixin']
     ) -> Sequence['SoftDeleteMixin']:
         with session.no_soft_delete_filter():
             stmt = select(model).filter(model.deleted.is_(True))
@@ -59,8 +61,8 @@ def trash_view(request: 'IRequest') -> 'RenderData':
             deleted_items = result.scalars().all()
         return deleted_items
 
-    session = request.dbsession
-    deleted_items: List[DeletedItemData] = []
+    session: FilteredSession = request.dbsession
+    deleted_items: list[DeletedItemData] = []
     deleted_items.extend(
         [
             generate_deleted_item_data(request, item, 'consultation')
@@ -97,7 +99,7 @@ def restore_consultation_chain(
 def restore_soft_deleted_model_view(
         request: 'IRequest',
 ) -> 'RenderDataOrRedirect':
-    session = request.dbsession
+    session: FilteredSession = request.dbsession
     item_type = request.matchdict['item_type']
     item_id = request.matchdict['item_id']
     model = model_map.get(item_type)

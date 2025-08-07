@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from datetime import datetime
 
@@ -17,7 +18,8 @@ from privatim.orm.meta import UUIDStrPK
 from privatim.orm.meta import UUIDStr as UUIDStrType
 
 
-from typing import TYPE_CHECKING, Iterator
+from typing import TYPE_CHECKING
+from collections.abc import Iterator
 if TYPE_CHECKING:
     from privatim.types import ACL
     from privatim.orm import FilteredSession
@@ -158,7 +160,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
             return self
         with session.no_consultation_filter():
             latest_version = self.replaced_by
-            while (latest_version is not None 
+            while (latest_version is not None
                    and latest_version.replaced_by is not None):
                 latest_version = latest_version.replaced_by
         # if we're not the latest version, there exists a newer version and

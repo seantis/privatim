@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 

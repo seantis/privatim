@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import partial
 from wtforms import Form as BaseForm
 from wtforms import Label

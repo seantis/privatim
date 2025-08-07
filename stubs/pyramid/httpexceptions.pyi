@@ -4,7 +4,6 @@ from zope.interface import implementer
 from pyramid.interfaces import IExceptionResponse
 from pyramid.response import Response
 
-
 @implementer(IExceptionResponse)
 class HTTPException(Response, Exception):
     code: int
@@ -14,7 +13,7 @@ class HTTPException(Response, Exception):
     detail: str | None
     message: str | None  # copy of detail
     comment: str | None
-    def __init__(  # type:ignore[override]
+    def __init__(
         self,
         detail: str | None = ...,
         headers: list[tuple[str, str]] | None = ...,
@@ -23,8 +22,8 @@ class HTTPException(Response, Exception):
         json_formatter: object | None = ...,
         **kw: Any
     ) -> None: ...
-    def __str__(self) -> str: ...  # type:ignore[override]  # noqa: Y029
     def prepare(self, environ: dict[str, Any]) -> None: ...
+    def __str__(self) -> str: ...  # type: ignore[override]  # noqa: PYI029
 
 WSGIHTTPException = HTTPException
 

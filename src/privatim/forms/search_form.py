@@ -1,3 +1,4 @@
+from __future__ import annotations
 from wtforms.fields.simple import SearchField
 from wtforms.validators import DataRequired
 from privatim.forms.core import Form

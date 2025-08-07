@@ -5,6 +5,7 @@
 # More info
 # https://docs.pylonsproject.org/projects/pyramid_cookbook/en/latest
 # /templates/templates.html
+from __future__ import annotations
 
 from privatim.git_info import get_git_revision_hash
 from markupsafe import Markup   # noqa: F401

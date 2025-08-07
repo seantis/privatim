@@ -1,6 +1,5 @@
 from pyramid.interfaces import ILocaleNegotiator
 
-
 class I18NConfiguratorMixin:
     def set_locale_negotiator(
         self,

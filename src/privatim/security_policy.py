@@ -1,3 +1,4 @@
+from __future__ import annotations
 from datetime import datetime
 from typing import Any, TYPE_CHECKING
 
@@ -16,7 +17,7 @@ from privatim.security import query_user
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from pyramid.security import ACLPermitsResult
-    from typing_extensions import TypeAlias
+    from typing import TypeAlias
 
     from privatim.models import User
 

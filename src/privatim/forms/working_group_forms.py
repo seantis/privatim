@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select
 from wtforms import SelectField
 from privatim.forms.core import Form
@@ -41,9 +42,9 @@ class WorkingGroupForm(Form):
                 users, key=lambda u: u.first_name or ''
             )
         ]
-        self.leader.choices = [('0', '-')] + user_choices
+        self.leader.choices = [('0', '-'), *user_choices]
         self.users.choices = user_choices
-        self.chairman.choices = [('0', '-')] + user_choices
+        self.chairman.choices = [('0', '-'), *user_choices]
 
     name = ConstantTextAreaField(
         _('Name'), validators=[DataRequired()]

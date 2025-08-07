@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from sqlalchemy import select
@@ -19,7 +20,7 @@ from privatim.forms.validators import FileExtensionsAllowed, FileSizeLimit
 from privatim.i18n import _
 from privatim.models import Meeting, MeetingUserAttendance, User, WorkingGroup
 from privatim.models.association_tables import AttendanceStatus
-from privatim.models.file import SearchableFile  # type:ignore[import-untyped]
+from privatim.models.file import SearchableFile
 from privatim.utils import get_guest_and_removed_users, status_is_checked
 
 

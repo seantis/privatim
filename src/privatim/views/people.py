@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import nullslast
 from sqlalchemy.orm import selectinload
@@ -132,7 +133,7 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
             logger.info(f'Password retrieval mail sent to "{user.email}"')
         except PasswordException as e:
             logger.warning(
-                f'[{request.client_addr}] password retrieval: {str(e)}'
+                f'[{request.client_addr}] password retrieval: {e!s}'
             )
         message = _(
             'Successfully added user ${first_name} ${last_name}.'

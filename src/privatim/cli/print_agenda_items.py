@@ -1,3 +1,4 @@
+from __future__ import annotations
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings

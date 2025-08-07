@@ -1,3 +1,4 @@
+from __future__ import annotations
 from wtforms import DateField
 from privatim.forms.core import Form
 from wtforms.validators import Optional
@@ -5,10 +6,10 @@ from wtforms.validators import Optional
 from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _
 
-from typing import TYPE_CHECKING, Iterable
+
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
-    from privatim.i18n import TranslationString
 
 
 class FilterForm(Form):

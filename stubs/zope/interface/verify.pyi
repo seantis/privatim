@@ -1,0 +1,6 @@
+from zope.interface.interfaces import IInterface
+
+__all__ = ["verifyClass", "verifyObject"]
+
+def verifyClass(iface: IInterface, candidate: type[object], tentative: bool = False) -> bool: ...
+def verifyObject(iface: IInterface, candidate: object, tentative: bool = False) -> bool: ...

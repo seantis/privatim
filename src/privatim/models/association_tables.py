@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum as PyEnum
 from enum import IntEnum
 from sqlalchemy import ForeignKey, Integer, Enum

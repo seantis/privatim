@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.i18n import _
 
 cantons_named = [

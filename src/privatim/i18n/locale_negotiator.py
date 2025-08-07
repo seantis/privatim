@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.interfaces import ILocaleNegotiator
 from zope.interface import implementer

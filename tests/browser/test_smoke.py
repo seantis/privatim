@@ -22,4 +22,3 @@ def test_login_page_loads(page: Page, live_server_url: str) -> None:
 def test_root_page_loads(page: Page, live_server_url: str) -> None:
     response = page.goto(live_server_url + '/')
     assert response is not None and response.ok
-

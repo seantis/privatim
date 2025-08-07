@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from itertools import zip_longest
 import sedate
@@ -49,6 +50,7 @@ if TYPE_CHECKING:
         DefaultMeta,
     )
 
+    # We can't use the one from privatim/types.py
     class FileDict(TypedDict, total=False):
         data: str
         filename: str | None
@@ -64,9 +66,9 @@ else:
 
 
 __all__ = [
-    "TomSelectWidget",
     "DateTimeLocalField",
     "TimezoneDateTimeField",
+    "TomSelectWidget",
     "UploadField",
     "UploadMultipleField",
     # "UploadFileWithORMSupport",
@@ -99,7 +101,7 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
             format: str = '%Y-%m-%dT%H:%M',
             **kwargs: Any
     ):
-        super(DateTimeLocalField, self).__init__(
+        super().__init__(
             label=label,
             validators=validators,
             format=format,
@@ -110,7 +112,7 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
         if valuelist:
             date_str = 'T'.join(valuelist).replace(' ', 'T')  # type:ignore
             valuelist = [date_str[:16]]
-        super(DateTimeLocalField, self).process_formdata(valuelist)
+        super().process_formdata(valuelist)
 
 
 class ConstantTextAreaField(TextAreaField):
@@ -135,7 +137,7 @@ class TomSelectWidget(Select):
         placeholder = _('Select...')
         kwargs['placeholder_'] = placeholder
         kwargs['autocomplete_'] = 'off'
-        return super(TomSelectWidget, self).__call__(field, **kwargs)
+        return super().__call__(field, **kwargs)
 
 
 class SearchableMultiSelectField(SelectMultipleField):
@@ -256,7 +258,7 @@ class UploadField(FileField):
             # resend_upload
             action = valuelist[0]
             fieldstorage = valuelist[1]
-            self.data = binary_to_dictionary(
+            self.data = binary_to_dictionary(  # type: ignore[assignment]
                 dictionary_to_binary({'data': str(valuelist[3])}),
                 str(valuelist[2]),
             )
@@ -320,9 +322,8 @@ class UploadMultipleField(UploadMultipleBase, FileField):
     if TYPE_CHECKING:
         _separator: str
 
-        def _add_entry(
-            self, __d: _MultiDictLikeWithGetlist
-        ) -> UploadField: ...
+        def _add_entry(self, d: _MultiDictLikeWithGetlist, /) -> UploadField:
+            ...
 
     upload_field_class: type[UploadField] = UploadField
     upload_widget: 'Widget[UploadField]' = UploadWidget()
@@ -477,7 +478,7 @@ class UploadFileWithORMSupport(UploadField):
         if value:
             try:
                 size = value.file.size
-            except IOError:
+            except OSError:
                 # if the file doesn't exist on disk we try to fail
                 # silently for now
                 size = -1
@@ -530,4 +531,3 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
                     self.added_files.append(dummy.file)
 
         setattr(obj, name, output)
-

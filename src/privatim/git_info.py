@@ -1,10 +1,10 @@
+from __future__ import annotations
 import subprocess  # nosec
-from typing import Optional
 
-_git_revision_hash: Optional[str] = None
+_git_revision_hash: str | None = None
 
 
-def get_git_revision_hash() -> Optional[str]:
+def get_git_revision_hash() -> str | None:
     global _git_revision_hash
     if _git_revision_hash is None:
         try:

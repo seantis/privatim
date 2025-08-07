@@ -1,3 +1,4 @@
+from __future__ import annotations
 import arrow
 import babel.dates
 import babel.numbers

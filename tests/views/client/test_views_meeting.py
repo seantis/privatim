@@ -5,8 +5,7 @@ import re
 import transaction
 import uuid
 
-from privatim.models import User, WorkingGroup, Meeting, MeetingUserAttendance
-from privatim.models.association_tables import AttendanceStatus
+from privatim.models import User, WorkingGroup, Meeting
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
@@ -144,7 +143,7 @@ def test_edit_meeting_browser(page: Page, live_server_url, session) -> None:
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -271,7 +270,7 @@ def test_edit_meeting_document(
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -499,7 +498,7 @@ def test_remove_and_readd_working_group_member_in_meeting(
     ).click()
 
     # Click outside to close dropdown if necessary, then fill for next user
-    page.locator('textarea[name="name"]').click() # Click somewhere else
+    page.locator('textarea[name="name"]').click()  # Click somewhere else
     user_select_input.click()
     user_select_input.fill(member_full_name)
     page.locator(
@@ -571,4 +570,3 @@ def test_remove_and_readd_working_group_member_in_meeting(
     expect(attendees_list_view).to_be_visible(timeout=5000)
     expect(attendees_list_view).to_contain_text(member_full_name)
     expect(attendees_list_view).to_contain_text(admin_full_name)
-

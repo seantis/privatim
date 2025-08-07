@@ -14,9 +14,8 @@ from pyramid.interfaces import IRootFactory
 from pyramid.interfaces import IRoutePregenerator
 from pyramid.interfaces import IRoutesMapper
 
-
 class _RoutePredicateClass(Protocol):
-    def __init__(self, __value: Any, __info: IPredicateInfo, /): ...
+    def __init__(self, value: Any, info: IPredicateInfo, /): ...
     def text(self) -> str: ...
     def phash(self) -> str: ...
     def __call__(self, request: IRequest) -> bool: ...
@@ -44,10 +43,11 @@ class RoutesConfiguratorMixin:
         *,
         is_authenticated: bool = ...,
         effective_principals: str | Sequence[str] = ...,
-        # NOTE: if we had any custom route predicated defined
+        # NOTE: if we had any custom route predicates defined
         #       we would add them here in order to type check them
         **predicates: Any
-    ): ...
+    ) -> None: ...
+
     def add_route_predicate(
         self,
         name: str,

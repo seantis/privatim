@@ -1,6 +1,5 @@
 from typing import Any
 
-
 class SettingsConfiguratorMixin:
     def add_settings(
         self,
