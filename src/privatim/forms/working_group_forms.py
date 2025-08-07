@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select
 from wtforms import SelectField
 from privatim.forms.core import Form

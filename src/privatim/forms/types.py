@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TypeVar, TYPE_CHECKING, Any
 from wtforms.form import BaseForm
 

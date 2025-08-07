@@ -1,3 +1,4 @@
+from __future__ import annotations
 from bleach.sanitizer import Cleaner
 from markupsafe import Markup
 

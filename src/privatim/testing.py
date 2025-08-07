@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 from zope.interface import implementer
 
@@ -14,7 +15,6 @@ from privatim.security import authenticated_user
 from privatim.sms.interfaces import ISMSGateway
 
 from typing import NamedTuple
-from typing import Optional
 from collections.abc import Sequence
 from typing import Union
 from typing import Any, TYPE_CHECKING
@@ -78,7 +78,7 @@ class DummyMailer:
     stream:           str = 'dummy'
     mails:            list['Mail']
     sent:             int
-    error_state:      Optional['MailState']
+    error_state:      'MailState' | None
     raise_mail_error: bool
 
     def __init__(self) -> None:
@@ -104,7 +104,7 @@ class DummyMailer:
         self.sent += 1
         return self.sent - 1
 
-    def batch_queue(self, mail: 'Mail') -> Union['MailID', 'MailState']:
+    def batch_queue(self, mail: 'Mail') -> 'MailID' | 'MailState':
         self.maybe_raise(batch_mode=True)
         if self.error_state is not None:
             return self.error_state
@@ -113,8 +113,8 @@ class DummyMailer:
         return self.sent - 1
 
     def send(self,
-             sender:      Optional['Address'],
-             receivers:   Union['Address', Sequence['Address']],
+             sender:      'Address' | None,
+             receivers:   'Address' | Sequence['Address'],
              subject:     str,
              content:     str,
              *,
@@ -136,12 +136,12 @@ class DummyMailer:
 
     def bulk_send(self,
                   mails: list['MailParams']
-                  ) -> list[Union['MailID', 'MailState']]:
+                  ) -> list['MailID' | 'MailState']:
         return [self.batch_queue(mail) for mail in mails]
 
     def send_template(self,
-                      sender:      Optional['Address'],
-                      receivers:   Union['Address', Sequence['Address']],
+                      sender:      'Address' | None,
+                      receivers:   'Address' | Sequence['Address'],
                       template:    str,
                       data:        'JSONObject',
                       *,
@@ -170,7 +170,7 @@ class DummyMailer:
     def bulk_send_template(self,
                            mails: list['TemplateMailParams'],
                            default_template: str | None = None,
-                           ) -> list[Union['MailID', 'MailState']]:
+                           ) -> list['MailID' | 'MailState']:
         sent = []
         for _mail in mails:
             mail = _mail.copy()
@@ -222,7 +222,7 @@ class MockResponse:
     invalid_json: bool
 
     def __init__(self,
-                 json_data:    Optional['JSON'] = None,
+                 json_data:    'JSON' | None = None,
                  invalid_json: bool = False) -> None:
         self.status_code = 200
         self.ok = True

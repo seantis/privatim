@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPFound
 from privatim.models.file import GeneralFile
 from pyramid.response import Response

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.i18n import make_localizer
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry, get_current_request

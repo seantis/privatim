@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload

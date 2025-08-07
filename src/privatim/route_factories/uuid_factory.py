@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TypeVar
 from uuid import UUID
 from pyramid.httpexceptions import HTTPNotFound

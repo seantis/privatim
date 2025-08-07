@@ -1,5 +1,6 @@
+from __future__ import annotations
 from zope.interface import Interface
-from typing import Any, Optional, Union
+from typing import Any
 
 
 from typing import TYPE_CHECKING
@@ -18,7 +19,7 @@ class IMailer(Interface):  # pragma: no cover
 
     # NOTE: We would like to say that kwargs is OptionalMailParams
     #       however there is no way in mypy to express that yet.
-    def send(sender:    Optional['Address'],
+    def send(sender:    'Address' | None,
              receivers: 'Address | Sequence[Address]',
              subject:   str,
              content:   str,
@@ -30,7 +31,7 @@ class IMailer(Interface):  # pragma: no cover
         """
 
     def bulk_send(mails: list['MailParams']
-                  ) -> list[Union['MailID', 'MailState']]:
+                  ) -> list['MailID' | 'MailState']:
         """
         Send multiple emails. "mails" is a list of dicts containing
         the arguments to an individual send call.
@@ -41,7 +42,7 @@ class IMailer(Interface):  # pragma: no cover
 
     # NOTE: We would like to say that kwargs is OptionalTemplateMailParams
     #       however there is no way in mypy to express that yet.
-    def send_template(sender:    Optional['Address'],
+    def send_template(sender:    'Address' | None,
                       receivers: 'Address | Sequence[Address]',
                       template:  str,
                       data:      'JSONObject',
@@ -55,7 +56,7 @@ class IMailer(Interface):  # pragma: no cover
 
     def bulk_send_template(mails:            list['TemplateMailParams'],
                            default_template: str | None = None,
-                           ) -> list[Union['MailID', 'MailState']]:
+                           ) -> list['MailID' | 'MailState']:
         """
         Send multiple template emails using the same template.
 

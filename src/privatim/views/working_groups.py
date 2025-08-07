@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy.orm import joinedload
 from privatim.forms.working_group_forms import WorkingGroupForm

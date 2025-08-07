@@ -1,3 +1,4 @@
+from __future__ import annotations
 from wtforms import DateField
 from privatim.forms.core import Form
 from wtforms.validators import Optional

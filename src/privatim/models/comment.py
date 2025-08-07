@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from datetime import datetime
 from sedate import utcnow
@@ -10,7 +11,7 @@ from privatim.i18n import _
 from pyramid.authorization import Allow, Authenticated
 
 
-from typing import TYPE_CHECKING, Optional, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 from collections.abc import Iterator
 if TYPE_CHECKING:
     from privatim.models import User
@@ -34,7 +35,7 @@ class Comment(Base):
         user: 'User',
         target_id: str,
         target_type: str = 'consultations',
-        parent: Optional['Comment'] = None
+        parent: 'Comment' | None = None
 
     ):
         self.id = str(uuid.uuid4())

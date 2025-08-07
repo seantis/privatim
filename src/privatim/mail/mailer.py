@@ -1,3 +1,4 @@
+from __future__ import annotations
 import base64
 import io
 import json
@@ -306,7 +307,7 @@ class PostmarkMailer:
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]: ...
+                       ) -> list['MailID' | MailState]: ...
 
     @overload
     def _raw_bulk_send(self,
@@ -316,7 +317,7 @@ class PostmarkMailer:
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]: ...
+                       ) -> list['MailID' | MailState]: ...
 
     def _raw_bulk_send(self,
                        api_path: str,
@@ -329,7 +330,7 @@ class PostmarkMailer:
                        #       these arguments
                        preamble: bytes = b'{"Messages": [',
                        postamble: bytes = b']}'
-                       ) -> list[Union['MailID', MailState]]:
+                       ) -> list['MailID' | MailState]:
 
         messages: JSONArray = []
         for mail in mails:
@@ -433,14 +434,14 @@ class PostmarkMailer:
         return result
 
     def bulk_send(self, mails: list['MailParams']
-                  ) -> list[Union['MailID', MailState]]:
+                  ) -> list['MailID' | MailState]:
         return self._raw_bulk_send('/email/batch', mails,
                                    preamble=b'[', postamble=b']')
 
     def bulk_send_template(self,
                            mails: list['TemplateMailParams'],
                            default_template: str | None = None,
-                           ) -> list[Union['MailID', MailState]]:
+                           ) -> list['MailID' | MailState]:
         return self._raw_bulk_send(
             '/email/batchWithTemplates', mails, default_template
         )

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from phonenumbers import PhoneNumberType
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember

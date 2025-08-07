@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import partial
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError

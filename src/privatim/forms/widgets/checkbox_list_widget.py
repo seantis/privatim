@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from privatim.controls.controls import html_params
 

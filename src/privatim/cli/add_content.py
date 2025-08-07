@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 from pyramid.paster import bootstrap, get_appsettings, setup_logging
 from sqlalchemy import select, and_

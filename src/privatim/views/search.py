@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import (func, select, literal, Select, Function,

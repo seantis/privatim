@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .git_info import get_git_revision_hash
 
 

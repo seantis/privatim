@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from wtforms import validators, Label
 from wtforms.fields.choices import RadioField

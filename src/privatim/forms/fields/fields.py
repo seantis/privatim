@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from itertools import zip_longest
 import sedate

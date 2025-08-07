@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy_utils import QueryChain as QueryChainBase  # type: ignore
 
 

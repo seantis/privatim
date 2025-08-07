@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.models.file import SearchableFile
 from privatim.orm import Base
 

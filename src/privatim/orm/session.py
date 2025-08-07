@@ -1,3 +1,4 @@
+from __future__ import annotations
 from contextlib import contextmanager
 from sqlalchemy import event
 from sqlalchemy.orm import Session as BaseSession, with_loader_criteria

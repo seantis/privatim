@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from markupsafe import Markup
 from pyramid.response import Response

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from daemons import daemonizer  # type:ignore[import-untyped]
 from watchdog.watchmedo import cli
 

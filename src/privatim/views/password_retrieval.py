@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from email.headerregistry import Address
 from typing import TYPE_CHECKING

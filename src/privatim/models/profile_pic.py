@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.static import get_default_profile_pic_data
 from functools import cache
 from sqlalchemy import select

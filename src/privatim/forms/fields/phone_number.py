@@ -1,3 +1,4 @@
+from __future__ import annotations
 import babel
 from phonenumbers import format_number
 from phonenumbers import is_valid_number

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select, exists
 from wtforms import SelectMultipleField
 from wtforms.fields.simple import StringField, EmailField

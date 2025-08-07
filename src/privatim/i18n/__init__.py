@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .core import pluralize
 from .core import translate
 from .locale_negotiator import LocaleNegotiator

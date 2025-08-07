@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum
 from markupsafe import escape
 from markupsafe import Markup

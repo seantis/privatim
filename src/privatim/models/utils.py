@@ -1,3 +1,4 @@
+from __future__ import annotations
 from docx import Document
 from pdftotext import PDF  # type: ignore
 from docx.text.paragraph import Paragraph

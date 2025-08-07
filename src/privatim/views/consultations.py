@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
