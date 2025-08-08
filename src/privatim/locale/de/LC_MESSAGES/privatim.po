@@ -147,7 +147,7 @@ msgstr "Sitzung aktualisiert"
 
 #: src/privatim/models/meeting.py
 msgid "Meeting Files Updated"
-msgstr "Sitzungsdokument(e) aktualisiert"
+msgstr "Sitzungsdokumente aktualisiert"
 
 #: src/privatim/models/meeting.py src/privatim/forms/filter_form.py
 msgid "Meeting"
