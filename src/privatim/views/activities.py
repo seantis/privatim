@@ -152,7 +152,7 @@ def activity_to_dict(
 
 def _get_icon_class(obj_type: str, event_type: str | None = None) -> str:
     if obj_type == 'Meeting' and event_type == 'file_update':
-        return 'fas fa-file-alt'
+        return 'fas fa-pencil-alt'
     icons = {
         'Meeting': 'fas fa-users',
         'Consultation': 'fas fa-file-alt',

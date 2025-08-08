@@ -66,11 +66,13 @@
                                             <div class="file-changes"
                                                  tal:condition="activity['content'].get('added_files') or activity['content'].get('removed_files')">
                                                 <ul class="list-unstyled mb-0">
-                                                    <li tal:repeat="filename python:activity['content'].get('added_files') or []">
-                                                        <i class="fas fa-plus-circle text-success me-2"></i>${filename}
+                                                    <li tal:repeat="filename python:activity['content'].get('added_files') or []"
+                                                        style="background-color: #e6ffed; color: #28a745; padding: 0.125rem 0.3125rem; border-radius: 0.1875rem; margin-bottom: 0.125rem;">
+                                                        <strong style="margin-right: 0.3125rem;">+</strong>${filename}
                                                     </li>
-                                                    <li tal:repeat="filename python:activity['content'].get('removed_files') or []">
-                                                        <i class="fas fa-minus-circle text-danger me-2"></i>${filename}
+                                                    <li tal:repeat="filename python:activity['content'].get('removed_files') or []"
+                                                        style="background-color: #ffebe9; color: #dc3545; padding: 0.125rem 0.3125rem; border-radius: 0.1875rem; margin-bottom: 0.125rem;">
+                                                        <strong style="margin-right: 0.3125rem;">✕</strong>${filename}
                                                     </li>
                                                 </ul>
                                             </div>
