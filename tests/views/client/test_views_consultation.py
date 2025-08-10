@@ -1,4 +1,8 @@
+import re
+import pytest
 from sqlalchemy.orm import selectinload, undefer
+import transaction
+from playwright.sync_api import  expect
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Consultation
 from sqlalchemy import select, func
@@ -700,3 +704,51 @@ def test_display_previous_versions(client):
     assert 'John Doe' in ''.join(
         e.text_content().strip() for e in page.pyquery('ul.previous-versions')
     )
+
+
+def login_admin(page, live_server_url, session):
+    admin_user = User(
+        email="test@example.org",
+        first_name="Test",
+        last_name="User",
+    )
+    admin_user.set_password("test")
+    external_user = User(
+        email="external@example.org",
+        first_name="External",
+        last_name="User",
+    )
+    external_user.set_password("test")
+    session.add(external_user)
+    session.add(admin_user)
+    transaction.commit()
+
+    page.goto(live_server_url + "/login")
+    page.locator('input[name="email"]').fill("admin@example.org")
+    page.locator('input[name="password"]').fill("test")
+
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    error_locator = page.locator(".alert.alert-danger")
+    if error_locator.is_visible():
+        error_text = error_locator.text_content()
+        pytest.fail(f"Login failed. Error message found: {error_text}")
+
+    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
+
+
+# === Browser
+# Strictly speaking this doesn't need a browser test, but it's easier to look
+# a the divs
+
+# NOTE: WE should derive from Page to have these convenience methods in once 
+# place
+# there we could overwrite 
+def test_consultation_activities_after_document_edit(
+        page,
+        live_server_url,
+        session
+):
+    login_admin(page, live_server_url, session)
+    # Create a consultation
