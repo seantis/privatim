@@ -733,10 +733,8 @@ def test_consultation_activities_after_document_edit(
     expect(page).to_have_url(re.compile(r'.*/consultation/.*'))
     expect(page.locator('h1')).to_contain_text('Test Consultation Activity')
 ):
-    login_admin(page, live_server_url, session)
-    # Create a consultation
-    page.goto(live_server_url + '/consultations')
-    page.click('text=Vernehmlassung Erfassen')
+    # This is a duplicate function definition that needs to be removed
+    pass
     set_meeting_or_cons_title
 
     # Verify we're on the consultation page
