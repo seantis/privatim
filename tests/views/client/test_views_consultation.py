@@ -722,7 +722,7 @@ def test_consultation_activities_after_document_edit(
     page.goto(live_server_url + '/consultations')
     page.click('text=Vernehmlassung Erfassen')
     page.locator('textarea[name="title"]').fill('Test Consultation Activity')
-    page.locator('button[type="submit"]').click()
+    page.get_by_role('button', name='Speichern').click()
     page.wait_for_load_state('networkidle')
 
     # we are on the consultation view page, click edit
@@ -740,7 +740,7 @@ def test_consultation_activities_after_document_edit(
     }])
 
     # Submit
-    page.locator('button[type="submit"]').click()
+    page.get_by_role('button', name='Speichern').click()
     page.wait_for_load_state('networkidle')
 
     # Now check activities
