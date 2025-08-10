@@ -9,6 +9,7 @@ from sqlalchemy import select, func
 from webtest.forms import Upload
 
 from privatim.utils import get_previous_versions
+from tests.views.client.utils import login_admin, set_meeting_or_cons_title
 
 
 def test_view_consultation(client):
@@ -706,38 +707,6 @@ def test_display_previous_versions(client):
     )
 
 
-def login_admin(page, live_server_url, session):
-    admin_user = User(
-        email="test@example.org",
-        first_name="Test",
-        last_name="User",
-    )
-    admin_user.set_password("test")
-    external_user = User(
-        email="external@example.org",
-        first_name="External",
-        last_name="User",
-    )
-    external_user.set_password("test")
-    session.add(external_user)
-    session.add(admin_user)
-    transaction.commit()
-
-    page.goto(live_server_url + "/login")
-    page.locator('input[name="email"]').fill("admin@example.org")
-    page.locator('input[name="password"]').fill("test")
-
-    page.locator('button[type="submit"]').click()
-    page.wait_for_load_state("networkidle", timeout=10000)
-
-    error_locator = page.locator(".alert.alert-danger")
-    if error_locator.is_visible():
-        error_text = error_locator.text_content()
-        pytest.fail(f"Login failed. Error message found: {error_text}")
-
-    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)
-
-
 # === Browser
 # Strictly speaking this doesn't need a browser test, but it's easier to look
 # a the divs
@@ -752,13 +721,7 @@ def test_consultation_activities_after_document_edit(
     # Create a consultation
     page.goto(live_server_url + '/consultations')
     page.click('text=Vernehmlassung Erfassen')
-
-    # Fill out the title and submit
-    page.locator('input[name="title"]').fill('Test Consultation Activity')
-    page.locator('button[type="submit"]').click()
-
-    # Wait for the page to load after submission
-    page.wait_for_load_state('networkidle')
+    set_meeting_or_cons_title
 
     # Verify we're on the consultation page
     expect(page).to_have_url(re.compile(r'.*/consultation/.*'))
