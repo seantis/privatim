@@ -715,7 +715,7 @@ def test_display_previous_versions(client):
 # place
 # there we could overwrite 
 def test_consultation_activities_after_document_edit(
-        page, live_server_url, session
+        page, live_server_url, session, pdf_vemz
 ):
     login_admin(page, live_server_url, session)
     # Create a consultation
@@ -724,3 +724,39 @@ def test_consultation_activities_after_document_edit(
     page.locator('textarea[name="title"]').fill('Test Consultation Activity')
     page.locator('button[type="submit"]').click()
     page.wait_for_load_state('networkidle')
+
+    # we are on the consultation view page, click edit
+    page.click('text=Bearbeiten')
+    page.wait_for_load_state('networkidle')
+
+    # Upload a document
+    file_input = page.locator('input[type="file"][name="files"]')
+    file_input.wait_for(state='visible', timeout=3000)
+    filename, file_content = pdf_vemz
+    file_input.set_input_files(files=[{
+        'name': filename,
+        'mimeType': 'application/pdf',
+        'buffer': file_content
+    }])
+
+    # Submit
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state('networkidle')
+
+    # Now check activities
+    page.goto(live_server_url + '/activities')
+    page.wait_for_load_state('networkidle')
+
+    timeline_items = page.locator('.timeline-item')
+    # We expect 2 items: creation and update
+    expect(timeline_items).to_have_count(2)
+
+    # The newest activity (first in the list) should be the update
+    update_activity = timeline_items.first
+    expect(update_activity).to_contain_text('Vernehmlassung aktualisiert')
+    expect(update_activity).to_contain_text('Test Consultation Activity')
+
+    # The older activity (last in the list) should be the creation
+    create_activity = timeline_items.last
+    expect(create_activity).to_contain_text('Vernehmlassung hinzugefügt')
+    expect(create_activity).to_contain_text('Test Consultation Activity')
