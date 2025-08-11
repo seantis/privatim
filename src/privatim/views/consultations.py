@@ -279,6 +279,11 @@ def edit_consultation_view(
         # `populate_obj` method of `UploadMultipleFilesWithORMSupport`
         form.populate_obj(next_cons)
 
+        # After populating, ensure previous_files_metadata is correctly set
+        next_cons.previous_files_metadata = [
+            {'id': f.id, 'filename': f.filename} for f in previous.files
+        ]
+
         # form.files.added_files is populated by populate_obj
         added_filenames = [
             f.filename for f in getattr(form.files, 'added_files', [])
