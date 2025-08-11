@@ -488,17 +488,21 @@ def edit_meeting_view(
         ]
         files_were_added = bool(added_filenames)
         files_were_removed = bool(removed_filenames)
+        file_changes = files_were_added or files_were_removed
 
-        if changes:
+        if changes and file_changes:
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='update',
                 creator_id=request.user.id,
-                changes=changes
+                changes=changes,
+                added_files=added_filenames if added_filenames else None,
+                removed_files=removed_filenames if removed_filenames else None,
             )
             session.add(activity)
 
-        if files_were_added or files_were_removed:
+        if file_changes and not changes:
+            # 'pure' file update
             activity = MeetingEditEvent(
                 meeting_id=meeting.id,
                 event_type='file_update',

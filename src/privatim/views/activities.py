@@ -59,7 +59,9 @@ def activity_to_dict(
     if obj_type == 'MeetingEditEvent':
         content: dict[str, Any] = {'name': activity.meeting.name,
                                    'time': activity.meeting.created}
-        if activity.event_type == 'file_update':
+
+        if (activity.event_type == 'file_update'
+                or activity.event_type == 'update'):
             content.update({
                 'added_files': activity.added_files,
                 'removed_files': activity.removed_files

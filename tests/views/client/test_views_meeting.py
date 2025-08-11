@@ -265,10 +265,9 @@ def test_edit_meeting_document(
     speichern(page)
 
     events = session.scalars(select(MeetingEditEvent)).all()
-    assert len(events) == 3
+    assert len(events) == 2
     assert events[0].event_type == 'creation'
     assert events[1].event_type == 'update'
-    assert events[2].event_type == 'file_update'
 
     # 3. View activities, there should be two entries, one where the meeting
     # was created and one where we added a file to the meeting
@@ -276,14 +275,12 @@ def test_edit_meeting_document(
     page.goto(live_server_url + "/activities")
     page.wait_for_load_state('networkidle', timeout=10000)
     timeline_items = page.locator('.timeline-content')
-    expect(timeline_items).to_have_count(3, timeout=5000)
-    document_activity = page.locator(
-        '.timeline-content:has-text("Sitzungsdokument(e) aktualisiert")'
-    )
+    expect(timeline_items).to_have_count(2, timeout=5000)
+    update_activity = timeline_items.first
 
-    expect(document_activity).to_be_visible(timeout=5000)
-    expect(document_activity).to_contain_text(filename)
-    expect(document_activity).to_contain_text(meeting_title)
+    file_change_item = update_activity.locator('.file-changes li')
+    expect(file_change_item).to_be_visible()
+    expect(file_change_item).to_contain_text(f'+{filename}')
 
 
 @pytest.mark.browser

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from sedate import utcnow
-from sqlalchemy import ForeignKey, Integer, Index, ARRAY, String, JSON
+from sqlalchemy import ForeignKey, Integer, Index, ARRAY, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
