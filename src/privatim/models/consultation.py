@@ -90,6 +90,12 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     secondary_tags: Mapped[list[str]] = mapped_column(
         ARRAY(String(32)), nullable=False, default=list
     )
+
+    # We use this to track changes in activites.
+    # Currently only the lastet version of the consutlation chain has files
+    # attached, strictly speaking
+    # Because we would have to keep track of all files in the past which we
+    # don't necessarily want. So we just use this for history.
     added_files: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True
     )

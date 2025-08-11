@@ -665,8 +665,16 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     context.add_column(
         'consultations',
         Column(
-            'previous_files_metadata',
-            postgresql.JSONB,
+            'added_files',
+            postgresql.ARRAY(String),
+            nullable=True
+        ),
+    )
+    context.add_column(
+        'consultations',
+        Column(
+            'removed_files',
+            postgresql.ARRAY(String),
             nullable=True
         ),
     )

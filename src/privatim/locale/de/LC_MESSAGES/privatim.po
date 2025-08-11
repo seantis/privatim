@@ -323,7 +323,7 @@ msgstr "Vernehmlassung aktualisiert"
 
 #: src/privatim/views/activities.py
 msgid "Consultation Files Updated"
-msgstr "Vernehmlassungdokumente aktualisiert"
+msgstr "Vernehmlassungsdokumente aktualisiert"
 
 #: src/privatim/views/trash.py
 msgid "Invalid item type."

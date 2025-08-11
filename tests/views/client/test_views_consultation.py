@@ -1,7 +1,4 @@
-import re
-import pytest
 from sqlalchemy.orm import selectinload, undefer
-import transaction
 from playwright.sync_api import  expect
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Consultation
@@ -10,7 +7,7 @@ from webtest.forms import Upload
 
 from privatim.utils import get_previous_versions
 from tests.shared.utils import aktionen_button_edit_click, speichern
-from tests.views.client.utils import FileAction, login_admin, manage_document, set_meeting_or_cons_title
+from tests.views.client.utils import FileAction, login_admin, manage_document
 
 
 def test_view_consultation(client):
@@ -741,9 +738,7 @@ def test_consultation_activities_after_document_edit(
 
     # Submit
     speichern(page)
-    consultation_link = page.url
 
-    # Now check activities
     page.goto(live_server_url + '/activities')
     page.wait_for_load_state('networkidle')
 
@@ -754,55 +749,60 @@ def test_consultation_activities_after_document_edit(
     # The newest activity (first in the list) should be the update
     update_activity = timeline_items.first
     expect(update_activity).to_contain_text(
-        'Sitzungsdokumente aktualisiert'
+        'Vernehmlassungsdokumente aktualisiert'
     )
     expect(update_activity).to_contain_text('Test Consultation Activity')
 
     # Check for added file in activity
     file_change_item = update_activity.locator('.file-changes li')
     expect(file_change_item).to_be_visible()
-    expect(file_change_item).to_contain_text(f'+ {filename}')
+    expect(file_change_item).to_contain_text(f'+{filename}')
 
     # The initial creation
     create_activity = timeline_items.last
     expect(create_activity).to_contain_text('Vernehmlassung hinzugefügt')
     expect(create_activity).to_contain_text('Test Consultation Activity')
 
-    page.goto(consultation_link)
+    # Go to consultation
+    timeline_items.first.locator(
+        'text=Vernehmlassungsdokumente aktualisiert'
+    ).click()
     aktionen_button_edit_click(page)
+
     manage_document(page, index=0, action=FileAction.REPLACE,
                     file_data=docx)
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
 
-    # Check activities again after replacement
-    # Replacing vemz with docx
+    # we have:
+    # - edit replaced file. -vemz.pdf +doxc
+    # - edit: new file
+    # - intial creation
+    # We want to be pedanic and test this rendering here
     page.goto(live_server_url + '/activities')
     page.wait_for_load_state('networkidle')
-
     timeline_items = page.locator('.timeline-item')
     expect(timeline_items).to_have_count(3)
 
     # The newest activity should be the replacement
     replacement_activity = timeline_items.first
-    breakpoint()
-    #expect(replacement_activity).to_contain_text(
-        # 'Vernehmlassungsdokumente aktualisiert'
-    # )
+    expect(replacement_activity).to_contain_text(
+       'Vernehmlassungsdokumente aktualisiert'
+    )
     expect(replacement_activity).to_contain_text('Test Consultation Activity')
-
-    breakpoint()
-    # Check for removed and added files
-    file_changes = replacement_activity.locator('.file-changes li')
-    expect(file_changes).to_have_count(2)
-
-    # Removed file (original pdf)
-    removed_file_item = replacement_activity.locator(
-        '.file-changes li:has-text("-")')
-    expect(removed_file_item).to_contain_text(filename)  # from pdf_vemz
-    expect(removed_file_item).to_have_css('color', 'rgb(220, 53, 69)')
-
-    # Added file (new docx)
-    added_file_item = replacement_activity.locator(
-        '.file-changes li:has-text("+")')
     docx_filename, _ = docx
-    expect(added_file_item).to_contain_text(docx_filename)
-    expect(added_file_item).to_have_css('color', 'rgb(40, 167, 69)')
+
+    filename, file_content = pdf_vemz
+    expect(replacement_activity).to_contain_text(f'✕{filename}')
+    expect(replacement_activity).to_contain_text(f'+{docx_filename}')
+
+    # The second activity is the initial file upload (first edit)
+    # that we already have tested, but we had some bugs that made this change
+    # so test this here again
+    second_activity = timeline_items.nth(1)
+    expect(second_activity).to_contain_text(
+       'Vernehmlassungsdokumente aktualisiert'
+    )
+    file_change_item = second_activity.locator('.file-changes li')
+    expect(file_change_item).to_be_visible()
+    expect(file_change_item).to_contain_text(f'+{filename}')
