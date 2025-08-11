@@ -9,7 +9,8 @@ from sqlalchemy import select, func
 from webtest.forms import Upload
 
 from privatim.utils import get_previous_versions
-from tests.views.client.utils import login_admin, set_meeting_or_cons_title
+from tests.shared.utils import aktionen_button_edit_click, speichern
+from tests.views.client.utils import FileAction, login_admin, manage_document, set_meeting_or_cons_title
 
 
 def test_view_consultation(client):
@@ -715,7 +716,7 @@ def test_display_previous_versions(client):
 # place
 # there we could overwrite 
 def test_consultation_activities_after_document_edit(
-        page, live_server_url, session, pdf_vemz
+        page, live_server_url, session, pdf_vemz, docx
 ):
     login_admin(page, live_server_url, session)
     # Create a consultation
@@ -726,8 +727,7 @@ def test_consultation_activities_after_document_edit(
     page.wait_for_load_state('networkidle')
 
     # we are on the consultation view page, click edit
-    page.click('text=Bearbeiten')
-    page.wait_for_load_state('networkidle')
+    aktionen_button_edit_click(page)
 
     # Upload a document
     file_input = page.locator('input[type="file"][name="files"]')
@@ -740,8 +740,7 @@ def test_consultation_activities_after_document_edit(
     }])
 
     # Submit
-    page.get_by_role('button', name='Speichern').click()
-    page.wait_for_load_state('networkidle')
+    speichern(page) 
 
     # Now check activities
     page.goto(live_server_url + '/activities')
@@ -753,10 +752,16 @@ def test_consultation_activities_after_document_edit(
 
     # The newest activity (first in the list) should be the update
     update_activity = timeline_items.first
-    expect(update_activity).to_contain_text('Vernehmlassung aktualisiert')
+    breakpoint()
+    expect(update_activity).to_contain_text('Vernehmlassungsdokumente aktualisiert')
     expect(update_activity).to_contain_text('Test Consultation Activity')
 
-    # The older activity (last in the list) should be the creation
+    # The initial creation
     create_activity = timeline_items.last
     expect(create_activity).to_contain_text('Vernehmlassung hinzugefügt')
     expect(create_activity).to_contain_text('Test Consultation Activity')
+
+
+    # Replace with docx
+    manage_document(page, index=0, action=FileAction.REPLACE,
+                    file_data=docx)
