@@ -752,9 +752,16 @@ def test_consultation_activities_after_document_edit(
 
     # The newest activity (first in the list) should be the update
     update_activity = timeline_items.first
-    breakpoint()
     expect(update_activity).to_contain_text('Vernehmlassungsdokumente aktualisiert')
     expect(update_activity).to_contain_text('Test Consultation Activity')
+
+    # Check for added file in activity
+    file_change_item = update_activity.locator('.file-changes li')
+    expect(file_change_item).to_be_visible()
+    expect(file_change_item).to_contain_text('+')
+    expect(file_change_item).to_contain_text(filename)
+    # Check for green color for added file
+    expect(file_change_item).to_have_css('color', 'rgb(40, 167, 69)')  # #28a745
 
     # The initial creation
     create_activity = timeline_items.last
@@ -765,3 +772,34 @@ def test_consultation_activities_after_document_edit(
     # Replace with docx
     manage_document(page, index=0, action=FileAction.REPLACE,
                     file_data=docx)
+
+    # Check activities again after replacement
+    page.goto(live_server_url + '/activities')
+    page.wait_for_load_state('networkidle')
+
+    timeline_items = page.locator('.timeline-item')
+    expect(timeline_items).to_have_count(3)
+
+    # The newest activity should be the replacement
+    replacement_activity = timeline_items.first
+    expect(replacement_activity).to_contain_text(
+        'Vernehmlassungsdokumente aktualisiert'
+    )
+    expect(replacement_activity).to_contain_text('Test Consultation Activity')
+
+    # Check for removed and added files
+    file_changes = replacement_activity.locator('.file-changes li')
+    expect(file_changes).to_have_count(2)
+
+    # Removed file (original pdf)
+    removed_file_item = replacement_activity.locator(
+        '.file-changes li:has-text("-")')
+    expect(removed_file_item).to_contain_text(filename)  # from pdf_vemz
+    expect(removed_file_item).to_have_css('color', 'rgb(220, 53, 69)')
+
+    # Added file (new docx)
+    added_file_item = replacement_activity.locator(
+        '.file-changes li:has-text("+")')
+    docx_filename, _ = docx
+    expect(added_file_item).to_contain_text(docx_filename)
+    expect(added_file_item).to_have_css('color', 'rgb(40, 167, 69)')
