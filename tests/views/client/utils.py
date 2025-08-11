@@ -4,6 +4,10 @@ from zoneinfo import ZoneInfo
 from playwright.sync_api import expect
 from enum import Enum
 from playwright.sync_api import Page
+import pytest
+import transaction
+
+from privatim.models.user import User
 
 
 def set_datetime_element(page, selector, dt):
@@ -124,3 +128,60 @@ def upload_new_documents(page: Page, files: list[tuple[str, bytes]]):
             'buffer': content
         })
     file_input.set_input_files(file_payloads)
+
+
+def set_meeting_or_cons_title(meeting_title, page, selector='#name'):
+    # We've resorted to JavaScript for this seemingly trivial task.
+    # Conventional approaches (element.fill) resulted in mysterious timeout
+    # issues, hence this elaborate solution.
+
+    # FIXME: It might be because the meeting name if you create a new one
+    # defaults to the working group name. It's still unclear why but we
+    # can just overwrite it.
+    script = """
+        (args) => {
+            const [selector, meeting_title] = args;
+            const el = document.querySelector(selector);
+            if (el) {
+                el.value = meeting_title;
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            } else {
+                console.error('[Evaluate] Element not found');
+            }
+
+        }
+        """
+    page.evaluate(script, [selector, meeting_title])
+
+
+def login_admin(page, live_server_url, session):
+    admin_user = User(
+        email="test@example.org",
+        first_name="Test",
+        last_name="User",
+    )
+    admin_user.set_password("test")
+    external_user = User(
+        email="external@example.org",
+        first_name="External",
+        last_name="User",
+    )
+    external_user.set_password("test")
+    session.add(external_user)
+    session.add(admin_user)
+    transaction.commit()
+
+    page.goto(live_server_url + "/login")
+    page.locator('input[name="email"]').fill("admin@example.org")
+    page.locator('input[name="password"]').fill("test")
+
+    page.locator('button[type="submit"]').click()
+    page.wait_for_load_state("networkidle", timeout=10000)
+
+    error_locator = page.locator(".alert.alert-danger")
+    if error_locator.is_visible():
+        error_text = error_locator.text_content()
+        pytest.fail(f"Login failed. Error message found: {error_text}")
+
+    expect(page).not_to_have_url(re.compile(r".*/login$"), timeout=5000)

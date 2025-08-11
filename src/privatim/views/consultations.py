@@ -267,11 +267,27 @@ def edit_consultation_view(
     # Create the form with the new consultation
     form = ConsultationForm(next_cons, request)
     if request.method == 'POST' and form.validate():
+        # Determine removed files before populating the object
+        removed_files = [
+            entry.object_data for entry in form.files.entries
+            if entry.action in ('delete', 'replace') and entry.object_data
+        ]
+        removed_filenames = [f.filename for f in removed_files]
 
         # Populate the new consultation with form data
         # NOTE: This also handles the edit files, implemented in the
         # `populate_obj` method of `UploadMultipleFilesWithORMSupport`
         form.populate_obj(next_cons)
+
+        # form.files.added_files is populated by populate_obj
+        added_filenames = [
+            f.filename for f in getattr(form.files, 'added_files', [])
+        ]
+        files_were_added = bool(added_filenames)
+        files_were_removed = bool(removed_filenames)
+
+        print(f'added: {added_filenames}')
+        print(f'removed: {removed_filenames}')
 
         session.add(next_cons)
         previous.is_latest_version = 0

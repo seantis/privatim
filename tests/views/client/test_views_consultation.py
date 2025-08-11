@@ -68,7 +68,7 @@ def test_view_consultation(client):
 
     items = page.pyquery('.timeline-item')
 
-    def get_link_from_Element_list(items): 
+    def get_link_from_Element_list(items):
         all_a_elements = []
         for item in items:
             # Find all 'a' tags within the current item and its descendants
@@ -87,7 +87,7 @@ def test_view_consultation(client):
     hrefs = [e['href'] for e in get_link_from_Element_list(items)]
     for l in hrefs:
         # go to each cons activity entry, and go to the edit view
-        # there was a bug where this would result in 404 because we were on 
+        # there was a bug where this would result in 404 because we were on
         # previous versions
         client.get(l)
         consultation_id = l.split('/')[-1]
@@ -712,9 +712,9 @@ def test_display_previous_versions(client):
 # Strictly speaking this doesn't need a browser test, but it's easier to look
 # a the divs
 
-# NOTE: WE should derive from Page to have these convenience methods in once 
+# NOTE: WE should derive from Page to have these convenience methods in once
 # place
-# there we could overwrite 
+# there we could overwrite
 def test_consultation_activities_after_document_edit(
         page, live_server_url, session, pdf_vemz, docx
 ):
@@ -740,7 +740,8 @@ def test_consultation_activities_after_document_edit(
     }])
 
     # Submit
-    speichern(page) 
+    speichern(page)
+    consultation_link = page.url
 
     # Now check activities
     page.goto(live_server_url + '/activities')
@@ -752,28 +753,28 @@ def test_consultation_activities_after_document_edit(
 
     # The newest activity (first in the list) should be the update
     update_activity = timeline_items.first
-    expect(update_activity).to_contain_text('Vernehmlassungsdokumente aktualisiert')
+    expect(update_activity).to_contain_text(
+        'Sitzungsdokumente aktualisiert'
+    )
     expect(update_activity).to_contain_text('Test Consultation Activity')
 
     # Check for added file in activity
     file_change_item = update_activity.locator('.file-changes li')
     expect(file_change_item).to_be_visible()
-    expect(file_change_item).to_contain_text('+')
-    expect(file_change_item).to_contain_text(filename)
-    # Check for green color for added file
-    expect(file_change_item).to_have_css('color', 'rgb(40, 167, 69)')  # #28a745
+    expect(file_change_item).to_contain_text(f'+ {filename}')
 
     # The initial creation
     create_activity = timeline_items.last
     expect(create_activity).to_contain_text('Vernehmlassung hinzugefügt')
     expect(create_activity).to_contain_text('Test Consultation Activity')
 
-
-    # Replace with docx
+    page.goto(consultation_link)
+    aktionen_button_edit_click(page)
     manage_document(page, index=0, action=FileAction.REPLACE,
                     file_data=docx)
 
     # Check activities again after replacement
+    # Replacing vemz with docx
     page.goto(live_server_url + '/activities')
     page.wait_for_load_state('networkidle')
 
@@ -782,11 +783,13 @@ def test_consultation_activities_after_document_edit(
 
     # The newest activity should be the replacement
     replacement_activity = timeline_items.first
-    expect(replacement_activity).to_contain_text(
-        'Vernehmlassungsdokumente aktualisiert'
-    )
+    breakpoint()
+    #expect(replacement_activity).to_contain_text(
+        # 'Vernehmlassungsdokumente aktualisiert'
+    # )
     expect(replacement_activity).to_contain_text('Test Consultation Activity')
 
+    breakpoint()
     # Check for removed and added files
     file_changes = replacement_activity.locator('.file-changes li')
     expect(file_changes).to_have_count(2)

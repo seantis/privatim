@@ -12,45 +12,14 @@ from sqlalchemy.orm import selectinload
 from sedate import utcnow
 from privatim.models.meeting import MeetingEditEvent
 from privatim.utils import fix_utc_to_local_time
+from tests.shared.utils import speichern
 from tests.views.client.utils import (
     set_datetime_element,
     manage_document,
     FileAction,
+    set_meeting_or_cons_title,
     upload_new_documents
 )
-
-
-def speichern(page):
-    submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
-    submit_button.scroll_into_view_if_needed()
-    submit_button.click()
-
-
-def set_meeting_title(meeting_title, page):
-    # We've resorted to JavaScript for this seemingly trivial task.
-    # Conventional approaches (element.fill) resulted in mysterious timeout
-    # issues, hence this elaborate solution.
-
-    # FIXME: It might be because the meeting name if you create a new one
-    # defaults to the working group name. It's still unclear why but we
-    # can just overwrite it.
-    selector = '#name'
-    script = """
-        (args) => {
-            const [selector, meeting_title] = args;
-            const el = document.querySelector(selector);
-            if (el) {
-                el.value = meeting_title;
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
-            } else {
-                console.error('[Evaluate] Element not found');
-            }
-
-        }
-        """
-    page.evaluate(script, [selector, meeting_title])
-
 
 @pytest.mark.browser
 def test_edit_meeting_users(page: Page, live_server_url, session) -> None:
@@ -119,7 +88,7 @@ def test_edit_meeting_users(page: Page, live_server_url, session) -> None:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_title = "Initial Browser Meeting"
 
-    set_meeting_title(meeting_title, page)
+    set_meeting_or_cons_title(meeting_title, page)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
@@ -245,7 +214,7 @@ def test_edit_meeting_document(
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_title = "Initial Browser Meeting"
-    set_meeting_title(meeting_title, page)
+    set_meeting_or_cons_title(meeting_title, page)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
@@ -377,7 +346,7 @@ def test_edit_meeting_multiple_documents(
     # new meeting:
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_title = "Initial Browser Meeting"
-    set_meeting_title(meeting_title, page)
+    set_meeting_or_cons_title(meeting_title, page)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
 
@@ -684,7 +653,7 @@ def test_remove_and_readd_working_group_member_in_meeting(
     page.locator(f'a:has-text("{group_name}")').click()
     page.locator('a:has-text("Sitzung hinzufügen")').click()
     meeting_title = "Meeting for Re-add Test"
-    set_meeting_title(meeting_title, page)
+    set_meeting_or_cons_title(meeting_title, page)
     meeting_time = utcnow() + timedelta(hours=1)
     set_datetime_element(page, 'input[name="time"]', meeting_time)
     speichern(page)
