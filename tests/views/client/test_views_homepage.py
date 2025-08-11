@@ -1,4 +1,5 @@
 from privatim.models import Consultation
+from privatim.models.meeting import MeetingEditEvent
 from tests.shared.utils import create_consultation, create_meeting
 
 
@@ -10,6 +11,11 @@ def test_filter(client):
     session.add(cons)
 
     meeting = create_meeting()
+    event = MeetingEditEvent(
+        meeting_id=meeting.id,
+        event_type='creation',
+    )
+    session.add(event)
     session.add(meeting)
     session.commit()
 
@@ -33,10 +39,9 @@ def test_filter(client):
 
     page = client.get('/activities')
     form = page.forms['filter_activities']
-    form['consultation'] = True
+    form['consultation'] = False
     form['meeting'] = True
-    form.submit().follow()
-    page = client.get('/activities')
+    page = form.submit().follow()
     assert 'Powerpoint Parade' in page
 
 

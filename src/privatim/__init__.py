@@ -1,4 +1,5 @@
 from functools import partial
+import uuid
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
 
@@ -10,8 +11,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from privatim import helpers
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
-from sqlalchemy import Column, ForeignKey, String, TIMESTAMP, func, Computed, \
-    VARCHAR, text, Boolean
+from sqlalchemy import (Column, ForeignKey, String, TIMESTAMP, func, Computed,
+                        VARCHAR, text, Boolean, table, column)
 from email.headerregistry import Address
 
 from privatim.mail import PostmarkMailer
@@ -169,7 +170,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         #  Add all other foreign key constraints here
     ]
 
-    for table, column, constraint in fk_constraints:
+    for table, col, constraint in fk_constraints:
         # Check if constraint exists
         try:
             exists = conn.execute(text(
@@ -199,7 +200,7 @@ def fix_user_constraints_to_work_with_hard_delete(
                 constraint,
                 table,
                 'users',
-                [column],
+                [col],
                 ['id'],
                 ondelete='SET NULL',
             )
@@ -207,6 +208,51 @@ def fix_user_constraints_to_work_with_hard_delete(
             print(
                 f"Error creating constraint {constraint} on table {table}: "
                 f"{str(e)}")
+
+
+def create_meeting_edit_events_and_migrate_data(
+    context: 'UpgradeContext'
+) -> None:
+    """
+    Creates the meeting_activities table and populates it with historical data
+    from the meetings table.
+    """
+    op = context.operations
+    conn = op.get_bind()
+    table_name = 'meeting_edit_event'
+    assert context.has_table(table_name)  # should be automatically created
+
+    print("Migrating historical meetings to activities...")
+    meetings_res = conn.execute(text(
+        "SELECT id, updated, creator_id FROM meetings"
+    ))
+    meetings = meetings_res.fetchall()
+
+    if not meetings:
+        print("No meetings found to migrate to activities.")
+        return
+
+    edit_event_table = table(
+        table_name,
+        column('id', UUIDStrType),
+        column('meeting_id', UUIDStrType),
+        column('event_type', String),
+        column('created', TIMESTAMP),
+        column('creator_id', UUIDStrType)
+    )
+
+    edit_events_to_insert = [
+        {
+            'id': str(uuid.uuid4()),
+            'meeting_id': meeting.id,
+            'event_type': 'update',
+            'created': meeting.updated, 'creator_id': meeting.creator_id,
+        } for meeting in meetings if meeting.creator_id and meeting.updated
+    ]
+
+    if edit_events_to_insert:
+        op.bulk_insert(edit_event_table, edit_events_to_insert)
+        print(f'Created {len(edit_events_to_insert)} meeting edit evnt items.')
 
 
 def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
@@ -495,7 +541,9 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     meeting_idx = f'ix_{table_name}_{meeting_fk_col}'
 
     # Step 1: Add new FK columns (nullable initially) if they don't exist
-    consultation_col_exists = context.has_column(table_name, consultation_fk_col)
+    consultation_col_exists = context.has_column(
+        table_name, consultation_fk_col
+    )
     if not consultation_col_exists:
         print(f"  Adding column {consultation_fk_col} to {table_name}")
         context.add_column(
@@ -565,7 +613,8 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             context.operations.create_check_constraint(
                 constraint_name=constraint_name,
                 table_name=table_name,
-                condition=f"num_nonnulls({consultation_fk_col}, {meeting_fk_col}) = 1"
+                condition=f"num_nonnulls({consultation_fk_col}, "
+                f"{meeting_fk_col}) = 1"
             )
             print(f"  Added check constraint {constraint_name}.")
         except Exception as e:
@@ -607,9 +656,39 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
     print("Finished migrating SearchableFile parent structure.")
     # --- End of SearchableFile parent migration ---
 
+    create_meeting_edit_events_and_migrate_data(context)
+
     fix_agenda_item_positions(context)
     # Ensure this is called after FKs are potentially modified
     fix_user_constraints_to_work_with_hard_delete(context)
+
+    context.add_column(
+        'consultations',
+        Column(
+            'added_files',
+            postgresql.ARRAY(String),
+            nullable=True
+        ),
+    )
+    context.add_column(
+        'consultations',
+        Column(
+            'removed_files',
+            postgresql.ARRAY(String),
+            nullable=True
+        ),
+    )
+
+    if context.has_table('meeting_edit_event'):
+        context.add_column(
+            'meeting_edit_event',
+            Column(
+                'changes',
+                postgresql.JSONB,
+                nullable=True
+            ),
+        )
+
 
     context.commit()
     print("Database schema upgrade process finished.")

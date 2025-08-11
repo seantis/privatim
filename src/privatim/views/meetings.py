@@ -27,7 +27,7 @@ from privatim.forms.meeting_form import (
     MeetingForm,
     sync_meeting_attendance_records,
 )
-from privatim.models import Meeting, WorkingGroup
+from privatim.models import Meeting, WorkingGroup, MeetingEditEvent
 from privatim.i18n import _
 from privatim.i18n import translate
 
@@ -403,6 +403,7 @@ def add_meeting_view(
         form.attendees.data = list(form_attendees | working_group_attendees)
         sync_meeting_attendance_records(form, meeting, request.POST, session)
 
+        added_filenames = []
         if form.files.data:
             for file in form.files.data:
                 if file:
@@ -415,9 +416,17 @@ def add_meeting_view(
                     # Appending to the relationship automatically handles the
                     # foreign key (meeting_id) upon session flush.
                     meeting.files.append(searchable_file)
+                    added_filenames.append(file['filename'])
 
         session.add(meeting)
         session.flush()
+        activity = MeetingEditEvent(
+            meeting_id=meeting.id,
+            event_type='creation',
+            creator_id=request.user.id,
+            added_files=added_filenames if added_filenames else None
+        )
+        session.add(activity)
         message = _(
             'Successfully added meeting "${name}"',
             mapping={'name': form.name.data}
@@ -439,8 +448,7 @@ def add_meeting_view(
 
 
 def edit_meeting_view(
-        meeting: Meeting,
-        request: 'IRequest'
+    meeting: Meeting, request: 'IRequest'
 ) -> 'MixedDataOrRedirect':
 
     assert isinstance(meeting, Meeting)
@@ -450,38 +458,59 @@ def edit_meeting_view(
     session = request.dbsession
 
     if request.method == 'POST' and form.validate():
-        form.populate_obj(meeting)
+        # Store original data for comparison
+        original_data = {
+            'name': meeting.name,
+            'time': meeting.time,
+            'attendance': {
+                record.user_id: record.status
+                for record in meeting.attendance_records
+            }
+        }
         assert form.time.data is not None
-        # meeting.name is already populated by form.populate_obj(meeting)
 
+        # Determine removed files before populating the object
+        removed_files = [
+            entry.object_data for entry in form.files.entries
+            if entry.action in ('delete', 'replace') and entry.object_data
+        ]
+        removed_filenames = [f.filename for f in removed_files]
+
+        form.populate_obj(meeting)
         meeting.time = fix_utc_to_local_time(form.time.data)
 
-        # Handle newly uploaded files
-        if form.files.data:
-            for file in form.files.data:
-                if file and file.get('data', None) is not None:
-                    # Explicitly set meeting_id
-                    searchable_file = SearchableFile(
-                        filename=file['filename'],
-                        content=dictionary_to_binary(file),
-                        content_type=file['mimetype'],
-                        meeting_id=meeting.id
-                    )
-                    # Check if file with same name already exists for this
-                    # meeting to avoid duplicates if the user re-uploads the
-                    # same file. This is a simple check; more robust checks
-                    # might involve checksums.
-                    existing_filenames = {f.filename for f in meeting.files}
-                    if searchable_file.filename not in existing_filenames:
-                        meeting.files.append(searchable_file)
-                    else:
-                        # Optionally log or inform the user about the duplicate
-                        # attempt
-                        log.info(
-                            f"Skipping duplicate file upload: "
-                            f"{searchable_file.filename} for meeting "
-                            f"{meeting.id}"
-                        )
+        # Track changes
+        changes = meeting.track_changes(original_data)
+
+        # form.files.added_files is populated by populate_obj
+        added_filenames = [
+            f.filename for f in getattr(form.files, 'added_files', [])
+        ]
+        files_were_added = bool(added_filenames)
+        files_were_removed = bool(removed_filenames)
+        file_changes = files_were_added or files_were_removed
+
+        if changes and file_changes:
+            activity = MeetingEditEvent(
+                meeting_id=meeting.id,
+                event_type='update',
+                creator_id=request.user.id,
+                changes=changes,
+                added_files=added_filenames if added_filenames else None,
+                removed_files=removed_filenames if removed_filenames else None,
+            )
+            session.add(activity)
+
+        if file_changes and not changes:
+            # 'pure' file update
+            activity = MeetingEditEvent(
+                meeting_id=meeting.id,
+                event_type='file_update',
+                creator_id=request.user.id,
+                added_files=added_filenames if added_filenames else None,
+                removed_files=removed_filenames if removed_filenames else None,
+            )
+            session.add(activity)
 
         session.add(meeting)
         session.flush()

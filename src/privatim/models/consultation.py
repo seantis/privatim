@@ -46,6 +46,8 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         replaced_by: 'Consultation | None' = None,
         secondary_tags: list[str] | None = None,
         previous_version: 'Consultation | None' = None,
+        added_files: list[str] | None = None,
+        removed_files: list[str] | None = None,
         is_latest_version: int = 1,
     ):
 
@@ -72,6 +74,8 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         self.replaced_by = replaced_by
         self.previous_version = previous_version
         self.is_latest_version = is_latest_version
+        self.added_files = added_files or []
+        self.removed_files = removed_files or []
 
     id: Mapped[UUIDStrPK]
     title: Mapped[str] = mapped_column(nullable=False)
@@ -85,6 +89,18 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     )
     secondary_tags: Mapped[list[str]] = mapped_column(
         ARRAY(String(32)), nullable=False, default=list
+    )
+
+    # We use this to track changes in activites.
+    # Currently only the lastet version of the consutlation chain has files
+    # attached, strictly speaking
+    # Because we would have to keep track of all files in the past which we
+    # don't necessarily want. So we just use this for history.
+    added_files: Mapped[list[str] | None] = mapped_column(
+        ARRAY(String), nullable=True
+    )
+    removed_files: Mapped[list[str] | None] = mapped_column(
+        ARRAY(String), nullable=True
     )
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
@@ -158,7 +174,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
             return self
         with session.no_consultation_filter():
             latest_version = self.replaced_by
-            while (latest_version is not None 
+            while (latest_version is not None
                    and latest_version.replaced_by is not None):
                 latest_version = latest_version.replaced_by
         # if we're not the latest version, there exists a newer version and

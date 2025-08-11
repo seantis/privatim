@@ -103,6 +103,33 @@ def check_server_known_host(
     except FileNotFoundError:
         sys.exit(1)
 
+
+def check_pserve_running(dry_run: bool) -> None:
+    """Checks if a 'pserve' process is already running and exits early if so.
+
+    This prevents potential failures later when attempting to write to the
+    PostgreSQL database, which would otherwise occur.
+    """
+    if dry_run:
+        click.echo(click.style('Dry run: Skipping pserve check.', fg='cyan'))
+        return
+
+    try:
+        result = subprocess.run(
+            ['pgrep', '-f', 'pserve'], check=False, capture_output=True
+        )
+        if result.returncode == 0:
+            click.echo(
+                click.style(
+                    "A 'pserve' process is running. Please stop it.", fg='red'
+                )
+            )
+            sys.exit(1)
+    except FileNotFoundError:
+        click.echo(click.style(
+            'Warning: pgrep not found. Skipping pserve check.', fg='yellow'
+        ))
+
 @click.command(name='privatim_transfer')
 @click.option(
     '--server',
@@ -138,6 +165,8 @@ def main(
 
     if dry_run:
         click.echo(click.style('--- DRY RUN MODE ---', fg='cyan', bold=True))
+
+    check_pserve_running(dry_run)
 
     # Check if server is in known_hosts before proceeding
     check_server_known_host(server, ssh_user, dry_run)
@@ -241,28 +270,28 @@ def main(
         local_files_target_dir = LOCAL_FILES_DIR_TEMPLATE.format(
             user=local_user
         )  # Define it here if not defined earlier
-        if not dry_run and not no_confirm:
-            if not click.confirm(
-                f'Proceed with syncing files to "{local_files_target_dir}"?',
-                default=False,
-                abort=True,
-            ):
-                return
-
-        remote_rsync_source = (
-            f'{ssh_user}@{selected_server}:{REMOTE_FILES_DIR}'
-        )
-        # Ensure local_files_target_dir ends with a slash for rsync
-        local_rsync_target = os.path.join(local_files_target_dir, '')
-        rsync_cmd = [
-            'rsync',
-            '-avz',
-            '-e',
-            'ssh',
-            remote_rsync_source,
-            local_rsync_target,
-        ]
-        run_command(rsync_cmd, dry_run=dry_run)
+        if not dry_run and not no_confirm and not click.confirm(
+            f'Proceed with syncing files to "{local_files_target_dir}"?',
+            default=False,
+        ):
+            click.echo(
+                click.style('Skipping file sync as requested.', fg='yellow')
+            )
+        else:
+            remote_rsync_source = (
+                f'{ssh_user}@{selected_server}:{REMOTE_FILES_DIR}'
+            )
+            # Ensure local_files_target_dir ends with a slash for rsync
+            local_rsync_target = os.path.join(local_files_target_dir, '')
+            rsync_cmd = [
+                'rsync',
+                '-avz',
+                '-e',
+                'ssh',
+                remote_rsync_source,
+                local_rsync_target,
+            ]
+            run_command(rsync_cmd, dry_run=dry_run)
     else:
         click.echo(
             click.style(
