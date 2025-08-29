@@ -1,6 +1,6 @@
 from enum import Enum as PyEnum
 from enum import IntEnum
-from sqlalchemy import ForeignKey, Integer, Enum
+from sqlalchemy import ForeignKey, Integer, Enum, UniqueConstraint
 from privatim.orm.meta import UUIDStrPK
 
 from sqlalchemy.orm import relationship, mapped_column, Mapped
@@ -57,6 +57,12 @@ class AgendaItemStatePreference(Base):
     (expanded/collapsed)"""
 
     __tablename__ = 'agenda_item_state_preferences'
+    __table_args__ = (
+        UniqueConstraint(
+            'user_id', 'agenda_item_id',
+            name='_user_agenda_item_uc'
+        ),
+    )
 
     id: Mapped[UUIDStrPK]
 

@@ -689,6 +689,14 @@ def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
             ),
         )
 
+    if not context.has_constraint(
+        'agenda_item_state_preferences', '_user_agenda_item_uc', 'UNIQUE'
+    ):
+        context.operations.create_unique_constraint(
+            '_user_agenda_item_uc',
+            'agenda_item_state_preferences',
+            ['user_id', 'agenda_item_id']
+        )
 
     context.commit()
     print("Database schema upgrade process finished.")
