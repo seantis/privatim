@@ -201,7 +201,7 @@ def update_single_agenda_item_state(request: 'IRequest') -> dict[str, str]:
             AgendaItemStatePreference.agenda_item_id == agenda_item_id,
             AgendaItemStatePreference.user_id == request.user.id,
         )
-    ).scalar_one_or_none()
+    ).scalars().first()
 
     if not preference:
         preference = AgendaItemStatePreference(
@@ -237,7 +237,7 @@ def update_bulk_agenda_items_state(
                 AgendaItemStatePreference.agenda_item_id == agenda_item.id,
                 AgendaItemStatePreference.user_id == request.user.id,
             )
-        ).scalar_one_or_none()
+        ).scalars().first()
 
         if not preference:
             preference = AgendaItemStatePreference(
