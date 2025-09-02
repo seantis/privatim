@@ -135,7 +135,7 @@ ignore = [
     "RUF013",
     "UP009",
     "UP012",
-    "UP032",
+    "UP032", # will be removed
     "UP037",
     "UP038",
 ]
