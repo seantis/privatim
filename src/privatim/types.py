@@ -40,7 +40,9 @@ if TYPE_CHECKING:
     JSONObject_ro: TypeAlias = Mapping[str, JSON_ro]
     JSONArray_ro: TypeAlias = Sequence[JSON_ro]
 
-    ACL: TypeAlias = tuple[Literal['Allow', 'Deny'], str, list[str] | AllPermissionsList]
+    ACL: TypeAlias = tuple[
+        Literal['Allow', 'Deny'], str, list[str] | AllPermissionsList
+    ]
 
     HTMLParam = str | int | float | Decimal | Fraction | bool | None
     HTTPMethod = Literal[

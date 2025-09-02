@@ -303,7 +303,7 @@ class WordReportRenderer:
                 f"{translate(_('Attendees:'), language=request.locale_name)}"
             ).runs[0].bold = True
             # Fetch sorted records using the property
-            sorted_records: Sequence['MeetingUserAttendance'] = (
+            sorted_records: Sequence[MeetingUserAttendance] = (
                 request.dbsession.execute(meeting.sorted_attendance_records)
                 .scalars()
                 .all()
@@ -365,7 +365,9 @@ class WordReportRenderer:
                     try:
                         html_tree = lxml.html.fromstring(item.description)
                         # Use itertext() which works on all element types
-                        text_content = ''.join(html_tree.itertext())
+                        text_content = ''.join(
+                            str(t) for t in html_tree.itertext()
+                        )
                         p_desc = document.add_paragraph(text_content.strip())
                         p_desc.paragraph_format.left_indent = Inches(0.25)
                         p_desc.paragraph_format.space_after = Pt(12)

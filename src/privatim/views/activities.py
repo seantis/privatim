@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 from sqlalchemy import select
@@ -171,7 +173,7 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
 
     # fixme: This is duplicated below, should be refactored (well, almost
     #  duplicated)
-    def get_consultations() -> Iterable[Consultation]:
+    def get_consultations() -> 'Iterable[Consultation]':
         with session.no_consultation_filter():
             return (
                 session.execute(
@@ -186,13 +188,15 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
                 .unique()
             )
 
-    def get_meeting_edit_events() -> Iterable[MeetingEditEvent]:
+    def get_meeting_edit_events() -> 'Iterable[MeetingEditEvent]':
         return (
             session.execute(
                 select(MeetingEditEvent)
                 .options(
                     joinedload(MeetingEditEvent.creator),
-                    joinedload(MeetingEditEvent.meeting).joinedload(Meeting.files)
+                    joinedload(MeetingEditEvent.meeting).joinedload(
+                        Meeting.files
+                    )
                 )
                 .order_by(MeetingEditEvent.created.desc())
             )

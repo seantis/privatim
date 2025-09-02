@@ -74,7 +74,7 @@ class Layout:
     @reify
     def macros(self) -> Any:
         renderer = get_renderer("macros.pt")
-        return renderer.implementation().macros
+        return renderer.implementation().macros  # type: ignore[attr-defined]
 
     def format_date(self, dt: datetime | date | None, format: str) -> str:
         """ Takes a datetime and formats it according to local timezone and

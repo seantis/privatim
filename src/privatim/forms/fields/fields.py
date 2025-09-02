@@ -242,7 +242,7 @@ class UploadField(FileField):
         return getattr(self, '_data', None)
 
     @data.setter
-    def data(self, value: 'FileDict') -> None:
+    def data(self, value: 'StrictFileDict | FileDict') -> None:
         self._data = value
 
     def process_formdata(self, valuelist: list['RawFormValue']) -> None:
@@ -258,7 +258,7 @@ class UploadField(FileField):
             # resend_upload
             action = valuelist[0]
             fieldstorage = valuelist[1]
-            self.data = binary_to_dictionary(  # type: ignore[assignment]
+            self.data = binary_to_dictionary(
                 dictionary_to_binary({'data': str(valuelist[3])}),
                 str(valuelist[2]),
             )

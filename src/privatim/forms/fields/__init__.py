@@ -1,4 +1,3 @@
-# flake8: noqa
 from .fields import (
     TomSelectWidget,
     DateTimeLocalField,
@@ -31,13 +30,13 @@ __all__ = (
     'DateTimeLocalField',
     'FieldList',
     'PhoneNumberField',
-    'TransparentFormField',
-    'TomSelectWidget',
-    'TimezoneDateTimeField',
-    'UploadField',
-    'UploadMultipleField',
     'SearchableMultiSelectField',
-    'UploadMultipleFilesWithORMSupport',
+    'TimezoneDateTimeField',
+    'TomSelectWidget',
+    'TransparentFormField',
+    'UploadField',
     'UploadFileWithORMSupport',
+    'UploadMultipleField',
+    'UploadMultipleFilesWithORMSupport',
     # "UploadOrSelectExistingMultipleFilesField"
 )

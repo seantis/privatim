@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import logging
+import bleach
 from markupsafe import Markup
 from pyramid.response import Response
 from sqlalchemy import func, select
@@ -33,8 +35,8 @@ from privatim.i18n import _
 from privatim.i18n import translate
 
 from typing import TYPE_CHECKING
-from collections.abc import Sequence
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from pyramid.interfaces import IRequest
     from privatim.models.association_tables import MeetingUserAttendance
     from privatim.types import RenderData, XHRDataOrRedirect
@@ -137,12 +139,13 @@ def meeting_view(
             all_items_expanded = False
         agenda_items.append(
             {
-                'title': Markup(
+                'title': Markup(   # nosec: MS001
                     '<strong>{}.</strong> {}'.format(
-                        indx, Markup.escape(item.title)
+                        indx, bleach.clean(item.title)
                     )
                 ),
-                'description': Markup(item.description),
+                'description': Markup(bleach.clean(
+                    item.description)),   # nosec: MS001
                 'id': item.id,
                 'position': item.position,
                 'is_expanded': is_expanded,
@@ -285,13 +288,6 @@ def export_meeting_as_docx_view(
     meeting = session.get(Meeting, meeting_id)
     if meeting is None:
         return HTTPNotFound()
-
-    # Ensure related data needed by the renderer is loaded
-    # (Example: attendees, agenda items - adjust if renderer needs more)
-    # This might already be handled by relationship loading, but explicit check
-    # can help.
-    __ = meeting.attendance_records  # Access to potentially load
-    ___ = meeting.agenda_items  # Access to potentially load
 
     renderer = WordReportRenderer()
     options = ReportOptions(language=request.locale_name)
@@ -465,7 +461,7 @@ def edit_meeting_view(
                         filename=file['filename'],
                         content=dictionary_to_binary(file),
                         content_type=file['mimetype'],
-                        meeting_id=str(meeting.id)
+                        meeting_id=meeting.id  # type:ignore[arg-type]
                     )
                     # Check if file with same name already exists for this
                     # meeting to avoid duplicates if the user re-uploads the

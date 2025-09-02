@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from typing_extensions import Self
     from wtforms.fields.core import _Widget
 
-    from privatim.forms.types import _FormT
+    from privatim.forms.types import FormT
     from privatim.forms.types import Validators
 
 
@@ -47,7 +47,7 @@ class PhoneNumberField(StringField):
     def __init__(
         self,
         label: str | None = None,
-        validators: 'Validators[_FormT, Self] | None' = None,
+        validators: 'Validators[FormT, Self] | None' = None,
         # FIXME: PhoneNumberType is not an enum
         number_type: int | None = None,
         *,

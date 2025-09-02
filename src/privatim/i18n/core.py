@@ -24,7 +24,7 @@ def translate(
 
     if not localizer:
         translation_dirs = (
-            reg.queryUtility(ITranslationDirectories) or []  # type: ignore[var-annotated] 
+            reg.queryUtility(ITranslationDirectories) or []  # type:ignore
         )
         localizer = make_localizer(language, translation_dirs)
         setattr(reg, localizername, localizer)
@@ -49,7 +49,7 @@ def pluralize(
     localizer = getattr(reg, localizername, None)
 
     if not localizer:
-        tdirs = reg.queryUtility(ITranslationDirectories) or []  # type: ignore[arg-type]
+        tdirs = reg.queryUtility(ITranslationDirectories) or []  # type:ignore
         localizer = make_localizer(language, tdirs)
         setattr(reg, localizername, localizer)
 

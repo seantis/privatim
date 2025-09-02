@@ -116,7 +116,7 @@ def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 _('Mobile Number'),
                 [
                     InputRequired(),
-                    UniqueMobileNumber(session, user_id),
+                    UniqueMobileNumber(session, str(user_id)),
                 ],
                 number_type=PhoneNumberType.MOBILE,
                 render_kw={'autofocus': True}
