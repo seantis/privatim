@@ -216,9 +216,18 @@ class IRequestHandler(Interface):
 
 class ILocalizer(Interface):
     locale_name: str
-
-class ILocaleNegotiator(Interface):
-    def __call__(request: IRequest) -> str | None: ...
+    def translate(
+        tstring: str,
+        domain: str | None = ...,
+        mapping: dict[str, Any] | None = ...
+    ) -> str: ...
+    def pluralize(
+        singular: str,
+        plural: str,
+        n: int,
+        domain: str | None = ...,
+        mapping: dict[str, Any] | None = ...
+    ) -> str: ...
 
 class ITranslationDirectories(Interface): ...
 
