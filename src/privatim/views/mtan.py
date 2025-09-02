@@ -108,6 +108,7 @@ def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         session = request.dbsession
         user = session.get(User, user_id)
         assert user is not None
+        assert user_id is not None
 
         # Mobile number input step
         class MTANSetupForm(Form):

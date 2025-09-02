@@ -223,7 +223,7 @@ def main() -> None:
     setup_logging(args.config)
 
     settings = {'username': '', 'password': ''}
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     config.read(args.config)
     for section_name in config.sections():
         if config.has_option(section_name, 'username'):

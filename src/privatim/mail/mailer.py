@@ -174,7 +174,6 @@ class PostmarkMailer:
             message['TextBody'] = params['content']
             message['Subject'] = params['subject']
         elif 'template' in params:
-            params = cast('TemplateMailParams', params)
             # NOTE: I'm not sure i like this, but it's better than having
             #       to pass mailer.stream around so much, which shouldn't
             #       necessarily be a standard attribute of IMailer...

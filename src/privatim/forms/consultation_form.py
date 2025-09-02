@@ -45,7 +45,10 @@ class ConsultationForm(Form):
             }
         )
 
-        self.status.choices = STATUS_CHOICES
+        self.status.choices =  [
+            (str(i), k)
+            for i, k in STATUS_CHOICES
+        ]
 
     title = ConstantTextAreaField(
         _('Title'),

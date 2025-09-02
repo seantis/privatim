@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from typing import Any, Literal, TypeVar, Protocol
     from typing_extensions import NotRequired, TypedDict
     from typing import TypeAlias
+    from pyramid.authorization import AllPermissionsList
 
     # Monkey patch (no effect)
     # from pyramid.request import Request
@@ -39,7 +40,7 @@ if TYPE_CHECKING:
     JSONObject_ro: TypeAlias = Mapping[str, JSON_ro]
     JSONArray_ro: TypeAlias = Sequence[JSON_ro]
 
-    ACL: TypeAlias = tuple[Literal['Allow', 'Deny'], str, list[str]]
+    ACL: TypeAlias = tuple[Literal['Allow', 'Deny'], str, list[str] | AllPermissionsList]
 
     HTMLParam = str | int | float | Decimal | Fraction | bool | None
     HTTPMethod = Literal[

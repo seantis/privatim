@@ -50,7 +50,7 @@ class SessionSecurityPolicy:
         self.timeout = timeout
 
     @request_cache()
-    def acl(self, context: Any, request: 'IRequest') -> list['ACL']:
+    def acl(self, context: Any, request: IRequest) -> list[ACL]:
         if not hasattr(context, '__acl__'):
             return [DENY_ALL]
         if not (acls := list(context.__acl__())):

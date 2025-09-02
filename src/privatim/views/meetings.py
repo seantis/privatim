@@ -465,7 +465,7 @@ def edit_meeting_view(
                         filename=file['filename'],
                         content=dictionary_to_binary(file),
                         content_type=file['mimetype'],
-                        meeting_id=meeting.id
+                        meeting_id=str(meeting.id)
                     )
                     # Check if file with same name already exists for this
                     # meeting to avoid duplicates if the user re-uploads the

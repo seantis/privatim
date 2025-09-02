@@ -3,7 +3,7 @@ from functools import partial
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
 
-from pyramid.events import BeforeRender
+from pyramid.events import BeforeRender  # type:ignore[attr-defined]
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.exc import SQLAlchemyError
