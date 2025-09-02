@@ -1,3 +1,4 @@
+from pyramid.interfaces import ILocaleNegotiator
 from gettext import GNUTranslations
 from translationstring import TranslationString as TranslationString
 from translationstring import TranslationStringFactory as TranslationStringFactory
