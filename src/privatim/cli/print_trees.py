@@ -27,6 +27,12 @@ def print_consultation_tree(
         f'[ID: {consultation.id}]'
     )
 
+    if consultation.files:
+        for file in consultation.files:
+            click.echo(f'{indent}    └── File: {file.name}')
+    else:
+        click.echo(f'{indent}    └── No files attached')
+
     if consultation.previous_version:
         print_consultation_tree(consultation.previous_version, level + 1)
 
@@ -484,3 +490,41 @@ def main() -> None:
 
 if __name__ == '__main__':
     cli()
+
+
+@cli.command('single')
+@click.argument('config_uri')
+@click.argument('consultation_id')
+def print_single_consultation(config_uri: str, consultation_id: str) -> None:
+    """
+    Print a single consultation tree by ID.
+
+    Shows the version history chain for the specified consultation.
+
+    Usage: venv/bin/print_trees single development.ini <consultation-id>
+    """
+    env = bootstrap(config_uri)
+    settings = get_appsettings(config_uri)
+    engine = get_engine(settings)
+    Base.metadata.create_all(engine)
+    closer = env['closer']
+
+    with env['request'].tm:
+        dbsession = env['request'].dbsession
+
+        with dbsession.no_consultation_filter():
+            consultation = dbsession.get(Consultation, consultation_id)
+            if not consultation:
+                click.echo(f'Consultation with ID {consultation_id} not found.')
+                closer()
+                return
+
+            # Find the root of this consultation's tree
+            root = consultation
+            while root.previous_version:
+                root = root.previous_version
+
+            click.echo(f'\nConsultation Tree for ID {consultation_id}:\n')
+            print_consultation_tree(root)
+
+    closer()

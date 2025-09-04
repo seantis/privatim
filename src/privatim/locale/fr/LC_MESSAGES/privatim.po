@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2025-06-24 12:19+0200\n"
+"POT-Creation-Date: 2025-08-06 23:04+0200\n"
 "PO-Revision-Date: 2024-04-11 15:53+0200\n"
 "Last-Translator: cyrill <cyrill.kuettel@seantis.ch>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -133,6 +133,22 @@ msgstr "Poubelle"
 #: src/privatim/layouts/navbar.pt
 msgid "Sign out"
 msgstr "Se déconnecter"
+
+#: src/privatim/models/meeting.py
+msgid "Meeting Scheduled"
+msgstr "Réunion prévue"
+
+#: src/privatim/models/meeting.py
+msgid "Meeting Updated"
+msgstr "Réunion mise à jour"
+
+#: src/privatim/models/meeting.py
+msgid "Meeting Files Updated"
+msgstr "Fichiers de réunion mis à jour"
+
+#: src/privatim/models/meeting.py src/privatim/forms/filter_form.py
+msgid "Meeting"
+msgstr "Réunion"
 
 #. type: ignore[has-type]
 #: src/privatim/models/comment.py
@@ -295,20 +311,16 @@ msgid "Successfully deleted meeting \"${name}\""
 msgstr "Réunion supprimée avec succès \"${nom}\""
 
 #: src/privatim/views/activities.py
-msgid "Meeting Updated"
-msgstr "Réunion mise à jour"
-
-#: src/privatim/views/activities.py
-msgid "Meeting Scheduled"
-msgstr "Réunion prévue"
-
-#: src/privatim/views/activities.py
 msgid "Consultation Added"
 msgstr "Procédure de consultation ajoutée"
 
 #: src/privatim/views/activities.py
 msgid "Consultation Updated"
 msgstr "Procédure de consultation mise à jour"
+
+#: src/privatim/views/activities.py
+msgid "Consultation Files Updated"
+msgstr "Fichiers de consultation mis à jour"
 
 #: src/privatim/views/trash.py
 msgid "Invalid item type."
@@ -913,10 +925,6 @@ msgid "Consultation"
 msgstr "Procédures de consultation"
 
 #: src/privatim/forms/filter_form.py
-msgid "Meeting"
-msgstr "Réunion"
-
-#: src/privatim/forms/filter_form.py
 msgid "Date from"
 msgstr "Date de"
 
@@ -1065,6 +1073,15 @@ msgstr "Procès-verbal de la réunion ${title}"
 #: src/privatim/reporting/template/report.pt
 msgid "Working Group:"
 msgstr "Comité:"
+
+#~ msgid "Meeting created"
+#~ msgstr "Réunion créée"
+
+#~ msgid "Meeting details updated"
+#~ msgstr "Détails de la réunion mis à jour"
+
+#~ msgid "Files were added to the meeting."
+#~ msgstr "Des fichiers ont été ajoutés à la réunion."
 
 #~ msgid "Consultation Status"
 #~ msgstr "Statut de la consultation"

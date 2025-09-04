@@ -1,1 +1,1 @@
-# contains view tests that use webtest
+# contains view tests that use a client (webtest) or browser (playwright)

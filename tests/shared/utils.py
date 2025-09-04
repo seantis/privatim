@@ -206,3 +206,18 @@ def verify_sequential_positions(items: list[AgendaItem]) -> None:
     assert len(positions) == len(
         set(positions)
     ), f'Duplicate positions found in {positions}'
+
+
+def speichern(page):
+    submit_button = page.locator('button[type="submit"]:has-text("Speichern")')
+    submit_button.scroll_into_view_if_needed()
+    submit_button.click()
+
+
+def aktionen_button_edit_click(page):
+    """ A fail-safe way to edit button, which is used throughout. """
+    aktionen_button = page.locator('a.dropdown-toggle:has-text("Aktionen")')
+    aktionen_button.click()
+    bearbeiten_link = page.locator('.dropdown-menu a:has-text("Bearbeiten")')
+    bearbeiten_link.wait_for(state="visible", timeout=5000)
+    bearbeiten_link.click()

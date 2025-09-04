@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 
 from sedate import utcnow
-from sqlalchemy import Integer, select, func, Text, Select
+from sqlalchemy import Integer, select, func, Text, Select, ARRAY, JSON
 from sqlalchemy.orm import Mapped, mapped_column, contains_eager
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -10,6 +10,7 @@ from datetime import datetime
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
+from privatim.i18n import _
 from privatim.models.file import SearchableFile
 from privatim.orm.meta import UUIDStr as UUIDStrType
 from privatim.models import SearchableMixin
@@ -30,6 +31,7 @@ if TYPE_CHECKING:
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from pyramid.interfaces import IRequest
+    from pyramid.i18n import TranslationString
 
 
 class AgendaItemCreationError(Exception):
@@ -242,6 +244,13 @@ class Meeting(Base, SearchableMixin):
         'WorkingGroup', back_populates='meetings'
     )
 
+    activities: Mapped[list['MeetingEditEvent']] = relationship(
+        'MeetingEditEvent',
+        back_populates='meeting',
+        cascade='all, delete-orphan',
+        uselist=True
+    )
+
     @classmethod
     def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
         yield cls.name
@@ -250,3 +259,84 @@ class Meeting(Base, SearchableMixin):
         return [
             (Allow, Authenticated, ['view']),
         ]
+
+    def track_changes(self, original_data: dict[str, str]) -> dict:
+        """Track changes between original and current state"""
+        changes = {}
+
+        # Track basic fields
+        if self.name != original_data.get('name'):
+            changes['name'] = {
+                'old': original_data.get('name'),
+                'new': self.name
+            }
+
+        if self.time != original_data.get('time'):
+            changes['time'] = {
+                'old': original_data.get('time'),
+                'new': self.time
+            }
+
+        # Track attendance changes
+        original_attendance = original_data.get('attendance', {})
+        current_attendance = {
+            record.user_id: record.status
+            for record in self.attendance_records
+        }
+
+        if original_attendance != current_attendance:
+            changes['attendance'] = {
+                'added': [uid for uid in current_attendance if uid not in original_attendance],
+                'removed': [uid for uid in original_attendance if uid not in current_attendance],
+                'changed': [uid for uid in original_attendance if uid in current_attendance and original_attendance[uid] != current_attendance[uid]]
+            }
+
+        return changes if changes else None
+
+
+class MeetingEditEvent(Base):
+    """Dedicated audit trail for meeting modifications, decoupling change
+    tracking from the core Meeting entity.
+
+    Feeds the `/activities` view. It has a meeting change history. We use this
+    because directly querying the meeting table for diffs was impressively
+    painful and self-limiting in its approach.
+    This way we actually know what happened when. """
+
+    __tablename__ = 'meeting_edit_event'
+    id: Mapped[UUIDStrPK]
+    meeting_id: Mapped[UUIDStr] = mapped_column(
+        ForeignKey('meetings.id'),
+        nullable=False,
+        index=True
+    )
+
+    # 'file_added', 'file_removed', 'meeting_updated'
+    event_type: Mapped[str] = mapped_column(Text, nullable=False)
+    created: Mapped[datetime] = mapped_column(default=utcnow, nullable=False)
+    creator_id: Mapped[UUIDStr | None] = mapped_column(
+       ForeignKey('users.id', ondelete='SET NULL'), nullable=True
+    )
+
+    added_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
+    removed_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
+    changes: Mapped[dict | None] = mapped_column(JSON)
+
+    meeting: Mapped['Meeting'] = relationship(
+        'Meeting',
+        back_populates='activities'
+    )
+    creator: Mapped[User | None] = relationship(
+        'User',
+        passive_deletes=True
+    )
+
+    def get_label_event_type(self) -> 'TranslationString':
+        if self.event_type == 'creation':
+            return _('Meeting Scheduled')
+        elif self.event_type == 'update':
+            return _('Meeting Updated')
+        elif self.event_type == 'file_update':
+            return _('Meeting Files Updated')
+        else:
+            return _('Meeting')

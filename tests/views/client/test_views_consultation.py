@@ -1,10 +1,13 @@
 from sqlalchemy.orm import selectinload, undefer
+from playwright.sync_api import  expect
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Consultation
 from sqlalchemy import select, func
 from webtest.forms import Upload
 
 from privatim.utils import get_previous_versions
+from tests.shared.utils import aktionen_button_edit_click, speichern
+from tests.views.client.utils import FileAction, login_admin, manage_document
 
 
 def test_view_consultation(client):
@@ -78,12 +81,12 @@ def test_view_consultation(client):
     assert 'Vernehmlassung aktualisiert' in items[0].text_content()
     assert 'Vernehmlassung aktualisiert' in items[1].text_content()
     hrefs = [e['href'] for e in get_link_from_Element_list(items)]
-    for link in hrefs:
-        # go to each cons activity entry, and go to the edit view there was a
-        # bug where this would result in 404 because we were on previous
-        # versions
-        client.get(link)
-        consultation_id = link.split('/')[-1]
+    for l in hrefs:
+        # go to each cons activity entry, and go to the edit view
+        # there was a bug where this would result in 404 because we were on
+        # previous versions
+        client.get(l)
+        consultation_id = l.split('/')[-1]
         page = client.get(f'/consultations/{consultation_id}/edit')
 
 
@@ -701,3 +704,106 @@ def test_display_previous_versions(client):
     assert 'John Doe' in ''.join(
         e.text_content().strip() for e in page.pyquery('ul.previous-versions')
     )
+
+
+# === Browser
+# Strictly speaking this doesn't need a browser test, but it's easier to look
+# a the divs
+
+# NOTE: WE should derive from Page to have these convenience methods in once
+# place
+# there we could overwrite
+def test_consultation_activities_after_document_edit(
+        page, live_server_url, session, pdf_vemz, docx
+):
+    login_admin(page, live_server_url, session)
+    # Create a consultation
+    page.goto(live_server_url + '/consultations')
+    page.click('text=Vernehmlassung Erfassen')
+    page.locator('textarea[name="title"]').fill('Test Consultation Activity')
+    page.get_by_role('button', name='Speichern').click()
+    page.wait_for_load_state('networkidle')
+
+    # we are on the consultation view page, click edit
+    aktionen_button_edit_click(page)
+
+    # Upload a document
+    file_input = page.locator('input[type="file"][name="files"]')
+    file_input.wait_for(state='visible', timeout=3000)
+    filename, file_content = pdf_vemz
+    file_input.set_input_files(files=[{
+        'name': filename,
+        'mimeType': 'application/pdf',
+        'buffer': file_content
+    }])
+
+    # Submit
+    speichern(page)
+
+    page.goto(live_server_url + '/activities')
+    page.wait_for_load_state('networkidle')
+
+    timeline_items = page.locator('.timeline-item')
+    # We expect 2 items: creation and update
+    expect(timeline_items).to_have_count(2)
+
+    # The newest activity (first in the list) should be the update
+    update_activity = timeline_items.first
+    expect(update_activity).to_contain_text(
+        'Vernehmlassungsdokumente aktualisiert'
+    )
+    expect(update_activity).to_contain_text('Test Consultation Activity')
+
+    # Check for added file in activity
+    file_change_item = update_activity.locator('.file-changes li')
+    expect(file_change_item).to_be_visible()
+    expect(file_change_item).to_contain_text(f'+{filename}')
+
+    # The initial creation
+    create_activity = timeline_items.last
+    expect(create_activity).to_contain_text('Vernehmlassung hinzugefügt')
+    expect(create_activity).to_contain_text('Test Consultation Activity')
+
+    # Go to consultation
+    timeline_items.first.locator(
+        'text=Vernehmlassungsdokumente aktualisiert'
+    ).click()
+    aktionen_button_edit_click(page)
+
+    manage_document(page, index=0, action=FileAction.REPLACE,
+                    file_data=docx)
+    speichern(page)
+    page.wait_for_load_state('networkidle', timeout=10000)
+
+    # we have:
+    # - edit replaced file. -vemz.pdf +doxc
+    # - edit: new file
+    # - intial creation
+    # We want to be pedanic and test this rendering here
+    page.goto(live_server_url + '/activities')
+    page.wait_for_load_state('networkidle')
+    timeline_items = page.locator('.timeline-item')
+    expect(timeline_items).to_have_count(3)
+
+    # The newest activity should be the replacement
+    replacement_activity = timeline_items.first
+    expect(replacement_activity).to_contain_text(
+       'Vernehmlassungsdokumente aktualisiert'
+    )
+    expect(replacement_activity).to_contain_text('Test Consultation Activity')
+    docx_filename, _ = docx
+
+    filename, file_content = pdf_vemz
+    expect(replacement_activity).to_contain_text(f'✕{filename}')
+    expect(replacement_activity).to_contain_text(f'+{docx_filename}')
+
+    # The second activity is the initial file upload (first edit)
+    # that we already have tested, but we had some bugs that made this change
+    # so test this here again
+    second_activity = timeline_items.nth(1)
+    expect(second_activity).to_contain_text(
+       'Vernehmlassungsdokumente aktualisiert'
+    )
+    file_change_item = second_activity.locator('.file-changes li')
+    expect(file_change_item).to_be_visible()
+    expect(file_change_item).to_contain_text(f'+{filename}')

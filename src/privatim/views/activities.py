@@ -60,9 +60,11 @@ def activity_to_dict(
 
     obj_type = activity.__class__.__name__
     if obj_type == 'MeetingEditEvent':
-        content = {'name': activity.meeting.name,
-                   'time': activity.meeting.created}
-        if activity.event_type == 'file_update':
+        content: dict[str, Any] = {'name': activity.meeting.name,
+                                   'time': activity.meeting.created}
+
+        if (activity.event_type == 'file_update'
+                or activity.event_type == 'update'):
             content.update({
                 'added_files': activity.added_files,
                 'removed_files': activity.removed_files
@@ -101,36 +103,18 @@ def activity_to_dict(
             icon_class = _get_icon_class(obj_type)
 
             if not is_creation:
-                previous_files_map = {
-                    d['id']: d['filename']
-                    for d in (activity.previous_files_metadata or [])
-                }
-                current_files_map = {f.id: f.filename for f in activity.files}
-
-                added_ids = set(current_files_map) - set(previous_files_map)
-                removed_ids = set(previous_files_map) - set(current_files_map)
-
-                added_files = sorted(
-                    [current_files_map[id] for id in added_ids]
-                )
-                removed_files = sorted(
-                    [previous_files_map[id] for id in removed_ids]
-                )
-                prev = activity.previous_version
-                title_changed = activity.title != prev.title
-                desc_changed = activity.description != prev.description
-                rec_changed = activity.recommendation != prev.recommendation
-                eval_changed = (activity.evaluation_result !=
-                                prev.evaluation_result)
-                decision_changed = activity.decision != prev.decision
-                status_changed = activity.status != prev.status
-                tags_changed = set(activity.secondary_tags) != set(
+                added_files = sorted(activity.added_files or [])
+                removed_files = sorted(activity.removed_files or [])
+                other_fields_changed = (
+                    activity.title != activity.previous_version.title
+                    or activity.description != activity.previous_version.description
+                    or activity.recommendation != activity.previous_version.recommendation
+                    or activity.evaluation_result != activity.previous_version.evaluation_result
+                    or activity.decision != activity.previous_version.decision
+                    or activity.status != activity.previous_version.status
+                    or set(activity.secondary_tags) != set(
                         activity.previous_version.secondary_tags
                     )
-                other_fields_changed = (
-                    title_changed or desc_changed or rec_changed or
-                    eval_changed or decision_changed or status_changed or
-                    tags_changed
                 )
 
                 if added_files or removed_files:
@@ -188,7 +172,7 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
                 .unique()
             )
 
-    def get_meeting_edit_events() -> 'Iterable[MeetingEditEvent]':
+    def get_meeting_edit_events() -> Iterable[MeetingEditEvent]:
         return (
             session.execute(
                 select(MeetingEditEvent)

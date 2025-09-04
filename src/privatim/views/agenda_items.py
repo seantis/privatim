@@ -190,25 +190,34 @@ def update_single_agenda_item_state(request: 'IRequest') -> dict[str, str]:
     session = request.dbsession
     new_state = AgendaItemDisplayState(int(request.json_body['state']))
     agenda_item_id = request.matchdict['id']
+    user_id = request.user.id
 
-    # Look up existing preference
-    preference = session.execute(
-        select(AgendaItemStatePreference).where(
-            AgendaItemStatePreference.agenda_item_id == agenda_item_id,
-            AgendaItemStatePreference.user_id == request.user.id,
-        )
-    ).scalar_one_or_none()
+    try:
+        preference = session.execute(
+            select(AgendaItemStatePreference).where(
+                AgendaItemStatePreference.agenda_item_id == agenda_item_id,
+                AgendaItemStatePreference.user_id == user_id,
+            )
+        ).scalar_one_or_none()
 
-    if not preference:
-        preference = AgendaItemStatePreference(
-            user_id=request.user.id,
-            agenda_item_id=agenda_item_id,
-            state=new_state,
-        )
-        session.add(preference)
-    else:
-        preference.state = new_state
-        session.add(preference)
+        if not preference:
+            preference = AgendaItemStatePreference(
+                user_id=user_id,
+                agenda_item_id=agenda_item_id,
+                state=new_state,
+            )
+            session.add(preference)
+        else:
+            preference.state = new_state
+
+        session.flush()
+
+    except Exception:
+        # This handles the race condition where two requests try to create the
+        # same preference at the same time. One will succeed, the other will
+        # fail. The failed one will roll back and the existing preference
+        # will be used.
+        session.rollback()
 
     return {'status': 'success'}
 
@@ -222,28 +231,41 @@ def update_bulk_agenda_items_state(
 
     session = request.dbsession
     new_state = AgendaItemDisplayState(int(request.json_body['state']))
+    user_id = request.user.id
 
     # Get all agenda items for the meeting
     agenda_items = context.agenda_items
+    if not agenda_items:
+        return {'status': 'success', 'updated': 0}
 
-    # Update or create preferences for all items
-    for agenda_item in agenda_items:
-        preference = session.execute(
+    # Get existing preferences for this user and meeting
+    existing_preferences = {
+        p.agenda_item_id: p for p in session.execute(
             select(AgendaItemStatePreference).where(
-                AgendaItemStatePreference.agenda_item_id == agenda_item.id,
-                AgendaItemStatePreference.user_id == request.user.id,
+                AgendaItemStatePreference.user_id == user_id,
+                AgendaItemStatePreference.agenda_item_id.in_(
+                    [item.id for item in agenda_items]
+                )
             )
-        ).scalar_one_or_none()
+        ).scalars().all()
+    }
 
+    for item in agenda_items:
+        preference = existing_preferences.get(item.id)
         if not preference:
             preference = AgendaItemStatePreference(
-                user_id=request.user.id,
-                agenda_item_id=agenda_item.id,
+                user_id=user_id,
+                agenda_item_id=item.id,
                 state=new_state,
             )
+            session.add(preference)
         else:
             preference.state = new_state
 
-        session.add(preference)
+    try:
+        session.flush()
+    except Exception:
+        # Handle potential race conditions in bulk updates as well
+        session.rollback()
 
     return {'status': 'success', 'updated': len(agenda_items)}
