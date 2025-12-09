@@ -4,8 +4,11 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: mixed-line-ending
+      - id: check-merge-conflict
       - id: check-ast
+        language_version: python3.12
       - id: debug-statements
+        language_version: python3.12
       - id: end-of-file-fixer
   - repo: https://github.com/seantis/pre-commit-hooks
     rev: v1.1.0
@@ -27,12 +30,10 @@ repos:
     rev: 7.3.0
     hooks:
       - id: flake8
+        language_version: python3.12
         types: [file]
         files: '^(src|stubs|tests).*\.py'
         additional_dependencies:
-          - 'flake8-markupsafe@git+https://github.com/vmagamedov/flake8-markupsafe#egg=b391bd13df9330e01666d304b7f4403d67e5ceba'
-          - flake8-comprehensions==3.14.0
-          - flake8-pyi==24.1.0
           - flake8-type-checking==3.0.0
   - repo: local
     hooks:

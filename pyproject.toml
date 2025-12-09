@@ -129,32 +129,32 @@ select = [
     "W"
 ]
 ignore = [
+    "E226",
     "PYI019",
     "PYI041",
     "RUF012",
     "RUF013",
+    "RUF052",
+    "SIM910",
     "UP009",
     "UP012",
-    "UP032", # will be removed
-    "UP037",
+    "UP032",
     "UP038",
 ]
 unfixable = []
 external = ["MS", "TC"]
 # NOTE: Enable preview rules, but only the ones we select explicitly
 preview = true
-explicit-preview-rules = true
 
 [tool.ruff.lint.extend-per-file-ignores]
-#
 "src/privatim/mail/__init__.py" = ["B018"]
 "src/privatim/models/__init__.py" = ["B018"]
-
 "*.pyi" = [
     "E501",
-    # TODO: re-enable this one, I think it is smarter in Ruff
-    "F401",
-    "F403",
+    "PT",
+    "Q",
+    "RUF022",
+    "RUF023",
     # NOTE: We would prefer to set a different target version instead
     #       but there's no per-file-target-version
     "UP",
@@ -166,11 +166,19 @@ explicit-preview-rules = true
     "PGH",
     "PYI",
     "RUF",
+    "SIM",
     "UP",
 ]
+"**/__init__.py" = [
+    # NOTE: A future import may not always be appropriate
+    "I002",
+]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.lint.flake8-quotes]
-avoid-escape = true
+avoid-escape = false
 docstring-quotes = "double"
 inline-quotes = "single"
 multiline-quotes = "double"
@@ -185,6 +193,3 @@ skip-magic-trailing-comma = false
 line-ending = "lf"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
-
-[tool.ruff.lint.isort]
-required-imports = ["from __future__ import annotations"]
