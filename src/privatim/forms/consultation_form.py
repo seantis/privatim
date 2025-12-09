@@ -45,7 +45,7 @@ class ConsultationForm(Form):
             }
         )
 
-        self.status.choices =  [
+        self.status.choices = [
             (str(i), k)
             for i, k in STATUS_CHOICES
         ]

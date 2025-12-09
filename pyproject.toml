@@ -134,7 +134,6 @@ ignore = [
     "PYI041",
     "RUF012",
     "RUF013",
-    "RUF052",
     "SIM910",
     "UP009",
     "UP012",
@@ -142,7 +141,7 @@ ignore = [
     "UP038",
 ]
 unfixable = []
-external = ["MS", "TC"]
+external = ["TC"]
 # NOTE: Enable preview rules, but only the ones we select explicitly
 preview = true
 

@@ -177,7 +177,7 @@ def delete_working_group_view(
 
         if request.is_xhr:
             return {
-                'success':  False,
+                'success': False,
                 'redirect_url': request.route_url('working_groups')
             }
     return HTTPFound(location=request.route_url('working_groups'))
