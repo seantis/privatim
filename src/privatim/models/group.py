@@ -58,7 +58,7 @@ class Group(Base):
 
     created: Mapped[datetime] = mapped_column(default=utcnow)
 
-    users: Mapped[list['User']] = relationship(
+    users: Mapped[list[User]] = relationship(
         'User',
         secondary=user_group_association,
         back_populates='groups',
@@ -75,10 +75,10 @@ class WorkingGroup(Group):
     def __init__(
             self,
             name: str,
-            leader: 'User | None' = None,
-            users: list['User'] | None = None,
-            meetings: list['Meeting'] | None = None,
-            chairman: 'User | None' = None,
+            leader: User | None = None,
+            users: list[User] | None = None,
+            meetings: list[Meeting] | None = None,
+            chairman: User | None = None,
     ):
         self.id = str(uuid.uuid4())
         self.name = name
@@ -98,7 +98,7 @@ class WorkingGroup(Group):
     leader_id: Mapped[UUIDStr | None] = mapped_column(
         ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
-    leader: Mapped['User | None'] = relationship(
+    leader: Mapped[User | None] = relationship(
         'User',
         foreign_keys=[leader_id],
         back_populates='leading_groups',
@@ -107,19 +107,19 @@ class WorkingGroup(Group):
     chairman_id: Mapped[UUIDStr | None] = mapped_column(
         ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
-    chairman: Mapped['User | None'] = relationship(
+    chairman: Mapped[User | None] = relationship(
         'User',
         foreign_keys=[chairman_id],
         back_populates='chaired_groups',
     )
 
-    meetings: Mapped[list['Meeting']] = relationship(
+    meetings: Mapped[list[Meeting]] = relationship(
         'Meeting',
         back_populates='working_group',
         cascade="all, delete-orphan"
     )
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]

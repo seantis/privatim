@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def default_csp_directives(request: 'IRequest') -> dict[str, str]:
+def default_csp_directives(request: IRequest) -> dict[str, str]:
     directives = {
         "base-uri": "'self'",
         "child-src": "blob:",
@@ -31,7 +31,7 @@ def default_csp_directives(request: 'IRequest') -> dict[str, str]:
     return directives
 
 
-def csp_header(event: 'NewResponse') -> None:
+def csp_header(event: NewResponse) -> None:
     response = event.response
     if 'Content-Security-Policy' not in response.headers:
         directives = default_csp_directives(event.request)

@@ -13,7 +13,7 @@ class NavbarEntry:
     url: str
     active: bool
 
-    def __init__(self, request: 'IRequest', title: str, url: str):
+    def __init__(self, request: IRequest, title: str, url: str):
         self.title = title
         self.url = url
         self.active = request.path_url == url
@@ -40,7 +40,7 @@ class NavbarEntry:
         return self.__call__()
 
 
-def navbar(context: object, request: 'IRequest') -> 'RenderData':
+def navbar(context: object, request: IRequest) -> RenderData:
     form = SearchForm(request)
     return {
         'form': form,

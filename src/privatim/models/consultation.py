@@ -37,17 +37,17 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     def __init__(
         self,
         title: str,
-        creator: 'User | None' = None,
+        creator: User | None = None,
         description: str | None = None,
         recommendation: str | None = None,
         evaluation_result: str | None = None,
         decision: str | None = None,
-        editor: 'User | None' = None,
+        editor: User | None = None,
         status: str | None = None,
-        files: list['SearchableFile'] | None = None,
-        replaced_by: 'Consultation | None' = None,
+        files: list[SearchableFile] | None = None,
+        replaced_by: Consultation | None = None,
         secondary_tags: list[str] | None = None,
-        previous_version: 'Consultation | None' = None,
+        previous_version: Consultation | None = None,
         added_files: list[str] | None = None,
         removed_files: list[str] | None = None,
         is_latest_version: int = 1,
@@ -118,7 +118,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     creator_id: Mapped[UUIDStrType] = mapped_column(
         ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
-    creator: Mapped['User | None'] = relationship(
+    creator: Mapped[User | None] = relationship(
         'User',
         back_populates='consultations',
         foreign_keys=[creator_id],
@@ -128,7 +128,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     editor_id: Mapped[UUIDStrType] = mapped_column(
         ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
-    editor: Mapped['User | None'] = relationship(
+    editor: Mapped[User | None] = relationship(
         'User',
         foreign_keys='Consultation.editor_id',
         passive_deletes=True
@@ -139,14 +139,14 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         nullable=True
     )
 
-    replaced_by: Mapped['Consultation | None'] = relationship(
+    replaced_by: Mapped[Consultation | None] = relationship(
         'Consultation',
         back_populates='previous_version',
         foreign_keys=[replaced_consultation_id],
         remote_side='Consultation.id',
         cascade='all, delete'
     )
-    previous_version: Mapped['Consultation | None'] = relationship(
+    previous_version: Mapped[Consultation | None] = relationship(
         'Consultation',
         back_populates='replaced_by',
         foreign_keys='Consultation.replaced_consultation_id',
@@ -171,7 +171,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         # cosmetics
         return self.is_latest_version == 1
 
-    def get_latest_version(self, session: 'FilteredSession') -> 'Consultation':
+    def get_latest_version(self, session: FilteredSession) -> Consultation:
         if self.is_latest():
             return self
         with session.no_consultation_filter():
@@ -186,7 +186,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
         assert latest_version is not None
         return latest_version
 
-    files: Mapped[list['SearchableFile']] = relationship(
+    files: Mapped[list[SearchableFile]] = relationship(
         'SearchableFile',
         primaryjoin="Consultation.id == SearchableFile.consultation_id",
         cascade='all, delete-orphan',
@@ -197,7 +197,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
     @classmethod
     def searchable_fields(
         cls,
-    ) -> 'Iterator[InstrumentedAttribute[str | None]]':
+    ) -> Iterator[InstrumentedAttribute[str | None]]:
         for field in [cls.title, cls.description, cls.recommendation]:
             if field is not None:
                 yield field
@@ -207,7 +207,7 @@ class Consultation(Base, SearchableMixin, SoftDeleteMixin):
             f'<Consultation {self.title}'
         )
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]

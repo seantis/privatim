@@ -20,7 +20,7 @@ class UserForm(Form):
     def __init__(
         self,
         context: User | None,
-        request: 'IRequest',
+        request: IRequest,
     ) -> None:
         self._title = _('Filter')
         session = request.dbsession

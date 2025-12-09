@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def logout_view(request: 'IRequest') -> HTTPFound:
+def logout_view(request: IRequest) -> HTTPFound:
     headers = forget(request)
     url = request.route_url('login')
     return HTTPFound(location=url, headers=headers)

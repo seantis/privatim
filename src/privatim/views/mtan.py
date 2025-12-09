@@ -34,7 +34,7 @@ class MTANForm(Form):
     )
 
 
-def mtan_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def mtan_view(request: IRequest) -> RenderDataOrRedirect:
 
     user_id = request.session.get('mtan_user', None)
     if user_id is None:
@@ -71,7 +71,7 @@ def mtan_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 class UniqueMobileNumber:
 
-    def __init__(self, session: 'Session', existing_user_id: str) -> None:
+    def __init__(self, session: Session, existing_user_id: str) -> None:
         self.session = session
         self.existing_user_id = existing_user_id
 
@@ -86,7 +86,7 @@ class UniqueMobileNumber:
             raise ValidationError(_('Existing mobile number'))
 
 
-def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def mtan_setup_view(request: IRequest) -> RenderDataOrRedirect:
 
     user_id = request.session.get('mtan_setup_user', None)
     if user_id is None:

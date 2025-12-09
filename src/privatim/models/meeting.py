@@ -23,15 +23,38 @@ from privatim.orm.meta import UUIDStrPK, DateTimeWithTz
 from privatim.models.user import User
 
 
-from typing import TYPE_CHECKING
-from collections.abc import Iterator
+from typing import TYPE_CHECKING, Any, TypedDict
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from sqlalchemy.orm import Session
     from privatim.models import WorkingGroup
     from privatim.types import ACL
     from sqlalchemy.orm import InstrumentedAttribute
     from pyramid.interfaces import IRequest
     from pyramid.i18n import TranslationString
+
+
+class SimpleFieldChange(TypedDict):
+    """Represents a change to a simple field with old and new values."""
+    old: Any
+    new: Any
+
+
+class AttendanceChange(TypedDict):
+    """Represents changes to meeting attendance."""
+    added: list[UUIDStr | None]
+    removed: list[UUIDStr]
+    changed: list[UUIDStr]
+
+
+class MeetingChanges(TypedDict, total=False):
+    """Dictionary tracking changes to a meeting.
+
+    Keys present only if the corresponding field changed.
+    """
+    name: SimpleFieldChange
+    time: SimpleFieldChange
+    attendance: AttendanceChange
 
 
 class AgendaItemCreationError(Exception):
@@ -48,7 +71,7 @@ class AgendaItem(Base, SearchableMixin):
         self,
         title: str,
         description: str,
-        meeting: 'Meeting',
+        meeting: Meeting,
         position: int,
     ):
         if position is None:
@@ -65,11 +88,11 @@ class AgendaItem(Base, SearchableMixin):
     @classmethod
     def create(
         cls,
-        session: 'Session',
+        session: Session,
         title: str,
         description: str,
-        meeting: 'Meeting'
-    ) -> 'AgendaItem':
+        meeting: Meeting
+    ) -> AgendaItem:
         meeting_id = meeting.id
         max_position = session.scalar(
             select(func.max(AgendaItem.position)).where(
@@ -100,20 +123,20 @@ class AgendaItem(Base, SearchableMixin):
         index=True,
     )
 
-    meeting: Mapped['Meeting'] = relationship(
+    meeting: Mapped[Meeting] = relationship(
         'Meeting',
         back_populates='agenda_items',
 
     )
 
     @classmethod
-    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
+    def searchable_fields(cls) -> Iterator[InstrumentedAttribute[str]]:
         yield cls.title
         yield cls.description
 
     def get_display_state_for_user(
             self,
-            request: 'IRequest',
+            request: IRequest,
     ) -> AgendaItemDisplayState:
         session = request.dbsession
         user = request.user
@@ -129,7 +152,7 @@ class AgendaItem(Base, SearchableMixin):
         return preference.state if preference \
             else (AgendaItemDisplayState.COLLAPSED)
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]
@@ -148,7 +171,7 @@ class Meeting(Base, SearchableMixin):
             name: str,
             time: datetime,
             attendees: list[User],
-            working_group: 'WorkingGroup',
+            working_group: WorkingGroup,
             agenda_items: list[AgendaItem] | None = None,
             creator: User | None = None
     ):
@@ -240,11 +263,11 @@ class Meeting(Base, SearchableMixin):
     working_group_id: Mapped[UUIDStr] = mapped_column(
         ForeignKey('working_groups.id'), index=True
     )
-    working_group: Mapped['WorkingGroup'] = relationship(
+    working_group: Mapped[WorkingGroup] = relationship(
         'WorkingGroup', back_populates='meetings'
     )
 
-    activities: Mapped[list['MeetingEditEvent']] = relationship(
+    activities: Mapped[list[MeetingEditEvent]] = relationship(
         'MeetingEditEvent',
         back_populates='meeting',
         cascade='all, delete-orphan',
@@ -252,17 +275,19 @@ class Meeting(Base, SearchableMixin):
     )
 
     @classmethod
-    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
+    def searchable_fields(cls) -> Iterator[InstrumentedAttribute[str]]:
         yield cls.name
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]
 
-    def track_changes(self, original_data: dict[str, str]) -> dict:
+    def track_changes(
+        self, original_data: dict[str, Any]
+    ) -> MeetingChanges | None:
         """Track changes between original and current state"""
-        changes = {}
+        changes: MeetingChanges = {}
 
         # Track basic fields
         if self.name != original_data.get('name'):
@@ -278,7 +303,9 @@ class Meeting(Base, SearchableMixin):
             }
 
         # Track attendance changes
-        original_attendance = original_data.get('attendance', {})
+        original_attendance: dict[UUIDStr, AttendanceStatus] = (
+            original_data.get('attendance', {})
+        )
         current_attendance = {
             record.user_id: record.status
             for record in self.attendance_records
@@ -286,9 +313,19 @@ class Meeting(Base, SearchableMixin):
 
         if original_attendance != current_attendance:
             changes['attendance'] = {
-                'added': [uid for uid in current_attendance if uid not in original_attendance],
-                'removed': [uid for uid in original_attendance if uid not in current_attendance],
-                'changed': [uid for uid in original_attendance if uid in current_attendance and original_attendance[uid] != current_attendance[uid]]
+                'added': [
+                    uid for uid in current_attendance
+                    if uid not in original_attendance
+                ],
+                'removed': [
+                    uid for uid in original_attendance
+                    if uid not in current_attendance
+                ],
+                'changed': [
+                    uid for uid in original_attendance
+                    if uid in current_attendance
+                    and original_attendance[uid] != current_attendance[uid]
+                ]
             }
 
         return changes if changes else None
@@ -320,9 +357,9 @@ class MeetingEditEvent(Base):
 
     added_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
     removed_files: Mapped[list[str] | None] = mapped_column(ARRAY(Text))
-    changes: Mapped[dict | None] = mapped_column(JSON)
+    changes: Mapped[dict[str, object] | None] = mapped_column(JSON)
 
-    meeting: Mapped['Meeting'] = relationship(
+    meeting: Mapped[Meeting] = relationship(
         'Meeting',
         back_populates='activities'
     )
@@ -331,7 +368,7 @@ class MeetingEditEvent(Base):
         passive_deletes=True
     )
 
-    def get_label_event_type(self) -> 'TranslationString':
+    def get_label_event_type(self) -> TranslationString:
         if self.event_type == 'creation':
             return _('Meeting Scheduled')
         elif self.event_type == 'update':

@@ -16,7 +16,7 @@ F = TypeVar('F', bound='Callable[..., Any]')
 _marker = object()
 
 
-def instance_cache() -> 'Callable[[F], F]':
+def instance_cache() -> Callable[[F], F]:
     """
     Decorator for caching method results on the instance.
     """
@@ -24,7 +24,7 @@ def instance_cache() -> 'Callable[[F], F]':
     def decorating_function(user_function: F) -> F:
 
         @wraps(user_function)
-        def wrapper(*args: 'Hashable', **kwds: 'Hashable') -> Any:
+        def wrapper(*args: Hashable, **kwds: Hashable) -> Any:
             instance = args[0]
             cache = getattr(instance, '_cache', None)
             if cache is None:
@@ -54,7 +54,7 @@ def clear_instance_cache(instance: Any) -> None:
         instance._cache = {}
 
 
-def request_cache() -> 'Callable[[F], F]':
+def request_cache() -> Callable[[F], F]:
     """
     Caches objects on the request.
     """
@@ -62,7 +62,7 @@ def request_cache() -> 'Callable[[F], F]':
     def decorating_function(user_function: F) -> F:
 
         @wraps(user_function)
-        def wrapper(*args: 'Hashable', **kwds: 'Hashable') -> Any:
+        def wrapper(*args: Hashable, **kwds: Hashable) -> Any:
             request = get_current_request()
             if request is None:
                 return user_function(*args, **kwds)

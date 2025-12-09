@@ -57,19 +57,19 @@ class SessionSecurityPolicy:
             return [DENY_ALL]
         return acls
 
-    def reissue(self, request: 'IRequest') -> None:
+    def reissue(self, request: IRequest) -> None:
         if hasattr(request.session, 'regenerate_id'):
             request.session.regenerate_id()
 
     @request_cache()
-    def principals(self, request: 'IRequest') -> list[str]:
+    def principals(self, request: IRequest) -> list[str]:
         user = self.identity(request)
         if user:
             principals = [Authenticated, f'user:{user.id}']
             return principals
         return []
 
-    def authenticated_userid(self, request: 'IRequest') -> str | None:
+    def authenticated_userid(self, request: IRequest) -> str | None:
         last_accessed = getattr(request.session, 'last_accessed', None)
         timeout = request.session.get(self.timeout_key, None)
         if timeout and last_accessed:
@@ -81,10 +81,10 @@ class SessionSecurityPolicy:
 
     def remember(
         self,
-        request:  'IRequest',
+        request:  IRequest,
         userid:   str,
         **kwargs: Any
-    ) -> list['HTTPHeader']:
+    ) -> list[HTTPHeader]:
 
         self.reissue(request)
         timeout = kwargs.get('max_age', self.timeout)
@@ -93,7 +93,7 @@ class SessionSecurityPolicy:
         request.session[self.userid_key] = userid
         return []
 
-    def forget(self, request: 'IRequest', **kwargs: Any) -> list['HTTPHeader']:
+    def forget(self, request: IRequest, **kwargs: Any) -> list[HTTPHeader]:
         self.reissue(request)
         if self.timeout_key in request.session:
             del request.session[self.timeout_key]
@@ -101,7 +101,7 @@ class SessionSecurityPolicy:
             del request.session[self.userid_key]
         return []
 
-    def identity(self, request: 'IRequest') -> 'User | None':
+    def identity(self, request: IRequest) -> User | None:
         user_id = self.authenticated_userid(request)
         if user_id is None:
             return None
@@ -109,10 +109,10 @@ class SessionSecurityPolicy:
 
     def permits(
         self,
-        request:    'IRequest',
+        request:    IRequest,
         context:    Any,
         permission: str
-    ) -> 'ACLPermitsResult':
+    ) -> ACLPermitsResult:
 
         acl = self.acl(context, request)
         principals = self.principals(request)

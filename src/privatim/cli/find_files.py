@@ -8,11 +8,11 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-def find_ini_files(start_dir: str = '') -> 'Iterator[str]':
+def find_ini_files(start_dir: str = '') -> Iterator[str]:
     start_dir = start_dir or os.path.dirname(os.path.abspath(__file__))
     visited = set()
 
-    def recurse_directory(path: str) -> 'Iterator[str]':
+    def recurse_directory(path: str) -> Iterator[str]:
         if path in visited:
             return
         visited.add(path)

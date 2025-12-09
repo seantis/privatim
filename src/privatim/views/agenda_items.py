@@ -23,8 +23,8 @@ if TYPE_CHECKING:
 
 def add_agenda_item_view(
     context: Meeting,
-    request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+    request: IRequest
+) -> MixedDataOrRedirect:
 
     assert isinstance(context, Meeting)
     target_url = request.route_url('meeting', id=context.id)
@@ -67,8 +67,8 @@ def add_agenda_item_view(
 
 def edit_agenda_item_view(
     context: AgendaItem,
-    request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+    request: IRequest
+) -> MixedDataOrRedirect:
 
     target_url = request.route_url('meeting', id=context.meeting.id)
     form = AgendaItemForm(context, request)
@@ -104,8 +104,8 @@ def edit_agenda_item_view(
 
 def delete_agenda_item_view(
     context: AgendaItem,
-    request: 'IRequest'
-) -> 'XHRDataOrRedirect':
+    request: IRequest
+) -> XHRDataOrRedirect:
 
     assert isinstance(context, AgendaItem)
     title = context.title
@@ -132,8 +132,8 @@ def delete_agenda_item_view(
 
 
 def copy_agenda_item_view(
-    context: Meeting, request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+    context: Meeting, request: IRequest
+) -> MixedDataOrRedirect:
     available_meetings: list[Meeting] = [
         meeting for meeting in context.working_group.meetings
         if meeting.id != context.id
@@ -184,7 +184,7 @@ def copy_agenda_item_view(
     }
 
 
-def update_single_agenda_item_state(request: 'IRequest') -> dict[str, str]:
+def update_single_agenda_item_state(request: IRequest) -> dict[str, str]:
     """Update the expanded/collapsed state of a single agenda item for the
     current user"""
     session = request.dbsession
@@ -224,7 +224,7 @@ def update_single_agenda_item_state(request: 'IRequest') -> dict[str, str]:
 
 def update_bulk_agenda_items_state(
         context: Meeting,
-        request: 'IRequest'
+        request: IRequest
 ) -> dict[str, str | int]:
     """Update the expanded/collapsed state of all agenda items in a meeting
     for the current user"""
@@ -251,7 +251,9 @@ def update_bulk_agenda_items_state(
     }
 
     for item in agenda_items:
-        preference = existing_preferences.get(item.id)
+        preference = existing_preferences.get(
+            item.id, None
+        )  # type: ignore[call-overload]
         if not preference:
             preference = AgendaItemStatePreference(
                 user_id=user_id,

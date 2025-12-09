@@ -19,7 +19,7 @@ def html_params(**kwargs: object) -> Markup:
     Also it returns Markup so it can be included in Markup.
     It also treats None the same as False
     """
-    def params_iter() -> 'Iterator[str]':
+    def params_iter() -> Iterator[str]:
         for key, value in sorted(kwargs.items()):
             key = str(key)
             key = key.rstrip('_')

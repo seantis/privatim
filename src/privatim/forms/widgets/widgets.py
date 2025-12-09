@@ -69,7 +69,7 @@ class UploadWidget(FileInput):
         </div>
     """)
 
-    def image_source(self, field: 'UploadField') -> str | None:
+    def image_source(self, field: UploadField) -> str | None:
         """ Returns the image source url if the field points to an image and
         if it can be done (it looks like it's possible, but I'm not super
         sure this is always possible).
@@ -94,7 +94,7 @@ class UploadWidget(FileInput):
 
     def template_data(
             self,
-            field: 'UploadField',
+            field: UploadField,
             force_simple: bool,
             resend_upload: bool,
             wrapper_css_class: str,
@@ -148,7 +148,7 @@ class UploadWidget(FileInput):
 
     def __call__(
             self,
-            field: 'UploadField',  # type:ignore[override]
+            field: UploadField,  # type:ignore[override]
             **kwargs: Any
     ) -> Markup:
 
@@ -194,14 +194,14 @@ class UploadMultipleWidget(FileInput):
 
     def render_input(
             self,
-            field: 'UploadMultipleField',
+            field: UploadMultipleField,
             **kwargs: Any
     ) -> Markup:
         return super().__call__(field, **kwargs)
 
     def __call__(
             self,
-            field: 'UploadMultipleField',  # type:ignore[override]
+            field: UploadMultipleField,  # type:ignore[override]
             **kwargs: Any
     ) -> Markup:
 

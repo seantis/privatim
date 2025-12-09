@@ -47,7 +47,7 @@ class PasswordChangeForm(Form):
 
 def get_token(
     token:   str,
-    request: 'IRequest'
+    request: IRequest
 ) -> PasswordChangeToken | None:
 
     session = request.dbsession
@@ -56,7 +56,7 @@ def get_token(
     return query.first()
 
 
-def password_change_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def password_change_view(request: IRequest) -> RenderDataOrRedirect:
 
     form = PasswordChangeForm(formdata=request.POST)
     if 'email' in request.POST:

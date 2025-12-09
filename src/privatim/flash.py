@@ -17,12 +17,12 @@ if TYPE_CHECKING:
 
 
 class MessageQueue:
-    _request: 'IRequest'
+    _request: IRequest
 
-    def __init__(self, request: 'IRequest') -> None:
+    def __init__(self, request: IRequest) -> None:
         self._request = request
 
-    def add(self, message: str, typ: 'MessageType' = 'info') -> None:
+    def add(self, message: str, typ: MessageType = 'info') -> None:
         if typ == 'error':
             typ = 'danger'
         message = translate(message)

@@ -14,7 +14,7 @@ class CheckboxListWidget:
     def __init__(self, inline: bool = False):
         self.inline = inline
 
-    def __call__(self, field: 'Field', **kwargs: Any) -> Markup:
+    def __call__(self, field: Field, **kwargs: Any) -> Markup:
         kwargs.setdefault('id', field.id)
         css_class = 'form-check'
         if self.inline:

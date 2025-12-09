@@ -25,35 +25,35 @@ _comment_factory = create_uuid_factory(Comment)
 _all_consultations_factory = create_consultation_all_versions_factory()
 
 
-def consultation_all_versions_factory(request: 'IRequest') -> Consultation:
+def consultation_all_versions_factory(request: IRequest) -> Consultation:
     return _all_consultations_factory(request)
 
 
-def consultation_factory(request: 'IRequest') -> 'Consultation | Root':
+def consultation_factory(request: IRequest) -> Consultation | Root:
     if request.matchdict.get('id', None) is None:
         return root_factory(request)
 
     return _consultation_factory(request)
 
 
-def working_group_factory(request: 'IRequest') -> 'WorkingGroup | Root':
+def working_group_factory(request: IRequest) -> WorkingGroup | Root:
     return _working_group_factory(request)
 
 
-def meeting_factory(request: 'IRequest') -> 'Meeting | Root':
+def meeting_factory(request: IRequest) -> Meeting | Root:
     return _meeting_factory(request)
 
 
-def agenda_item_factory(request: 'IRequest') -> AgendaItem:
+def agenda_item_factory(request: IRequest) -> AgendaItem:
     return _agenda_item_factory(request)
 
 
-def default_meeting_factory(request: 'IRequest') -> Meeting:
+def default_meeting_factory(request: IRequest) -> Meeting:
     factory = create_uuid_factory(Meeting)
     return factory(request)
 
 
-def person_factory(request: 'IRequest') -> 'User | Root':
+def person_factory(request: IRequest) -> User | Root:
 
     if request.matchdict.get('id', None) is None:
         return root_factory(request)
@@ -61,7 +61,7 @@ def person_factory(request: 'IRequest') -> 'User | Root':
     return _person_factory(request)
 
 
-def file_factory(request: 'IRequest') -> 'AbstractFile | None':
+def file_factory(request: IRequest) -> AbstractFile | None:
     file_id = request.matchdict['id']
     dbsession = request.dbsession
 
@@ -79,6 +79,6 @@ def file_factory(request: 'IRequest') -> 'AbstractFile | None':
     return searchable_file
 
 
-def general_file_factory(request: 'IRequest') -> GeneralFile:
+def general_file_factory(request: IRequest) -> GeneralFile:
     factory = create_uuid_factory(GeneralFile)
     return factory(request)

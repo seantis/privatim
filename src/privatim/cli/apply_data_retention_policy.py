@@ -39,7 +39,7 @@ def format_consultation_tree(
 
 
 def delete_old_consultation_chains(
-        session: 'FilteredSession',
+        session: FilteredSession,
         days_threshold: int = 30
 ) -> list[str]:
     """

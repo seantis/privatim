@@ -9,5 +9,5 @@ if TYPE_CHECKING:
 
 
 class Root:
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [(Allow, Authenticated, ['view'])]

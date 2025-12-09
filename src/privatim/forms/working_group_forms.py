@@ -23,7 +23,7 @@ class WorkingGroupForm(Form):
     def __init__(
         self,
         context: WorkingGroup | None,
-        request: 'IRequest',
+        request: IRequest,
     ) -> None:
 
         self._title = _('Edit Working Group')
@@ -62,10 +62,10 @@ class WorkingGroupForm(Form):
 
     def process(
         self,
-        formdata: '_MultiDictLike | None' = None,
+        formdata: _MultiDictLike | None = None,
         obj: object | None = None,
-        data: 'Mapping[str, Any] | None' = None,
-        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        data: Mapping[str, Any] | None = None,
+        extra_filters: Mapping[str, Sequence[Any]] | None = None,
         **kwargs: Any
     ) -> None:
         super().process(formdata, obj, data, **kwargs)

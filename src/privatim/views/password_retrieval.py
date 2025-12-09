@@ -35,7 +35,7 @@ class PasswordRetrievalForm(BaseForm):
     )
 
 
-def expire_all_tokens(user: User, session: 'Session') -> None:
+def expire_all_tokens(user: User, session: Session) -> None:
     query = session.query(PasswordChangeToken)
     query = query.filter(PasswordChangeToken.user_id == user.id)
     query = query.filter(
@@ -45,7 +45,7 @@ def expire_all_tokens(user: User, session: 'Session') -> None:
         token.expire()
 
 
-def mail_retrieval(email: str, request: 'IRequest') -> None:
+def mail_retrieval(email: str, request: IRequest) -> None:
     # NOTE: This will probably get caught by email_validator
     #       but lets just be safe for now...
     if '\x00' in email:
@@ -81,7 +81,7 @@ def mail_retrieval(email: str, request: 'IRequest') -> None:
     )
 
 
-def password_retrieval_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def password_retrieval_view(request: IRequest) -> RenderDataOrRedirect:
     form = PasswordRetrievalForm(formdata=request.POST)
     if 'email' in request.POST and form.validate():
         try:

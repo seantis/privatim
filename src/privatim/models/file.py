@@ -63,7 +63,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         nullable=True,
         index=True
     )
-    consultation: Mapped['Consultation | None'] = relationship(
+    consultation: Mapped[Consultation | None] = relationship(
         'Consultation', back_populates='files'
     )
 
@@ -72,7 +72,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         nullable=True,
         index=True
     )
-    meeting: Mapped['Meeting | None'] = relationship(
+    meeting: Mapped[Meeting | None] = relationship(
         'Meeting', back_populates='files'
     )
 

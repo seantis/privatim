@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger('privatim.people')
 
 
-def people_view(request: 'IRequest') -> 'RenderData':
+def people_view(request: IRequest) -> RenderData:
     session = request.dbsession
     stmt = select(User).order_by(
         nullslast(User.last_name),
@@ -68,7 +68,7 @@ def people_view(request: 'IRequest') -> 'RenderData':
     }
 
 
-def person_view(context: User, request: 'IRequest') -> 'RenderData':
+def person_view(context: User, request: IRequest) -> RenderData:
     session = request.dbsession
     stmt = (
         select(User)
@@ -102,7 +102,7 @@ def person_view(context: User, request: 'IRequest') -> 'RenderData':
     }
 
 
-def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def add_user_view(request: IRequest) -> RenderDataOrRedirect:
     form = UserForm(None, request)
 
     session = request.dbsession
@@ -156,8 +156,8 @@ def add_user_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 
 def edit_user_view(
-    context: User, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+    context: User, request: IRequest
+) -> RenderDataOrRedirect:
     form = UserForm(context, request)
     session = request.dbsession
     target_url = request.route_url('people')
@@ -193,8 +193,8 @@ def edit_user_view(
 
 
 def delete_user_view(
-    user: User, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+    user: User, request: IRequest
+) -> RenderDataOrRedirect:
     session = request.dbsession
     session.delete(user)
     session.flush()

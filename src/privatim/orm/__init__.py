@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 def get_engine(
         settings: dict[str, Any],
         prefix:   str = 'sqlalchemy.'
-) -> 'Engine':
+) -> Engine:
 
     return engine_from_config(
         settings,
@@ -23,7 +23,7 @@ def get_engine(
     )
 
 
-def get_session_factory(engine: 'Engine') -> sessionmaker[FilteredSession]:
+def get_session_factory(engine: Engine) -> sessionmaker[FilteredSession]:
     factory = sessionmaker(class_=FilteredSession)
     factory.configure(bind=engine)
     return factory

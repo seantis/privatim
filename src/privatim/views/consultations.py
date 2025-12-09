@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 
 
 def consultation_view(
-    context: Consultation, request: 'IRequest'
-) -> 'RenderData':
+    context: Consultation, request: IRequest
+) -> RenderData:
     session: FilteredSession = request.dbsession
     request.add_action_menu_entries([
         Button(
@@ -95,7 +95,7 @@ def consultation_view(
     }
 
 
-def consultations_view(request: 'IRequest') -> 'RenderData':
+def consultations_view(request: IRequest) -> RenderData:
 
     session = request.dbsession
     selected_status = request.params.get('status')
@@ -116,7 +116,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     if selected_status:
         stmt = stmt.where(Consultation.status == selected_status)
 
-    def get_first_version_creation_date(cons: Consultation) -> 'datetime':
+    def get_first_version_creation_date(cons: Consultation) -> datetime:
         prev_versions = get_previous_versions(session, cons, limit=1000)
         all_versions = [cons, *prev_versions]
         first_version = min(all_versions, key=lambda v: v.created)
@@ -185,7 +185,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     }
 
 
-def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def add_consultation_view(request: IRequest) -> RenderDataOrRedirect:
     form = ConsultationForm(None, request)
 
     target_url = request.route_url('activities')  # fallback
@@ -241,8 +241,8 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 
 def edit_consultation_view(
-    previous: Consultation, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+    previous: Consultation, request: IRequest
+) -> RenderDataOrRedirect:
     session = request.dbsession
     target_url = request.route_url('consultation', id=previous.id)
 
@@ -308,8 +308,8 @@ def edit_consultation_view(
 
 
 def delete_consultation_view(
-        context: Consultation, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+        context: Consultation, request: IRequest
+) -> RenderDataOrRedirect:
     session: FilteredSession = request.dbsession
     target_url = request.route_url('activities')
 

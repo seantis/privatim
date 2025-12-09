@@ -59,11 +59,11 @@ class DummyRequest(testing.DummyRequest):
         self.exception = None
 
     @property
-    def user(self) -> 'User | None':
+    def user(self) -> User | None:
         return authenticated_user(self)
 
 
-def verify_interface(klass: type[Any], interface: 'IInterface') -> None:
+def verify_interface(klass: type[Any], interface: IInterface) -> None:
     assert interface.implementedBy(klass)
     assert verifyClass(interface, klass)
 
@@ -76,9 +76,9 @@ _('<b>bold</b>', markup=True)
 @implementer(IMailer)
 class DummyMailer:
     stream:           str = 'dummy'
-    mails:            list['Mail']
+    mails:            list[Mail]
     sent:             int
-    error_state:      'MailState' | None
+    error_state:      MailState | None
     raise_mail_error: bool
 
     def __init__(self) -> None:
@@ -98,13 +98,13 @@ class DummyMailer:
         ):
             raise MailError('Failed sending mail.')
 
-    def queue(self, mail: 'Mail') -> 'MailID':
+    def queue(self, mail: Mail) -> MailID:
         self.maybe_raise()
         self.mails.append(mail)
         self.sent += 1
         return self.sent - 1
 
-    def batch_queue(self, mail: 'Mail') -> 'MailID' | 'MailState':
+    def batch_queue(self, mail: Mail) -> MailID | MailState:
         self.maybe_raise(batch_mode=True)
         if self.error_state is not None:
             return self.error_state
@@ -113,14 +113,14 @@ class DummyMailer:
         return self.sent - 1
 
     def send(self,
-             sender:      'Address' | None,
-             receivers:   'Address' | Sequence['Address'],
+             sender:      Address | None,
+             receivers:   Address | Sequence[Address],
              subject:     str,
              content:     str,
              *,
              tag:         str | None = None,
-             attachments: list['MailAttachment'] | None = None,
-             **kwargs:    Any) -> 'MailID':
+             attachments: list[MailAttachment] | None = None,
+             **kwargs:    Any) -> MailID:
         params: MailParams = {
             'receivers': receivers,
             'subject': subject,
@@ -135,20 +135,20 @@ class DummyMailer:
         return self.queue(params)
 
     def bulk_send(self,
-                  mails: list['MailParams']
-                  ) -> list['MailID' | 'MailState']:
+                  mails: list[MailParams]
+                  ) -> list[MailID | MailState]:
         return [self.batch_queue(mail) for mail in mails]
 
     def send_template(self,
-                      sender:      'Address' | None,
-                      receivers:   'Address' | Sequence['Address'],
+                      sender:      Address | None,
+                      receivers:   Address | Sequence[Address],
                       template:    str,
-                      data:        'JSONObject',
+                      data:        JSONObject,
                       *,
                       subject:     str | None = None,
                       tag:         str | None = None,
-                      attachments: list['MailAttachment'] | None = None,
-                      **kwargs:    Any) -> 'MailID':
+                      attachments: list[MailAttachment] | None = None,
+                      **kwargs:    Any) -> MailID:
 
         params: TemplateMailParams = {
             'receivers': receivers,
@@ -168,9 +168,9 @@ class DummyMailer:
         return self.queue(params)
 
     def bulk_send_template(self,
-                           mails: list['TemplateMailParams'],
+                           mails: list[TemplateMailParams],
                            default_template: str | None = None,
-                           ) -> list['MailID' | 'MailState']:
+                           ) -> list[MailID | MailState]:
         sent = []
         for _mail in mails:
             mail = _mail.copy()
@@ -205,7 +205,7 @@ class DummySMSGateway:
 
     def send(
             self,
-            receivers: 'Sequence[str]',
+            receivers: Sequence[str],
             content: str,
             sender: str = 'Privatim'
     ) -> None:
@@ -216,13 +216,13 @@ class DummySMSGateway:
 class MockResponse:
     status_code:  int
     ok:           bool
-    json_data:    'JSON'
+    json_data:    JSON
     text:         str
     content:      bytes
     invalid_json: bool
 
     def __init__(self,
-                 json_data:    'JSON' | None = None,
+                 json_data:    JSON | None = None,
                  invalid_json: bool = False) -> None:
         self.status_code = 200
         self.ok = True
@@ -233,7 +233,7 @@ class MockResponse:
         self.content = self.text.encode('utf-8')
         self.invalid_json = invalid_json
 
-    def json(self, **kwargs: Any) -> 'JSON':
+    def json(self, **kwargs: Any) -> JSON:
         if self.invalid_json:
             raise ValueError('Invalid JSON.')
         return self.json_data

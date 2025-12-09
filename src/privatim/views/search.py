@@ -82,7 +82,7 @@ class SearchCollection:
 
     """
 
-    def __init__(self, term: str, session: 'Session', language: str = 'de_CH'):
+    def __init__(self, term: str, session: Session, language: str = 'de_CH'):
         self.lang: str = locales[language]
         self.session = session
         self.web_search = term
@@ -149,7 +149,7 @@ class SearchCollection:
 
     def build_file_query(
             self, model: type[SearchableFile]
-    ) -> 'Select[tuple[FileSearchResultType, ...]]':
+    ) -> Select[tuple[FileSearchResultType, ...]]:
         """ Search in the files.
 
         Two distinct things are happening here:
@@ -185,7 +185,7 @@ class SearchCollection:
 
     def build_attribute_query(
         self, model: type[SearchableMixin]
-    ) -> 'Select[tuple[SearchResultType, ...]]':
+    ) -> Select[tuple[SearchResultType, ...]]:
 
         headline_expressions = (
             type_coerce(func.ts_headline(
@@ -258,7 +258,7 @@ class SearchCollection:
         return output
 
 
-def search(request: 'IRequest') -> 'RenderDataOrRedirect':
+def search(request: IRequest) -> RenderDataOrRedirect:
     """
     Handle search form submission using POST/Redirect/GET design pattern.
 

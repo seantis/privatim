@@ -7,5 +7,5 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def root_factory(request: 'IRequest') -> Root:
+def root_factory(request: IRequest) -> Root:
     return Root()

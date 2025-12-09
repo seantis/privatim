@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from privatim.types import RenderData
 
 
-def flash(context: object, request: 'IRequest') -> 'RenderData':
+def flash(context: object, request: IRequest) -> RenderData:
     messages = request.session.pop_flash()
     if not messages:
         return {}

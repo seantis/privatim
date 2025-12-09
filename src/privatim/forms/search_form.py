@@ -14,7 +14,7 @@ class SearchForm(Form):
 
     def __init__(
             self,
-            request: 'IRequest',
+            request: IRequest,
     ) -> None:
         session = request.dbsession
         super().__init__(

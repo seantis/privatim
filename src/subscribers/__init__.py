@@ -7,5 +7,5 @@ if TYPE_CHECKING:
     from pyramid.config import Configurator
 
 
-def register_subscribers(config: 'Configurator') -> None:
+def register_subscribers(config: Configurator) -> None:
     config.add_subscriber(csp_header, NewResponse)

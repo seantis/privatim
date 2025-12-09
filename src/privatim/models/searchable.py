@@ -24,7 +24,7 @@ class SearchableMixin:
     @classmethod
     def searchable_fields(
         cls,
-    ) -> 'Iterator[InstrumentedAttribute[str | None]]':
+    ) -> Iterator[InstrumentedAttribute[str | None]]:
         raise NotImplementedError(
             "Searchable fields must be defined for each model"
         )

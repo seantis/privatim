@@ -316,7 +316,8 @@ def test_edit_meeting_multiple_documents(
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -413,7 +414,9 @@ def test_edit_meeting_multiple_documents(
 
     # To make the test robust, find the file to delete by its name
     file_widgets = page.locator('.upload-widget.with-data').all()
-    file_titles = [w.locator('p.file-title').inner_text() for w in file_widgets]
+    file_titles = [
+        w.locator('p.file-title').inner_text() for w in file_widgets
+    ]
     idx_to_delete = next(
         i for i, title in enumerate(file_titles) if replaced_file[0] in title
     )

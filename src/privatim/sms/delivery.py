@@ -56,7 +56,7 @@ class QueuedSMSDelivery:
         if result.get('StatusInfo') != 'OK' or result.get('StatusCode') != '1':
             raise Exception(f'Sending SMS failed, got: "{result!s}"')
 
-    def _parseMessage(self, filename: str) -> 'JSONObject':
+    def _parseMessage(self, filename: str) -> JSONObject:
         with open(filename) as fd:
             data = json.load(fd)
 

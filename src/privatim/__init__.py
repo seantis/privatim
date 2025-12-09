@@ -4,7 +4,7 @@ import uuid
 from fanstatic import Fanstatic
 from psycopg2 import ProgrammingError
 
-from pyramid.events import BeforeRender  # type:ignore[attr-defined]
+from pyramid.events import BeforeRender  # type: ignore[attr-defined]
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.exc import SQLAlchemyError
@@ -87,7 +87,7 @@ def includeme(config: Configurator) -> None:
 
     config.add_request_method(authenticated_user, 'user', property=True)
 
-    def profile_pic(request: 'IRequest') -> str:
+    def profile_pic(request: IRequest) -> str:
         user = request.user
         if not user:
             return ''
@@ -102,8 +102,8 @@ def includeme(config: Configurator) -> None:
     config.add_request_method(lambda r: rev, 'git_revision')
 
     def add_action_menu_entries(
-        request: 'IRequest',
-        entries: Iterable['Button'],
+        request: IRequest,
+        entries: Iterable[Button],
     ) -> None:
         """
         Action menus are a list of buttons that are displayed in the top right.
@@ -132,7 +132,7 @@ def add_renderer_globals(event: Incomplete) -> None:
 
 def main(
     global_config: Any, **settings: Any
-) -> 'WSGIApplication':  # pragma: no cover
+) -> WSGIApplication:  # pragma: no cover
 
     sentry_dsn = settings.get('sentry_dsn')
     sentry_environment = settings.get('sentry_environment', 'development')
@@ -160,7 +160,7 @@ def main(
 
 
 def fix_user_constraints_to_work_with_hard_delete(
-        context: 'UpgradeContext'
+        context: UpgradeContext
 ) -> None:
     op = context.operations
     conn = op.get_bind()
@@ -172,7 +172,7 @@ def fix_user_constraints_to_work_with_hard_delete(
         #  Add all other foreign key constraints here
     ]
 
-    for table, col, constraint in fk_constraints:
+    for table_name, col, constraint in fk_constraints:
         # Check if constraint exists
         try:
             exists = conn.execute(text(
@@ -184,23 +184,23 @@ def fix_user_constraints_to_work_with_hard_delete(
 
         if exists:
             try:
-                op.drop_constraint(constraint, table, type_='foreignkey')
+                op.drop_constraint(constraint, table_name, type_='foreignkey')
             except (ProgrammingError, SQLAlchemyError) as e:
                 print(
-                    f"Error dropping constraint {constraint} on table {table}:"
-                    f" {e!s}"
+                    f"Error dropping constraint {constraint} on table "
+                    f"{table_name}: {e!s}"
                 )
         else:
             print(
-                f"Constraint {constraint} on table {table} doesn't exist, "
-                f"skipping drop"
+                f"Constraint {constraint} on table {table_name} doesn't "
+                f"exist, skipping drop"
             )
 
         # Recreate the constraint with ON DELETE SET NULL
         try:
             op.create_foreign_key(
                 constraint,
-                table,
+                table_name,
                 'users',
                 [col],
                 ['id'],
@@ -208,12 +208,13 @@ def fix_user_constraints_to_work_with_hard_delete(
             )
         except SQLAlchemyError as e:
             print(
-                f"Error creating constraint {constraint} on table {table}: "
-                f"{e!s}")
+                f"Error creating constraint {constraint} on table "
+                f"{table_name}: {e!s}"
+            )
 
 
 def create_meeting_edit_events_and_migrate_data(
-    context: 'UpgradeContext'
+    context: UpgradeContext
 ) -> None:
     """
     Creates the meeting_activities table and populates it with historical data
@@ -257,7 +258,7 @@ def create_meeting_edit_events_and_migrate_data(
         print(f'Created {len(edit_events_to_insert)} meeting edit evnt items.')
 
 
-def upgrade(context: 'UpgradeContext') -> None:  # type: ignore[no-untyped-def]
+def upgrade(context: UpgradeContext) -> None:
     context.add_column(
         'meetings',
         Column(

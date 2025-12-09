@@ -28,7 +28,7 @@ class MTanExpired(MTanException):
 
 class MTanTool:
 
-    def __init__(self, session: 'Session'):
+    def __init__(self, session: Session):
         self.session = session
 
     def hash(self, tan: str) -> str:
@@ -48,7 +48,7 @@ class MTanTool:
 
     def create_tan(
         self,
-        user: 'User',
+        user: User,
         ip_address: str,
         length: int = 6
     ) -> str:
@@ -62,7 +62,7 @@ class MTanTool:
 
         return token
 
-    def verify(self, user_id: str, tan: str) -> 'User':
+    def verify(self, user_id: str, tan: str) -> User:
         hashed_tan = self.hash(tan)
         tan_obj = self.tan(user_id, hashed_tan)
         if not tan_obj:

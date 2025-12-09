@@ -57,7 +57,7 @@ class FileSizeLimit:
     def __init__(self, max_bytes: int):
         self.max_bytes = max_bytes
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: Form, field: Field) -> None:
         if not field.data:
             return
 
@@ -89,7 +89,7 @@ class WhitelistedMimeType:
 
     """
 
-    whitelist: 'Collection[str]' = {
+    whitelist: Collection[str] = {
         'application/msword',
         ('application/vnd.openxmlformats-officedocument.wordprocessingml'
          '.document'),
@@ -99,11 +99,11 @@ class WhitelistedMimeType:
 
     message = _("Files of this type are not supported.")
 
-    def __init__(self, whitelist: 'Collection[str] | None' = None):
+    def __init__(self, whitelist: Collection[str] | None = None):
         if whitelist is not None:
             self.whitelist = whitelist
 
-    def __call__(self, form: 'Form', field: 'Field') -> None:
+    def __call__(self, form: Form, field: Field) -> None:
         if not field.data:
             return
 
@@ -119,7 +119,7 @@ class FileRequired(DataRequired):
     https://flask-wtf.readthedocs.io/en/0.15.x/api/#flask_wtf.file.FileRequired
     """
 
-    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
+    def __call__(self, form: BaseForm, field: Field) -> None:
         if not (isinstance(field.data, FieldStorage)):
             raise StopValidation(
                 self.message or field.gettext("This field is required.")
@@ -139,13 +139,13 @@ class FileExtensionsAllowed:
 
     def __init__(
         self,
-        extensions: 'Sequence[str]',
+        extensions: Sequence[str],
         message: str | None = None
     ) -> None:
         self.extensions = extensions
         self.message = message
 
-    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
+    def __call__(self, form: BaseForm, field: Field) -> None:
         if not field.data:
             return
 
@@ -162,12 +162,12 @@ class FileExtensionsAllowed:
         )
 
 
-def email_validator(form: 'BaseForm', field: 'Field') -> None:
+def email_validator(form: BaseForm, field: Field) -> None:
     if not email_regex.match(field.data):
         raise ValidationError('Not a valid email.')
 
 
-def password_validator(form: 'BaseForm', field: 'Field') -> None:
+def password_validator(form: BaseForm, field: Field) -> None:
     password = form['password'].data
     password_confirmation = form['password_confirmation'].data
 
@@ -197,7 +197,7 @@ class Immutable:
     field_flags: dict[str, Any] = {}
     if TYPE_CHECKING:
         @abstractmethod
-        def __call__(self, form: 'BaseForm', field: 'Field') -> None: ...
+        def __call__(self, form: BaseForm, field: Field) -> None: ...
 
 
 class Disabled(Immutable):
@@ -210,7 +210,7 @@ class Disabled(Immutable):
     def __init__(self) -> None:
         self.field_flags = {'disabled': True, 'aria_disabled': 'true'}
 
-    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
+    def __call__(self, form: BaseForm, field: Field) -> None:
         if field.raw_data is not None:
             raise ValidationError(_('This field is disabled.'))
 
@@ -225,6 +225,6 @@ class ReadOnly(Immutable):
     def __init__(self) -> None:
         self.field_flags = {'readonly': True, 'aria_readonly': 'true'}
 
-    def __call__(self, form: 'BaseForm', field: 'Field') -> None:
+    def __call__(self, form: BaseForm, field: Field) -> None:
         if field.data != field.object_data:
             raise ValidationError(_('This field is read only.'))

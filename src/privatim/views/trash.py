@@ -33,7 +33,7 @@ class DeletedItemData(TypedDict):
 
 
 def generate_deleted_item_data(
-    request: 'IRequest', item: 'SoftDeleteMixin', item_type: str
+    request: IRequest, item: SoftDeleteMixin, item_type: str
 ) -> DeletedItemData:
     assert hasattr(item, 'id') and hasattr(
         item, 'title'
@@ -50,11 +50,11 @@ def generate_deleted_item_data(
     }
 
 
-def trash_view(request: 'IRequest') -> 'RenderData':
+def trash_view(request: IRequest) -> RenderData:
 
     def get_deleted_items(
-        session: 'FilteredSession', model: type['SoftDeleteMixin']
-    ) -> Sequence['SoftDeleteMixin']:
+        session: FilteredSession, model: type[SoftDeleteMixin]
+    ) -> Sequence[SoftDeleteMixin]:
         with session.no_soft_delete_filter():
             stmt = select(model).filter(model.deleted.is_(True))
             result = session.execute(stmt)
@@ -77,7 +77,7 @@ def trash_view(request: 'IRequest') -> 'RenderData':
 
 
 def restore_consultation_chain(
-        session: 'FilteredSession',
+        session: FilteredSession,
         consultation: Consultation
 ) -> None:
     """Restore an entire consultation chain starting from any point."""
@@ -97,8 +97,8 @@ def restore_consultation_chain(
 
 
 def restore_soft_deleted_model_view(
-        request: 'IRequest',
-) -> 'RenderDataOrRedirect':
+        request: IRequest,
+) -> RenderDataOrRedirect:
     session: FilteredSession = request.dbsession
     item_type = request.matchdict['item_type']
     item_id = request.matchdict['item_id']

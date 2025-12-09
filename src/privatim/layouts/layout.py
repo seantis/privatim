@@ -33,7 +33,7 @@ class Layout:
     weekday_short_format = 'E'
     month_long_format = 'MMMM'
 
-    def __init__(self, context: Any, request: 'IRequest') -> None:
+    def __init__(self, context: Any, request: IRequest) -> None:
         self.context = context
         self.request = request
         self.year = date.today().year

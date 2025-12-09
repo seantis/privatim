@@ -1,5 +1,5 @@
 from sqlalchemy.orm import selectinload, undefer
-from playwright.sync_api import  expect
+from playwright.sync_api import expect
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Consultation
 from sqlalchemy import select, func
@@ -81,12 +81,12 @@ def test_view_consultation(client):
     assert 'Vernehmlassung aktualisiert' in items[0].text_content()
     assert 'Vernehmlassung aktualisiert' in items[1].text_content()
     hrefs = [e['href'] for e in get_link_from_Element_list(items)]
-    for l in hrefs:
+    for href in hrefs:
         # go to each cons activity entry, and go to the edit view
         # there was a bug where this would result in 404 because we were on
         # previous versions
-        client.get(l)
-        consultation_id = l.split('/')[-1]
+        client.get(href)
+        consultation_id = href.split('/')[-1]
         page = client.get(f'/consultations/{consultation_id}/edit')
 
 

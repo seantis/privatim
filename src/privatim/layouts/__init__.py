@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from pyramid.config import Configurator
 
 
-def includeme(config: 'Configurator') -> None:
+def includeme(config: Configurator) -> None:
     config.add_layout(
         Layout,
         'layout.pt'

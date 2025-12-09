@@ -33,13 +33,13 @@ class MailAttachment(_BaseMailAttachment, total=False):
 
 
 class RequiredMailParams(TypedDict):
-    receivers: 'Address | Sequence[Address]'
+    receivers: Address | Sequence[Address]
     subject:   str
     content:   str
 
 
 class OptionalMailParams(TypedDict, total=False):
-    sender:      'Address'
+    sender:      Address
     tag:         str
     attachments: list[MailAttachment]
 
@@ -49,13 +49,13 @@ class MailParams(RequiredMailParams, OptionalMailParams):
 
 
 class RequiredTemplateMailParams(TypedDict):
-    receivers: 'Address | Sequence[Address]'
+    receivers: Address | Sequence[Address]
     template:  str
-    data:      'JSONObject'
+    data:      JSONObject
 
 
 class OptionalTemplateMailParams(TypedDict, total=False):
-    sender:      'Address'
+    sender:      Address
     subject:     str
     tag:         str
     attachments: list[MailAttachment]

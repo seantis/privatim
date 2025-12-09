@@ -31,7 +31,7 @@ logger = logging.getLogger('privatim.upgrade')
 
 class UpgradeContext:
 
-    def __init__(self, db: 'Session'):
+    def __init__(self, db: Session):
         self.session = db
         self.engine: Engine = self.session.bind  # type: ignore
 
@@ -65,7 +65,7 @@ class UpgradeContext:
         inspector = inspect(self.operations_connection)
         return column in {c['name'] for c in inspector.get_columns(table)}
 
-    def add_column(self, table:  str, column: 'Column') -> bool:
+    def add_column(self, table:  str, column: Column) -> bool:
         if self.has_table(table):
             if not self.has_column(table, column.name):
                 self.operations.add_column(table, column)
@@ -160,7 +160,7 @@ class UpgradeContext:
     def get_column_info(
             self,
             table: str, column: str
-    ) -> 'ReflectedColumn | None':
+    ) -> ReflectedColumn | None:
         """ Get type information about column. Use like this:
 
              col_info = context.get_column_info('consultations', column)

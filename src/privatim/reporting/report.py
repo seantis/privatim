@@ -35,7 +35,7 @@ class ReportOptions:
     language: str = 'de'
     """ Translate report into language. """
 
-    tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
+    tz: BaseTzInfo = DEFAULT_TIMEZONE
     """ Use timezone for all timestamps. """
 
 
@@ -52,7 +52,7 @@ class PDFDocument:
 class ReportRenderer(Protocol):
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes: ...
 
 
@@ -60,8 +60,8 @@ class MeetingReport:
 
     def __init__(
         self,
-        request: 'IRequest',
-        meeting: 'Meeting',
+        request: IRequest,
+        meeting: Meeting,
         options: ReportOptions,
         renderer: ReportRenderer,
     ) -> None:
@@ -115,13 +115,13 @@ class HTMLReportRenderer:
     template = 'privatim:reporting/template/report.pt'
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes:
         html = self.render_template(meeting, timestamp, request)
         return self.render_pdf(html, request)
 
     def render_template(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> str:
         """Render chameleon report template."""
         document_context = {'title': meeting.name, 'created_at': timestamp}
@@ -140,7 +140,7 @@ class HTMLReportRenderer:
         }
         return render(self.template, ctx)
 
-    def render_pdf(self, html: str, request: 'IRequest') -> bytes:
+    def render_pdf(self, html: str, request: IRequest) -> bytes:
         """
         Render processed chameleon template as PDF.
         """
@@ -213,7 +213,7 @@ class HTMLReportRenderer:
         return buffer.getvalue()
 
 
-def add_markdown_runs(paragraph: 'Paragraph', markdown_text: str) -> None:
+def add_markdown_runs(paragraph: Paragraph, markdown_text: str) -> None:
     """
     Parses a simple markdown string (bold/italic) and adds formatted runs
     to the given python-docx paragraph.
@@ -253,7 +253,7 @@ class WordReportRenderer:
         self.issued_at = datetime.utcnow()  # Store creation time
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes:
         """Generates the DOCX file content."""
         document = Document()

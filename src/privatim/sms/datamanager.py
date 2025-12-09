@@ -26,7 +26,7 @@ class SMSDataManager:
     path: str
     tempfn: str
 
-    def __init__(self, tm: 'ITransactionManager', data: bytes, path: str):
+    def __init__(self, tm: ITransactionManager, data: bytes, path: str):
         self.transaction_manager = tm
         self.data = data
         self.path = path
@@ -40,28 +40,28 @@ class SMSDataManager:
     def sortKey(self) -> str:
         return 'files'
 
-    def commit(self, transaction: 'ITransaction') -> None:
+    def commit(self, transaction: ITransaction) -> None:
         with tempfile.NamedTemporaryFile(delete=False) as temp:
             self.tempfn = temp.name
             temp.write(self.data)
 
-    def abort(self, transaction: 'ITransaction') -> None:
+    def abort(self, transaction: ITransaction) -> None:
         pass
 
-    def tpc_vote(self, transaction: 'ITransaction') -> None:
+    def tpc_vote(self, transaction: ITransaction) -> None:
         if not os.path.exists(self.tempfn):
             raise ValueError(f"{self.tempfn} doesn't exist")
         if os.path.exists(self.path):
             raise ValueError('file already exists')
 
-    def tpc_abort(self, transaction: 'ITransaction') -> None:
+    def tpc_abort(self, transaction: ITransaction) -> None:
         try:
             os.remove(self.tempfn)
         except OSError:
             pass
 
-    def tpc_begin(self, transaction: 'ITransaction') -> None:
+    def tpc_begin(self, transaction: ITransaction) -> None:
         pass
 
-    def tpc_finish(self, transaction: 'ITransaction') -> None:
+    def tpc_finish(self, transaction: ITransaction) -> None:
         shutil.move(self.tempfn, self.path)

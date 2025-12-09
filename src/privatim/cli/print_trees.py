@@ -38,7 +38,7 @@ def print_consultation_tree(
 
 
 def print_latest_consultations_with_files(
-    dbsession: 'FilteredSession', request: Request
+    dbsession: FilteredSession, request: Request
 ) -> None:
     """Print all latest consultations with their attached files."""
     query = (
@@ -457,9 +457,11 @@ def temp_delete_consultations_by_keyword(
                         "NULL WHERE replaced_consultation_id = :target_id"
                     )
                     result_update = dbsession.execute(
-                        update_sql, {'target_id': cons_id}
+                        update_sql, {"target_id": cons_id}
                     )
-                    update_rc = cast(CursorResult[Any], result_update).rowcount
+                    update_rc = cast(
+                        "CursorResult[Any]", result_update
+                    ).rowcount
                     click.echo(
                         "Unlinked subsequent versions from "
                         f"{cons_id}. Rows affected: {update_rc}"
@@ -469,15 +471,17 @@ def temp_delete_consultations_by_keyword(
                         "DELETE FROM consultations WHERE id = :target_id"
                     )
                     result_delete = dbsession.execute(
-                        delete_sql, {'target_id': cons_id}
+                        delete_sql, {"target_id": cons_id}
                     )
-                    delete_rc = cast(CursorResult[Any], result_delete).rowcount
+                    delete_rc = cast(
+                        "CursorResult[Any]", result_delete
+                    ).rowcount
                     click.echo(
                         f"Deleted consultation {cons_id}. "
                         f"Rows affected: {delete_rc}"
                     )
                 click.echo(
-                    click.style("Deletion process complete.", fg='green')
+                    click.style("Deletion process complete.", fg="green")
                 )
     finally:
         closer()
@@ -509,13 +513,15 @@ def print_single_consultation(config_uri: str, consultation_id: str) -> None:
     Base.metadata.create_all(engine)
     closer = env['closer']
 
-    with env['request'].tm:
-        dbsession = env['request'].dbsession
+    with env["request"].tm:
+        dbsession = env["request"].dbsession
 
         with dbsession.no_consultation_filter():
             consultation = dbsession.get(Consultation, consultation_id)
             if not consultation:
-                click.echo(f'Consultation with ID {consultation_id} not found.')
+                click.echo(
+                    f"Consultation with ID {consultation_id} not found."
+                )
                 closer()
                 return
 

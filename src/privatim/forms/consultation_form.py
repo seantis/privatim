@@ -32,7 +32,7 @@ STATUS_CHOICES = [
 
 class ConsultationForm(Form):
     def __init__(
-        self, context: 'Consultation | None', request: 'IRequest'
+        self, context: Consultation | None, request: IRequest
     ) -> None:
         self._title = _('Edit Consultation')
         session = request.dbsession

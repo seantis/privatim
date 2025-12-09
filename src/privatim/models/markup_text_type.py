@@ -19,14 +19,14 @@ class MarkupText(_Base):
     def process_bind_param(
             self,
             value: str | None,
-            dialect: 'Dialect'
+            dialect: Dialect
     ) -> Markup | None:
         return None if value is None else escape(value)
 
     def process_literal_param(  # type: ignore[override]
             self,
             value: str | None,
-            dialect: 'Dialect'
+            dialect: Dialect
     ) -> str | None:
         if value is None:
             return None
@@ -36,7 +36,7 @@ class MarkupText(_Base):
     def process_result_value(
             self,
             value: str | None,
-            dialect: 'Dialect'
+            dialect: Dialect
     ) -> Markup | None:
 
         # NOTE: It would be safer to sanitize the text, in case someone

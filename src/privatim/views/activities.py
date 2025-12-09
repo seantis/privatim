@@ -25,7 +25,7 @@ if TYPE_CHECKING:
         type: Literal['update', 'creation']
         object: Consultation | Meeting
         timestamp: datetime
-        user: 'User | None'
+        user: User | None
         title: str
         route_url: str
         id: int
@@ -34,11 +34,11 @@ if TYPE_CHECKING:
 
 
 def maybe_apply_date_filter(
-    query: 'Select[Any]',
+    query: Select[Any],
     start_datetime: datetime | None,
     end_datetime: datetime | None,
-    datetime_column: 'InstrumentedAttribute[datetime]'
-) -> 'Select[Any]':
+    datetime_column: InstrumentedAttribute[datetime]
+) -> Select[Any]:
     """
     Apply start and end date filters to a given query.
     """
@@ -50,8 +50,8 @@ def maybe_apply_date_filter(
 
 
 def activity_to_dict(
-    activity: Any, session: 'FilteredSession'
-) -> 'ActivityDict':
+    activity: Any, session: FilteredSession
+) -> ActivityDict:
     """Convert any activity object into a consistent dictionary format."""
 
     # NOTE: This file contains numerous type-checking conditionals that would
@@ -88,7 +88,7 @@ def activity_to_dict(
             latest_consultation = activity.get_latest_version(session)
             is_creation = activity.previous_version is None
 
-            content: dict[str, Any] = {
+            consultation_content: dict[str, Any] = {
                 'title': (
                     activity.title[:100] + '...'
                     if len(activity.title) > 100
@@ -107,9 +107,12 @@ def activity_to_dict(
                 removed_files = sorted(activity.removed_files or [])
                 other_fields_changed = (
                     activity.title != activity.previous_version.title
-                    or activity.description != activity.previous_version.description
-                    or activity.recommendation != activity.previous_version.recommendation
-                    or activity.evaluation_result != activity.previous_version.evaluation_result
+                    or activity.description
+                    != activity.previous_version.description
+                    or activity.recommendation
+                    != activity.previous_version.recommendation
+                    or activity.evaluation_result
+                    != activity.previous_version.evaluation_result
                     or activity.decision != activity.previous_version.decision
                     or activity.status != activity.previous_version.status
                     or set(activity.secondary_tags) != set(
@@ -118,7 +121,7 @@ def activity_to_dict(
                 )
 
                 if added_files or removed_files:
-                    content.update({
+                    consultation_content.update({
                         'added_files': added_files,
                         'removed_files': removed_files
                     })
@@ -135,7 +138,7 @@ def activity_to_dict(
                 'route_url': 'consultation',
                 'id': latest_consultation.id,
                 'icon_class': icon_class,
-                'content': content,
+                'content': consultation_content,
             }
 
     # Fallback for any other type, though we expect none.
@@ -152,12 +155,12 @@ def _get_icon_class(obj_type: str, event_type: str | None = None) -> str:
     return icons.get(obj_type, '')
 
 
-def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
+def get_activities(session: FilteredSession) -> list[ActivityDict]:
     """Return all activities in a consistent dictionary format."""
 
     # fixme: This is duplicated below, should be refactored (well, almost
     #  duplicated)
-    def get_consultations() -> 'Iterable[Consultation]':
+    def get_consultations() -> Iterable[Consultation]:
         with session.no_consultation_filter():
             return (
                 session.execute(
@@ -206,7 +209,7 @@ def get_activities(session: 'FilteredSession') -> list['ActivityDict']:
     return activities
 
 
-def activities_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def activities_view(request: IRequest) -> RenderDataOrRedirect:
     """Display all activities in the system. (It's the landing page.)
 
     Handle form submission using POST/Redirect/GET design pattern. This

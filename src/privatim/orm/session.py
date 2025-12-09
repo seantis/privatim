@@ -49,7 +49,7 @@ class FilteredSession(BaseSession):
 
         @event.listens_for(self, "do_orm_execute")
         def _add_filtering_criteria(
-                orm_execute_state: 'ORMExecuteState'
+                orm_execute_state: ORMExecuteState
         ) -> None:
             if (
                 orm_execute_state.is_select

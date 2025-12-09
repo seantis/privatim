@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @cache
-def get_or_create_default_profile_pic(session: 'Session') -> 'GeneralFile':
+def get_or_create_default_profile_pic(session: Session) -> GeneralFile:
     from privatim.models.file import GeneralFile
     stmt = select(GeneralFile).where(
         GeneralFile.filename == 'default_profile_picture.png'

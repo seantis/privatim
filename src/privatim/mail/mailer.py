@@ -121,7 +121,7 @@ def format_single_address(address: Address) -> str:
     return f'{name} <{address.addr_spec}>'
 
 
-def format_address(addresses: 'Address | Sequence[Address]') -> str:
+def format_address(addresses: Address | Sequence[Address]) -> str:
     if isinstance(addresses, Address):
         addresses = [addresses]
     return ', '.join(format_single_address(a) for a in addresses)
@@ -149,7 +149,7 @@ class PostmarkMailer:
     def request_headers(self) -> dict[str, str]:
         return {'X-Postmark-Server-Token': self.server_token}
 
-    def prepare_message(self, params: 'AnyMailParams') -> 'JSONObject':
+    def prepare_message(self, params: AnyMailParams) -> JSONObject:
         receivers = format_address(params['receivers'])
         # Strip plus addressing, so it can be used regardless of provider
         # support to disambiguate multiple participants with the same
@@ -192,8 +192,8 @@ class PostmarkMailer:
             )
         return message
 
-    def prepare_attachments(self, attachments: list['MailAttachment']
-                            ) -> 'JSONArray':
+    def prepare_attachments(self, attachments: list[MailAttachment]
+                            ) -> JSONArray:
         result: JSONArray = []
         for attachment in attachments:
             content = base64.b64encode(attachment['content'])
@@ -207,7 +207,7 @@ class PostmarkMailer:
             result.append(payload)
         return result
 
-    def get_response_data(self, response: 'Response') -> 'JSON':
+    def get_response_data(self, response: Response) -> JSON:
         try:
             data = response.json()
             if not response.ok:
@@ -218,7 +218,7 @@ class PostmarkMailer:
                 'Malformed response from Postmark API'
             ) from exception
 
-    def _raw_send(self, api_path: str, params: 'AnyMailParams') -> 'MailID':
+    def _raw_send(self, api_path: str, params: AnyMailParams) -> MailID:
         send_url = self.api_url + api_path
         send_data = self.prepare_message(params)
         headers = self.request_headers()
@@ -244,13 +244,13 @@ class PostmarkMailer:
 
     def send(self,
              sender:      Address | None,
-             receivers:   'Address | Sequence[Address]',
+             receivers:   Address | Sequence[Address],
              subject:     str,
              content:     str,
              *,
              tag:         str | None = None,
-             attachments: list['MailAttachment'] | None = None,
-             **kwargs:    Any) -> 'MailID':
+             attachments: list[MailAttachment] | None = None,
+             **kwargs:    Any) -> MailID:
 
         params: MailParams = {
             'receivers': receivers,
@@ -268,14 +268,14 @@ class PostmarkMailer:
 
     def send_template(self,
                       sender:      Address | None,
-                      receivers:   'Address | Sequence[Address]',
+                      receivers:   Address | Sequence[Address],
                       template:    str,
-                      data:        'JSONObject',
+                      data:        JSONObject,
                       *,
                       subject:     str | None = None,
                       tag:         str | None = None,
-                      attachments: list['MailAttachment'] | None = None,
-                      **kwargs:    Any) -> 'MailID':
+                      attachments: list[MailAttachment] | None = None,
+                      **kwargs:    Any) -> MailID:
 
         params: TemplateMailParams = {
             'receivers': receivers,
@@ -300,25 +300,25 @@ class PostmarkMailer:
     @overload
     def _raw_bulk_send(self,
                        api_path: str,
-                       mails:    'Sequence[MailParams]',
+                       mails:    Sequence[MailParams],
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list['MailID' | MailState]: ...
+                       ) -> list[MailID | MailState]: ...
 
     @overload
     def _raw_bulk_send(self,
                        api_path: str,
-                       mails:    'Sequence[TemplateMailParams]',
+                       mails:    Sequence[TemplateMailParams],
                        template: str | None = None,
                        *,
                        preamble: bytes = b'{"messages":[',
                        postamble: bytes = b']}'
-                       ) -> list['MailID' | MailState]: ...
+                       ) -> list[MailID | MailState]: ...
 
     def _raw_bulk_send(self,
                        api_path: str,
-                       mails:    'Sequence[AnyMailParams]',
+                       mails:    Sequence[AnyMailParams],
                        template: str | None = None,
                        *,
                        # NOTE: annoyingly Postmark either has a wrapper
@@ -327,7 +327,7 @@ class PostmarkMailer:
                        #       these arguments
                        preamble: bytes = b'{"Messages": [',
                        postamble: bytes = b']}'
-                       ) -> list['MailID' | MailState]:
+                       ) -> list[MailID | MailState]:
 
         messages: JSONArray = []
         for mail in mails:
@@ -430,20 +430,20 @@ class PostmarkMailer:
         finish_batch()
         return result
 
-    def bulk_send(self, mails: list['MailParams']
-                  ) -> list['MailID' | MailState]:
+    def bulk_send(self, mails: list[MailParams]
+                  ) -> list[MailID | MailState]:
         return self._raw_bulk_send('/email/batch', mails,
                                    preamble=b'[', postamble=b']')
 
     def bulk_send_template(self,
-                           mails: list['TemplateMailParams'],
+                           mails: list[TemplateMailParams],
                            default_template: str | None = None,
-                           ) -> list['MailID' | MailState]:
+                           ) -> list[MailID | MailState]:
         return self._raw_bulk_send(
             '/email/batchWithTemplates', mails, default_template
         )
 
-    def get_message_details(self, message_id: 'MailID') -> 'JSON':
+    def get_message_details(self, message_id: MailID) -> JSON:
         details_url = f'{self.api_url}/messages/outbound/{message_id}/details'
         headers = self.request_headers()
         headers['Accept'] = 'application/json'
@@ -458,7 +458,7 @@ class PostmarkMailer:
                 'Failed to connect to Postmark API') from exception
         return self.get_response_data(response)
 
-    def get_message_state(self, message_id: 'MailID') -> MailState:
+    def get_message_state(self, message_id: MailID) -> MailState:
         # NOTE: With multiple recipients for a single mail Postmark will report
         #       a status for each recipient individually. So if we ever specify
         #       multiple recipients, this method will be wrong.

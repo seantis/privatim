@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class LineWidget:
 
-    def render_field(self, field: 'Field') -> Markup:
+    def render_field(self, field: Field) -> Markup:
 
         return Markup(
             '<div class="col-auto">'
@@ -26,7 +26,7 @@ class LineWidget:
             )
         )
 
-    def __call__(self, field: 'FormField[Any]', **kwargs: Any) -> Markup:
+    def __call__(self, field: FormField[Any], **kwargs: Any) -> Markup:
         return Markup(
             '<div class="row mb-3">{}</div>'
         ).format(Markup('').join(self.render_field(f) for f in field.form))

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
 # difficult. See: https://alembic.sqlalchemy.org/en/latest/naming.html
-NAMING_CONVENTION: '_NamingSchemaTD' = {
+NAMING_CONVENTION: _NamingSchemaTD = {
     "ix": "ix_%(column_0_label)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",
     "ck": "ck_%(table_name)s_%(constraint_name)s",

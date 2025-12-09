@@ -30,11 +30,11 @@ class TAN(Base):
     tan: Mapped[str_64] = mapped_column(index=True)
     ip_address: Mapped[str_32]
 
-    user: Mapped['User'] = relationship()
+    user: Mapped[User] = relationship()
 
     def __init__(
             self,
-            user: 'User',
+            user: User,
             tan: str,
             ip_address: str,
             requested: datetime | None = None

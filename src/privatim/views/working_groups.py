@@ -15,7 +15,7 @@ if TYPE_CHECKING:
                                 XHRDataOrRedirect)
 
 
-def working_groups_view(request: 'IRequest') -> 'RenderData':
+def working_groups_view(request: IRequest) -> RenderData:
     return {
         'working_groups': [
             {
@@ -51,13 +51,13 @@ def working_groups_view(request: 'IRequest') -> 'RenderData':
     }
 
 
-def get_user(session: 'Session', user_id: str) -> User | None:
+def get_user(session: Session, user_id: str) -> User | None:
     if user_id and user_id != '0':
         return session.get(User, user_id)
     return None
 
 
-def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
+def add_working_group(request: IRequest) -> RenderDataOrRedirect:
     form = WorkingGroupForm(None, request)
     target_url = request.route_url('working_groups')
     session = request.dbsession
@@ -102,8 +102,8 @@ def add_working_group(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 
 def edit_working_group(
-    group: WorkingGroup, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+    group: WorkingGroup, request: IRequest
+) -> RenderDataOrRedirect:
 
     target_url = request.route_url('meetings', id=group.id)
     form = WorkingGroupForm(group, request)
@@ -142,8 +142,8 @@ def edit_working_group(
 
 
 def delete_working_group_view(
-    context: WorkingGroup, request: 'IRequest'
-) -> 'XHRDataOrRedirect':
+    context: WorkingGroup, request: IRequest
+) -> XHRDataOrRedirect:
     assert isinstance(context, WorkingGroup)
     deleted_working_group_name = context.name
     target_url = request.route_url('working_groups')

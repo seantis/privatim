@@ -48,8 +48,8 @@ log = logging.getLogger('privatim.views')
 
 def meeting_view(
         context: Meeting,
-        request: 'IRequest'
-) -> 'RenderData':
+        request: IRequest
+) -> RenderData:
     """ Displays a single meeting. """
     assert isinstance(context, Meeting)
     session = request.dbsession
@@ -198,7 +198,7 @@ def meeting_view(
 
 
 def user_list(
-    request: 'IRequest', users: Sequence['MeetingUserAttendance']
+    request: IRequest, users: Sequence[MeetingUserAttendance]
 ) -> Markup:
     """Returns an HTML list of users with profile pictures, links to their
     profiles, and checkbox on the right, with tooltips."""
@@ -257,7 +257,7 @@ def user_list(
 
 
 def export_meeting_as_pdf_view(
-        context: Meeting, request: 'IRequest',
+        context: Meeting, request: IRequest,
 ) -> Response:
     session = request.dbsession
     meeting_id = context.id
@@ -279,7 +279,7 @@ def export_meeting_as_pdf_view(
 
 
 def export_meeting_as_docx_view(
-        context: Meeting, request: 'IRequest',
+        context: Meeting, request: IRequest,
 ) -> Response:
     """Exports the meeting report as a Word (.docx) file."""
     session = request.dbsession
@@ -305,8 +305,8 @@ def export_meeting_as_docx_view(
 
 
 def working_group_view(
-    context: WorkingGroup, request: 'IRequest'
-) -> 'RenderData':
+    context: WorkingGroup, request: IRequest
+) -> RenderData:
     """Displays the table of meetings a single working group has."""
 
     assert isinstance(context, WorkingGroup)
@@ -364,8 +364,8 @@ def working_group_view(
 
 def add_meeting_view(
         context: WorkingGroup,
-        request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+        request: IRequest
+) -> MixedDataOrRedirect:
 
     assert isinstance(context, WorkingGroup)
     form = MeetingForm(context, request)
@@ -444,8 +444,8 @@ def add_meeting_view(
 
 
 def edit_meeting_view(
-    meeting: Meeting, request: 'IRequest'
-) -> 'MixedDataOrRedirect':
+    meeting: Meeting, request: IRequest
+) -> MixedDataOrRedirect:
 
     assert isinstance(meeting, Meeting)
 
@@ -524,8 +524,8 @@ def edit_meeting_view(
 
 def delete_meeting_view(
         context: Meeting,
-        request: 'IRequest'
-) -> 'XHRDataOrRedirect':
+        request: IRequest
+) -> XHRDataOrRedirect:
 
     assert isinstance(context, Meeting)
     name = context.name
@@ -552,7 +552,7 @@ def delete_meeting_view(
     )
 
 
-def move_agenda_item(context: Meeting, request: 'IRequest') -> 'RenderData':
+def move_agenda_item(context: Meeting, request: IRequest) -> RenderData:
     try:
         subject_id = int(request.matchdict['subject_id'])
         direction = request.matchdict['direction']

@@ -37,7 +37,7 @@ def main(config_uri: str) -> None:
         add_content_drittstaatsangehörigen(db)
 
 
-def get_user(session: 'Session') -> User | None:
+def get_user(session: Session) -> User | None:
     """Very heuristically attempt to find the default user ."""
     stmt_ueli = select(User).filter(
         and_(User.first_name.contains('Ueli'), User.last_name.contains('Buri'))
@@ -46,7 +46,7 @@ def get_user(session: 'Session') -> User | None:
     return user
 
 
-def add_content_drittstaatsangehörigen(db: 'Session') -> None:
+def add_content_drittstaatsangehörigen(db: Session) -> None:
 
     n = (
         'Übernahme und Umsetzung der Verordnung (EU) 2022/1190 zur Änderung '
@@ -128,7 +128,7 @@ def add_content_drittstaatsangehörigen(db: 'Session') -> None:
         db.flush()
 
 
-def add_content_mili(db: 'Session') -> None:
+def add_content_mili(db: Session) -> None:
 
     n = 'Änderung des Militärgesetzes und der Armeeorganisation'
     consultation = (

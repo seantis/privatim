@@ -63,7 +63,7 @@ class MeetingForm(Form):
     def __init__(
             self,
             context: WorkingGroup | Meeting,
-            request: 'IRequest',
+            request: IRequest,
     ) -> None:
 
         self._title = (
@@ -120,7 +120,7 @@ class MeetingForm(Form):
         file_class=SearchableFile
     )
 
-    def validate_name(self, field: 'Field') -> None:
+    def validate_name(self, field: Field) -> None:
         if self._title == _('Add Meeting'):
             session = self.meta.dbsession
             if not field.data:
@@ -149,10 +149,10 @@ class MeetingForm(Form):
 
     def process(
         self,
-        formdata: '_MultiDictLike | None' = None,
+        formdata: _MultiDictLike | None = None,
         obj: object | None = None,
-        data: 'Mapping[str, Any] | None' = None,
-        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        data: Mapping[str, Any] | None = None,
+        extra_filters: Mapping[str, Sequence[Any]] | None = None,
         **kwargs: Any
     ) -> None:
         super().process(formdata, obj, **kwargs)
@@ -202,8 +202,8 @@ class MeetingForm(Form):
 def sync_meeting_attendance_records(
     form: MeetingForm,
     obj: Meeting,
-    post_data: 'GetDict',
-    session: 'Session',
+    post_data: GetDict,
+    session: Session,
 ) -> None:
     """ Searches in request.POST to manually get data and find the status
     for each user and map it to MeetingUserAttendance."""

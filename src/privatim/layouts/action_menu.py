@@ -34,13 +34,13 @@ class ActionMenu:
     def __init__(self) -> None:
         self.entries: list[ActionMenuEntry | Button] = []
 
-    def add(self, entry: 'ActionMenuEntry | Button') -> None:
+    def add(self, entry: ActionMenuEntry | Button) -> None:
         self.entries.append(entry)
 
-    def __iter__(self) -> Iterator['ActionMenuEntry | Button']:
+    def __iter__(self) -> Iterator[ActionMenuEntry | Button]:
         return iter(self.entries)
 
 
-def action_menu(context: object, request: 'IRequest') -> 'RenderData':
+def action_menu(context: object, request: IRequest) -> RenderData:
     action_menu = getattr(request, 'action_menu_entries', ActionMenu())
     return {'action_menu_entries': action_menu}

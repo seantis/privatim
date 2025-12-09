@@ -12,11 +12,11 @@ if TYPE_CHECKING:
 @implementer(ILocaleNegotiator)
 class LocaleNegotiator:
 
-    def available_languages(self, request: 'IRequest') -> list[str]:
+    def available_languages(self, request: IRequest) -> list[str]:
         settings = request.registry.settings
         return settings.get('pyramid.available_languages', '').split()
 
-    def default_language(self, request: 'IRequest') -> str:
+    def default_language(self, request: IRequest) -> str:
         settings = request.registry.settings
         default = settings.get('pyramid.default_locale_name', None)
         if default:
@@ -25,7 +25,7 @@ class LocaleNegotiator:
         available = self.available_languages(request)
         return available[0] if available else 'de'
 
-    def __call__(self, request: 'IRequest') -> str:
+    def __call__(self, request: IRequest) -> str:
         available = self.available_languages(request)
         default = self.default_language(request)
 

@@ -47,11 +47,11 @@ class PhoneNumberField(StringField):
     def __init__(
         self,
         label: str | None = None,
-        validators: 'Validators[FormT, Self] | None' = None,
+        validators: Validators[FormT, Self] | None = None,
         # FIXME: PhoneNumberType is not an enum
         number_type: int | None = None,
         *,
-        widget: '_Widget[Self] | None' = None,
+        widget: _Widget[Self] | None = None,
         **kwargs: Any
     ):
         super().__init__(label, validators, widget=widget, **kwargs)
@@ -136,7 +136,7 @@ class PhoneNumberField(StringField):
         return ''
 
     @property
-    def numobj(self) -> 'PhoneNumber | None':
+    def numobj(self) -> PhoneNumber | None:
         if not hasattr(self, '_numobj'):
             if not self.data:
                 return None

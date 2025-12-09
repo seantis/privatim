@@ -34,7 +34,7 @@ class AbstractFile(Base):
     def name(self) -> str:
         return self.filename
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]

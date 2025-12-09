@@ -25,7 +25,7 @@ if TYPE_CHECKING:
                 context: str | None = None,
                 *,
                 markup: bool = False,
-        ) -> 'TranslationMarkup': ...
+        ) -> TranslationMarkup: ...
 
         @overload
         def __call__(
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
                 context: str | None = None,
                 *,
                 markup: Literal[True],
-        ) -> 'TranslationMarkup': ...
+        ) -> TranslationMarkup: ...
 
         @overload
         def __call__(
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
                 context: str | None = None,
                 *,
                 markup: bool = False,
-        ) -> 'TranslationString': ...
+        ) -> TranslationString: ...
 
 
 class TranslationString(translationstring.TranslationString):
@@ -56,7 +56,7 @@ class TranslationString(translationstring.TranslationString):
     inside a Markup.format()
     """
 
-    def __mod__(self, options: Any) -> 'Self':
+    def __mod__(self, options: Any) -> Self:
         return type(self)(super().__mod__(options))
 
     def translated(self, language: str | None = None) -> str:
@@ -86,12 +86,12 @@ class TranslationMarkup(TranslationString):
 
     def __new__(
             cls,
-            msgid: 'str | HasHTML | Self',
+            msgid: str | HasHTML | Self,
             domain: str | None = None,
-            default: 'str | HasHTML | None' = None,
+            default: str | HasHTML | None = None,
             mapping: dict[str, Any] | None = None,
             context: str | None = None,
-    ) -> 'Self':
+    ) -> Self:
 
         _default: Markup | None
         if default is None:
@@ -133,7 +133,7 @@ class TranslationMarkup(TranslationString):
         instance.mapping = _mapping
         return instance
 
-    def __mod__(self, options: Any) -> 'Self':
+    def __mod__(self, options: Any) -> Self:
         if isinstance(options, dict):
             # Ensure everything is escaped before it gets replaced
             options = {k: escape(v) for k, v in options.items()}
@@ -145,7 +145,7 @@ class TranslationMarkup(TranslationString):
         return Markup(super().interpolate(translated))
 
     @classmethod
-    def escape(cls, s: Any) -> 'Self':
+    def escape(cls, s: Any) -> Self:
         if isinstance(s, cls):
             return s
         elif isinstance(s, TranslationString):
@@ -162,25 +162,25 @@ class TranslationMarkup(TranslationString):
         return Markup(translate(self, language))
 
 
-def TranslationStringFactory(factory_domain: str) -> 'TStrCallable':
+def TranslationStringFactory(factory_domain: str) -> TStrCallable:
     """
     Creates a TranslationMarkup for Markup and a TranslationString
     otherwise.
     """
     @overload
     def create(
-            msgid: 'HasHTML',
+            msgid: HasHTML,
             mapping: dict[str, Any] | None = None,
-            default: 'str | HasHTML | None' = None,
+            default: str | HasHTML | None = None,
             context: str | None = None,
             *,
             markup: bool = False,
     ) -> TranslationMarkup: ...
     @overload
     def create(
-            msgid: 'str | HasHTML',
+            msgid: str | HasHTML,
             mapping: dict[str, Any] | None = None,
-            default: 'str | HasHTML | None' = None,
+            default: str | HasHTML | None = None,
             context: str | None = None,
             *,
             markup: Literal[True],
@@ -196,9 +196,9 @@ def TranslationStringFactory(factory_domain: str) -> 'TStrCallable':
     ) -> TranslationString: ...
 
     def create(
-            msgid: 'str | HasHTML',
+            msgid: str | HasHTML,
             mapping: dict[str, Any] | None = None,
-            default: 'str | HasHTML | None' = None,
+            default: str | HasHTML | None = None,
             context: str | None = None,
             *,
             markup: bool = False,

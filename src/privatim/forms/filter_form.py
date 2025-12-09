@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 class FilterForm(Form):
     def __init__(
         self,
-        request: 'IRequest',
+        request: IRequest,
     ) -> None:
         self._title = _('Filter')
         session = request.dbsession

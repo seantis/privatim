@@ -22,7 +22,7 @@ def render_js_module(url: str) -> str:
 
 def js(
         relpath: str,
-        depends: 'Iterable[Dependable] | None' = None,
+        depends: Iterable[Dependable] | None = None,
         supersedes: list[Resource] | None = None,
         bottom: bool = False,
         renderer: Callable[[str], str] = render_js_default  # "text/javascript"
@@ -40,7 +40,7 @@ def js(
 
 def css(
         relpath:    str,
-        depends:    'Iterable[Dependable] | None' = None,
+        depends:    Iterable[Dependable] | None = None,
         supersedes: list[Resource] | None = None,
         bottom:     bool = False,
 ) -> Resource:

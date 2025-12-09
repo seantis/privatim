@@ -5,6 +5,6 @@ if TYPE_CHECKING:
     from privatim.types import RenderData
 
 
-def footer(context: object, request: 'IRequest') -> 'RenderData':
+def footer(context: object, request: IRequest) -> RenderData:
 
     return {}

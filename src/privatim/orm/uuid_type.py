@@ -30,7 +30,7 @@ class UUIDStr(Uuid[str]):
     #       so we add a pre-processor that would convert any
     #       UUIDs to string values first.
 
-    def bind_processor(self, dialect: 'Dialect') -> Processor | None:
+    def bind_processor(self, dialect: Dialect) -> Processor | None:
         proc = super().bind_processor(dialect)
         if proc is None:
             return None
@@ -41,7 +41,7 @@ class UUIDStr(Uuid[str]):
     #       we have to force overwrite this.
     def literal_processor(  # type:ignore[override]
         self,
-        dialect: 'Dialect'
+        dialect: Dialect
     ) -> Processor | None:
         proc = super().literal_processor(dialect)
         if proc is None:

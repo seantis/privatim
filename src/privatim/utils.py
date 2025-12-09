@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 
 def datetime_format(
-        dt: 'datetime',
+        dt: datetime,
         format: str = '%d.%m.%y %H:%M',
         tz: BaseTzInfo = DEFAULT_TIMEZONE
 ) -> str:
@@ -40,7 +40,7 @@ def datetime_format(
     return dt.astimezone(tz).strftime(format)
 
 
-def first(iterable: 'Iterable[Any] | None', default: Any | None = None) -> Any:
+def first(iterable: Iterable[Any] | None, default: Any | None = None) -> Any:
     """
     Returns first item in given iterable or a default value.
     """
@@ -49,7 +49,7 @@ def first(iterable: 'Iterable[Any] | None', default: Any | None = None) -> Any:
 
 def binary_to_dictionary(
     binary: bytes, filename: str | None = None
-) -> 'FileDict':
+) -> FileDict:
     """Takes raw binary filedata and stores it in a dictionary together
     with metadata information.
 
@@ -79,7 +79,7 @@ def binary_to_dictionary(
     }
 
 
-def dictionary_to_binary(dictionary: 'LaxFileDict') -> bytes:
+def dictionary_to_binary(dictionary: LaxFileDict) -> bytes:
     """Takes a dictionary created by :func:`binary_to_dictionary` and returns
     the original binary data.
 
@@ -108,7 +108,7 @@ def path_to_filename(path: str | None) -> str | None:
     return path
 
 
-def fix_utc_to_local_time(db_time: 'datetime') -> 'datetime':
+def fix_utc_to_local_time(db_time: datetime) -> datetime:
     return (db_time and to_timezone(
         db_time, 'Europe/Zurich')) or db_time
 
@@ -130,7 +130,7 @@ def strip_p_tags(text: str) -> str:
     return _text.strip()
 
 
-def status_is_checked(data: 'Mapping[str, Any]', user_id: str) -> bool:
+def status_is_checked(data: Mapping[str, Any], user_id: str) -> bool:
     """ Returns true if for the given user the checkbox has been checked,
     false otherwise. """
     # Find the index for the given user_id
@@ -153,7 +153,7 @@ def status_is_checked(data: 'Mapping[str, Any]', user_id: str) -> bool:
 
 
 def get_previous_versions(
-    session: 'FilteredSession', consultation: Consultation, limit: int = 5
+    session: FilteredSession, consultation: Consultation, limit: int = 5
 ) -> list[Consultation]:
     """
     Returns the previous versions of a consultation.
@@ -205,7 +205,7 @@ def get_previous_versions(
 
 
 class ConsultationVersion:
-    def __init__(self, created: 'datetime', editor: User | None, title: str):
+    def __init__(self, created: datetime, editor: User | None, title: str):
         self.created = created
         self.editor = editor
         self.title = title
@@ -223,7 +223,7 @@ class ConsultationVersion:
 
 
 def simple_get_previous_versions(
-    session: 'FilteredSession',
+    session: FilteredSession,
     latest_consultation_id: str,
     limit: int | None = 5,
 ) -> list[ConsultationVersion]:
@@ -271,7 +271,7 @@ def simple_get_previous_versions(
 
 
 def get_guest_and_removed_users(
-    session: 'FilteredSession', context: Meeting | WorkingGroup
+    session: FilteredSession, context: Meeting | WorkingGroup
 ) -> tuple[set[User], set[User]]:
     # Get ALL users first
     all_users_query = (
@@ -329,7 +329,7 @@ def get_guest_and_removed_users(
     return guest_users, removed_users
 
 
-def fix_agenda_item_positions(context: 'UpgradeContext') -> None:
+def fix_agenda_item_positions(context: UpgradeContext) -> None:
     """Fix agenda item positions to be strictly increasing within each meeting.
     """
 

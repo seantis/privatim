@@ -54,7 +54,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def includeme(config: 'Configurator') -> None:
+def includeme(config: Configurator) -> None:
     """
     Initialize the model for a Pyramid app.
 
