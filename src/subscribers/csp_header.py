@@ -9,14 +9,14 @@ def default_csp_directives(request: IRequest) -> dict[str, str]:
     directives = {
         "base-uri": "'self'",
         "child-src": "blob:",
-        "connect-src": "'self'",
+        "connect-src": "'self' https://analytics.seantis.ch",
         "default-src": "'none'",
         "font-src": "'self'",
         "form-action": "'self'",
         "frame-ancestors": "'none'",
         "img-src":  "'self' data: blob:",
         "object-src": "'self'",
-        "script-src": "'self' blob: resource:",
+        "script-src": "'self' blob: resource: https://analytics.seantis.ch",
         "style-src": "'self' 'unsafe-inline'",
     }
 

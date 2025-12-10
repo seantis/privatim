@@ -65,6 +65,10 @@ class Layout:
     def setting(self, name: str) -> Any:
         return self.request.registry.settings.get(name)
 
+    @property
+    def is_production(self) -> str:
+        return self.setting('environment') == 'production'
+
     def sentry_dsn(self) -> str | None:
         sentry_dsn = self.setting('sentry_dsn')
         if sentry_dsn:

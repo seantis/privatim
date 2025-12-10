@@ -18,6 +18,12 @@
         <script type="text/javascript" src="${layout.static_url('privatim:static/js/sentry.js')}"></script>
     </tal:block>
 
+    <tal:block tal:condition="layout.is_production">
+        <script defer data-domain="app.privatim.ch"
+            src="https://analytics.seantis.ch/js/script.js">
+        </script>
+    </tal:block>
+
     <title>Austauschplattform privatim</title>
 
 </head>
