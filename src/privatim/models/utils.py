@@ -6,10 +6,10 @@ from docx.table import Table
 
 
 from typing import IO, TYPE_CHECKING, Any
-from collections.abc import Iterator
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from _typeshed import SupportsRead
     from privatim.models import AgendaItem
     from docx.blkcntnr import BlockItemContainer

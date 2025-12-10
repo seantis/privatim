@@ -19,8 +19,8 @@ from privatim.orm.meta import UUIDStr as UUIDStrType
 
 
 from typing import TYPE_CHECKING
-from collections.abc import Iterator
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from privatim.types import ACL
     from privatim.orm import FilteredSession
     from sqlalchemy.orm import InstrumentedAttribute

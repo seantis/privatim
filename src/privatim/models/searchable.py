@@ -4,8 +4,8 @@ from privatim.orm import Base
 
 
 from typing import TYPE_CHECKING, TypeVar
-from collections.abc import Iterator
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.orm.meta import UUIDStrPK
     from sqlalchemy.orm import Mapped

@@ -10,9 +10,9 @@ from privatim.models import Consultation
 from privatim.orm import get_engine, Base
 
 
-from sqlalchemy.engine import CursorResult
 from typing import Any, TYPE_CHECKING, cast
 if TYPE_CHECKING:
+    from sqlalchemy.engine import CursorResult
     from privatim.orm.session import FilteredSession
 
 

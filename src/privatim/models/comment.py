@@ -12,8 +12,8 @@ from pyramid.authorization import Allow, Authenticated
 
 
 from typing import TYPE_CHECKING, TypeVar
-from collections.abc import Iterator
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from privatim.models import User
     from sqlalchemy.orm import InstrumentedAttribute, Session
     from privatim.models.consultation import Consultation

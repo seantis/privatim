@@ -15,10 +15,10 @@ from privatim.security import authenticated_user
 from privatim.sms.interfaces import ISMSGateway
 
 
-from collections.abc import Sequence
 from typing import NamedTuple
 from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from zope.interface.interfaces import IInterface
     from privatim.models import User
     from email.headerregistry import Address

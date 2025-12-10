@@ -8,9 +8,9 @@ from privatim.models import (
 from privatim.i18n import _
 from pyramid.httpexceptions import HTTPFound
 from typing import TYPE_CHECKING, TypedDict
-from collections.abc import Sequence
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from privatim.orm import FilteredSession
     from pyramid.interfaces import IRequest
     from privatim.types import RenderData, RenderDataOrRedirect

@@ -3,8 +3,8 @@ from .git_info import get_git_revision_hash
 
 
 from typing import TYPE_CHECKING, Any
-from collections.abc import Callable
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pyramid.request import Request
     from pyramid.response import Response
 
