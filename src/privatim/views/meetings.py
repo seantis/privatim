@@ -348,7 +348,7 @@ def working_group_view(
         'chairman': chairman,
         'add_meeting_link': request.route_url('add_meeting', id=context.id),
         'navigate_back_up': request.route_url('working_groups'),
-        'meetings': context.meetings,
+        'meetings': sorted(context.meetings, key=lambda m: m.time),
         'request': request
     }
 
