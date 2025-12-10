@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from datetime import datetime
 from sedate import utcnow
@@ -10,8 +11,9 @@ from privatim.i18n import _
 from pyramid.authorization import Allow, Authenticated
 
 
-from typing import TYPE_CHECKING, Optional, TypeVar, Iterator
+from typing import TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from privatim.models import User
     from sqlalchemy.orm import InstrumentedAttribute, Session
     from privatim.models.consultation import Consultation
@@ -30,10 +32,10 @@ class Comment(Base):
     def __init__(
         self,
         content: str,
-        user: 'User',
+        user: User,
         target_id: str,
         target_type: str = 'consultations',
-        parent: Optional['Comment'] = None
+        parent: Comment | None = None
 
     ):
         self.id = str(uuid.uuid4())
@@ -57,7 +59,7 @@ class Comment(Base):
     user_id: Mapped[UUIDStr] = mapped_column(
         ForeignKey('users.id', ondelete='SET NULL'), nullable=True
     )
-    user: Mapped['User | None'] = relationship(
+    user: Mapped[User | None] = relationship(
         'User',
         back_populates='comments',
     )
@@ -73,12 +75,12 @@ class Comment(Base):
     parent_id: Mapped[str] = mapped_column(
         ForeignKey('comments.id'), nullable=True
     )
-    parent: Mapped['Comment | None'] = relationship(
+    parent: Mapped[Comment | None] = relationship(
         'Comment', remote_side='Comment.id',
         back_populates='children'
     )
 
-    children: Mapped[list['Comment']] = relationship(
+    children: Mapped[list[Comment]] = relationship(
         'Comment',
         back_populates='parent',
         cascade='all, delete-orphan'
@@ -94,7 +96,7 @@ class Comment(Base):
         viewonly=True
     )
 
-    def get_model(self, session: 'Session') -> 'Consultation':
+    def get_model(self, session: Session) -> Consultation:
         """ Get the model which the comment is part of. """
 
         if self.target_type == 'consultations':
@@ -109,13 +111,13 @@ class Comment(Base):
     def __repr__(self) -> str:
         return f'<Comment id={self.id}; content={self.content}>'
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]
 
     @classmethod
-    def searchable_fields(cls) -> Iterator['InstrumentedAttribute[str]']:
+    def searchable_fields(cls) -> Iterator[InstrumentedAttribute[str]]:
         yield cls.content
 
     __table_args__ = (

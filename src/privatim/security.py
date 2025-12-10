@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import object_session
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def query_user(user_id: str, request: 'IRequest') -> User | None:
+def query_user(user_id: str, request: IRequest) -> User | None:
     if not user_id or not request:
         return None
 
@@ -23,6 +24,6 @@ def query_user(user_id: str, request: 'IRequest') -> User | None:
     return user
 
 
-def authenticated_user(request: 'IRequest') -> User | None:
+def authenticated_user(request: IRequest) -> User | None:
     user_id = request.authenticated_userid
     return query_user(user_id, request)

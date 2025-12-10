@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pyramid.httpexceptions import HTTPForbidden
@@ -7,7 +8,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def forbidden_view(request: 'IRequest') -> HTTPForbidden | HTTPFound:
+def forbidden_view(request: IRequest) -> HTTPForbidden | HTTPFound:
     if request.user:
         return HTTPForbidden()
 

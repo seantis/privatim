@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from privatim.layouts.action_menu import action_menu
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from pyramid.config import Configurator
 
 
-def includeme(config: 'Configurator') -> None:
+def includeme(config: Configurator) -> None:
     config.add_layout(
         Layout,
         'layout.pt'

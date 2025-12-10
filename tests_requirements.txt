@@ -8,13 +8,13 @@ bandit==1.8.2
     # via -r requirements/test.in
 beautifulsoup4==4.13.4
     # via webtest
-certifi==2025.8.3
+certifi==2025.11.12
     # via
     #   -c requirements/../requirements.txt
     #   requests
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.4.2
+charset-normalizer==3.4.4
     # via
     #   -c requirements/../requirements.txt
     #   requests
@@ -44,7 +44,7 @@ flake8-type-checking==3.0.0
     # via -r requirements/test.in
 freezegun==1.5.4
     # via -r requirements/test.in
-greenlet==3.2.3
+greenlet==3.3.0
     # via
     #   -c requirements/../requirements.txt
     #   playwright
@@ -52,15 +52,15 @@ hypothesis==6.136.8
     # via -r requirements/test.in
 identify==2.6.12
     # via pre-commit
-idna==3.10
+idna==3.11
     # via
     #   -c requirements/../requirements.txt
     #   requests
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via
     #   -c requirements/../requirements.txt
     #   pytest
-lxml==6.0.0
+lxml==6.0.2
     # via
     #   -c requirements/../requirements.txt
     #   pyquery
@@ -68,7 +68,7 @@ lxml-stubs==0.5.1
     # via -r requirements/test.in
 markdown-it-py==3.0.0
     # via rich
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   -c requirements/../requirements.txt
     #   types-wtforms
@@ -103,7 +103,7 @@ pbr==6.1.1
     # via stevedore
 platformdirs==4.3.8
     # via virtualenv
-playwright==1.54.0
+playwright==1.57.0
     # via
     #   -c requirements/../requirements.txt
     #   -r requirements/test.in
@@ -138,7 +138,7 @@ pypdf==5.9.0
     # via -r requirements/test.in
 pyquery==2.0.1
     # via -r requirements/test.in
-pytest==8.4.1
+pytest==9.0.2
     # via
     #   -c requirements/../requirements.txt
     #   -r requirements/test.in
@@ -158,7 +158,7 @@ pytest-cov==6.2.1
     # via
     #   -r requirements/test.in
     #   pytest-codecov
-pytest-playwright==0.7.0
+pytest-playwright==0.7.2
     # via
     #   -c requirements/../requirements.txt
     #   -r requirements/test.in
@@ -174,12 +174,12 @@ python-slugify==8.0.4
     # via
     #   -c requirements/../requirements.txt
     #   pytest-playwright
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   -c requirements/../requirements.txt
     #   bandit
     #   pre-commit
-requests==2.32.4
+requests==2.32.5
     # via
     #   -c requirements/../requirements.txt
     #   pytest-base-url
@@ -242,14 +242,14 @@ types-webob==1.8.0.20250703
     #   types-fanstatic
 types-wtforms==3.2.1.20250602
     # via -r requirements/test.in
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   -c requirements/../requirements.txt
     #   beautifulsoup4
     #   mypy
     #   psycopg
     #   pyee
-urllib3==2.5.0
+urllib3==2.6.1
     # via
     #   -c requirements/../requirements.txt
     #   requests
@@ -275,7 +275,7 @@ zope-interface==7.2
     #   -c requirements/../requirements.txt
     #   mypy-zope
     #   zope-schema
-zope-schema==7.0.1
+zope-schema==7.1
     # via
     #   -c requirements/../requirements.txt
     #   mypy-zope

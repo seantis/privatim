@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -36,7 +37,7 @@ from privatim.views.mtan import mtan_view, mtan_setup_view
 from privatim.views.meetings import (
     add_meeting_view,
     export_meeting_as_pdf_view,
-    export_meeting_as_docx_view, # Import the new view
+    export_meeting_as_docx_view,
     move_agenda_item
 )
 from privatim.views.meetings import delete_meeting_view
@@ -61,7 +62,7 @@ if TYPE_CHECKING:
     from pyramid.config import Configurator
 
 
-def includeme(config: 'Configurator') -> None:
+def includeme(config: Configurator) -> None:
 
     config.add_static_view(
         'static',

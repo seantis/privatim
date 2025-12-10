@@ -1,3 +1,4 @@
+from __future__ import annotations
 import arrow
 import babel.dates
 import babel.numbers
@@ -32,7 +33,7 @@ class Layout:
     weekday_short_format = 'E'
     month_long_format = 'MMMM'
 
-    def __init__(self, context: Any, request: 'IRequest') -> None:
+    def __init__(self, context: Any, request: IRequest) -> None:
         self.context = context
         self.request = request
         self.year = date.today().year
@@ -73,7 +74,7 @@ class Layout:
     @reify
     def macros(self) -> Any:
         renderer = get_renderer("macros.pt")
-        return renderer.implementation().macros
+        return renderer.implementation().macros  # type: ignore[attr-defined]
 
     def format_date(self, dt: datetime | date | None, format: str) -> str:
         """ Takes a datetime and formats it according to local timezone and

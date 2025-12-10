@@ -1,13 +1,15 @@
+from __future__ import annotations
 from docx import Document
 from pdftotext import PDF  # type: ignore
 from docx.text.paragraph import Paragraph
 from docx.table import Table
 
 
-from typing import IO, TYPE_CHECKING, Iterator, Any
+from typing import IO, TYPE_CHECKING, Any
 
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from _typeshed import SupportsRead
     from privatim.models import AgendaItem
     from docx.blkcntnr import BlockItemContainer
@@ -35,7 +37,7 @@ def word_count(text: str) -> int:
 
 
 def extract_pdf_info(
-    content: 'SupportsRead[bytes]', remove: str = '\0'
+    content: SupportsRead[bytes], remove: str = '\0'
 ) -> tuple[int, str]:
     """Extracts the number of pages and text from a PDF.
 
@@ -66,7 +68,7 @@ def get_docx_text(content: IO[bytes]) -> str:
 
 
 def recursively_iter_block_items(
-    blockcontainer: 'BlockItemContainer',
+    blockcontainer: BlockItemContainer,
 ) -> Iterator[Any]:
     """ Extract text content form docx in the order that it appears. This
     works for tables as well.
@@ -84,7 +86,7 @@ def recursively_iter_block_items(
                     yield from recursively_iter_block_items(cell)
 
 
-def normalize_agenda_item_positions(items: list['AgendaItem']) -> None:
+def normalize_agenda_item_positions(items: list[AgendaItem]) -> None:
     """
     Normalize positions to ensure they are sequential without duplicates.
     Items are sorted by their current position first, and title as secondary

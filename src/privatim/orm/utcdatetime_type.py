@@ -1,3 +1,4 @@
+from __future__ import annotations
 from datetime import datetime
 from sedate import standardize_date, to_timezone
 from sqlalchemy.types import DateTime, TypeDecorator
@@ -26,7 +27,7 @@ class UTCDateTime(TypeDecorator[datetime]):
     def process_bind_param(
         self,
         value: datetime | None,
-        dialect: 'Dialect'
+        dialect: Dialect
     ) -> datetime | None:
 
         if value is None:
@@ -36,7 +37,7 @@ class UTCDateTime(TypeDecorator[datetime]):
     def process_result_value(
         self,
         value: datetime | None,
-        dialect: 'Dialect'
+        dialect: Dialect
     ) -> datetime | None:
 
         if value is None:

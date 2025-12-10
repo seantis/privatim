@@ -1,3 +1,4 @@
+from __future__ import annotations
 from contextlib import contextmanager
 from sqlalchemy import event
 from sqlalchemy.orm import Session as BaseSession, with_loader_criteria
@@ -36,8 +37,9 @@ class FilteredSession(BaseSession):
                 Consultation.deleted == True
             )
 
-    This is the recommended way to handle this kind of global filtering.:
-    https://docs.sqlalchemy.org/en/20/orm/session_events.html#adding-global-where-on-criteria  # noqa: E501
+    This is the recommended way to handle this kind of global filtering:
+    https://docs.sqlalchemy.org/en/20/orm/session_events.html
+    #adding-global-where-on-criteria
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -47,7 +49,7 @@ class FilteredSession(BaseSession):
 
         @event.listens_for(self, "do_orm_execute")
         def _add_filtering_criteria(
-                orm_execute_state: 'ORMExecuteState'
+                orm_execute_state: ORMExecuteState
         ) -> None:
             if (
                 orm_execute_state.is_select

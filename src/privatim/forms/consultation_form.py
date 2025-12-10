@@ -1,3 +1,4 @@
+from __future__ import annotations
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form, HtmlField
@@ -31,7 +32,7 @@ STATUS_CHOICES = [
 
 class ConsultationForm(Form):
     def __init__(
-        self, context: 'Consultation | None', request: 'IRequest'
+        self, context: Consultation | None, request: IRequest
     ) -> None:
         self._title = _('Edit Consultation')
         session = request.dbsession
@@ -44,7 +45,10 @@ class ConsultationForm(Form):
             }
         )
 
-        self.status.choices = STATUS_CHOICES
+        self.status.choices = [
+            (str(i), k)
+            for i, k in STATUS_CHOICES
+        ]
 
     title = ConstantTextAreaField(
         _('Title'),
@@ -77,7 +81,7 @@ class ConsultationForm(Form):
     )
     secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
-        choices=[('', '')] + CANTONS_SHORT,
+        choices=[('', ''), *CANTONS_SHORT],
         validators=[
             validators.Optional(),
         ],

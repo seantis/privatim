@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from sqlalchemy import select
 from privatim.controls.controls import Button
@@ -20,6 +21,7 @@ from privatim.views.utils import trim_filename
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from privatim.orm.session import FilteredSession
     from pyramid.interfaces import IRequest
     from privatim.types import RenderDataOrRedirect, RenderData
     from datetime import datetime
@@ -29,9 +31,9 @@ logger = logging.getLogger(__name__)
 
 
 def consultation_view(
-    context: Consultation, request: 'IRequest'
-) -> 'RenderData':
-    session = request.dbsession
+    context: Consultation, request: IRequest
+) -> RenderData:
+    session: FilteredSession = request.dbsession
     request.add_action_menu_entries([
         Button(
             title=_('Edit'),
@@ -50,7 +52,7 @@ def consultation_view(
             data_item_title=context.title,
         ),
     ])
-    previous_versions = [context] + get_previous_versions(session, context)
+    previous_versions = [context, *get_previous_versions(session, context)]
 
     is_old_version = not context.is_latest()
     latest_version = context.get_latest_version(session)
@@ -93,7 +95,7 @@ def consultation_view(
     }
 
 
-def consultations_view(request: 'IRequest') -> 'RenderData':
+def consultations_view(request: IRequest) -> RenderData:
 
     session = request.dbsession
     selected_status = request.params.get('status')
@@ -114,9 +116,9 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     if selected_status:
         stmt = stmt.where(Consultation.status == selected_status)
 
-    def get_first_version_creation_date(cons: Consultation) -> 'datetime':
+    def get_first_version_creation_date(cons: Consultation) -> datetime:
         prev_versions = get_previous_versions(session, cons, limit=1000)
-        all_versions = [cons] + prev_versions
+        all_versions = [cons, *prev_versions]
         first_version = min(all_versions, key=lambda v: v.created)
         return first_version.created
 
@@ -141,7 +143,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
             else _('Deleted User'),
             'description': Markup(_cons.description),
             'updated': _cons.updated,
-            'status_key': _cons.status, # Pass the status key for linking
+            'status_key': _cons.status,  # Pass the status key for linking
             'status': _(_cons.status)
         } for _cons in sorted_consultations  # Iterate over the sorted list
     )
@@ -174,7 +176,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
         } for status_key, __ in STATUS_CHOICES
     ]
 
-    all_statuses_for_display = [all_statuses_entry] + status_entries
+    all_statuses_for_display = [all_statuses_entry, *status_entries]
 
     return {
         'title': _('Consultations'),
@@ -183,7 +185,7 @@ def consultations_view(request: 'IRequest') -> 'RenderData':
     }
 
 
-def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def add_consultation_view(request: IRequest) -> RenderDataOrRedirect:
     form = ConsultationForm(None, request)
 
     target_url = request.route_url('activities')  # fallback
@@ -239,8 +241,8 @@ def add_consultation_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 
 def edit_consultation_view(
-    previous: Consultation, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
+    previous: Consultation, request: IRequest
+) -> RenderDataOrRedirect:
     session = request.dbsession
     target_url = request.route_url('consultation', id=previous.id)
 
@@ -306,9 +308,9 @@ def edit_consultation_view(
 
 
 def delete_consultation_view(
-        context: Consultation, request: 'IRequest'
-) -> 'RenderDataOrRedirect':
-    session = request.dbsession
+        context: Consultation, request: IRequest
+) -> RenderDataOrRedirect:
+    session: FilteredSession = request.dbsession
     target_url = request.route_url('activities')
 
     # SoftDeleteMixin should take care of the files

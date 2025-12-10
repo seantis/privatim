@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 from sqlalchemy.orm import configure_mappers
 
@@ -53,7 +54,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-def includeme(config: 'Configurator') -> None:
+def includeme(config: Configurator) -> None:
     """
     Initialize the model for a Pyramid app.
 

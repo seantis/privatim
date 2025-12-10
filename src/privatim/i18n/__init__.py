@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .core import pluralize
 from .core import translate
 from .locale_negotiator import LocaleNegotiator
@@ -10,9 +11,9 @@ locales = {'de_CH': 'german'}
 _ = TranslationStringFactory('privatim')
 
 __all__ = (
-    '_',
     'LocaleNegotiator',
+    '_',
+    'locales',
     'pluralize',
     'translate',
-    'locales',
 )

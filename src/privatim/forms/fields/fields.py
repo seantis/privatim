@@ -1,3 +1,4 @@
+from __future__ import annotations
 import inspect
 from itertools import zip_longest
 import sedate
@@ -49,6 +50,7 @@ if TYPE_CHECKING:
         DefaultMeta,
     )
 
+    # We can't use the one from privatim/types.py
     class FileDict(TypedDict, total=False):
         data: str
         filename: str | None
@@ -64,9 +66,9 @@ else:
 
 
 __all__ = [
-    "TomSelectWidget",
     "DateTimeLocalField",
     "TimezoneDateTimeField",
+    "TomSelectWidget",
     "UploadField",
     "UploadMultipleField",
     # "UploadFileWithORMSupport",
@@ -77,7 +79,7 @@ __all__ = [
 ]
 
 
-def file_choices_from_session(session: 'Session') -> list[tuple[str, str]]:
+def file_choices_from_session(session: Session) -> list[tuple[str, str]]:
     stmt = select(GeneralFile.id, GeneralFile.filename)
     result = session.execute(stmt)
     return sorted(
@@ -93,24 +95,24 @@ class DateTimeLocalField(DateTimeLocalFieldBase):
     """
 
     def __init__(
-            self,
-            label: str | None = None,
-            validators: 'Validators[FormT, Self] | None' = None,
-            format: str = '%Y-%m-%dT%H:%M',
-            **kwargs: Any
+        self,
+        label: str | None = None,
+        validators: Validators[FormT, Self] | None = None,
+        format: str = '%Y-%m-%dT%H:%M',
+        **kwargs: Any,
     ):
-        super(DateTimeLocalField, self).__init__(
+        super().__init__(
             label=label,
             validators=validators,
             format=format,
             **kwargs
         )
 
-    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+    def process_formdata(self, valuelist: list[RawFormValue]) -> None:
         if valuelist:
             date_str = 'T'.join(valuelist).replace(' ', 'T')  # type:ignore
             valuelist = [date_str[:16]]
-        super(DateTimeLocalField, self).process_formdata(valuelist)
+        super().process_formdata(valuelist)
 
 
 class ConstantTextAreaField(TextAreaField):
@@ -126,7 +128,7 @@ class TomSelectWidget(Select):
     ) -> None:
         super().__init__(multiple=multiple)
 
-    def __call__(self, field: 'SelectFieldBase', **kwargs: Any) -> 'Markup':
+    def __call__(self, field: SelectFieldBase, **kwargs: Any) -> Markup:
         if not kwargs.get('class'):
             kwargs['class'] = 'searchable-select'
         else:
@@ -135,7 +137,7 @@ class TomSelectWidget(Select):
         placeholder = _('Select...')
         kwargs['placeholder_'] = placeholder
         kwargs['autocomplete_'] = 'off'
-        return super(TomSelectWidget, self).__call__(field, **kwargs)
+        return super().__call__(field, **kwargs)
 
 
 class SearchableMultiSelectField(SelectMultipleField):
@@ -186,20 +188,20 @@ class TimezoneDateTimeField(DateTimeLocalField):
 
     """
 
-    data: 'datetime | None'
+    data: datetime | None
 
     def __init__(self, *args: Any, timezone: str, **kwargs: Any):
         self.timezone = timezone
         super().__init__(*args, **kwargs)
 
-    def process_data(self, value: 'datetime | None') -> None:
+    def process_data(self, value: datetime | None) -> None:
         if value:
             value = sedate.to_timezone(value, self.timezone)
             value.replace(tzinfo=None)
 
         super().process_data(value)
 
-    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+    def process_formdata(self, valuelist: list[RawFormValue]) -> None:
         super().process_formdata(valuelist)
 
         if self.data:
@@ -222,7 +224,7 @@ class UploadField(FileField):
     # unfortunately a union of two TypedDict will narrow to the TypedDict
     # with the fewest shared keys, which would always be an empty dictionary
     @property
-    def data(self) -> 'StrictFileDict | FileDict | None':
+    def data(self) -> StrictFileDict | FileDict | None:
         frame = inspect.currentframe()
         assert frame is not None and frame.f_back is not None
         caller = frame.f_back.f_locals.get('self')
@@ -240,10 +242,10 @@ class UploadField(FileField):
         return getattr(self, '_data', None)
 
     @data.setter
-    def data(self, value: 'FileDict') -> None:
+    def data(self, value: StrictFileDict | FileDict) -> None:
         self._data = value
 
-    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+    def process_formdata(self, valuelist: list[RawFormValue]) -> None:
 
         if not valuelist:
             self.data = {}
@@ -280,8 +282,8 @@ class UploadField(FileField):
             raise NotImplementedError()
 
     def process_fieldstorage(
-        self, field_storage: 'RawFormValue'
-    ) -> 'StrictFileDict | FileDict':
+        self, field_storage: RawFormValue
+    ) -> StrictFileDict | FileDict:
 
         from privatim.utils import (
             binary_to_dictionary,
@@ -315,35 +317,36 @@ class UploadMultipleField(UploadMultipleBase, FileField):
     """
 
     widget = UploadMultipleWidget()
-    raw_data: list['RawFormValue']
+    raw_data: list[RawFormValue]
 
     if TYPE_CHECKING:
         _separator: str
 
-        def _add_entry(
-            self, __d: _MultiDictLikeWithGetlist
-        ) -> UploadField: ...
+        def _add_entry(self, d: _MultiDictLikeWithGetlist, /) -> UploadField:
+            ...
 
     upload_field_class: type[UploadField] = UploadField
-    upload_widget: 'Widget[UploadField]' = UploadWidget()
+    upload_widget: Widget[UploadField] = UploadWidget()
 
     def __init__(
         self,
         label: str | None = None,
-        validators: 'tuple[_Validator[_FormT, UploadField], ...] | '
-                    'list[Any] | None' = None,
-        filters: 'Sequence[Filter]' = (),
+        validators: (
+            tuple[
+                _Validator[_FormT, UploadField], ...] | list[Any] | None
+        ) = None,
+        filters: Sequence[Filter] = (),
         description: str = '',
         id: str | None = None,
-        default: 'Sequence[FileDict]' = (),
-        widget: 'Widget[Self] | None' = None,
+        default: Sequence[FileDict] = (),
+        widget: Widget[Self] | None = None,
         render_kw: dict[str, Any] | None = None,
         name: str | None = None,
-        upload_widget: 'Widget[UploadField] | None' = None,
-        _form: 'BaseForm | None' = None,
+        upload_widget: Widget[UploadField] | None = None,
+        _form: BaseForm | None = None,
         _prefix: str = '',
-        _translations: '_SupportsGettextAndNgettext | None' = None,
-        _meta: 'DefaultMeta | None' = None,
+        _translations: _SupportsGettextAndNgettext | None = None,
+        _meta: DefaultMeta | None = None,
         **extra_arguments: Any
     ):
         if upload_widget is None:
@@ -382,9 +385,9 @@ class UploadMultipleField(UploadMultipleBase, FileField):
 
     def process(
         self,
-        formdata: '_MultiDictLikeWithGetlist | None',
+        formdata: _MultiDictLikeWithGetlist | None,
         data: object = unset_value,
-        extra_filters: 'Sequence[Filter] | None' = None,
+        extra_filters: Sequence[Filter] | None = None,
     ) -> None:
         self.process_errors = []
 
@@ -403,7 +406,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
             except ValueError as e:
                 self.process_errors.append(e.args[0])
 
-    def process_formdata(self, valuelist: list['RawFormValue']) -> None:
+    def process_formdata(self, valuelist: list[RawFormValue]) -> None:
         if not valuelist:
             return
 
@@ -416,7 +419,7 @@ class UploadMultipleField(UploadMultipleBase, FileField):
                 self.append_entry_from_field_storage(value)
 
     def append_entry_from_field_storage(
-        self, fs: '_FieldStorageWithFile'
+        self, fs: _FieldStorageWithFile
     ) -> UploadField:
         # we fake the formdata for the new field
         # we use a werkzeug MultiDict because the WebOb version
@@ -477,7 +480,7 @@ class UploadFileWithORMSupport(UploadField):
         if value:
             try:
                 size = value.file.size
-            except IOError:
+            except OSError:
                 # if the file doesn't exist on disk we try to fail
                 # silently for now
                 size = -1
@@ -530,4 +533,3 @@ class UploadMultipleFilesWithORMSupport(UploadMultipleField):
                     self.added_files.append(dummy.file)
 
         setattr(obj, name, output)
-

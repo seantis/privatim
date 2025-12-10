@@ -5,8 +5,7 @@ import re
 import transaction
 import uuid
 
-from privatim.models import User, WorkingGroup, Meeting, MeetingUserAttendance
-from privatim.models.association_tables import AttendanceStatus
+from privatim.models import User, WorkingGroup, Meeting
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sedate import utcnow
@@ -20,6 +19,7 @@ from tests.views.client.utils import (
     set_meeting_or_cons_title,
     upload_new_documents
 )
+
 
 @pytest.mark.browser
 def test_edit_meeting_users(page: Page, live_server_url, session) -> None:
@@ -60,7 +60,7 @@ def test_edit_meeting_users(page: Page, live_server_url, session) -> None:
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -187,7 +187,7 @@ def test_edit_meeting_document(
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -316,7 +316,8 @@ def test_edit_meeting_multiple_documents(
 
     # Create a working group
     page.goto(live_server_url + "/working_groups/add")
-    page.wait_for_load_state("networkidle", timeout=10000)  # Wait for page load
+    # Wait for page load
+    page.wait_for_load_state("networkidle", timeout=10000)
     group_name_input = page.locator('textarea[name="name"]')
     group_name = f"Browser Test Group {datetime.now().isoformat()}"
     group_name_input.fill(group_name)
@@ -413,7 +414,9 @@ def test_edit_meeting_multiple_documents(
 
     # To make the test robust, find the file to delete by its name
     file_widgets = page.locator('.upload-widget.with-data').all()
-    file_titles = [w.locator('p.file-title').inner_text() for w in file_widgets]
+    file_titles = [
+        w.locator('p.file-title').inner_text() for w in file_widgets
+    ]
     idx_to_delete = next(
         i for i, title in enumerate(file_titles) if replaced_file[0] in title
     )
@@ -637,7 +640,7 @@ def test_remove_and_readd_working_group_member_in_meeting(
     ).click()
 
     # Click outside to close dropdown if necessary, then fill for next user
-    page.locator('textarea[name="name"]').click() # Click somewhere else
+    page.locator('textarea[name="name"]').click()  # Click somewhere else
     user_select_input.click()
     user_select_input.fill(member_full_name)
     page.locator(

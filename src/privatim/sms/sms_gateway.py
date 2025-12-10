@@ -1,3 +1,4 @@
+from __future__ import annotations
 import hashlib
 import json
 import os
@@ -22,7 +23,7 @@ class ASPSMSGateway:
 
     def send(
             self,
-            receivers: 'Sequence[str]',
+            receivers: Sequence[str],
             content: str,
             sender: str = 'Privatim'
     ) -> None:

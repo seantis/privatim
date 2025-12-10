@@ -1,17 +1,18 @@
+from __future__ import annotations
 import os
 import click
 
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Iterator
+    from collections.abc import Iterator
 
 
-def find_ini_files(start_dir: str = '') -> 'Iterator[str]':
+def find_ini_files(start_dir: str = '') -> Iterator[str]:
     start_dir = start_dir or os.path.dirname(os.path.abspath(__file__))
     visited = set()
 
-    def recurse_directory(path: str) -> 'Iterator[str]':
+    def recurse_directory(path: str) -> Iterator[str]:
         if path in visited:
             return
         visited.add(path)

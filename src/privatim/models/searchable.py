@@ -1,9 +1,11 @@
+from __future__ import annotations
 from privatim.models.file import SearchableFile
 from privatim.orm import Base
 
 
-from typing import Iterator, TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from sqlalchemy.orm import InstrumentedAttribute
     from privatim.orm.meta import UUIDStrPK
     from sqlalchemy.orm import Mapped
@@ -22,7 +24,7 @@ class SearchableMixin:
     @classmethod
     def searchable_fields(
         cls,
-    ) -> 'Iterator[InstrumentedAttribute[str | None]]':
+    ) -> Iterator[InstrumentedAttribute[str | None]]:
         raise NotImplementedError(
             "Searchable fields must be defined for each model"
         )

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .exceptions import InactiveRecipient
 from .exceptions import MailConnectionError
 from .exceptions import MailError

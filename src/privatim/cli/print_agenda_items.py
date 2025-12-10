@@ -1,3 +1,4 @@
+from __future__ import annotations
 import click
 from pyramid.paster import bootstrap
 from pyramid.paster import get_appsettings
@@ -43,7 +44,7 @@ def main(config_uri: str, meeting_id: str) -> None:
         print_agenda_items_positions(meeting.agenda_items)
 
 
-def print_agenda_items_positions(items: list['AgendaItem']) -> None:
+def print_agenda_items_positions(items: list[AgendaItem]) -> None:
     """Print position and title of each agenda item."""
     for item in sorted(items, key=lambda x: x.position):
         print(f'{item.position}. {item.title}')

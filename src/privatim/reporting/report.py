@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from io import BytesIO
@@ -11,7 +12,7 @@ from pyramid.renderers import render
 import lxml.html
 import html2text
 import re
-from docx import Document # type: ignore
+from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from weasyprint import HTML, CSS  # type: ignore
@@ -19,6 +20,7 @@ from weasyprint.text.fonts import FontConfiguration  # type: ignore
 
 
 from typing import TYPE_CHECKING, Protocol
+from collections.abc import Sequence
 if TYPE_CHECKING:
     from docx.text.paragraph import Paragraph
     from privatim.models.association_tables import MeetingUserAttendance
@@ -33,7 +35,7 @@ class ReportOptions:
     language: str = 'de'
     """ Translate report into language. """
 
-    tz: 'BaseTzInfo' = DEFAULT_TIMEZONE
+    tz: BaseTzInfo = DEFAULT_TIMEZONE
     """ Use timezone for all timestamps. """
 
 
@@ -50,7 +52,7 @@ class PDFDocument:
 class ReportRenderer(Protocol):
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes: ...
 
 
@@ -58,8 +60,8 @@ class MeetingReport:
 
     def __init__(
         self,
-        request: 'IRequest',
-        meeting: 'Meeting',
+        request: IRequest,
+        meeting: Meeting,
         options: ReportOptions,
         renderer: ReportRenderer,
     ) -> None:
@@ -113,13 +115,13 @@ class HTMLReportRenderer:
     template = 'privatim:reporting/template/report.pt'
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes:
         html = self.render_template(meeting, timestamp, request)
         return self.render_pdf(html, request)
 
     def render_template(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> str:
         """Render chameleon report template."""
         document_context = {'title': meeting.name, 'created_at': timestamp}
@@ -138,7 +140,7 @@ class HTMLReportRenderer:
         }
         return render(self.template, ctx)
 
-    def render_pdf(self, html: str, request: 'IRequest') -> bytes:
+    def render_pdf(self, html: str, request: IRequest) -> bytes:
         """
         Render processed chameleon template as PDF.
         """
@@ -211,7 +213,7 @@ class HTMLReportRenderer:
         return buffer.getvalue()
 
 
-def add_markdown_runs(paragraph: 'Paragraph', markdown_text: str) -> None:
+def add_markdown_runs(paragraph: Paragraph, markdown_text: str) -> None:
     """
     Parses a simple markdown string (bold/italic) and adds formatted runs
     to the given python-docx paragraph.
@@ -251,7 +253,7 @@ class WordReportRenderer:
         self.issued_at = datetime.utcnow()  # Store creation time
 
     def render(
-        self, meeting: 'Meeting', timestamp: str, request: 'IRequest'
+        self, meeting: Meeting, timestamp: str, request: IRequest
     ) -> bytes:
         """Generates the DOCX file content."""
         document = Document()
@@ -301,7 +303,7 @@ class WordReportRenderer:
                 f"{translate(_('Attendees:'), language=request.locale_name)}"
             ).runs[0].bold = True
             # Fetch sorted records using the property
-            sorted_records: list['MeetingUserAttendance'] = (
+            sorted_records: Sequence[MeetingUserAttendance] = (
                 request.dbsession.execute(meeting.sorted_attendance_records)
                 .scalars()
                 .all()
@@ -315,7 +317,7 @@ class WordReportRenderer:
                     f"{record.user.fullname}{status_marker}",
                     style='List Bullet',
                 )
-            document.add_paragraph() 
+            document.add_paragraph()
 
         document.add_paragraph(
             translate(_('Agenda Items'), language=request.locale_name)
@@ -336,7 +338,6 @@ class WordReportRenderer:
                     h.body_width = 0  # Disable line wrapping
                     h.ignore_links = True  # Ignore links for simplicity
                     h.ignore_images = True  # Ignore images
-                    # Add other config as needed, e.g., h.ignore_emphasis = False
                     markdown_text = h.handle(item.description).strip()
 
                     # Split into paragraphs based on double newlines
@@ -363,7 +364,10 @@ class WordReportRenderer:
                     # Fallback to plain text extraction using lxml
                     try:
                         html_tree = lxml.html.fromstring(item.description)
-                        text_content = html_tree.text_content()
+                        # Use itertext() which works on all element types
+                        text_content = ''.join(
+                            str(t) for t in html_tree.itertext()
+                        )
                         p_desc = document.add_paragraph(text_content.strip())
                         p_desc.paragraph_format.left_indent = Inches(0.25)
                         p_desc.paragraph_format.space_after = Pt(12)

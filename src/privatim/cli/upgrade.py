@@ -1,3 +1,4 @@
+from __future__ import annotations
 import logging
 import os
 from enum import Enum
@@ -15,7 +16,7 @@ from privatim.models import get_session_factory
 from privatim.orm import Base
 
 
-from typing import TYPE_CHECKING, Any, Optional, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from sqlalchemy import Column as _Column
@@ -30,7 +31,7 @@ logger = logging.getLogger('privatim.upgrade')
 
 class UpgradeContext:
 
-    def __init__(self, db: 'Session'):
+    def __init__(self, db: Session):
         self.session = db
         self.engine: Engine = self.session.bind  # type: ignore
 
@@ -64,7 +65,7 @@ class UpgradeContext:
         inspector = inspect(self.operations_connection)
         return column in {c['name'] for c in inspector.get_columns(table)}
 
-    def add_column(self, table:  str, column: 'Column') -> bool:
+    def add_column(self, table:  str, column: Column) -> bool:
         if self.has_table(table):
             if not self.has_column(table, column.name):
                 self.operations.add_column(table, column)
@@ -76,10 +77,10 @@ class UpgradeContext:
         table_name: str,
         column_name: str,
         *,
-        nullable: Optional[bool] = None,
-        comment: Union[str, Literal[False], None] = False,
+        nullable: bool | None = None,
+        comment: str | Literal[False] | None = False,
         server_default: Any = False,
-        new_column_name: Optional[str] = None,
+        new_column_name: str | None = None,
         **kw: Any,
     ) -> bool:
         if not self.has_table(table_name):
@@ -122,19 +123,19 @@ class UpgradeContext:
 
     def create_foreign_key(
         self,
-        constraint_name: Optional[str],
+        constraint_name: str | None,
         source_table: str,
         referent_table: str,
         local_cols: list[str],
         remote_cols: list[str],
         *,
-        onupdate: Optional[str] = None,
-        ondelete: Optional[str] = None,
-        deferrable: Optional[bool] = None,
-        initially: Optional[str] = None,
-        match: Optional[str] = None,
-        source_schema: Optional[str] = None,
-        referent_schema: Optional[str] = None,
+        onupdate: str | None = None,
+        ondelete: str | None = None,
+        deferrable: bool | None = None,
+        initially: str | None = None,
+        match: str | None = None,
+        source_schema: str | None = None,
+        referent_schema: str | None = None,
         **dialect_kw: Any,
     ) -> bool:
         if self.has_table(source_table) and self.has_table(referent_table):
@@ -159,7 +160,7 @@ class UpgradeContext:
     def get_column_info(
             self,
             table: str, column: str
-    ) -> 'ReflectedColumn | None':
+    ) -> ReflectedColumn | None:
         """ Get type information about column. Use like this:
 
              col_info = context.get_column_info('consultations', column)
@@ -235,10 +236,6 @@ class UpgradeContext:
         """
         # Ensure the connection is available
         conn = self.operations_connection
-        if conn is None:
-            logger.warning("Cannot check constraint, no connection available.")
-            return False  # Or raise an error
-
         result = conn.execute(text("""
             SELECT EXISTS (
                 SELECT 1 FROM information_schema.table_constraints

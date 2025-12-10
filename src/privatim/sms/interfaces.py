@@ -1,3 +1,4 @@
+from __future__ import annotations
 from zope.interface import Interface
 
 
@@ -9,7 +10,7 @@ if TYPE_CHECKING:
 class ISMSGateway(Interface):
 
     def send(
-            receivers: 'Sequence[str]',
+            receivers: Sequence[str],
             content: str,
             sender: str = 'Privatim'
     ) -> None:

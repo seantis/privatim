@@ -1,3 +1,4 @@
+from __future__ import annotations
 from io import BytesIO
 from PIL import Image
 from pyramid.httpexceptions import HTTPForbidden, HTTPFound
@@ -18,7 +19,7 @@ MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 ALLOWED_IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 
-def profile_view(request: 'IRequest') -> 'RenderData':
+def profile_view(request: IRequest) -> RenderData:
     user = request.user
     upload_profile_pic = Button(
         title=_('Upload a photo...'),
@@ -57,8 +58,8 @@ def profile_view(request: 'IRequest') -> 'RenderData':
 
 
 def add_profile_image_view(
-    request: 'IRequest',
-) -> 'RenderDataOrRedirectOrForbidden':
+    request: IRequest,
+) -> RenderDataOrRedirectOrForbidden:
 
     def allowed_file(filename: str) -> bool:
         return (

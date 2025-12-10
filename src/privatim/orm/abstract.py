@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
@@ -33,7 +34,7 @@ class AbstractFile(Base):
     def name(self) -> str:
         return self.filename
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [
             (Allow, Authenticated, ['view']),
         ]

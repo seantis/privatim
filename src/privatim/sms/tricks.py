@@ -1,3 +1,4 @@
+from __future__ import annotations
 import os
 from watchdog.tricks import Trick
 
@@ -45,7 +46,7 @@ class SMSDeliveryTrick(Trick):
             return False
         return os.path.abspath(path).startswith(self.smsdir)
 
-    def on_created(self, event: 'FileSystemEvent') -> None:
+    def on_created(self, event: FileSystemEvent) -> None:
         if self.delivery is None:
             return
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from wtforms import FormField
 from wtforms import Label
@@ -16,7 +17,7 @@ if TYPE_CHECKING:
 
     class TransparentFormField(FormField[_BoundFormT]):
         def __init__(
-            self: 'TransparentFormField[_BoundFormT]',
+            self: TransparentFormField[_BoundFormT],
             form_class: type[_BoundFormT],
             label: str | None = None,
             validators: None = None,
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
             description: str = "",
             id: str | None = None,
             default: object | None = None,
-            widget: _Widget['TransparentFormField[_BoundFormT]'] | None = None,
+            widget: _Widget[TransparentFormField[_BoundFormT]] | None = None,
             render_kw: dict[str, Any] | None = None,
             name: str | None = None,
             _form: BaseForm | None = None,
@@ -46,7 +47,7 @@ else:
         label: Label
         widget = LineWidget()
 
-        def __init__(self, form_class: type['Form'], **kwargs: Any):
+        def __init__(self, form_class: type[Form], **kwargs: Any):
             super().__init__(form_class, **kwargs)
             self.label = _NoLabel(self.label)
 

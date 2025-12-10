@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from functools import cached_property
 from random import choice
@@ -98,7 +99,7 @@ class User(Base):
             initials.append(self.last_name[0].upper())
         return ''.join(initials) if initials else ''
 
-    def generate_profile_picture(self, session: 'Session') -> None:
+    def generate_profile_picture(self, session: Session) -> None:
         """
         Generate a profile picture based on user initials.
         If no name is provided, use the first letter of the email.
@@ -117,7 +118,7 @@ class User(Base):
         session.flush()  # Flush to get the ID assigned
         self.profile_pic = general_file
 
-    def profile_pic_download_link(self, request: 'IRequest') -> str:
+    def profile_pic_download_link(self, request: IRequest) -> str:
         return (
             request.route_url('download_file', id=self.profile_pic_id)
             if (self.profile_pic_id)
@@ -146,19 +147,19 @@ class User(Base):
         foreign_keys='WorkingGroup.chairman_id'
     )
 
-    meeting_attendance: Mapped[list['MeetingUserAttendance']] = relationship(
+    meeting_attendance: Mapped[list[MeetingUserAttendance]] = relationship(
         'MeetingUserAttendance',
         back_populates='user',
         cascade='all, delete-orphan'
     )
 
     @hybrid_property
-    def meetings(self) -> list['Meeting']:
+    def meetings(self) -> list[Meeting]:
         return [record.meeting for record in self.meeting_attendance]
 
     @meetings.inplace.expression
     @classmethod
-    def _meetings_expression(cls) -> 'ScalarSelect[Meeting]':
+    def _meetings_expression(cls) -> ScalarSelect[Meeting]:
         from privatim.models.meeting import Meeting
         from privatim.models.association_tables import MeetingUserAttendance
         return (
@@ -172,19 +173,19 @@ class User(Base):
         'Comment', back_populates='user',
     )
 
-    consultations: Mapped[list['Consultation']] = relationship(
+    consultations: Mapped[list[Consultation]] = relationship(
         'Consultation',
         back_populates='creator',
         foreign_keys='Consultation.creator_id',
     )
 
-    created_meetings: Mapped[list['Consultation']] = relationship(
+    created_meetings: Mapped[list[Consultation]] = relationship(
         'Meeting',
         back_populates='creator',
         foreign_keys='Meeting.creator_id',
     )
 
-    agenda_item_state_preferences: Mapped[list['AgendaItemStatePreference']] \
+    agenda_item_state_preferences: Mapped[list[AgendaItemStatePreference]] \
         = (relationship(
             'AgendaItemStatePreference',
             back_populates='user',
@@ -259,7 +260,7 @@ class User(Base):
         else:
             return get_or_create_default_profile_pic(session)
 
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         """ Allow the profile to be viewed by logged-in users."""
         return [
             (Allow, Authenticated, ['view']),

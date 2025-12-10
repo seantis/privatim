@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from wtforms import validators, Label
 from wtforms.fields.choices import RadioField
@@ -23,8 +24,8 @@ class AgendaItemForm(Form):
 
     def __init__(
         self,
-        context: 'Meeting | AgendaItem',
-        request: 'IRequest',
+        context: Meeting | AgendaItem,
+        request: IRequest,
     ) -> None:
 
         self._title = (
@@ -47,7 +48,7 @@ class AgendaItemForm(Form):
         _('Potentially Description'), render_kw={'rows': 5}
     )
 
-    def populate_obj(self, obj: 'AgendaItem') -> None:  # type:ignore[override]
+    def populate_obj(self, obj: AgendaItem) -> None:  # type:ignore[override]
         super().populate_obj(obj)
         for name, field in self._fields.items():
             field.populate_obj(obj, name)
@@ -98,7 +99,7 @@ class AgendaItemCopyForm(Form):
     def __init__(
         self,
         context: Meeting,
-        request: 'IRequest',
+        request: IRequest,
         available_meetings: list[Meeting]
     ) -> None:
 
@@ -151,7 +152,7 @@ class AgendaItemCopyForm(Form):
         default=False,
     )
 
-    def populate_obj(self, obj: 'AgendaItem') -> None:  # type:ignore[override]
+    def populate_obj(self, obj: AgendaItem) -> None:  # type:ignore[override]
         super().populate_obj(obj)
         for name, field in self._fields.items():
             field.populate_obj(obj, name)

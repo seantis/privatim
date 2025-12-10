@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.httpexceptions import HTTPFound
 from privatim.models.file import GeneralFile
 from pyramid.response import Response
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
 
 def download_general_file_view(
-    file: AbstractFile, request: 'IRequest'
+    file: AbstractFile, request: IRequest
 ) -> Response:
     """ Downloads any file. Anyone who knows the link can download the file."""
 
@@ -29,8 +30,8 @@ def download_general_file_view(
 
 
 def delete_general_file_view(
-    context: GeneralFile, request: 'IRequest'
-) -> 'XHRDataOrRedirect':
+    context: GeneralFile, request: IRequest
+) -> XHRDataOrRedirect:
 
     """ Deletes a file. """
     assert isinstance(context, GeneralFile)

@@ -1,0 +1,13 @@
+from collections.abc import Sequence
+from types import FrameType, ModuleType
+from typing import Any, Literal
+from typing_extensions import TypeAlias
+
+__all__ = ["determineMetaclass", "getFrameInfo", "isClassAdvisor", "minimalBases"]
+
+_FrameKind: TypeAlias = Literal["class", "exec", "function call", "module", "unknown"]
+
+def getFrameInfo(frame: FrameType) -> tuple[_FrameKind, ModuleType | None, dict[str, Any], dict[str, Any]]: ...
+def isClassAdvisor(ob: object) -> bool: ...
+def determineMetaclass(bases: Sequence[type[object]], explicit_mc: type[object] | None = None) -> type[object]: ...
+def minimalBases(classes: Sequence[type[object]]) -> list[type[object]]: ...

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from phonenumbers import PhoneNumberType
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
@@ -33,7 +34,7 @@ class MTANForm(Form):
     )
 
 
-def mtan_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def mtan_view(request: IRequest) -> RenderDataOrRedirect:
 
     user_id = request.session.get('mtan_user', None)
     if user_id is None:
@@ -70,7 +71,7 @@ def mtan_view(request: 'IRequest') -> 'RenderDataOrRedirect':
 
 class UniqueMobileNumber:
 
-    def __init__(self, session: 'Session', existing_user_id: str) -> None:
+    def __init__(self, session: Session, existing_user_id: str) -> None:
         self.session = session
         self.existing_user_id = existing_user_id
 
@@ -85,7 +86,7 @@ class UniqueMobileNumber:
             raise ValidationError(_('Existing mobile number'))
 
 
-def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def mtan_setup_view(request: IRequest) -> RenderDataOrRedirect:
 
     user_id = request.session.get('mtan_setup_user', None)
     if user_id is None:
@@ -107,6 +108,7 @@ def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
         session = request.dbsession
         user = session.get(User, user_id)
         assert user is not None
+        assert user_id is not None
 
         # Mobile number input step
         class MTANSetupForm(Form):
@@ -114,7 +116,7 @@ def mtan_setup_view(request: 'IRequest') -> 'RenderDataOrRedirect':
                 _('Mobile Number'),
                 [
                     InputRequired(),
-                    UniqueMobileNumber(session, user_id),
+                    UniqueMobileNumber(session, str(user_id)),
                 ],
                 number_type=PhoneNumberType.MOBILE,
                 render_kw={'autofocus': True}

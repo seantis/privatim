@@ -1,3 +1,4 @@
+from __future__ import annotations
 from enum import Enum as PyEnum
 from enum import IntEnum
 from sqlalchemy import ForeignKey, Integer, Enum, UniqueConstraint
@@ -36,10 +37,10 @@ class MeetingUserAttendance(Base):
         nullable=False
     )
 
-    meeting: Mapped['Meeting'] = relationship(
+    meeting: Mapped[Meeting] = relationship(
         "Meeting", back_populates="attendance_records"
     )
-    user: Mapped['User'] = relationship(
+    user: Mapped[User] = relationship(
         "User", back_populates="meeting_attendance"
     )
 
@@ -79,7 +80,7 @@ class AgendaItemStatePreference(Base):
         default=AgendaItemDisplayState.COLLAPSED
     )
 
-    user: Mapped['User'] = relationship(
+    user: Mapped[User] = relationship(
         'User',
         back_populates='agenda_item_state_preferences'
     )

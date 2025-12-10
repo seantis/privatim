@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pyramid.httpexceptions import HTTPFound
@@ -6,7 +7,7 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
 
 
-def home_view(request: 'IRequest') -> HTTPFound:
+def home_view(request: IRequest) -> HTTPFound:
     """ The home view is the view that is called after the user logs in."""
     return HTTPFound(
         location=(
@@ -21,6 +22,6 @@ class SentryWorks(Exception):
     pass
 
 
-def sentry_test_view(request: 'IRequest') -> HTTPFound:
+def sentry_test_view(request: IRequest) -> HTTPFound:
     # test sentry working:
     raise SentryWorks('Test Sentry')

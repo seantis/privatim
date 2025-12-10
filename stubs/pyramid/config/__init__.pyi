@@ -18,6 +18,7 @@ from pyramid.config.rendering import RenderingConfiguratorMixin
 from pyramid.config.routes import RoutesConfiguratorMixin
 from pyramid.config.security import SecurityConfiguratorMixin
 from pyramid.config.settings import SettingsConfiguratorMixin
+from pyramid.config.testing import TestingConfiguratorMixin
 from pyramid.config.views import _View
 from pyramid.config.views import ViewsConfiguratorMixin
 from pyramid.interfaces import IAuthenticationPolicy
@@ -26,15 +27,15 @@ from pyramid.interfaces import ILocaleNegotiator
 from pyramid.interfaces import IRendererFactory
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IRequestFactory
+from pyramid.interfaces import IResponse
 from pyramid.interfaces import IResponseFactory
 from pyramid.interfaces import IRootFactory
+from pyramid.interfaces import IRouter
 from pyramid.interfaces import ISecurityPolicy
 from pyramid.interfaces import ISessionFactory
 from pyramid.interfaces import IViewMapperFactory
 from pyramid.path import Resolver
 from pyramid.registry import Registry
-from pyramid.router import Router
-
 
 class _ConfigurationContext(TypedDict):
     registry: Registry
@@ -44,7 +45,7 @@ class _ConfigurationContext(TypedDict):
 class Configurator(
     # ActionConfiguratorMixin,
     PredicateConfiguratorMixin,
-    # TestingConfiguratorMixin,
+    TestingConfiguratorMixin,
     # TweensConfiguratorMixin,
     SecurityConfiguratorMixin,
     ViewsConfiguratorMixin,
@@ -86,7 +87,7 @@ class Configurator(
         session_factory: ISessionFactory | str | None = ...,
         default_view_mapper: IViewMapperFactory | str | None = ...,
         autocommit: bool = ...,
-        exceptionresponse_view=...,
+        exceptionresponse_view: Callable[[Any, IRequest], IResponse] | str | None = ...,
         route_prefix: str | None = ...,
         introspection: bool = ...,
         root_package: ModuleType | str | None = ...
@@ -113,7 +114,7 @@ class Configurator(
         onerror: Callable[[str], None] | None = ...,
         ignore: str | Callable[[str], bool] | Sequence[str] | None = ...,
     ) -> None: ...
-    def make_wsgi_app(self) -> Router: ...
+    def make_wsgi_app(self) -> IRouter: ...
 
     # NOTE: Below we add methods that pyramid_layout adds to the
     #       Configurator

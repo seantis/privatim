@@ -1,5 +1,5 @@
 from sqlalchemy.orm import selectinload, undefer
-from playwright.sync_api import  expect
+from playwright.sync_api import expect
 from privatim.models import User, SearchableFile
 from privatim.models.consultation import Consultation
 from sqlalchemy import select, func
@@ -72,24 +72,22 @@ def test_view_consultation(client):
             a_elements_in_item = item.cssselect('a')
             if a_elements_in_item:
                 for a_element in a_elements_in_item:
-                    href = a_element.get('href') # Safely get the href attribute
+                    href = a_element.get('href')  # Safely get the href
                     all_a_elements.append({'element': a_element, 'href': href})
         return all_a_elements
-
 
     assert len(items) == 3
     assert 'Vernehmlassung hinzugefügt' in items[2].text_content()
     assert 'Vernehmlassung aktualisiert' in items[0].text_content()
     assert 'Vernehmlassung aktualisiert' in items[1].text_content()
     hrefs = [e['href'] for e in get_link_from_Element_list(items)]
-    for l in hrefs:
+    for href in hrefs:
         # go to each cons activity entry, and go to the edit view
         # there was a bug where this would result in 404 because we were on
         # previous versions
-        client.get(l)
-        consultation_id = l.split('/')[-1]
+        client.get(href)
+        consultation_id = href.split('/')[-1]
         page = client.get(f'/consultations/{consultation_id}/edit')
-
 
 
 def test_view_add_and_delete_consultation(client):
@@ -302,7 +300,6 @@ def test_edit_consultation_without_files(client):
     consultation_id = session.execute(
         select(Consultation.id).filter_by(is_latest_version=1)
     ).scalar_one()
-
 
     page = client.get(f'/consultations/{str(consultation_id)}/edit')
 
@@ -640,19 +637,23 @@ def test_consultation_status_filter(client):
     # 4. Test clicking "All Statuses" filter link
     all_status_link_href = page.pyquery('a.all-status-link').attr('href')
     page = client.get(all_status_link_href)
-    assert len(page.pyquery('.consultation-card')) == 4 # All should be visible again
+    # All should be visible again
+    assert len(page.pyquery('.consultation-card')) == 4
     assert 'active-filter' in page.pyquery('a.all-status-link').attr('class')
 
     # 5. Test clicking status badge *inside* a card
     # Find the 'Waiving' card and its status link
     waiving_card = page.pyquery('.consultation-card:contains("Waiving")')
     # Find the link wrapping the status badge
-    status_link_in_card = waiving_card.find('a.status-link-overlay').attr('href')
+    status_link_in_card = waiving_card.find('a.status-link-overlay').attr(
+        'href'
+    )
     page = client.get(status_link_in_card)
     assert 'Consultation 2 - Waiving' in page
     assert len(page.pyquery('.consultation-card')) == 1
     active_filter = page.pyquery('.active-filter .consultation-status span')
-    assert active_filter.text() == 'Verzicht' # Check top filter is active
+    assert active_filter.text() == 'Verzicht'  # Check top filter is active
+
 
 def test_display_previous_versions(client):
     # Create a user that will be reused

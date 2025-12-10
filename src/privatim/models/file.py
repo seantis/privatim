@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from io import BytesIO
 import logging
@@ -62,7 +63,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         nullable=True,
         index=True
     )
-    consultation: Mapped['Consultation | None'] = relationship(
+    consultation: Mapped[Consultation | None] = relationship(
         'Consultation', back_populates='files'
     )
 
@@ -71,7 +72,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         nullable=True,
         index=True
     )
-    meeting: Mapped['Meeting | None'] = relationship(
+    meeting: Mapped[Meeting | None] = relationship(
         'Meeting', back_populates='files'
     )
 
@@ -97,7 +98,7 @@ class SearchableFile(AbstractFile, SoftDeleteMixin):
         return self.file.content_type if self.file else ''
 
     @declared_attr  # type:ignore[arg-type]
-    def __table_args__(cls) -> tuple[Index, ...]:
+    def __table_args__(cls) -> tuple[Index | CheckConstraint, ...]:
         return (
             Index(
                 f'idx_{cls.__tablename__.lower()}_searchable_text_de_CH',

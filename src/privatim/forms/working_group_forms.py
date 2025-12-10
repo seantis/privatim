@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import select
 from wtforms import SelectField
 from privatim.forms.core import Form
@@ -22,7 +23,7 @@ class WorkingGroupForm(Form):
     def __init__(
         self,
         context: WorkingGroup | None,
-        request: 'IRequest',
+        request: IRequest,
     ) -> None:
 
         self._title = _('Edit Working Group')
@@ -41,9 +42,9 @@ class WorkingGroupForm(Form):
                 users, key=lambda u: u.first_name or ''
             )
         ]
-        self.leader.choices = [('0', '-')] + user_choices
+        self.leader.choices = [('0', '-'), *user_choices]
         self.users.choices = user_choices
-        self.chairman.choices = [('0', '-')] + user_choices
+        self.chairman.choices = [('0', '-'), *user_choices]
 
     name = ConstantTextAreaField(
         _('Name'), validators=[DataRequired()]
@@ -61,10 +62,10 @@ class WorkingGroupForm(Form):
 
     def process(
         self,
-        formdata: '_MultiDictLike | None' = None,
+        formdata: _MultiDictLike | None = None,
         obj: object | None = None,
-        data: 'Mapping[str, Any] | None' = None,
-        extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+        data: Mapping[str, Any] | None = None,
+        extra_filters: Mapping[str, Sequence[Any]] | None = None,
         **kwargs: Any
     ) -> None:
         super().process(formdata, obj, data, **kwargs)

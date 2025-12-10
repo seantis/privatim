@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -14,7 +15,13 @@ if TYPE_CHECKING:
     from pyramid.interfaces import IResponse, IRequest
 
     from typing import Any, Literal, TypeVar, Protocol
-    from typing_extensions import NotRequired, TypedDict, TypeAlias
+    from typing_extensions import NotRequired, TypedDict
+    from typing import TypeAlias
+    from pyramid.authorization import AllPermissionsList
+
+    # Monkey patch (no effect)
+    # from pyramid.request import Request
+    # Request.dbsession: FilteredSession
 
     _Tco = TypeVar('_Tco', covariant=True)
 
@@ -33,7 +40,9 @@ if TYPE_CHECKING:
     JSONObject_ro: TypeAlias = Mapping[str, JSON_ro]
     JSONArray_ro: TypeAlias = Sequence[JSON_ro]
 
-    ACL: TypeAlias = tuple[Literal['Allow', 'Deny'], str, list[str]]
+    ACL: TypeAlias = tuple[
+        Literal['Allow', 'Deny'], str, list[str] | AllPermissionsList
+    ]
 
     HTMLParam = str | int | float | Decimal | Fraction | bool | None
     HTTPMethod = Literal[

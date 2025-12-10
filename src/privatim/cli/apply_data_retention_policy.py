@@ -1,3 +1,4 @@
+from __future__ import annotations
 from datetime import timedelta
 import logging
 import click
@@ -6,7 +7,7 @@ from pyramid.paster import get_appsettings
 from sedate import utcnow
 from sqlalchemy import select
 from sqlalchemy.sql import delete
-from privatim.models import Consultation # noqa: E402
+from privatim.models import Consultation
 from privatim.orm import get_engine, Base
 
 
@@ -14,7 +15,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from privatim.orm import FilteredSession
 
-from privatim.models.file import SearchableFile # noqa: E402
+from privatim.models.file import SearchableFile
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ def format_consultation_tree(
 
 
 def delete_old_consultation_chains(
-        session: 'FilteredSession',
+        session: FilteredSession,
         days_threshold: int = 30
 ) -> list[str]:
     """
@@ -81,7 +82,8 @@ def delete_old_consultation_chains(
 
             if ids_to_delete:
                 # First, delete associated SearchableFile records
-                # to prevent ForeignKeyViolation during bulk Consultation delete.
+                # to prevent ForeignKeyViolation during bulk Consultation
+                # delete.
                 bulk_delete_files_stmt = delete(SearchableFile).where(
                     SearchableFile.consultation_id.in_(ids_to_delete)
                 )

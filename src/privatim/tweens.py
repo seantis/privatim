@@ -1,16 +1,18 @@
+from __future__ import annotations
 from .git_info import get_git_revision_hash
 
 
-from typing import TYPE_CHECKING, Callable, Any
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from pyramid.request import Request
     from pyramid.response import Response
 
 
 def git_info_tween_factory(
-    handler: Callable[['Request'], 'Response'], registry: Any
-) -> Callable[['Request'], 'Response']:
-    def git_info_tween(request: 'Request') -> 'Response':
+    handler: Callable[[Request], Response], registry: Any
+) -> Callable[[Request], Response]:
+    def git_info_tween(request: Request) -> Response:
         request.git_revision = get_git_revision_hash()
         return handler(request)
 

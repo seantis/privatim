@@ -1,9 +1,11 @@
+from __future__ import annotations
 from wtforms import DateField
 from privatim.forms.core import Form
 from wtforms.validators import Optional
 
 from privatim.forms.meeting_form import CheckboxField
 from privatim.i18n import _
+
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 class FilterForm(Form):
     def __init__(
         self,
-        request: 'IRequest',
+        request: IRequest,
     ) -> None:
         self._title = _('Filter')
         session = request.dbsession

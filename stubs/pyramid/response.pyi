@@ -4,9 +4,8 @@ from zope.interface import implementer
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IResponse
 
-
 @implementer(IResponse)
-class Response(_Response): ...  # type:ignore[override]
+class Response(_Response): ...
 
 class FileResponse(Response):
     def __init__(

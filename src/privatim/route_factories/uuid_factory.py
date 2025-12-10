@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TypeVar
 from uuid import UUID
 from pyramid.httpexceptions import HTTPNotFound
@@ -5,6 +6,8 @@ from privatim.models import Consultation
 
 
 from typing import TYPE_CHECKING
+
+from privatim.orm.session import FilteredSession
 if TYPE_CHECKING:
     from collections.abc import Callable
     from pyramid.interfaces import IRequest
@@ -17,8 +20,8 @@ _M = TypeVar('_M', bound='Base')
 def create_uuid_factory(
         cls: type[_M],
         key: str = 'id'
-) -> 'Callable[[IRequest], _M]':
-    def route_factory(request: 'IRequest') -> _M:
+) -> Callable[[IRequest], _M]:
+    def route_factory(request: IRequest) -> _M:
 
         session = request.dbsession
         matchdict = request.matchdict
@@ -41,7 +44,7 @@ def create_uuid_factory(
 
 def create_consultation_all_versions_factory(
     key: str = 'id'
-) -> 'Callable[[IRequest], Consultation]':
+) -> Callable[[IRequest], Consultation]:
     """Creates a factory specifically for Consultation models.
 
     Unlike the generic UUID factory, this one manages Consultation versioning
@@ -51,8 +54,8 @@ def create_consultation_all_versions_factory(
     requested, for example by a bookmark.
     """
 
-    def route_factory(request: 'IRequest') -> Consultation:
-        session = request.dbsession
+    def route_factory(request: IRequest) -> Consultation:
+        session: FilteredSession = request.dbsession
         matchdict = request.matchdict
         uuid = matchdict.get(key, None)
         if not uuid:

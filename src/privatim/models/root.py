@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pyramid.authorization import Allow
 from pyramid.authorization import Authenticated
 
@@ -8,5 +9,5 @@ if TYPE_CHECKING:
 
 
 class Root:
-    def __acl__(self) -> list['ACL']:
+    def __acl__(self) -> list[ACL]:
         return [(Allow, Authenticated, ['view'])]

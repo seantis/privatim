@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import partial
 from wtforms import Form as BaseForm
 from wtforms import Label
@@ -26,9 +27,9 @@ if TYPE_CHECKING:
 
 
 def update_field_class(
-        field: 'Field',
-        original_post_validate: 'Callable[[_BaseForm, bool], Any]',
-        form: '_BaseForm',
+        field: Field,
+        original_post_validate: Callable[[_BaseForm, bool], Any],
+        form: _BaseForm,
         validation_stopped: bool
 ) -> None:
 
@@ -52,9 +53,9 @@ class PyramidTranslations:
 class HtmlField(TextAreaField):
     """ A textfield with html with integrated sanitation. """
 
-    data: 'Markup | None'
+    data: Markup | None
 
-    def pre_validate(self, form: '_BaseForm') -> None:
+    def pre_validate(self, form: _BaseForm) -> None:
 
         self.data = sanitize_html(self.data)
 
@@ -63,10 +64,10 @@ class BootstrapMeta(DefaultMeta):
 
     def bind_field(
             self,
-            form:          '_BaseForm',
-            unbound_field: 'UnboundField[_FieldT]',
-            options:       'MutableMapping[str, Any]'
-    ) -> '_FieldT':
+            form:          _BaseForm,
+            unbound_field: UnboundField[_FieldT],
+            options:       MutableMapping[str, Any]
+    ) -> _FieldT:
 
         # If the field is a TextAreaField, replace it with our patched version
         # FIXME: Why not just always use HtmlField in forms? There may be
@@ -103,9 +104,9 @@ class BootstrapMeta(DefaultMeta):
 
     def render_field(
             self,
-            field: 'Field',
-            render_kw: 'SupportsItems[str, Any]'
-    ) -> 'Markup':
+            field: Field,
+            render_kw: SupportsItems[str, Any]
+    ) -> Markup:
 
         # HACK: Immutable validators are special in that their field_flags
         #       should always be forwarded to render_kw, regardless of the
@@ -123,7 +124,7 @@ class BootstrapMeta(DefaultMeta):
 
     # NOTE: We implement this so we can provide translations for the
     #       errors from the wtforms builtin validators
-    def get_translations(self, form: '_BaseForm') -> PyramidTranslations:
+    def get_translations(self, form: _BaseForm) -> PyramidTranslations:
         return PyramidTranslations()
 
 
@@ -134,7 +135,7 @@ class BootstrapLabel(Label):
         self.text = base_label.text
         self.description = description
 
-    def __call__(self, text: str | None = None, **kwargs: Any) -> 'Markup':
+    def __call__(self, text: str | None = None, **kwargs: Any) -> Markup:
         kwargs.setdefault('class', 'form-label')
         if self.description:
             kwargs.setdefault('title', self.description)
@@ -149,10 +150,10 @@ class Form(BaseForm):
 
     def process(
             self,
-            formdata:      '_MultiDictLike | None' = None,
+            formdata:      _MultiDictLike | None = None,
             obj:           object | None = None,
-            data:          'Mapping[str, Any] | None' = None,
-            extra_filters: 'Mapping[str, Sequence[Any]] | None' = None,
+            data:          Mapping[str, Any] | None = None,
+            extra_filters: Mapping[str, Sequence[Any]] | None = None,
             **kwargs: Any
     ) -> None:
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pyramid.httpexceptions import HTTPFound
@@ -40,7 +41,7 @@ class LoginForm(Form):
     )
 
 
-def login_view(request: 'IRequest') -> 'RenderDataOrRedirect':
+def login_view(request: IRequest) -> RenderDataOrRedirect:
 
     form = LoginForm(request.POST)
     if request.method == 'POST' and form.validate():

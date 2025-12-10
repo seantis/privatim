@@ -1,3 +1,4 @@
+from __future__ import annotations
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import (func, select, literal, Select, Function,
@@ -13,13 +14,13 @@ from privatim.models.searchable import SearchableMixin
 from privatim.models.markup_text_type import MarkupText
 
 
-from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar, Union
+from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
     from privatim.types import RenderDataOrRedirect
 
-T = TypeVar('T', bound=Union[BinaryExpression[Any], Function[Any]])
+T = TypeVar('T', bound=BinaryExpression[Any] | Function[Any])
 
 
 class SearchResult(NamedTuple):
@@ -81,7 +82,7 @@ class SearchCollection:
 
     """
 
-    def __init__(self, term: str, session: 'Session', language: str = 'de_CH'):
+    def __init__(self, term: str, session: Session, language: str = 'de_CH'):
         self.lang: str = locales[language]
         self.session = session
         self.web_search = term
@@ -148,7 +149,7 @@ class SearchCollection:
 
     def build_file_query(
             self, model: type[SearchableFile]
-    ) -> 'Select[tuple[FileSearchResultType, ...]]':
+    ) -> Select[tuple[FileSearchResultType, ...]]:
         """ Search in the files.
 
         Two distinct things are happening here:
@@ -184,7 +185,7 @@ class SearchCollection:
 
     def build_attribute_query(
         self, model: type[SearchableMixin]
-    ) -> 'Select[tuple[SearchResultType, ...]]':
+    ) -> Select[tuple[SearchResultType, ...]]:
 
         headline_expressions = (
             type_coerce(func.ts_headline(
@@ -257,7 +258,7 @@ class SearchCollection:
         return output
 
 
-def search(request: 'IRequest') -> 'RenderDataOrRedirect':
+def search(request: IRequest) -> RenderDataOrRedirect:
     """
     Handle search form submission using POST/Redirect/GET design pattern.
 
@@ -331,4 +332,3 @@ def search(request: 'IRequest') -> 'RenderDataOrRedirect':
         'query': None,
         'layout': Layout(None, request),
     }
-

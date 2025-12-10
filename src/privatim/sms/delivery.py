@@ -1,3 +1,4 @@
+from __future__ import annotations
 import argparse
 import configparser
 import errno
@@ -53,10 +54,10 @@ class QueuedSMSDelivery:
         response.raise_for_status()
         result = response.json()
         if result.get('StatusInfo') != 'OK' or result.get('StatusCode') != '1':
-            raise Exception(f'Sending SMS failed, got: "{str(result)}"')
+            raise Exception(f'Sending SMS failed, got: "{result!s}"')
 
-    def _parseMessage(self, filename: str) -> 'JSONObject':
-        with open(filename, 'r') as fd:
+    def _parseMessage(self, filename: str) -> JSONObject:
+        with open(filename) as fd:
             data = json.load(fd)
 
         assert isinstance(data, dict)
@@ -222,7 +223,7 @@ def main() -> None:
     setup_logging(args.config)
 
     settings = {'username': '', 'password': ''}
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     config.read(args.config)
     for section_name in config.sections():
         if config.has_option(section_name, 'username'):

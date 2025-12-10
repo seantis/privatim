@@ -1,4 +1,5 @@
-from pyramid.i18n import make_localizer  # type: ignore
+from __future__ import annotations
+from pyramid.i18n import make_localizer
 from pyramid.interfaces import ITranslationDirectories
 from pyramid.threadlocal import get_current_registry, get_current_request
 
@@ -22,8 +23,8 @@ def translate(
     localizer = getattr(reg, localizername, None)
 
     if not localizer:
-        translation_dirs: list[str] = (
-            reg.queryUtility(ITranslationDirectories) or []
+        translation_dirs = (
+            reg.queryUtility(ITranslationDirectories) or []  # type:ignore
         )
         localizer = make_localizer(language, translation_dirs)
         setattr(reg, localizername, localizer)
@@ -48,7 +49,7 @@ def pluralize(
     localizer = getattr(reg, localizername, None)
 
     if not localizer:
-        tdirs: list[str] = reg.queryUtility(ITranslationDirectories) or []
+        tdirs = reg.queryUtility(ITranslationDirectories) or []  # type:ignore
         localizer = make_localizer(language, tdirs)
         setattr(reg, localizername, localizer)
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 from fanstatic import Library
@@ -5,8 +6,9 @@ from fanstatic import Resource
 from fanstatic.core import render_js as render_js_default
 
 
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from collections.abc import Iterable
     from fanstatic.core import Dependable
 
@@ -20,7 +22,7 @@ def render_js_module(url: str) -> str:
 
 def js(
         relpath: str,
-        depends: 'Iterable[Dependable] | None' = None,
+        depends: Iterable[Dependable] | None = None,
         supersedes: list[Resource] | None = None,
         bottom: bool = False,
         renderer: Callable[[str], str] = render_js_default  # "text/javascript"
@@ -38,7 +40,7 @@ def js(
 
 def css(
         relpath:    str,
-        depends:    'Iterable[Dependable] | None' = None,
+        depends:    Iterable[Dependable] | None = None,
         supersedes: list[Resource] | None = None,
         bottom:     bool = False,
 ) -> Resource:
