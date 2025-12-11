@@ -12,14 +12,14 @@ def test_csp_header(pg_config):
     assert response.headers['Content-Security-Policy'] == (
         "base-uri 'self'; "
         "child-src blob:; "
-        "connect-src 'self'; "
+        "connect-src 'self' https://analytics.seantis.ch; "
         "default-src 'none'; "
         "font-src 'self'; "
         "form-action 'self'; "
         "frame-ancestors 'none'; "
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
-        "script-src 'self' blob: resource:; "
+        "script-src 'self' blob: resource: https://analytics.seantis.ch; "
         "style-src 'self' 'unsafe-inline'"
     )
 
@@ -33,14 +33,14 @@ def test_csp_header_sentry(pg_config):
     assert response.headers['Content-Security-Policy'] == (
         "base-uri 'self'; "
         "child-src blob:; "
-        "connect-src 'self' https://sentry.io; "
+        "connect-src 'self' https://analytics.seantis.ch https://sentry.io; "
         "default-src 'none'; "
         "font-src 'self'; "
         "form-action 'self'; "
         "frame-ancestors 'none'; "
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
-        "script-src 'self' blob: resource:; "
+        "script-src 'self' blob: resource: https://analytics.seantis.ch; "
         "style-src 'self' 'unsafe-inline'; "
         "report-uri https://sentry.io/api/22/security/?sentry_key=aa"
     )
@@ -54,14 +54,15 @@ def test_csp_header_sentry(pg_config):
     assert response.headers['Content-Security-Policy'] == (
         "base-uri 'self'; "
         "child-src blob:; "
-        "connect-src 'self' https://1.ingest.sentry.io; "
+        "connect-src 'self' https://analytics.seantis.ch "
+                "https://1.ingest.sentry.io; "
         "default-src 'none'; "
         "font-src 'self'; "
         "form-action 'self'; "
         "frame-ancestors 'none'; "
         "img-src 'self' data: blob:; "
         "object-src 'self'; "
-        "script-src 'self' blob: resource:; "
+        "script-src 'self' blob: resource: https://analytics.seantis.ch; "
         "style-src 'self' 'unsafe-inline'; "
         "report-uri https://sentry.io/api/22/security/?sentry_key=aa"
     )
