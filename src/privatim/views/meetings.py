@@ -144,8 +144,7 @@ def meeting_view(
                         indx, bleach.clean(item.title)
                     )
                 ),
-                'description': Markup(bleach.clean(
-                    item.description)),   # nosec: MS001
+                'description': Markup(item.description),
                 'id': item.id,
                 'position': item.position,
                 'is_expanded': is_expanded,
