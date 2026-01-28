@@ -17,6 +17,10 @@ def default_csp_directives(request: IRequest) -> dict[str, str]:
         "img-src":  "'self' data: blob:",
         "object-src": "'self'",
         "script-src": "'self' blob: resource: https://analytics.seantis.ch",
+        "script-src-elem": (
+            "'self' blob: resource: https://analytics.seantis.ch"
+        ),
+        "script-src-attr": "'self'",
         "style-src": "'self' 'unsafe-inline'",
     }
 
