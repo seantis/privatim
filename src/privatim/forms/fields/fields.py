@@ -9,6 +9,7 @@ from privatim.static import tom_select_js
 from wtforms.utils import unset_value
 from wtforms.validators import DataRequired
 from wtforms.validators import InputRequired
+from wtforms import ValidationError
 from wtforms.fields import FieldList
 from wtforms.fields.choices import SelectMultipleField
 from wtforms.fields.simple import FileField, TextAreaField
@@ -451,11 +452,14 @@ class UploadFileWithORMSupport(UploadField):
         self.file.seek(0)
         assert self.filename is not None
 
-        return SearchableFile(
-            filename=self.filename,
-            content=self.file.read(),
-            content_type=self.data['mimetype'] if self.data else None,
-        )
+        try:
+            return SearchableFile(
+                filename=self.filename,
+                content=self.file.read(),
+                content_type=self.data['mimetype'] if self.data else None,
+            )
+        except ValueError as e:
+            raise ValidationError(str(e)) from e
 
     def populate_obj(self, obj: object, name: str) -> None:
 
