@@ -58,15 +58,20 @@ repos:
       - id: system
         name: check-setup-cfg
         entry: |
-          bash -c 'FILES=$(git diff --cached --name-only);
-          echo "Debug - Files changed: $FILES";
-          if echo "$FILES" | grep "setup.cfg" > /dev/null; then
-            if echo "$FILES" | grep "requirements.txt" > /dev/null; then
-              echo "✅ setup.cfg and requirements.txt both modified - looks good!";
+          bash -c 'STAGED=$(git diff --cached --name-only);
+          if echo "$STAGED" | grep "setup.cfg" > /dev/null; then
+            if echo "$STAGED" | grep "requirements.txt" > /dev/null; then
+              echo "✅ setup.cfg and requirements.txt both staged - looks good!";
               exit 0;
+            elif git diff --name-only | grep "requirements.txt" > /dev/null; then
+              echo "⚠️  Warning: setup.cfg is staged but requirements.txt is only modified (not staged)!";
+              echo "Run: git add requirements.txt";
+              exit 1;
             else
               echo "⚠️  Warning: setup.cfg was modified but requirements.txt was not!";
-              echo "If you have added new dependencies, you need to run \"make compile\" to re-generate the requirements.txt. Otherwise, you can ignore this warning with --no-verify";
+              echo "On the server we install from requirements.txt, therefore:";
+              echo "If you have added new dependencies, run \"make compile\" to re-generate requirements.txt.";
+              echo "Otherwise, you can ignore this warning with --no-verify";
               exit 1;
             fi;
           fi'
