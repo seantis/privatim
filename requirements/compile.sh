@@ -14,7 +14,6 @@ fi
 echo "Building requirements.txt"
 echo "-e privatim @ ." | uv pip compile setup.cfg - \
     -o requirements.txt \
-    --no-emit-package setuptools \
     "$@"
 
 echo "Building tests_requirements.txt"
