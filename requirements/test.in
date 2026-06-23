@@ -36,5 +36,5 @@ types-psycopg2
 types-pytz
 types-reportlab
 types-requests
-types-setuptools
+types-setuptools<82
 types-translationstring

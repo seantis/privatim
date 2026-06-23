@@ -188,8 +188,9 @@ rich==14.1.0
     # via bandit
 scrambler==0.0.5
     # via -r requirements/test.in
-setuptools==80.9.0
+setuptools==81.0.0
     # via
+    #   -c requirements/../requirements.txt
     #   pbr
     #   scrambler
     #   zope-event
@@ -229,7 +230,7 @@ types-reportlab==4.4.1.20250602
     # via -r requirements/test.in
 types-requests==2.32.4.20250611
     # via -r requirements/test.in
-types-setuptools==80.9.0.20250801
+types-setuptools==81.0.0.20260209
     # via
     #   -r requirements/test.in
     #   types-babel

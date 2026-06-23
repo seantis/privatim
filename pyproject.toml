@@ -17,6 +17,10 @@ norecursedirs = [
 markers = [
     "browser: mark test as a browser test using Playwright"
 ]
+filterwarnings = [
+    "ignore:pkg_resources is deprecated as an API:UserWarning:pyramid",
+    "ignore:Deprecated call to `pkg_resources\\.declare_namespace\\('.*'\\):DeprecationWarning",
+]
 
 [tool.coverage.run]
 source = ["privatim"]
