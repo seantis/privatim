@@ -1,7 +1,6 @@
 from __future__ import annotations
 import arrow
 import babel.dates
-import babel.numbers
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from privatim.static import (bootstrap_css, bootstrap_js, tom_select_css,

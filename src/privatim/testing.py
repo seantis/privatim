@@ -65,7 +65,7 @@ class DummyRequest(testing.DummyRequest):
 
 def verify_interface(klass: type[Any], interface: IInterface) -> None:
     assert interface.implementedBy(klass)
-    assert verifyClass(interface, klass)
+    assert verifyClass(interface, klass)  # type: ignore[unreachable]
 
 
 # translation strings used for testing

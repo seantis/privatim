@@ -37,7 +37,7 @@ class PhoneNumberField(StringField):
     supported_regions: ClassVar[tuple[str, ...]] = tuple(
         # NOTE: This is fine to ignore since SUPPORTED_REGIONS
         #       should only contain strings
-        region  # type:ignore
+        region
         for region in _locale.territories
         if region in SUPPORTED_REGIONS
     )

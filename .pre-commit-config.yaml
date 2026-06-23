@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: mixed-line-ending
@@ -22,7 +22,7 @@ repos:
       - id: untranslated-messages
         files: '\.po$'
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.8
+    rev: v0.15.18
     hooks:
       - id: ruff
         args: [ "--fix" ]
@@ -78,6 +78,6 @@ repos:
         language: system
         pass_filenames: false
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.0
+    rev: v8.30.0
     hooks:
       - id: gitleaks

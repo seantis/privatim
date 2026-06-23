@@ -138,11 +138,12 @@ ignore = [
     "PYI041",
     "RUF012",
     "RUF013",
+    "RUF052",
+    "RUF067",
     "SIM910",
     "UP009",
     "UP012",
     "UP032",
-    "UP038",
 ]
 unfixable = []
 external = ["TC"]
