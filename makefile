@@ -2,7 +2,7 @@ TIPTAP_DIR ?= src/privatim/static/js/tiptap
 
 install: ensure_uv
 	# Check if requirements files exist and compile if needed
-	@if [ ! -f requirements.txt ] || [ ! -f test_requirements.txt ]; then \
+	@if [ ! -f requirements.txt ] || [ ! -f tests_requirements.txt ]; then \
 		echo "One or more requirements files missing, running compile first..."; \
 		make compile; \
 	fi
