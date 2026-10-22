@@ -1,5 +1,5 @@
 from __future__ import annotations
-from cgi import FieldStorage
+from cgi import FieldStorage  # type: ignore[import-untyped]
 
 import humanize
 from wtforms.validators import DataRequired

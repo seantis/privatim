@@ -42,7 +42,7 @@ exclude_lines = [
 ]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 ignore_missing_imports = false
 namespace_packages = true
 disallow_any_generics = true
