@@ -254,3 +254,47 @@ def setup_search_scenario(pdf_to_search, session):
     consultation = create_consultation(documents=documents)
     session.add(consultation)
     session.flush()
+
+
+XSS = '<img src=x onerror=alert(1)>'
+
+
+def test_search_file_headline_escapes_html(session):
+    # ts_headline passes through HTML it does not recognise as a tag, so
+    # text extracted from an uploaded document must be escaped
+    document = SearchableFile(filename='evil.txt', content=b'Vertrag')
+    document.extract = f'Vertrag {XSS} Vertrag'
+    session.add(create_consultation(documents=[document]))
+    session.flush()
+
+    collection = SearchCollection(term='Vertrag', session=session)
+    collection.do_search()
+
+    headlines = [
+        result.headlines['file_content_headline']
+        for result in collection.results
+        if result.type == 'SearchableFile'
+    ]
+    assert len(headlines) == 1
+    assert '<mark>Vertrag</mark>' in headlines[0]
+    assert '&lt;img src=x' in headlines[0]
+    assert '<img' not in headlines[0]
+
+
+def test_search_attribute_headline_escapes_html(session):
+    # titles are not sanitized (ConstantTextAreaField)
+    session.add(create_consultation(title=f'Vertrag {XSS}'))
+    session.flush()
+
+    collection = SearchCollection(term='Vertrag', session=session)
+    collection.do_search()
+
+    titles = [
+        result.headlines['Title']
+        for result in collection.results
+        if result.type == 'Consultation'
+    ]
+    assert len(titles) == 1
+    assert '<mark>Vertrag</mark>' in titles[0]
+    assert '&lt;img src=x' in titles[0]
+    assert '<img' not in titles[0]

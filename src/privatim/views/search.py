@@ -1,8 +1,8 @@
 from __future__ import annotations
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from pyramid.httpexceptions import HTTPFound
 from sqlalchemy import (func, select, literal, Select, Function,
-                        BinaryExpression, type_coerce, or_)
+                        BinaryExpression, or_)
 
 from privatim.forms.search_form import SearchForm
 from privatim.layouts import Layout
@@ -11,7 +11,6 @@ from privatim.models import AgendaItem
 from privatim.models.file import SearchableFile
 from privatim.models.searchable import searchable_models
 from privatim.models.searchable import SearchableMixin
-from privatim.models.markup_text_type import MarkupText
 
 
 from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar
@@ -23,6 +22,31 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound=BinaryExpression[Any] | Function[Any])
 
+# ts_headline returns fragments of the original text, which may contain
+# arbitrary HTML (e.g. typed into an uploaded document). We therefore let
+# it mark matches with control characters, escape the whole headline and
+# only then turn the markers into <mark> tags.
+HL_START = '\x02'
+HL_STOP = '\x03'
+
+
+def headline_options(max_words: int) -> str:
+    return (
+        f'StartSel={HL_START}, StopSel={HL_STOP}, MaxWords={max_words}, '
+        'MinWords=15, ShortWord=3, HighlightAll=FALSE, '
+        'MaxFragments=3, FragmentDelimiter=" ... "'
+    )
+
+
+def render_headline(raw: str | None) -> Markup | None:
+    """ Escapes a ts_headline result, keeping only our <mark> tags. """
+    if raw is None:
+        return None
+    escaped = str(escape(raw))
+    return Markup(  # nosec B704  # fully escaped above
+        escaped.replace(HL_START, '<mark>').replace(HL_STOP, '</mark>')
+    )
+
 
 class SearchResult(NamedTuple):
     """ The id (UUIDStrPK) of the instance """
@@ -30,7 +54,7 @@ class SearchResult(NamedTuple):
 
     """ headlines are key value pairs of fields on various models that matched
     the search query."""
-    headlines: dict[str, str]
+    headlines: dict[str, Markup]
 
     """ The literal model.__name__ for distinction in search_results.pt. """
     type: str
@@ -119,9 +143,11 @@ class SearchCollection:
             SearchResult(
                 id=result.id,
                 headlines={
-                    field.name.capitalize(): getattr(result, field.name)
+                    field.name.capitalize(): headline
                     for field in model.searchable_fields()
-                    if getattr(result, field.name) is not None
+                    if (headline := render_headline(
+                        getattr(result, field.name)
+                    )) is not None
                 },
                 type=result.type,
                 model_instance=None,
@@ -138,9 +164,10 @@ class SearchCollection:
             search_result = SearchResult(
                 id=result.id,
                 headlines={
-                    'file_content_headline': Markup(  # nosec B704  # XSS, fixed in the following commit
+                    'file_content_headline': render_headline(
                         result.file_content_headline
-                    )},
+                    ) or Markup('')
+                },
                 type='SearchableFile',
                 model_instance=result.SearchableFile
             )
@@ -173,9 +200,7 @@ class SearchCollection:
                     self.lang,
                     SearchableFile.extract,
                     self.ts_query,
-                    'StartSel=<mark>, StopSel=</mark>, MaxWords=25, '
-                    'MinWords=15, ShortWord=3, HighlightAll=FALSE, '
-                    'MaxFragments=3, FragmentDelimiter=" ... "',
+                    headline_options(max_words=25),
                 ).label('file_content_headline'),
                 SearchableFile,
                 literal('SearchableFile').label('type')
@@ -189,14 +214,12 @@ class SearchCollection:
     ) -> Select[Unpack[tuple[Any, ...]]]:
 
         headline_expressions = (
-            type_coerce(func.ts_headline(
+            func.ts_headline(
                 self.lang,
                 field,
                 self.ts_query,
-                'StartSel=<mark>, StopSel=</mark>, MaxWords=35, MinWords=15, '
-                'ShortWord=3, HighlightAll=FALSE, MaxFragments=3, '
-                'FragmentDelimiter=" ... "',
-            ), MarkupText).label(field.key)
+                headline_options(max_words=35),
+            ).label(field.key)
             for field in model.searchable_fields()
         )
 

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from markupsafe import Markup
+from markupsafe import Markup, escape
 from wtforms import validators, Label
 from wtforms.fields.choices import RadioField, SelectChoice
 from wtforms.fields.simple import TextAreaField
@@ -74,7 +74,7 @@ class MeetingRadioRenderer(ListWidget):
                 html_list.append('</small>')
             html_list.append('</li>')
         html_list.append(f'</{self.html_tag}>')
-        return Markup(''.join(html_list))  # nosec B704  # XSS, fixed in the following commit
+        return Markup(''.join(html_list))  # nosec B704  # parts are escaped
 
     def render_radio(self, field: RadioField, value: Any, label: str) -> str:
         name = field.name
@@ -90,7 +90,8 @@ class MeetingRadioRenderer(ListWidget):
             params['checked'] = 'checked'
         return (
             f'<input {html_params(**params)}> '
-            f'<label class="form-check-label" for="{input_id}">{label}</label>'
+            f'<label class="form-check-label" for="{escape(input_id)}">'
+            f'{escape(label)}</label>'
         )
 
 
@@ -118,11 +119,9 @@ class AgendaItemCopyForm(Form):
             for meeting in available_meetings
         ]
 
-        meeting_link = Markup(  # nosec B704  # XSS, fixed in the following commit
-            f'<a href="{request.route_url("meeting", id=context.id)}" '
-            'target="_blank" rel="noopener">'
-            f'{context.name}</a>'
-        )
+        meeting_link = Markup(
+            '<a href="{}" target="_blank" rel="noopener">{}</a>'
+        ).format(request.route_url('meeting', id=context.id), context.name)
         translated_text = translate(
             _(
                 'The agenda items of the following meeting is copied to '
@@ -132,7 +131,7 @@ class AgendaItemCopyForm(Form):
             request.locale_name,
         )
         self.copy_from.label = Label(
-            self.copy_from.id, Markup(translated_text)  # nosec B704  # XSS, fixed in the following commit
+            self.copy_from.id, Markup(translated_text)  # nosec B704  # trusted msgid, escaped mapping
         )
 
         if not available_meetings:

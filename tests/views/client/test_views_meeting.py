@@ -712,3 +712,35 @@ def test_remove_and_readd_working_group_member_in_meeting(
     expect(attendees_list_view).to_be_visible(timeout=5000)
     expect(attendees_list_view).to_contain_text(member_full_name)
     expect(attendees_list_view).to_contain_text(admin_full_name)
+
+
+def test_copy_agenda_items_escapes_meeting_names(client):
+    client.login_admin()
+    user = User(email='max@example.org', first_name='Max', last_name='M')
+    user.set_password('test')
+    client.db.add(user)
+    working_group = WorkingGroup(name='Test Group', leader=user)
+    working_group.users.append(user)
+    client.db.add(working_group)
+
+    meeting_time = fix_utc_to_local_time(utcnow())
+    src_meeting = Meeting(
+        name='<img src=x onerror=alert(1)>',
+        time=meeting_time,
+        attendees=[user],
+        working_group=working_group,
+    )
+    dest_meeting = Meeting(
+        name='<b>Destination</b>',
+        time=meeting_time,
+        attendees=[user],
+        working_group=working_group,
+    )
+    client.db.add_all([src_meeting, dest_meeting])
+    client.db.commit()
+
+    page = client.get(f'/meetings/{dest_meeting.id}/copy_agenda_item')
+    assert '<img src=x' not in page.text
+    assert '&lt;img src=x onerror=alert(1)&gt;' in page.text
+    assert '<b>Destination</b>' not in page.text
+    assert '&lt;b&gt;Destination&lt;/b&gt;' in page.text
