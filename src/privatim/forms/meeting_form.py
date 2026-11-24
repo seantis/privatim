@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, NamedTuple
 
 from sqlalchemy import select
-from wtforms import StringField, validators
+from wtforms import SelectChoice, StringField, validators
 from wtforms.fields.form import FormField
 from wtforms.fields.list import FieldList
 from wtforms.fields.simple import BooleanField
@@ -86,7 +86,7 @@ class MeetingForm(Form):
         guest_users, removed_users = get_guest_and_removed_users(
             session, context)
         self.attendees.choices = [
-            (str(u.id), f'{u.first_name} {u.last_name}')
+            SelectChoice(str(u.id), f'{u.first_name} {u.last_name}')
             for u in guest_users | removed_users
         ]
 

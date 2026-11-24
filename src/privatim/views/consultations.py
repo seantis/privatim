@@ -61,10 +61,10 @@ def consultation_view(
         'delete_title': _('Delete Consultation'),
         'title': context.title,
         '_id': context.id,
-        'description': Markup(context.description),
-        'recommendation': Markup(context.recommendation),
-        'evaluation_result': Markup(context.evaluation_result),
-        'decision': Markup(context.decision),
+        'description': Markup(context.description),  # nosec B704  # HtmlField
+        'recommendation': Markup(context.recommendation),  # nosec B704  # HtmlField
+        'evaluation_result': Markup(context.evaluation_result),  # nosec B704  # HtmlField
+        'decision': Markup(context.decision),  # nosec B704  # HtmlField
         'is_old_version': is_old_version,
         'latest_version_url': (
             request.route_url('consultation', id=latest_version.id)
@@ -141,7 +141,7 @@ def consultations_view(request: IRequest) -> RenderData:
             'title': _cons.title,
             'editor_name': _cons.editor.fullname if _cons.editor
             else _('Deleted User'),
-            'description': Markup(_cons.description),
+            'description': Markup(_cons.description),  # nosec B704  # HtmlField
             'updated': _cons.updated,
             'status_key': _cons.status,  # Pass the status key for linking
             'status': _(_cons.status)

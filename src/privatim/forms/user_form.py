@@ -1,6 +1,6 @@
 from __future__ import annotations
 from sqlalchemy import select, exists
-from wtforms import SelectMultipleField
+from wtforms import SelectChoice, SelectMultipleField
 from wtforms.fields.simple import StringField, EmailField
 from wtforms.validators import Length, DataRequired, Optional, ValidationError
 from privatim.forms.core import Form
@@ -30,7 +30,7 @@ class UserForm(Form):
             meta={'context': context, 'request': request},
         )
         self.groups.choices = [
-            (str(id), name)
+            SelectChoice(str(id), name)
             for id, name in session.execute(
 
                     select(WorkingGroup.id, WorkingGroup.name).order_by(

@@ -60,4 +60,4 @@ def sanitize_html(html: str | None) -> Markup:
     from it.
 
     """
-    return Markup(cleaner.clean(html or ""))
+    return Markup(cleaner.clean(html or ""))  # nosec B704  # sanitized

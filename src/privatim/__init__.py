@@ -146,7 +146,8 @@ def main(
             environment=sentry_environment,
             integrations=[PyramidIntegration(), SqlalchemyIntegration()],
             traces_sample_rate=1.0,
-            profiles_sample_rate=0.25,
+            profile_session_sample_rate=0.25,
+            profile_lifecycle='trace',
         )
 
     setup_filestorage(settings)

@@ -222,7 +222,7 @@ def main() -> None:
 
     setup_logging(args.config)
 
-    settings = {'username': '', 'password': ''}
+    settings = {'username': '', 'password': ''}  # nosec B105  # empty default
     config = configparser.ConfigParser()
     config.read(args.config)
     for section_name in config.sections():

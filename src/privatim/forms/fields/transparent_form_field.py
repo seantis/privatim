@@ -8,7 +8,7 @@ from ..widgets import LineWidget
 
 from typing import Any, TypeVar, TYPE_CHECKING
 if TYPE_CHECKING:
-    from wtforms.fields.core import _Widget
+    from wtforms.fields.core import _Text, _Widget
     from wtforms.form import BaseForm
     from wtforms.meta import _SupportsGettextAndNgettext, DefaultMeta
     from privatim.forms.core import Form
@@ -64,5 +64,5 @@ class _NoLabel(Label):
         self.field_id = label.field_id
         self.text = label.text
 
-    def __call__(self, text: str | None = None, **kwargs: Any) -> Markup:
+    def __call__(self, text: _Text | None = None, **kwargs: Any) -> Markup:
         return Markup('')

@@ -144,7 +144,7 @@ def meeting_view(
                         indx, bleach.clean(item.title)
                     )
                 ),
-                'description': Markup(item.description),
+                'description': Markup(item.description),  # nosec B704  # HtmlField
                 'id': item.id,
                 'position': item.position,
                 'is_expanded': is_expanded,

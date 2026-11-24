@@ -1,7 +1,7 @@
 from __future__ import annotations
 from markupsafe import Markup
 from wtforms import validators, Label
-from wtforms.fields.choices import RadioField
+from wtforms.fields.choices import RadioField, SelectChoice
 from wtforms.fields.simple import TextAreaField
 from wtforms.validators import ValidationError
 from wtforms.widgets.core import ListWidget, html_params
@@ -74,7 +74,7 @@ class MeetingRadioRenderer(ListWidget):
                 html_list.append('</small>')
             html_list.append('</li>')
         html_list.append(f'</{self.html_tag}>')
-        return Markup(''.join(html_list))
+        return Markup(''.join(html_list))  # nosec B704  # XSS, fixed in the following commit
 
     def render_radio(self, field: RadioField, value: Any, label: str) -> str:
         name = field.name
@@ -112,11 +112,13 @@ class AgendaItemCopyForm(Form):
         )
 
         self.copy_from.choices = [
-            (str(meeting.id), meeting.name, {'time': meeting.time})
+            SelectChoice(
+                str(meeting.id), meeting.name, {'time': meeting.time}
+            )
             for meeting in available_meetings
         ]
 
-        meeting_link = Markup(
+        meeting_link = Markup(  # nosec B704  # XSS, fixed in the following commit
             f'<a href="{request.route_url("meeting", id=context.id)}" '
             'target="_blank" rel="noopener">'
             f'{context.name}</a>'
@@ -130,7 +132,7 @@ class AgendaItemCopyForm(Form):
             request.locale_name,
         )
         self.copy_from.label = Label(
-            self.copy_from.id, Markup(translated_text)
+            self.copy_from.id, Markup(translated_text)  # nosec B704  # XSS, fixed in the following commit
         )
 
         if not available_meetings:

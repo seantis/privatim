@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from wtforms.fields.core import UnboundField
     from wtforms.form import BaseForm as _BaseForm
     from wtforms.meta import _MultiDictLike
+    from wtforms.fields.core import _Text
 
     _FieldT = TypeVar('_FieldT', bound=Field)
 
@@ -130,12 +131,12 @@ class BootstrapMeta(DefaultMeta):
 
 class BootstrapLabel(Label):
 
-    def __init__(self, base_label: Label, description: str):
+    def __init__(self, base_label: Label, description: _Text):
         self.field_id = base_label.field_id
         self.text = base_label.text
         self.description = description
 
-    def __call__(self, text: str | None = None, **kwargs: Any) -> Markup:
+    def __call__(self, text: _Text | None = None, **kwargs: Any) -> Markup:
         kwargs.setdefault('class', 'form-label')
         if self.description:
             kwargs.setdefault('title', self.description)

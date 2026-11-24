@@ -97,7 +97,7 @@ class TranslationMarkup(TranslationString):
         if default is None:
             _default = None
         else:
-            _default = Markup(default)
+            _default = Markup(default)  # nosec B704  # i18n
 
         # NOTE: We prepare everything in the mapping with escape
         #       because interpolate uses re.sub, which is not
@@ -109,25 +109,25 @@ class TranslationMarkup(TranslationString):
             _mapping = {k: escape(v) for k, v in mapping.items()}
 
         if not isinstance(msgid, str) and hasattr(msgid, '__html__'):
-            msgid = Markup(msgid)
+            msgid = Markup(msgid)  # nosec B704  # i18n
 
         elif isinstance(msgid, translationstring.TranslationString):
             domain = domain or (msgid.domain and msgid.domain[:])
             context = context or (msgid.context and msgid.context[:])
-            _default = _default or Markup(msgid.default)
+            _default = _default or Markup(msgid.default)  # nosec B704  # i18n
             if msgid.mapping:
                 if _mapping:
                     for k, v in msgid.mapping.items():
                         _mapping.setdefault(k, escape(v))
                 else:
                     _mapping = {k: escape(v) for k, v in msgid.mapping.items()}
-            msgid = Markup(str(msgid))
+            msgid = Markup(str(msgid))  # nosec B704  # i18n
 
         instance: Self = str.__new__(cls, msgid)
         instance.domain = domain
         instance.context = context
         if _default is None:
-            _default = Markup(msgid)
+            _default = Markup(msgid)  # nosec B704  # i18n
         instance.default = _default
 
         instance.mapping = _mapping
@@ -141,8 +141,8 @@ class TranslationMarkup(TranslationString):
 
     def interpolate(self, translated: str | None = None) -> Markup:
         if translated is not None:
-            translated = Markup(translated)
-        return Markup(super().interpolate(translated))
+            translated = Markup(translated)  # nosec B704  # i18n
+        return Markup(super().interpolate(translated))  # nosec B704  # i18n
 
     @classmethod
     def escape(cls, s: Any) -> Self:
@@ -159,7 +159,7 @@ class TranslationMarkup(TranslationString):
         return cls(escape(s))
 
     def translated(self, language: str | None = None) -> Markup:
-        return Markup(translate(self, language))
+        return Markup(translate(self, language))  # nosec B704  # i18n
 
 
 def TranslationStringFactory(factory_domain: str) -> TStrCallable:
@@ -250,7 +250,7 @@ def _dugettext_policy(
             # we don't want it to get interpolated into Markup
             and type(tstring) is not TranslationString
     ):
-        return Markup(translated)
+        return Markup(translated)  # nosec B704  # i18n
     return translated
 
 

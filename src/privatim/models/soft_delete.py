@@ -7,7 +7,7 @@ from sqlalchemy.orm import (
     object_session,
 )
 from privatim.orm import Base
-from sqlalchemy.orm import declarative_mixin, Mapper, Session
+from sqlalchemy.orm import Mapper, Session
 
 
 from typing import TypeVar, TYPE_CHECKING
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='DeclarativeBase')
 
 
-@declarative_mixin
 class SoftDeleteMixin:
     deleted: Mapped[bool] = mapped_column(
         Boolean,

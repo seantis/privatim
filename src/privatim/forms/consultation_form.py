@@ -2,7 +2,7 @@ from __future__ import annotations
 from privatim.forms.common import DEFAULT_UPLOAD_LIMIT
 from privatim.forms.constants import CANTONS_SHORT
 from privatim.forms.core import Form, HtmlField
-from wtforms.fields.choices import SelectField
+from wtforms.fields.choices import SelectChoice, SelectField
 from wtforms.validators import DataRequired
 from wtforms import validators
 
@@ -46,7 +46,7 @@ class ConsultationForm(Form):
         )
 
         self.status.choices = [
-            (str(i), k)
+            SelectChoice(str(i), k)
             for i, k in STATUS_CHOICES
         ]
 
@@ -81,7 +81,10 @@ class ConsultationForm(Form):
     )
     secondary_tags = SearchableMultiSelectField(
         _('Cantons'),
-        choices=[('', ''), *CANTONS_SHORT],
+        choices=[
+            SelectChoice(''),
+            *(SelectChoice(code, label) for code, label in CANTONS_SHORT),
+        ],
         validators=[
             validators.Optional(),
         ],

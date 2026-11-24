@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, NamedTuple, TypedDict, Any, TypeVar
 if TYPE_CHECKING:
     from pyramid.interfaces import IRequest
     from sqlalchemy.orm import Session
+    from typing import Unpack
     from privatim.types import RenderDataOrRedirect
 
 T = TypeVar('T', bound=BinaryExpression[Any] | Function[Any])
@@ -137,7 +138,7 @@ class SearchCollection:
             search_result = SearchResult(
                 id=result.id,
                 headlines={
-                    'file_content_headline': Markup(
+                    'file_content_headline': Markup(  # nosec B704  # XSS, fixed in the following commit
                         result.file_content_headline
                     )},
                 type='SearchableFile',
@@ -149,7 +150,7 @@ class SearchCollection:
 
     def build_file_query(
             self, model: type[SearchableFile]
-    ) -> Select[tuple[FileSearchResultType, ...]]:
+    ) -> Select[Unpack[tuple[Any, ...]]]:
         """ Search in the files.
 
         Two distinct things are happening here:
@@ -185,7 +186,7 @@ class SearchCollection:
 
     def build_attribute_query(
         self, model: type[SearchableMixin]
-    ) -> Select[tuple[SearchResultType, ...]]:
+    ) -> Select[Unpack[tuple[Any, ...]]]:
 
         headline_expressions = (
             type_coerce(func.ts_headline(

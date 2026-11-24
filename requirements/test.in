@@ -1,7 +1,7 @@
 # mypy==1.10.1
 # todo: probably we can remove this pin?
 WebTest==3.0.0
-bandit[toml]==1.8.2
+bandit[toml]
 coverage
 flake8
 flake8

@@ -51,7 +51,7 @@ def people_view(request: IRequest) -> RenderData:
                 ),
             ),
         ]
-        button_html = Markup('').join(Markup(button()) for button in buttons)
+        button_html = Markup('').join(Markup(button()) for button in buttons)  # nosec B704  # own buttons
         people_data.append({
             'id': user.id,
             'name': f'{user.last_name} {user.first_name}',
