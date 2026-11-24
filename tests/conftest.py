@@ -33,6 +33,13 @@ def find_free_port() -> int:
         return port
 
 
+def run_live_server(
+    settings: dict[str, object], host: str, port: int
+) -> None:
+    """Builds the app and serves it; runs in a separate process."""
+    serve(main({}, **settings), host=host, port=port, _quiet=True)
+
+
 # --- Logging Config ---
 
 # logging.basicConfig(
@@ -324,22 +331,16 @@ def live_server_url(app_settings: dict[str, object], postgresql) -> str:
             dbsession.close()
     # --- End base data setup ---
 
-    # Create the WSGI app instance *after* user data is committed
-    app = main({}, **settings)
-
     host = '127.0.0.1'
     port = find_free_port()
     base_url = f'http://{host}:{port}'
 
-    # Run the server in a separate process
-    def run_server(app_to_serve, host_to_serve, port_to_serve):
-        serve(
-            app_to_serve, host=host_to_serve, port=port_to_serve, _quiet=True
-        )
-
+    # Run the server in a separate process. The WSGI app is built inside
+    # the child, since Python 3.14 no longer forks by default and the
+    # target and its arguments must be picklable.
     server_process = multiprocessing.Process(
-        target=run_server,
-        args=(app, host, port),
+        target=run_live_server,
+        args=(settings, host, port),
         daemon=True
     )
     server_process.start()
