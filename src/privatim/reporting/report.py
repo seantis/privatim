@@ -7,6 +7,7 @@ from babel.dates import format_datetime
 from privatim.i18n import translate, _
 from privatim.layouts.layout import DEFAULT_TIMEZONE
 from privatim.models.association_tables import AttendanceStatus
+from privatim.reporting.fetcher import AllowlistURLFetcher
 from privatim.utils import datetime_format
 from pyramid.renderers import render
 import lxml.html
@@ -206,10 +207,17 @@ class HTMLReportRenderer:
         }}
         '''
 
-        css = CSS(string=css_font_face, font_config=font_config)
-        HTML(string=html, base_url=str(resource_base_url)).write_pdf(
-            buffer, stylesheets=[css], font_config=font_config
+        url_fetcher = AllowlistURLFetcher(font_urls.values())
+        css = CSS(
+            string=css_font_face,
+            font_config=font_config,
+            url_fetcher=url_fetcher,
         )
+        HTML(
+            string=html,
+            base_url=str(resource_base_url),
+            url_fetcher=url_fetcher,
+        ).write_pdf(buffer, stylesheets=[css], font_config=font_config)
         return buffer.getvalue()
 
 

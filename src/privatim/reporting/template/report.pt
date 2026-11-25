@@ -143,7 +143,7 @@
         <h2 i18n:translate="" class="mt-4">Agenda Items</h2>
         <ul tal:repeat="item meeting.agenda_items" class="agenda-items-list">
             <li>
-                <h3 tal:content="h.Markup(repeat.item.index + 1) + h.Markup('. ') + h.Markup(item.title)"></h3>
+                <h3>${repeat.item.index + 1}. ${item.title}</h3>
                 <p tal:content="h.Markup(item.description)"></p>
             </li>
         </ul>
