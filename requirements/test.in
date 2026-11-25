@@ -30,7 +30,6 @@ types-babel
 types-bleach
 types-fanstatic
 types-polib
-types-psycopg2
 types-pytz
 types-reportlab
 types-requests

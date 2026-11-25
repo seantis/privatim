@@ -2,7 +2,7 @@ from __future__ import annotations
 from functools import partial
 import uuid
 from fanstatic import Fanstatic
-from psycopg2 import ProgrammingError
+from psycopg import ProgrammingError
 
 from pyramid.events import BeforeRender  # type: ignore[attr-defined]
 from sqlalchemy.dialects import postgresql

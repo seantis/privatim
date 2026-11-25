@@ -147,10 +147,12 @@ polib==1.2.0
     # via
     #   privatim (setup.cfg)
     #   privatim
-psycopg2==2.9.13
+psycopg==3.3.9
     # via
     #   privatim (setup.cfg)
     #   privatim
+psycopg-c==3.3.9
+    # via psycopg
 pycparser==3.12
     # via cffi
 pydyf==0.13.0

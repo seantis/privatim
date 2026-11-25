@@ -128,7 +128,9 @@ pre-commit==4.7.0
 psutil==7.2.2
     # via mirakuru
 psycopg==3.3.9
-    # via pytest-postgresql
+    # via
+    #   -c requirements.txt
+    #   pytest-postgresql
 pycodestyle==2.15.0
     # via flake8
 pyflakes==4.1.0
@@ -214,8 +216,6 @@ types-fanstatic==1.7.0.20260508
 types-html5lib==1.1.11.20260518
     # via types-bleach
 types-polib==1.2.0.20261122
-    # via -r requirements/test.in
-types-psycopg2==2.9.21.20261122
     # via -r requirements/test.in
 types-pytz==2026.6.0.20261122
     # via
